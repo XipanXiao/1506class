@@ -11,6 +11,7 @@
 <td>Name</td>
 <td>Gender</td>
 <td>Email</td>
+<td>Class</td>
 </tr>
 <?php
 include 'connection.php';
@@ -23,9 +24,10 @@ function list_students($conn) {
     while($row = $result->fetch_assoc()) {
 ?>
 <tr>
-<td><code><?=$row["name"]?></code></td>
-<td><code><?=$row["sex"]?></code></td>
-<td><code><?=$row["email"]?></code></td>
+<td><?=$row["name"]?></td>
+<td><?=$row["sex"]?></td>
+<td><?=$row["email"]?></td>
+<td><?=$row["classId"]?></td>
 </tr>
 <?php
     }
