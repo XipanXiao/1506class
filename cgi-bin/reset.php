@@ -20,9 +20,9 @@ function create_database($conn) {
 function create_table($conn) {
 	
 	// """Creates tables"""
-	$conn->query ( "DROP TABLE IF EXISTS students" );
+	$conn->query ( "DROP TABLE IF EXISTS users" );
 	
-	if (! $conn->query ( "CREATE TABLE students(
+	if (! $conn->query ( "CREATE TABLE users(
       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
       internalId VARCHAR(8),
       name VARCHAR(32),
@@ -31,7 +31,7 @@ function create_table($conn) {
       nickname VARCHAR(32),
       email VARCHAR(32) NOT NULL,
       phone VARCHAR(16),
-      Address VARCHAR(64),
+      address VARCHAR(64),
       yy VARCHAR(16),
       qq VARCHAR(16),
       wechat VARCHAR(32),
@@ -58,24 +58,27 @@ function create_table($conn) {
 	$conn->query ( "DROP TABLE IF EXISTS action_types" );
 	if (! $conn->query ( "CREATE TABLE action_types (
                           id TINYINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                          action_type VARCHAR(32)
+                          action_type VARCHAR(32),
+						  value_type TINYINT
                           )" )) {
 		echo "Failed to create table action_types:" . $conn->error . "<BR>";
 	}
 	
 	$action_type = "";
-	$stmt = $conn->prepare ( "INSERT INTO action_types(action_type) VALUES (?)" );
-	$stmt->bind_param ( "s", $action_type );
+	$value_type = 0;
+	$stmt = $conn->prepare ( "INSERT INTO action_types(action_type, value_type) VALUES (?, ?)" );
+	$stmt->bind_param ( "si", $action_type, $value_type );
 	
 	foreach ( array (
-			"参加共修",
-			"金刚萨埵心咒",
-			"顶礼",
-			"观修",
-			"听传承",
-			"看法本" 
-	) as $action_type_ ) {
+			"参加共修" => 1,
+			"金刚萨埵心咒" => 0,
+			"顶礼" => 0,
+			"观修" => 0,
+			"听传承" => 1,
+			"看法本" => 1 
+	) as $action_type_ => $value_type_ ) {
 		$action_type = $action_type_;
+		$value_type = $value_type_;
 		if (! $stmt->execute ()) {
 			echo "Failed to insert action type" . $action_type . $conn->error . "<BR>";
 		}
@@ -84,7 +87,8 @@ function create_table($conn) {
 	$conn->query ( "DROP TABLE IF EXISTS classes" );
 	if (! $conn->query ( "CREATE TABLE classes (
                               id TINYINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                              class_name VARCHAR(32)
+                              class_name VARCHAR(32),
+							  teacherId INT
                               )" )) {
 		echo "Failed to create table classes:" . $conn->error . "<BR>";
 	}

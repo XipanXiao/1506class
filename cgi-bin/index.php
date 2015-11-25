@@ -35,8 +35,10 @@ if (! empty ( $_SESSION ['LoggedIn'] ) && ! empty ( $_SESSION ['name'] )) {
 		$row = $result->fetch_assoc ();
 		$email = $row ["email"];
 		
+		$_SESSION ["userid"] = $row ["id"];
 		$_SESSION ['name'] = $row ["name"];
 		$_SESSION ['email'] = $email;
+		$_SESSION ['classId'] = $row['classId'];
 		$_SESSION ['LoggedIn'] = 1;
 		
 		echo "<h1>Success</h1>";

@@ -1,4 +1,6 @@
  <?php
+ require 'medoo.php';
+ 
 	function get_connection() {
 		$servername = 'localhost';
 		$username = 'root';
@@ -17,5 +19,22 @@
 		}
 		
 		return $conn;
+	}
+	
+	function get_medoo() {
+		return new medoo([
+				// required
+				'database_type' => 'mysql',
+				'database_name' => 'buddcourses',
+				'server' => 'localhost',
+				'username' => 'root',
+				'password' => '1234567890',
+				'charset' => 'utf8',
+		
+				// driver_option for connection, read more from http://www.php.net/manual/en/pdo.setattribute.php
+				'option' => [
+						PDO::ATTR_CASE => PDO::CASE_NATURAL
+				]
+		]);		
 	}
 ?>

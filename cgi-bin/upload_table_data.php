@@ -13,7 +13,7 @@ include "connection.php";
 
 $conn = get_connection ();
 function prepare_statement($conn, $user) {
-	$sql = "INSERT INTO students(internalId, name, sex, nickname, email," . "phone, Address, yy, qq, wechat, classId, mentor, response, permission," . "notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	$sql = "INSERT INTO users(internalId, name, sex, nickname, email," . "phone, address, yy, qq, wechat, classId, mentor, response, permission," . "notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	
 	if (! ($stmt = $conn->prepare ( $sql ))) {
 		echo "Prepare failed: (" . $conn->errno . ") " . $conn->error;
@@ -113,15 +113,15 @@ function create_courses($conn, $filename) {
 if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["submit"] )) {
 	$classId = $_POST ["classId"];
 	
-	create_users ( $conn, $_FILES ["students"] ["tmp_name"], intval ( $classId ) );
+	create_users ( $conn, $_FILES ["users"] ["tmp_name"], intval ( $classId ) );
 	create_courses ( $conn, $_FILES ["courses"] ["tmp_name"] );
 } else {
 	?>
     <div class="center padded-element">
 		<form method="POST" enctype="multipart/form-data">
 			<div class="padded-element">
-				<div>Select students record (*.csv) to upload:</div>
-				<input type="file" name="students" id="students">
+				<div>Select user record (*.csv) to upload:</div>
+				<input type="file" name="users" id="users">
 			</div>
 
 			<span class="padded-element">Select class:</span> <select
