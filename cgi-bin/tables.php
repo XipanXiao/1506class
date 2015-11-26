@@ -1,5 +1,5 @@
 <?php
-include_once 'user.php';
+include_once 'datatype.php';
 
 function get_classes($medoo) {
 	$result = $medoo->select('classes', '*');
@@ -10,8 +10,9 @@ function get_classes($medoo) {
 		$info = new ClassInfo();
 		$info->id = $clazz['id'];
 		$info->name = $clazz['class_name'];
-		$info->teacherId = $clazz['teacherId'];
-	
+		$info->teacherId = $clazz['teacher_id'];
+		$info->startDate = $clazz['start_date'];
+		
 		$classes[$info->id] = $info;
 	}
 	
@@ -38,11 +39,29 @@ function get_action_types($medoo) {
 	foreach ($result as $row) {
 		$action_type = new ActionType();
 		$action_type->name = $row['action_type'];
+		echo $action_type->name . "<BR>";
 		$action_type->value_type = $row['value_type'];
 
 		$types[$row['id']] = $action_type;
 	}
 	
 	return $types;
+}
+
+function get_user($medoo, $email) {
+	$where = $email == null ? '*' : ['email' => $email];
+	$result = $medoo->select('users', '*');
+	
+	if (empty($result)) {
+		return null;
+	}
+	
+	$users = array();
+	foreach ($result as $row) {
+		$user = new User($row);
+		$users[$user->$email] = $user;
+	}
+	
+	return $users;
 }
 ?>

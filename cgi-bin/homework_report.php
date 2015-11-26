@@ -1,6 +1,8 @@
 <?php
 include_once "connection.php";
-include_once "const_tables.php";
+include_once "tables.php";
+
+session_start ();
 
 $conn = get_medoo();
 
@@ -21,11 +23,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["submit"] )) {
 	}
 }
 
+$records = $conn->select("learning_records", "*", ["student_id" => $_SESSION["userid"]]);
+
 $classes = get_classes($conn);
 $courses = get_courses($conn);
 $action_types = get_action_types($conn);
-
-$records = $conn->select("learning_records", "*", ["student_id" => $_SESSION['userid']]);
 ?>
 
 <html>

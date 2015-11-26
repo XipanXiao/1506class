@@ -8,12 +8,12 @@
 <body>
 
 <?php
-include "user.php";
+include "datatype.php";
 include "connection.php";
 
 $conn = get_connection ();
 function prepare_statement($conn, $user) {
-	$sql = "INSERT INTO users(internalId, name, sex, nickname, email," . "phone, address, yy, qq, wechat, classId, mentor, response, permission," . "notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	$sql = "INSERT INTO users(internal_id, name, sex, nickname, email," . "phone, address, yy, qq, wechat, class_id, mentor, response, permission," . "notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	
 	if (! ($stmt = $conn->prepare ( $sql ))) {
 		echo "Prepare failed: (" . $conn->errno . ") " . $conn->error;
@@ -53,7 +53,7 @@ function parseUser($user, $str) {
 	return true;
 }
 function create_users($conn, $filename, $classId) {
-	$user = new User ();
+	$user = new User (null);
 	$user->classId = $classId;
 	$user->permission = 1;
 	

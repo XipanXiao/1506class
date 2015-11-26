@@ -14,30 +14,28 @@
 				<td>Class</td>
 			</tr>
 <?php
-include 'connection.php';
-function list_students($conn) {
-	$sql = 'SELECT * FROM students';
-	$result = $conn->query ( $sql );
+include_once 'connection.php';
+include_once 'tables.php';
+function list_students($medoo) {
 	
-	if ($result->num_rows > 0) {
-		while ( $row = $result->fetch_assoc () ) {
+	$users = get_user($medoo, null);
+	
+	if (!empty($users)) {
+		foreach ($users as $user) {
 ?>
 			<tr>
-				<td><?=$row["name"]?></td>
-				<td><?=$row["sex"]?></td>
-				<td><?=$row["email"]?></td>
-				<td><?=$row["classId"]?></td>
+				<td><?=$user->$name?></td>
+				<td><?=$user->$sex?></td>
+				<td><?=$user->$email?></td>
+				<td><?=$user->$classId?></td>
 			</tr>
 <?php
 		}
-	} else {
-		echo "0 results";
 	}
 }
 
-$conn = get_connection ();
-list_students ( $conn );
-$conn->close();
+$medoo = get_medoo();
+list_students ( $medoo );
 ?>
 
 		</table>

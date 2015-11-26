@@ -2,7 +2,7 @@ body input {
     font-family: arial,sans-serif;
     font-size: 20px;
 }
-
+body,
 .center {
   margin-left: auto;
   margin-right: auto;
@@ -13,4 +13,31 @@ body input {
     padding: 16px;
 }
 
+.app-bar {
+	height: 50px;
+	width: 100%;
+}
 
+.css-table {
+	display: table;
+}
+
+.css-table-row {
+	display: table-row;
+}
+
+.css-table-cell {
+	display: table-cell;
+}
+
+.left {
+	float: left;
+}
+
+.right {
+	float: right;	
+}
+
+.class-list {
+	width: 120px;
+}
