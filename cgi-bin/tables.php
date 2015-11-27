@@ -2,10 +2,9 @@
 include_once 'datatype.php';
 
 function get_classes($medoo) {
-	$result = $medoo->select('classes', '*');
-	$length = sizeof($result);
-
 	$classes = array();
+	$result = $medoo->select('classes', '*');
+
 	foreach ($result as $clazz) {
 		$info = new ClassInfo();
 		$info->id = $clazz['id'];
@@ -49,17 +48,13 @@ function get_action_types($medoo) {
 }
 
 function get_user($medoo, $email) {
-	$where = $email == null ? '*' : ['email' => $email];
-	$result = $medoo->select('users', '*');
-	
-	if (empty($result)) {
-		return null;
-	}
+	$where = $email == null ? null : ['email' => $email];
+	$result = $medoo->select('users', '*', $where);
 	
 	$users = array();
 	foreach ($result as $row) {
 		$user = new User($row);
-		$users[$user->$email] = $user;
+		$users[$user->email] = $user;
 	}
 	
 	return $users;

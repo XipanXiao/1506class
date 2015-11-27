@@ -9,16 +9,17 @@
 <?php
 include_once "connection.php";
 include_once "tables.php";
+include_once "app_bar.php";
 
 if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['password'] )) {
 	$conn = get_medoo ();
 	
-	$password = md5 ( $_POST ['password'] );
-	
+	$password = md5 ( $_POST ['password'] );	
 	$users = get_user($conn, $_POST['email']);
 	
 	if (sizeof($users) > 0) {
-		$_SESSION['user'] = current($users);		
+		$_SESSION['user'] = current($users);
+		
 		header("Location: ./index.php");
 		exit();
 	} else {

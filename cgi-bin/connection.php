@@ -29,7 +29,7 @@
 				'server' => 'localhost',
 				'username' => 'root',
 				'password' => '1234567890',
-				'charset' => 'utf8',
+				'charset' => 'utf-8',
 		
 				// driver_option for connection, read more from http://www.php.net/manual/en/pdo.setattribute.php
 				'option' => [

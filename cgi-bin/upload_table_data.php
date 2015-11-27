@@ -8,21 +8,12 @@
 <body>
 
 <?php
-include "datatype.php";
-include "connection.php";
+include_once "datatype.php";
+include_once "connection.php";
+include_once "tables.php";
 
-$conn = get_connection ();
-function prepare_statement($conn, $user) {
-	$sql = "INSERT INTO users(internal_id, name, sex, nickname, email," . "phone, address, yy, qq, wechat, class_id, mentor, response, permission," . "notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	
-	if (! ($stmt = $conn->prepare ( $sql ))) {
-		echo "Prepare failed: (" . $conn->errno . ") " . $conn->error;
-		return $stmt;
-	}
-	
-	$stmt->bind_param ( "ssisssssssissis", $user->id, $user->name, $user->sex, $user->nickname, $user->email, $user->phone, $user->address, $user->yy, $user->qq, $user->wechat, $user->classId, $user->mentor, $user->response, $user->permission, $user->notes );
-	return $stmt;
-}
+$conn = get_medoo ();
+
 function parseUser($user, $str) {
 	echo "Parsing " . $str . "<BR>";
 	$fields = explode ( ",", $str );
@@ -34,7 +25,7 @@ function parseUser($user, $str) {
 		return false;
 	}
 	
-	$user->id = $fields [1];
+	$user->internalId = $fields [1];
 	$user->name = $fields [2];
 	$user->sex = ($fields [3] == "男");
 	$user->phone = $fields [4];
@@ -52,14 +43,11 @@ function parseUser($user, $str) {
 	
 	return true;
 }
+
 function create_users($conn, $filename, $classId) {
 	$user = new User (null);
 	$user->classId = $classId;
 	$user->permission = 1;
-	
-	if (! ($stmt = prepare_statement ( $conn, $user ))) {
-		return;
-	}
 	
 	$handle = fopen ( $filename, "r" );
 	
@@ -72,49 +60,19 @@ function create_users($conn, $filename, $classId) {
 	fgets ( $handle );
 	
 	while ( ($line = fgets ( $handle )) !== false ) {
-		if (parseUser ( $user, $line ) && $stmt->execute ()) {
+		if (parseUser ( $user, $line ) && $conn->insert("users", $user->toArray())) {
 			echo "Created student record for " . $user->name . "<BR>";
 		}
 		;
 	}
 	
 	fclose ( $handle );
-	$stmt->close ();
-}
-function create_courses($conn, $filename) {
-	$course_name = "";
-	$sql = "INSERT INTO courses(course_name) VALUES (?)";
-	$stmt = $conn->prepare ( $sql );
-	$stmt->bind_param ( "s", $course_name );
-	
-	$handle = fopen ( $filename, "r" );
-	
-	if (! $handle) {
-		echo "Failed to read uploaded file " . $filename . "<BR>";
-		return;
-	}
-	
-	// Skip the header.
-	fgets ( $handle );
-	
-	while ( ($line = fgets ( $handle )) !== false ) {
-		$course_name = $line;
-		
-		if (! empty ( $line ) && $stmt->execute ()) {
-			echo "Inserted course " . $course_name . "<BR>";
-		}
-		;
-	}
-	
-	fclose ( $handle );
-	$stmt->close ();
 }
 
 if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["submit"] )) {
 	$classId = $_POST ["classId"];
 	
 	create_users ( $conn, $_FILES ["users"] ["tmp_name"], intval ( $classId ) );
-	create_courses ( $conn, $_FILES ["courses"] ["tmp_name"] );
 } else {
 	?>
     <div class="center padded-element">
@@ -127,21 +85,15 @@ if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["submit"] )) {
 			<span class="padded-element">Select class:</span> <select
 				name="classId">
 <?php
-	$sql = 'SELECT * FROM classes';
-	$result = $conn->query ( $sql );
-	
-	if ($result->num_rows > 0) {
-		while ( $row = $result->fetch_assoc () ) {
-			?>
-<option value="<?=$row['id']?>"><?=$row["class_name"]?></option>
+	$classes = get_classes($conn);
+    foreach ($classes as $clazz) {
+?>
+		<option value="<?=$clazz->id?>"><?=$clazz->name?></option>
 <?php
-		}
 	}
-	?>
+?>
         </select>
 			<div class="padded-element">
-				<span>Select course list file to upload</span> <input type="file"
-					name="courses" id="courses">
 				<div>
 					<input type="submit" name="submit">
 				</div>
@@ -151,8 +103,6 @@ if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["submit"] )) {
 
 <?php
 }
-
-$conn->close ();
 
 ?>
 </body>

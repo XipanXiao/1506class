@@ -1,6 +1,8 @@
 <div class="app-bar">
 	<div class="right">
 <?php
+include_once 'datatype.php';
+
 session_start ();
 
 if (! empty ( $_SESSION ['user'] ) ) {
@@ -14,3 +16,4 @@ if (! empty ( $_SESSION ['user'] ) ) {
 ?>
 	</div>
 </div>
+<hr>

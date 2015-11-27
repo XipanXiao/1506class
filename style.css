@@ -14,7 +14,7 @@ body,
 }
 
 .app-bar {
-	height: 50px;
+	height: 30px;
 	width: 100%;
 }
 
@@ -31,6 +31,7 @@ body,
 }
 
 .left {
+	border-right: 1px solid;
 	float: left;
 }
 

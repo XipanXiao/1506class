@@ -24,10 +24,10 @@ function list_students($medoo) {
 		foreach ($users as $user) {
 ?>
 			<tr>
-				<td><?=$user->$name?></td>
-				<td><?=$user->$sex?></td>
-				<td><?=$user->$email?></td>
-				<td><?=$user->$classId?></td>
+				<td><?=$user->name?></td>
+				<td><?=$user->sex?></td>
+				<td><?=$user->email?></td>
+				<td><?=$user->classId?></td>
 			</tr>
 <?php
 		}
