@@ -32,7 +32,7 @@ class User {
 		$this->qq = $row['qq']; 
 		$this->wechat = $row['wechat']; 
 		$this->classId = $row['class_id']; 
-		$this->mentor = $row['mentor']; 
+		$this->mentor = $row['mentor_id']; 
 		$this->response = $row['response']; 
 		$this->permission = $row['permission']; 
 		$this->notes = $row['notes']; 
@@ -54,7 +54,7 @@ class User {
 		$row['qq'] = $this->qq;
 		$row['wechat'] = $this->wechat;
 		$row['class_id'] = $this->classId;
-		$row['mentor'] = $this->mentor;
+		$row['mentor_id'] = $this->mentor;
 		$row['response'] = $this->response;
 		$row['permission'] = $this->permission;
 		$row['notes'] = $this->notes;

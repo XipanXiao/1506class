@@ -19,6 +19,14 @@ include_once 'tables.php';
 function list_students($medoo) {
 	
 	$users = get_user($medoo, null);
+
+// 	foreach ($users as $user) {
+// 		echo sprintf("INSERT INTO users(internal_id, name, password, sex, nickname, email, phone, address, 
+// 				yy, qq, wechat, class_id, mentor_id, response, permission) VALUES ('%s', '%s', '%s', %d, '%s', '%s', '%s', 
+// 				'%s', '%s', '%s', '%s', %d, %d, '%s', %d);<BR>", $user->internalId, $user->name, $user->password, 
+// 				$user->sex, $user->nickname, $user->email, $user->phone, $user->address,
+// 				$user->yy, $user->qq, $user->wechat, $user->classId, 0, $user->response, $user->permission);
+// 	}
 	
 	if (!empty($users)) {
 		foreach ($users as $user) {

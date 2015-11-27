@@ -2,25 +2,6 @@ drop database if exists buddcourses;
 CREATE DATABASE buddcourses;
 USE buddcourses;
 
-CREATE TABLE users(
-			      id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-			      internal_id VARCHAR(8),
-			      name VARCHAR(32),
-			      password VARCHAR(32),
-			      sex BOOLEAN,
-			      nickname VARCHAR(32),
-			      email VARCHAR(32) NOT NULL,
-			      phone VARCHAR(16),
-			      address VARCHAR(64),
-			      yy VARCHAR(16),
-			      qq VARCHAR(16),
-			      wechat VARCHAR(32),
-			      class_id MEDIUMINT,
-			      mentor VARCHAR(32),
-			      response VARCHAR(16),
-			      permission INT,
-			      notes VARCHAR(255));
-
 CREATE TABLE course_groups (
                           id TINYINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                           group_name VARCHAR(32)
@@ -80,6 +61,25 @@ INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第18课");
 INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第19课");
 INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第20课");
 INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第21课");
+
+CREATE TABLE users(
+			      id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+			      internal_id VARCHAR(8),
+			      name VARCHAR(32),
+			      password VARCHAR(32),
+			      sex BOOLEAN,
+			      nickname VARCHAR(32),
+			      email VARCHAR(32) NOT NULL,
+			      phone VARCHAR(16),
+			      address VARCHAR(64),
+			      yy VARCHAR(16),
+			      qq VARCHAR(16),
+			      wechat VARCHAR(32),
+			      class_id MEDIUMINT,
+			      mentor_id INT,
+			      response VARCHAR(16),
+			      permission INT,
+			      notes VARCHAR(255));
 
 CREATE TABLE schedules (
                       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
