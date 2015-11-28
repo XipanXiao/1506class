@@ -10,10 +10,9 @@
 
 <body>
 <?php
-$_SESSION ['LoggedIn'] = false;
-$_SESSION ['userid'] = 0;
+$_SESSION ['user'] = '';
 
-include_once 'login.php';
+header('Location: login.php');
 ?>
 </body>
 </html>

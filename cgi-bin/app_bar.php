@@ -1,19 +1,28 @@
 <div class="app-bar">
-	<div class="right">
 <?php
 include_once 'datatype.php';
+include_once 'tables.php';
 
-session_start ();
-
-if (! empty ( $_SESSION ['user'] ) ) {
-?>
-		<span><?=$_SESSION['user']->name?></span>
-		<a href="logout.php">Logout</a> 
-<?php
-} else {
-	header("Location: login.php");
+if (empty($_SESSION)) {
+	session_start ();
 }
+
+if (empty ( $_SESSION ['user'] ) ) {
+	header("Location: login.php");
+	exit();
+}
+
+$user = unserialize($_SESSION['user']);
+$classes = get_classes();
+
+$class_name = array_key_exists($user->classId, $classes) ? $classes[$user->classId]->name : "";
 ?>
+	<div class="left">
+		<span><?=$class_name?></span>
+	</div>
+	<div class="right">
+		<span><?=$user->name?></span>
+		<a href="logout.php">Logout</a> 
 	</div>
 </div>
 <hr>

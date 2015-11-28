@@ -6,8 +6,10 @@
 </head>
 <body>
 <?php
-	include_once "app_bar.php";
-	include_once "classes.php";	
+
+include_once "app_bar.php";
+include_once "classes.php";
+
 ?>
     
 

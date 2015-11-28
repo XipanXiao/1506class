@@ -11,7 +11,8 @@ include "connection.php";
 
 if ($_SERVER ["REQUEST_METHOD"] == "POST" && $_POST ["answer"] == "Xiaobai") {
 	$conn = get_connection ();
-	$commands = file_get_contents("create_tables.sql");
+	$commands = file_get_contents("create_tables.sql") . file_get_contents("../data/create_users.sql");
+	
 	$conn->multi_query($commands);
 	
 	$commands_succeeded = 0;

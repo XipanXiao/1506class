@@ -24,14 +24,15 @@ CREATE TABLE classes (
 					  group_id TINYINT, 
                       class_name VARCHAR(32),
                       class_room VARCHAR(16),
+                      class_email VARCHAR(32),
 					  teacher_id INT,
 					  start_date DATETIME
                       );
-INSERT INTO classes(class_name, class_room, group_id, start_date) VALUES ("入行论（周四）", "99343758", 2, "2015-12-3 18:00:00");
-INSERT INTO classes(class_name, class_room, group_id, start_date) VALUES ("入行论（周六）", "99343758", 2, "2015-12-5 18:00:00");
-INSERT INTO classes(class_name, class_room, group_id, start_date) VALUES ("加行（周二）", "99343758", 3, "2015-12-1 18:00:00");
-INSERT INTO classes(class_name, class_room, group_id, start_date) VALUES ("加行（周四）", "99343758", 3, "2015-12-3 18:00:00");
-INSERT INTO classes(class_name, class_room, group_id, start_date) VALUES ("净土（周一）", "99343758", 4, "2015-11-30 18:30:00");
+INSERT INTO classes(class_name, class_room, class_email, group_id, start_date) VALUES ("入行论（周四）", "99343758", "", 2, "2015-12-3 18:00:00");
+INSERT INTO classes(class_name, class_room, class_email, group_id, start_date) VALUES ("入行论（周六）", "99343758", "", 2, "2015-12-5 18:00:00");
+INSERT INTO classes(class_name, class_room, class_email, group_id, start_date) VALUES ("加行（周二）", "99343758", "", 3, "2015-12-1 18:00:00");
+INSERT INTO classes(class_name, class_room, class_email, group_id, start_date) VALUES ("加行（周四）", "99343758", "1506jiaxing@googlegroups.com", 3, "2015-12-3 18:00:00");
+INSERT INTO classes(class_name, class_room, class_email, group_id, start_date) VALUES ("净土（周一）", "99343758", "", 4, "2015-11-30 18:30:00");
 
 CREATE TABLE courses (
                       id TINYINT NOT NULL AUTO_INCREMENT PRIMARY KEY,

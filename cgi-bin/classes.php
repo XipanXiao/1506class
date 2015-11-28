@@ -3,9 +3,7 @@
 	include_once 'connection.php';
 	include_once 'tables.php';
 	
-	$medoo = get_medoo();
-	
-	$classes = get_classes($medoo);
+	$classes = get_classes();
 	
 	foreach ($classes as $classInfo) {
 ?>

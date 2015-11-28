@@ -1,7 +1,12 @@
 <?php
 include_once 'datatype.php';
+include_once 'connection.php';
 
-function get_classes($medoo) {
+$medoo = get_medoo();
+
+function get_classes() {
+	global $medoo;
+	
 	$classes = array();
 	$result = $medoo->select('classes', '*');
 
@@ -18,7 +23,9 @@ function get_classes($medoo) {
 	return $classes;
 }
 
-function get_courses($medoo) {
+function get_courses() {
+	global $medoo;
+
 	$result = $medoo->select('courses', '*');
 	$length = sizeof($result);
 
@@ -30,24 +37,9 @@ function get_courses($medoo) {
 	return $courses;
 }
 
-function get_action_types($medoo) {
-	$result = $medoo->select('action_types', '*');
-	$length = sizeof($result);
+function get_user($email) {
+	global $medoo;
 
-	$types = array();
-	foreach ($result as $row) {
-		$action_type = new ActionType();
-		$action_type->name = $row['action_type'];
-		echo $action_type->name . "<BR>";
-		$action_type->value_type = $row['value_type'];
-
-		$types[$row['id']] = $action_type;
-	}
-	
-	return $types;
-}
-
-function get_user($medoo, $email) {
 	$where = $email == null ? null : ['email' => $email];
 	$result = $medoo->select('users', '*', $where);
 	

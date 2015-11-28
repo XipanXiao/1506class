@@ -9,7 +9,10 @@
 <?php
 include_once "connection.php";
 include_once "tables.php";
-include_once "app_bar.php";
+
+if (empty($_SESSION)) {
+	session_start ();
+}
 
 if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['password'] )) {
 	$conn = get_medoo ();
@@ -18,8 +21,7 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['password'] )) {
 	$users = get_user($conn, $_POST['email']);
 	
 	if (sizeof($users) > 0) {
-		$_SESSION['user'] = current($users);
-		
+		$_SESSION['user'] = serialize(current($users));
 		header("Location: ./index.php");
 		exit();
 	} else {
