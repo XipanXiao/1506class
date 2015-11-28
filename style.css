@@ -73,7 +73,8 @@ a.app-bar-link {
 
 .task_name {
 	background-color: gray;
-	color: white;	
+	color: white;
+	height: 24px;	
 }
 
 .count-input {
@@ -86,4 +87,8 @@ input {
 
 input[type="button"]:enabled {
     color: blue;
+}
+
+.hidden {
+	display: none;
 }

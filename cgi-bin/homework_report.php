@@ -6,8 +6,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["task_id"] )) {
 	$student_id = $_POST["student_id"];
 	$task_id = $_POST["task_id"];
 	report_task($student_id, $task_id, $_POST["count"]);
-	
-	echo "{'total':". task_sum($student_id, $task_id) ."}";	
+	echo sprintf("{\"total\": %d}", task_sum($student_id, $task_id));
 	exit();
 }
 ?>
@@ -39,27 +38,25 @@ $courses = get_courses();
 		$task_id = $task["id"];
 		$input_id = "count_". $task_id;
 ?>
-		<div>
+		<div class="padded-element">
 			<div class="task_name"><?=$task['task_name']?></div>
 <?php
 			$total = task_sum($user->id, $task_id);
 			$last_record = get_last_task_record($user->id, $task_id);
-			if (empty($total)) {
-?>
-				<div class="padded-element no-record">暂时没有学修记录。</div>	
-<?php
-			} else {
-?>
-				<div>累计报数：<?=$total?></div>
-				<div>上次报数：<?=$last_record["count"]?></div>
-				<div>（<?=$last_record["ts"]?>）</div>
-<?php
+			if (empty($last_record)) {
+				$last_record = array("count" => 0, "ts" => "");
 			}
-?>
-			<div class="padded-element">
-				<input class="count-input" type="number" name="count" id="<?=$input_id?>" required>
-				<input type="button" value="report" task-id="<?=$task_id?>">
-			</div>			
+?>			
+			<div class="no-record <?=$total ? 'hidden' : ''?>">暂时没有学修记录。</div>
+			<div class="record <?=$total ? '' : 'hidden'?>">	
+				<div>累计报数：<span class="total"><?=$total?></span></div>
+				<div>上次报数：<span class="last"><?=$last_record["count"]?></span></div>
+				<div class="ts">（<?=$last_record["ts"]?>）</div>
+			</div>
+
+			<input class="count-input" type="number" name="count" id="<?=$input_id?>" required>
+			<input type="button" value="报数" task-id="<?=$task_id?>">
+			<div class="hidden error"></div>
 		</div>
 <?php
 	}
@@ -100,16 +97,29 @@ $courses = get_courses();
 
 <script type="text/javascript">
 	$( "[task-id]" ).click(function(event) {
-	  var task_id = event.target.getAttribute("task-id");
-	  
-	  var count = $("#count_" + task_id).val();
+		var button = $(event.target);
+	  	var task_id = button.attr("task-id");
+	  	var count = button.siblings("input[type='number']").val();
+
 	  var student_id = <?=$user->id?>;
-	  jQuery.post("", {"student_id": student_id, "task_id": task_id, "count": count},
-		function(response, status) {
-			if (response.error) {
-			} else {
-			}
-		}, "json");
+	  $.ajax({type: "POST", url: "", dataType: "json",
+			  data: {"student_id": student_id, "task_id": task_id, "count": count},
+			  success: function(response, status) {
+				if (response.error) {
+					button.siblings(".error").text(response.error).removeClass("hidden");
+				} else {
+					button.siblings(".no-record").addClass("hidden");
+
+					var record = button.siblings(".record");
+					record.removeClass("hidden");
+					record.find(".total").text(response.total);
+					record.find(".last").text(count);
+					record.find(".ts").text("（刚才）");
+				}
+			 },
+			 error: function(jqXHR, status, errorThrown) {
+				button.siblings(".error").text(errorThrown).removeClass("hidden");
+			 }});
 	});
 </script>
 
