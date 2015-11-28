@@ -34,34 +34,44 @@ INSERT INTO classes(class_name, class_room, class_email, group_id, start_date) V
 INSERT INTO classes(class_name, class_room, class_email, group_id, start_date) VALUES ("加行（周四）", "99343758", "1506jiaxing@googlegroups.com", 3, "2015-12-3 18:00:00");
 INSERT INTO classes(class_name, class_room, class_email, group_id, start_date) VALUES ("净土（周一）", "99343758", "", 4, "2015-11-30 18:30:00");
 
+CREATE TABLE course_groups(
+      id TINYINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+      group_name VARCHAR(64),
+      url VARCHAR(512)
+);
+INSERT INTO course_groups(group_name, url) VALUES("前行广释", "http://www.zhibeifw.com/cmsc/list.php?fid=70");
+INSERT INTO course_groups(group_name, url) VALUES("入行论", "http://www.zhibeifw.com/cmsc/list.php?fid=77");
+
 CREATE TABLE courses (
                       id TINYINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                       group_id TINYINT,
-                      course_name VARCHAR(64)
+                      course_name VARCHAR(64),
+                      video_url VARCHAR(512),
+                      text_url VARCHAR(512)
                       );
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行之重要性");
-INSERT INTO courses(group_id, course_name) VALUES (3, "《上师瑜伽速赐加持》讲记");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第1课");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第2课");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第3课");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第4课");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第5课");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第6课");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第7课");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第8课");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第9课");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第10课");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第11课");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第12课");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第13课");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第14课");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第15课");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第16课");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第17课");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第18课");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第19课");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第20课");
-INSERT INTO courses(group_id, course_name) VALUES (3, "前行广释第21课");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行之重要性", "http://www.zhibeifw.com/sskc/sskcmv.php?fid=756&id=770", "http://www.zhibeifw.com/down/videodymqx/qxzzyx.doc");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "《上师瑜伽速赐加持》讲记", "http://www.zhibeifw.com/sskc/sskcmv.php?fid=132&id=725", "http://www.zhibeifw.com/down/doc/201101110003.doc");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第1课", "http://www.zhibeifw.com/sskc/sskcmv.php?fid=756&id=957", "http://www.zhibeifw.com/down/videodymqx/dymqxgs001.doc");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第2课", "http://www.zhibeifw.com/sskc/sskcmv.php?fid=756&id=2", "http://www.zhibeifw.com/down/videodymqx/dymqxgs002.doc");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第3课", "http://www.zhibeifw.com/sskc/sskcmv.php?fid=114&id=3", "http://www.zhibeifw.com/down/videodymqx/dymqxgs003.doc");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第4课", "http://www.zhibeifw.com/sskc/sskcmv.php?fid=114&id=4", "http://www.zhibeifw.com/down/videodymqx/dymqxgs004.doc");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第5课", "http://www.zhibeifw.com/sskc/sskcmv.php?fid=114&id=5", "http://www.zhibeifw.com/down/videodymqx/dymqxgs005.doc");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第6课", "http://www.zhibeifw.com/sskc/sskcmv.php?fid=114&id=6", "http://www.zhibeifw.com/down/videodymqx/dymqxgs006.doc");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第7课", "http://www.zhibeifw.com/sskc/sskcmv.php?fid=114&id=7", "http://www.zhibeifw.com/down/videodymqx/dymqxgs007.doc");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第8课", "", "");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第9课", "", "");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第10课", "", "");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第11课", "", "");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第12课", "", "");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第13课", "", "");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第14课", "", "");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第15课", "", "");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第16课", "", "");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第17课", "", "");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第18课", "", "");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第19课", "", "");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第20课", "", "");
+INSERT INTO courses(group_id, course_name, video_url, text_url) VALUES (1, "前行广释第21课", "", "");
 
 CREATE TABLE users(
 			      id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -87,34 +97,35 @@ CREATE TABLE schedules (
 					  dt DATETIME,
 					  class_id TINYINT,
 					  course_id TINYINT,
-					  open_user_id INT,
-					  review_user_id INT
+					  open INT,
+					  review INT,
+					  take_note INT
                       );
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2015-12-03 18:00:00", 4, 1, 2, 0);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2015-12-10 18:00:00", 4, 2, 9, 5);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2015-12-17 18:00:00", 4, 3, 3, 7);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2015-12-24 18:00:00", 4, 0, 0, 0);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2015-12-31 18:00:00", 4, 4, 10, 1);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2016-01-07 18:00:00", 4, 5, 5, 19);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2016-01-14 18:00:00", 4, 6, 7, 6);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2016-01-21 18:00:00", 4, 7, 1, 15);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2016-01-28 18:00:00", 4, 8, 19, 11);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2016-02-04 18:00:00", 4, 9, 6, 18);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2016-02-11 18:00:00", 4, 0, 15, 8);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2016-02-18 18:00:00", 4, 10, 11, 16);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2016-02-25 18:00:00", 4, 11, 18, 13);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2016-03-03 18:00:00", 4, 12, 8, 17);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2016-03-10 18:00:00", 4, 13, 16, 12);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2016-03-17 18:00:00", 4, 14, 13, 9);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2016-03-24 18:00:00", 4, 15, 17, 14);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2016-03-31 18:00:00", 4, 16, 12, 10);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2016-04-07 18:00:00", 4, 17, 9, 2);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2016-04-14 18:00:00", 4, 18, 14, 7);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2016-04-21 18:00:00", 4, 19, 10, 3);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2016-04-28 18:00:00", 4, 20, 2, 19);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2016-05-05 18:00:00", 4, 21, 7, 5);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2016-05-12 18:00:00", 4, 22, 3, 15);
-INSERT INTO schedules(dt, class_id, course_id, open_user_id, review_user_id) VALUES ("2016-05-19 18:00:00", 4, 23, 19, 1);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-03 18:00:00", 4, 1, 2, 0);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-10 18:00:00", 4, 2, 9, 5);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-17 18:00:00", 4, 3, 3, 7);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-24 18:00:00", 4, 0, 0, 0);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-31 18:00:00", 4, 4, 10, 1);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-01-07 18:00:00", 4, 5, 5, 19);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-01-14 18:00:00", 4, 6, 7, 6);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-01-21 18:00:00", 4, 7, 1, 15);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-01-28 18:00:00", 4, 8, 19, 11);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-02-04 18:00:00", 4, 9, 6, 18);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-02-11 18:00:00", 4, 0, 15, 8);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-02-18 18:00:00", 4, 10, 11, 16);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-02-25 18:00:00", 4, 11, 18, 13);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-03-03 18:00:00", 4, 12, 8, 17);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-03-10 18:00:00", 4, 13, 16, 12);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-03-17 18:00:00", 4, 14, 13, 9);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-03-24 18:00:00", 4, 15, 17, 14);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-03-31 18:00:00", 4, 16, 12, 10);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-04-07 18:00:00", 4, 17, 9, 2);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-04-14 18:00:00", 4, 18, 14, 7);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-04-21 18:00:00", 4, 19, 10, 3);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-04-28 18:00:00", 4, 20, 2, 19);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-05-05 18:00:00", 4, 21, 7, 5);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-05-12 18:00:00", 4, 22, 3, 15);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-05-19 18:00:00", 4, 23, 19, 1);
 
 CREATE TABLE task_records (
                  student_id INT not null,
@@ -125,8 +136,9 @@ CREATE TABLE task_records (
 CREATE TABLE schedule_records (
                  student_id INT not null,
                  schedule_id INT,
+                 attended BOOLEAN,
                  video BOOLEAN, 
                  text BOOLEAN, 
-				 exercise BOOLEAN,
+				 reading BOOLEAN,
                  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                  );

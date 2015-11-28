@@ -72,6 +72,11 @@ function task_sum($user_id, $task_id) {
 	return current(current($medoo->query($sql)->fetchAll()));
 }
 
+function get_tasks($group_id) {
+	global $medoo;
+	return $medoo->select("group_tasks", ["id", "task_name"], ["group_id" => $group_id]);
+}
+
 function report_task($user_id, $task_id, $count) {
 	global $medoo;
 	

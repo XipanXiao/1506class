@@ -19,7 +19,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["task_id"] )) {
 </script>
 </head>
 
-<body class="wide-body">
+<body class="wide-body" ng-app="AppModule">
 
 <?php
 include_once "connection.php";
@@ -33,6 +33,7 @@ $courses = get_courses();
 
 ?>
 <div class="left">
+<tasks ng-controller="TasksController"></tasks>
 <?php
 	foreach ($tasks as $task) {
 		$task_id = $task["id"];
@@ -70,7 +71,7 @@ $courses = get_courses();
 			<div class="css-table-cell"><strong>出席</strong></div>
 			<div class="css-table-cell"><strong>听传承</strong></div>
 			<div class="css-table-cell"><strong>读法本</strong></div>
-			<div class="css-table-cell"><strong>观修</strong></div>
+			<div class="css-table-cell"><strong>念诵</strong></div>
 		</div>
 <?php
 	$week = 0;
@@ -122,6 +123,11 @@ $courses = get_courses();
 			 }});
 	});
 </script>
+
+<script type="text/javascript" src="../js/angular.js"></script>
+<script type="text/javascript" src="../js/services.js"></script>
+<script type="text/javascript" src="../js/tasks/tasks.js"></script>
+<script type="text/javascript" src="../js/app/app.js"></script>
 
 </body>
 
