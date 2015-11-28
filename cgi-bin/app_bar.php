@@ -22,7 +22,7 @@ $class_name = array_key_exists($user->classId, $classes) ? $classes[$user->class
 	</div>
 	<div class="right">
 		<span><?=$user->name?></span>
-		<a href="logout.php">Logout</a> 
+		<a class="app-bar-link" href="logout.php">Logout</a> 
 	</div>
 </div>
 <hr>

@@ -65,6 +65,7 @@ class User {
 
 class ClassInfo {
 	public $id;
+	public $groupId;
 	public $name;
 	public $teacherId;
 	public $startDate;

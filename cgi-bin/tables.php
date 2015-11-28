@@ -13,6 +13,7 @@ function get_classes() {
 	foreach ($result as $clazz) {
 		$info = new ClassInfo();
 		$info->id = $clazz['id'];
+		$info->groupId = $clazz['group_id'];
 		$info->name = $clazz['class_name'];
 		$info->teacherId = $clazz['teacher_id'];
 		$info->startDate = $clazz['start_date'];
@@ -50,5 +51,33 @@ function get_user($email) {
 	}
 	
 	return $users;
+}
+
+function get_last_task_record($user_id, $task_id) {
+	global $medoo;
+	
+	$sql = sprintf("SELECT count, ts FROM task_records WHERE 
+		student_id=%d AND task_id=%d ORDER BY ts DESC LIMIT 1;",
+		$user_id, $task_id);
+	$result = $medoo->query($sql)->fetchAll();
+	
+	return empty($result) ? null : current($result); 
+}
+
+function task_sum($user_id, $task_id) {
+	global $medoo;
+	
+	$sql = sprintf("SELECT sum(count) FROM task_records WHERE student_id=%d AND task_id=%d;",
+		$user_id, $task_id);
+	return current(current($medoo->query($sql)->fetchAll()));
+}
+
+function report_task($user_id, $task_id, $count) {
+	global $medoo;
+	
+	$medoo->insert("task_records", [
+		"student_id" => $user_id, 
+		"task_id" => $task_id, 
+		"count" => $count]);
 }
 ?>

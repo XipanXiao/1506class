@@ -1,35 +1,58 @@
-body input {
+body {
     font-family: arial,sans-serif;
-    font-size: 20px;
+    font-size: 16px;
 }
 
 body,
 .center {
   margin-left: auto;
   margin-right: auto;
-  width: 800px;
+  width: 600px;
+}
+
+body.wide-body {
+	width: 800px;
 }
 
 .padded-element {
-    padding: 16px;
+    padding: 8px;
 }
 
 .app-bar {
-	height: 28px;
+	background-color: #860200;
+	color: white;
+	height: 40px;
 	width: 100%;
+	font-size: 80%;
+}
+
+a.app-bar-link {
+	color: white;
 }
 
 .css-table {
 	display: table;
+	font-size: 90%;
+}
+
+.css-table.odd-even > div:nth-child(odd) {
+	background-color: #CCC;
 }
 
 .css-table-row {
 	display: table-row;
+	padding: 4px 0;
+}
+
+.css-table > .header {
+	background-color: #888 !important;
+	color: white;
+	height: 40px;
 }
 
 .css-table-cell {
 	display: table-cell;
-	padding: 0 8px;
+	padding: 4px 8px;
 }
 
 .left {
@@ -46,4 +69,21 @@ body,
 
 .left-line {
 	border-left: 1px solid;	
+}
+
+.task_name {
+	background-color: gray;
+	color: white;	
+}
+
+.count-input {
+	width: 80px;
+}
+
+input {
+	font-size: 80%;	
+}
+
+input[type="button"]:enabled {
+    color: blue;
 }
