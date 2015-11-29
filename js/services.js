@@ -14,8 +14,18 @@ function get_classes($http) {
 	return $http.get("services.php?rid=classes");
 }
 
-function report_task($http, task_id, count) {
-	return $http.post("services.php?rid=tasks", {"task_id": task_id, "count": count});
+function http_form_post($http, data) {
+	return $http({
+	    method: "POST",
+	    url: "services.php",
+	    data: data,
+	    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+	});
+}
+
+function report_task($http, $httpParamSerializerJQLike, task_id, count) {
+	var data = {"rid": "tasks", "task_id": task_id, "count": count};
+	return http_form_post($http, $httpParamSerializerJQLike(data));
 }
 
 function get_group_tasks($http) {

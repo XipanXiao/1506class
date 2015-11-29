@@ -11,7 +11,7 @@
 		</div>
 	
 		<input class="count-input" type="number" name="count" id="count_{{task.id}}" required>
-		<input type="button" value="报数" ng-click="reportTask(task.id)">
+		<input type="button" value="报数" ng-click="reportTask(task)">
 		<div ng-if="error != null">{{error}}</div>
 	</div>
 </div>
