@@ -8,10 +8,9 @@ include_once "tables.php";
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css" href="../style.css"></link>
 <title>学修记录</title>
-</script>
 </head>
 
-<body class="wide-body" ng-app="AppModule">
+<body class="wide-body">
 
 <?php
 include_once "connection.php";
@@ -58,9 +57,7 @@ $courses = get_courses();
 </div>
 
 <script type="text/javascript" src="../js/angular.js"></script>
-<script type="text/javascript" src="../js/services.js"></script>
-<script type="text/javascript" src="../js/tasks/tasks.js"></script>
-<script type="text/javascript" src="../js/app/app.js"></script>
+<script data-main="../js/homework_app.js" src="../js/require.js"></script>
 
 </body>
 
