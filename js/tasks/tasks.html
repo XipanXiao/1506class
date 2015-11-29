@@ -1,10 +1,10 @@
 <div ng-repeat="task in tasks">
 	<div class="padded-element">
-		<div class="task_name">{{task.task_name}}</div>
-		<div ng-switch="task.lastRecord.total">
-			<div ng-switch-when="null">暂时没有学修记录。</div>
+		<div class="task_name">{{task.name}}</div>
+		<div ng-switch="task.lastRecord.sum">
+			<div ng-switch-when="0">暂时没有学修记录。</div>
 			<div ng-switch-default>	
-				<div>累计报数：{{task.lastRecord.total}}</div>
+				<div>累计报数：{{task.lastRecord.sum}}</div>
 				<div>上次报数：{{task.lastRecord.count}}</div>
 				<div>（{{task.lastRecord.ts}}）</div>
 			</div>

@@ -13,10 +13,10 @@ function get_classes() {
 	foreach ($result as $clazz) {
 		$info = new ClassInfo();
 		$info->id = $clazz['id'];
-		$info->groupId = $clazz['group_id'];
-		$info->name = $clazz['class_name'];
+		$info->name = $clazz['name'];
 		$info->teacherId = $clazz['teacher_id'];
 		$info->startDate = $clazz['start_date'];
+		$info->endDate = $clazz['end_date'];
 		
 		$classes[$info->id] = $info;
 	}
@@ -24,26 +24,53 @@ function get_classes() {
 	return $classes;
 }
 
-function get_courses() {
+function get_courses($class_id) {
 	global $medoo;
 
-	$result = $medoo->select('courses', '*');
-	$length = sizeof($result);
-
-	$courses = array();
-	foreach ($result as $row) {
-		$courses[$row['id']] = $row['course_name'];
+	$sql = sprintf("SELECT * FROM courses where (course_group_id >> 16) = %d", $class_id >> 16);
+	$result = $medoo->query($sql)->fetchAll();
+	
+	if (empty($result)) {
+		return $result;
 	}
 	
+	$courses = array();
+	foreach ($result as $course) {
+		$courses[$course["id"]] = $course;
+	}
+	
+	return $courses;
+}
+
+function get_class_group_id($class_id) {
+	global $medoo;
+
+	$result = $medoo->select('classes', ['group_id'], ['id' => $class_id, 'LIMIT' => 1]);
+	return empty($result) ? 0 : current($result)['group_id'];
+}
+
+function get_class_courses($class_group_id) {
+	global $medoo;
+
+	$sql = sprintf("SELECT * FROM courses, class_courses WHERE
+		courses.group_id = class_courses.course_group_id AND
+		class_courses.class_group_id = %d;", $class_group_id);
+
+	$courses = $medoo->query($sql)->fetchAll();
+
 	return $courses;
 }
 
 function get_user($email) {
 	global $medoo;
 
-	$where = $email == null ? null : ['email' => $email];
-	$result = $medoo->select('users', '*', $where);
-	
+	$result = null;
+	if (empty($email)) {
+		$result = $medoo->select("users", "*");
+	} else {
+		$result = $medoo->select('users', '*', ["email" => $email]);
+	}
+
 	$users = array();
 	foreach ($result as $row) {
 		$user = new User($row);
@@ -69,12 +96,15 @@ function task_sum($user_id, $task_id) {
 	
 	$sql = sprintf("SELECT sum(count) FROM task_records WHERE student_id=%d AND task_id=%d;",
 		$user_id, $task_id);
-	return current(current($medoo->query($sql)->fetchAll()));
+	$sum = current(current($medoo->query($sql)->fetchAll()));
+	return $sum == null ? 0 : $sum;
 }
 
-function get_tasks($group_id) {
+function get_tasks($class_id) {
 	global $medoo;
-	return $medoo->select("group_tasks", ["id", "task_name"], ["group_id" => $group_id]);
+
+ 	$sql = sprintf("SELECT * FROM tasks WHERE (id >> 16) = %d;", $class_id >> 16);
+ 	return $medoo->query($sql)->fetchAll();
 }
 
 function report_task($user_id, $task_id, $count) {

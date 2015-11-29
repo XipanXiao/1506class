@@ -15,10 +15,8 @@ if (empty($_SESSION)) {
 }
 
 if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['password'] )) {
-	$conn = get_medoo ();
-	
 	$password = md5 ( $_POST ['password'] );	
-	$users = get_user($conn, $_POST['email']);
+	$users = get_user($_POST['email']);
 	
 	if (sizeof($users) > 0) {
 		$_SESSION['user'] = serialize(current($users));

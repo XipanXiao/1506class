@@ -36,6 +36,22 @@ define(function() {
 		
 			get_last_task_record: function(task_id) {
 				return $http.get("services.php?rid=tasks&pos=last&task_id=" + task_id);
+			},
+			
+			get_schedules: function(class_id) {
+				if (!class_id) {
+					class_id = '';
+				}
+				
+				return $http.get("services.php?rid=schedules&class_id=" + class_id);
+			},
+
+			get_courses: function(group_id) {
+				if (!group_id) {
+					group_id = '';
+				}
+				
+				return $http.get("services.php?rid=courses&group_id=" + group_id);
 			}
 		};
 	});

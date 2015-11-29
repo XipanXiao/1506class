@@ -65,10 +65,10 @@ class User {
 
 class ClassInfo {
 	public $id;
-	public $groupId;
 	public $name;
 	public $teacherId;
 	public $startDate;
+	public $endDate;
 }
 
 class ActionType {

@@ -21,7 +21,7 @@ define(['services'], function() {
 					rpc.report_task(task_id, count)
 						.then(function (response) {
 						task.lastRecord = {
-							total: response.data.total, 
+							sum: response.data.sum, 
 							count: count, 
 							ts: "Just now"};
 					});
