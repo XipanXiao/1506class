@@ -6,6 +6,6 @@ angular.module('ClassesModule', [])
 })
 .directive('classes', function() {
   return {
-    templateUrl: '../js/classes/classes.html'
+    templateUrl: 'js/classes/classes.html'
   };
 });

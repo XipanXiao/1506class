@@ -37,7 +37,7 @@ INSERT INTO classes(id, name, class_room, email, start_date, end_date) VALUES ((
 INSERT INTO classes(id, name, class_room, email, start_date, end_date) VALUES ((2 << 16) | 2, "入行论（周六）", "99343758", "", "2015-12-5 18:00:00", "2019-12-3 18:00:00");
 INSERT INTO classes(id, name, class_room, email, start_date, end_date) VALUES ((3 << 16) | 1, "加行（周二）", "99343758", "", "2015-12-1 18:00:00", "2019-12-3 18:00:00");
 INSERT INTO classes(id, name, class_room, email, start_date, end_date) VALUES ((3 << 16) | 2, "加行（周四）", "99343758", "1506jiaxing@googlegroups.com", "2015-12-3 18:00:00", "2019-12-3 18:00:00");
-INSERT INTO classes(id, name, class_room, email, start_date, end_date) VALUES ((3 << 16) | 3, "加行（周六）", "99343758", "1506jiaxing@googlegroups.com", "2015-12-3 18:00:00", "2019-12-3 18:00:00");
+INSERT INTO classes(id, name, class_room, email, start_date, end_date) VALUES ((3 << 16) | 3, "加行（周六）", "99343758", "1506zhangfan@googlegroups.com", "2015-12-3 18:00:00", "2019-12-3 18:00:00");
 INSERT INTO classes(id, name, class_room, email, start_date, end_date) VALUES ((4 << 16) | 1, "净土（周一）", "99343758", "", "2015-11-30 18:30:00", "2019-12-3 18:00:00");
 
 -- id = (group_id << 16) | course_group_id)

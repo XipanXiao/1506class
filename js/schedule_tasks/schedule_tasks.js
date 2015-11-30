@@ -17,10 +17,10 @@ define(['services'], function() {
 				});
 			});
 		})
-		.directive('schedules',
+		.directive('scheduleTasks',
 				function() {
 					return {
-						templateUrl : '../js/schedule_tasks/schedule_tasks.html'
+						templateUrl : 'js/schedule_tasks/schedule_tasks.html'
 					};
 				});
 });

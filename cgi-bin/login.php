@@ -16,7 +16,7 @@ if (empty($_SESSION)) {
 
 if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['password'] )) {
 	$password = md5 ( $_POST ['password'] );	
-	$users = get_user($_POST['email']);
+	$users = get_users($_POST['email']);
 	
 	if (sizeof($users) > 0) {
 		$_SESSION['user'] = serialize(current($users));

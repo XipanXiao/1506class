@@ -30,7 +30,7 @@ define(['services'], function() {
 		})
 		.directive('tasks', function() {
 		  return {
-		    templateUrl: '../js/tasks/tasks.html'
+		    templateUrl: 'js/tasks/tasks.html'
 		  };
 		});
 });

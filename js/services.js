@@ -9,10 +9,12 @@ define(function() {
 		};
 	}
 
+	var serviceUrl = "cgi-bin/services.php?";
+	
 	function http_form_post($http, data) {
 		return $http({
 		    method: "POST",
-		    url: "services.php",
+		    url: serviceUrl,
 		    data: data,
 		    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
 		});
@@ -21,8 +23,12 @@ define(function() {
 	return angular.module('ServicesModule', []).factory('rpc', function($http, 
 			$httpParamSerializerJQLike) {
 		return {
-			get_classes: function() {
-				return $http.get("services.php?rid=classes");
+			get_classes: function(class_id) {
+				if (!class_id) {
+					class_id = '';
+				}
+				
+				return $http.get(serviceUrl + "rid=classes&class_id=" + class_id);
 			},
 		
 			report_task: function(task_id, count) {
@@ -31,11 +37,11 @@ define(function() {
 			},
 		
 			get_group_tasks: function() {
-				return $http.get("services.php?rid=tasks");
+				return $http.get(serviceUrl + "rid=tasks");
 			},
 		
 			get_last_task_record: function(task_id) {
-				return $http.get("services.php?rid=tasks&pos=last&task_id=" + task_id);
+				return $http.get(serviceUrl + "rid=tasks&pos=last&task_id=" + task_id);
 			},
 			
 			get_schedules: function(class_id) {
@@ -43,7 +49,7 @@ define(function() {
 					class_id = '';
 				}
 				
-				return $http.get("services.php?rid=schedules&class_id=" + class_id);
+				return $http.get(serviceUrl + "rid=schedules&class_id=" + class_id);
 			},
 
 			get_courses: function(group_id) {
@@ -51,7 +57,15 @@ define(function() {
 					group_id = '';
 				}
 				
-				return $http.get("services.php?rid=courses&group_id=" + group_id);
+				return $http.get(serviceUrl + "rid=courses&group_id=" + group_id);
+			},
+			
+			get_users: function(email) {
+				if (!email) {
+					email = '';
+				}
+				
+				return $http.get(serviceUrl + "rid=users&email=" + email);
 			}
 		};
 	});

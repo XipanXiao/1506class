@@ -4,11 +4,11 @@ include_once 'connection.php';
 
 $medoo = get_medoo();
 
-function get_classes() {
+function get_classes($class_id) {
 	global $medoo;
 	
 	$classes = array();
-	$result = $medoo->select('classes', '*');
+	$result = $medoo->select('classes', '*', $class_id ? ["id" => $class_id] : null);
 
 	foreach ($result as $clazz) {
 		$info = new ClassInfo();
@@ -61,7 +61,7 @@ function get_class_courses($class_group_id) {
 	return $courses;
 }
 
-function get_user($email) {
+function get_users($email) {
 	global $medoo;
 
 	$result = null;

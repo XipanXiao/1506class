@@ -5,6 +5,11 @@ if (empty($_SESSION)) {
 	session_start ();
 }
 
+if (!isset($_SESSION["user"])) {
+	echo '{"error": "login needed"}';
+	exit();
+}
+
 $user = unserialize($_SESSION["user"]); 
 $student_id = $user->id;
 $response = null;
@@ -14,7 +19,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 	$class_id = empty($_GET["class_id"]) ? $user->classId : $_GET["class_id"];
 
 	if ($resource_id == "classes") {
-		$response = get_classes(); 
+		if (empty($_GET["class_id"])) {
+			$response = get_classes(null);
+		} else {
+			$response = get_classes($class_id);
+		}
 	} else if ($resource_id == "tasks") {
 		if (isset($_GET["task_id"]) && isset($_GET["pos"])) {
 			$task_id = $_GET["task_id"];
@@ -35,6 +44,13 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 		$response = $medoo->select("schedules", "*", ["class_id" => $class_id]);
 	} elseif ($resource_id == "courses") {
 		$response = get_courses($class_id);
+	} elseif ($resource_id == "users") {
+		$email = empty($_GET["email"]) ? null : $_GET["email"];
+		if (!$email || $email == $user->email) {
+			$response = $user;
+		} else {
+			$response = get_users($email);
+		}
 	}
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
 	$resource_id = $_POST["rid"];
