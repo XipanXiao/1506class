@@ -5,12 +5,12 @@ if (empty($_SESSION)) {
 	session_start ();
 }
 
-if (!isset($_SESSION["user"])) {
+if (empty($_SESSION["LoggedInUser"])) {
 	echo '{"error": "login needed"}';
 	exit();
 }
 
-$user = unserialize($_SESSION["user"]); 
+$user = unserialize($_SESSION["LoggedInUser"]);
 $student_id = $user->id;
 $response = null;
 
@@ -41,13 +41,14 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 			$response = get_tasks($user->classId);
 		}
 	} elseif ($resource_id == "schedules") {
-		$response = $medoo->select("schedules", "*", ["class_id" => $class_id]);
+		$with_records = isset($_GET["with_records"]) && $_GET["with_records"];
+		$response = get_schedules($user, $with_records);
 	} elseif ($resource_id == "courses") {
 		$response = get_courses($class_id);
 	} elseif ($resource_id == "users") {
 		$email = empty($_GET["email"]) ? null : $_GET["email"];
 		if (!$email || $email == $user->email) {
-			$response = $user;
+			$response = [$user];
 		} else {
 			$response = get_users($email);
 		}
@@ -60,6 +61,10 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 		$count = $_POST["count"];
 		report_task($student_id, $task_id, $count);
 		$response = ["sum" => task_sum($student_id, $task_id)];
+	} elseif ($resource_id == "schedule_tasks") {
+		$schedule_id = $_POST["schedule_id"];
+		$task_name = $_POST["task_name"];
+		report_schedule_task($student_id, $schedule_id, $task_name);
 	}
 }
 

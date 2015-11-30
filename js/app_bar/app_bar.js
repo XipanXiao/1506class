@@ -6,10 +6,7 @@ define(['services'], function() {
 				if (response.data.error == "login needed") {
 					window.location.href = "./login.html";
 				} else {
-					$scope.user = response.data;
-					rpc.get_classes($scope.user.classId).then(function (response) {
-						$scope.className = response.data[$scope.user.classId].name;
-					});
+					$scope.user = response.data[0];
 				}
 			});
 		})

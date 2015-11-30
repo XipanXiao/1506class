@@ -44,12 +44,19 @@ define(function() {
 				return $http.get(serviceUrl + "rid=tasks&pos=last&task_id=" + task_id);
 			},
 			
-			get_schedules: function(class_id) {
+			get_schedules: function(with_records, class_id) {
 				if (!class_id) {
 					class_id = '';
 				}
 				
-				return $http.get(serviceUrl + "rid=schedules&class_id=" + class_id);
+				if (with_records != true) {
+					with_records = false;
+				}
+				
+				var url = "{0}rid=schedules&with_records={1}&class_id={2}"
+					.format(serviceUrl, with_records, class_id);
+
+				return $http.get(url);
 			},
 
 			get_courses: function(group_id) {

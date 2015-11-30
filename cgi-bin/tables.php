@@ -42,25 +42,6 @@ function get_courses($class_id) {
 	return $courses;
 }
 
-function get_class_group_id($class_id) {
-	global $medoo;
-
-	$result = $medoo->select('classes', ['group_id'], ['id' => $class_id, 'LIMIT' => 1]);
-	return empty($result) ? 0 : current($result)['group_id'];
-}
-
-function get_class_courses($class_group_id) {
-	global $medoo;
-
-	$sql = sprintf("SELECT * FROM courses, class_courses WHERE
-		courses.group_id = class_courses.course_group_id AND
-		class_courses.class_group_id = %d;", $class_group_id);
-
-	$courses = $medoo->query($sql)->fetchAll();
-
-	return $courses;
-}
-
 function get_users($email) {
 	global $medoo;
 
@@ -71,10 +52,14 @@ function get_users($email) {
 		$result = $medoo->select('users', '*', ["email" => $email]);
 	}
 
+	$classes = get_classes();
 	$users = array();
-	foreach ($result as $row) {
+	
+	foreach ($result as $index => $row) {
 		$user = new User($row);
-		$users[$user->email] = $user;
+		$user->className = $classes[$user->classId]->name;
+
+		$users[$index] = $user;
 	}
 	
 	return $users;
@@ -114,5 +99,53 @@ function report_task($user_id, $task_id, $count) {
 		"student_id" => $user_id, 
 		"task_id" => $task_id, 
 		"count" => $count]);
+}
+
+function report_schedule_task($user_id, $schedule_id, $task_name) {
+	global $medoo;
+	
+	$medoo->insert("schedule_records", [
+			"student_id" => $user_id,
+			"schedule_id" => $schedule_id,
+			$task_name => $count]);
+}
+
+function get_schedule_records($user_id) {
+	global $medoo;
+
+	$records = $medoo->select("schedule_records", "*", ["student_id" => $user_id]);
+	
+	$result = array();
+	foreach ($records as $record) {
+		$result[$record["schedule_id"]] = $record;
+	}
+	
+	return $result;
+}
+
+
+function get_schedules($user, $with_records) {
+	global $medoo;
+
+	$result = $medoo->select("schedules", "*", ["class_id" => $user->classId]);
+	$courses = get_courses($user->classId);
+	
+	$schedules = array();
+	foreach ($result as $schedule) {
+		$course_id = $schedule["course_id"];
+		$schedule["course_name"] = $course_id == 0 ? "放假" : $courses[$course_id]["course_name"];
+	
+		$schedules[$schedule["id"]] = $schedule;
+	}
+
+	if ($with_records) {
+		$records = get_schedule_records($user->id);
+
+		foreach ($records as $record) {
+			$schedules[$record["schedule_id"]]["record"] = $record;
+		}
+	}
+
+	return $schedules;
 }
 ?>

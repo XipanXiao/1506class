@@ -11,7 +11,7 @@ body,
 }
 
 body.wide-body {
-	width: 860px;
+	width: 830px;
 }
 
 .padded-element {
@@ -44,9 +44,12 @@ a.app-bar-link {
 	padding: 4px 0;
 }
 
-.css-table > .header {
-	background-color: #888 !important;
+.header {
+	background-color: gray !important;
 	color: white;
+}
+
+.css-table > .header {
 	height: 40px;
 }
 
@@ -71,10 +74,8 @@ a.app-bar-link {
 	border-left: 1px solid;	
 }
 
-.task_name {
-	background-color: gray;
-	color: white;
-	height: 24px;	
+.section-header {
+	height: 30px;	
 }
 
 .count-input {
@@ -91,4 +92,12 @@ input[type="button"]:enabled {
 
 .hidden {
 	display: none;
+}
+
+tasks {
+	width: 200px;	
+}
+
+schedule-tasks {
+	width: 630px;
 }

@@ -94,6 +94,7 @@ CREATE TABLE users(
 			      qq VARCHAR(16),
 			      wechat VARCHAR(32),
 			      class_id INT,
+			      future_class_group TINYINT,
 			      mentor_id INT,
 			      response VARCHAR(16),
 			      permission INT,

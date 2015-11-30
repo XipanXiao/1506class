@@ -1,5 +1,6 @@
 <?php
 class User {
+	// Database fields.
 	public $id;
 	public $internalId;
 	public $name;
@@ -17,6 +18,9 @@ class User {
 	public $response;
 	public $permission;
 	public $notes;
+	
+	// Redundant fields.
+	public $className;
 	
 	public function __construct($row) {
 		$this->id = $row["id"];

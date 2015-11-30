@@ -7,17 +7,23 @@
 		<div class="css-table-cell"><strong>听传承</strong></div>
 		<div class="css-table-cell"><strong>读法本</strong></div>
 		<div class="css-table-cell"><strong>念诵</strong></div>
-		<div class="css-table-cell"><strong>观修</strong></div>
 	</div>
 
 	<div ng-repeat="schedule in schedules" class="css-table-row">
 		<div class="css-table-cell">{{$index + 1}}</div>
 		<div class="css-table-cell">{{schedule.dt}}</div>
 		<div class="css-table-cell">{{schedule.course_name}}</div>
-		<input class="css-table-cell" type="checkbox" ng-model="schedule.attended">
-		<div class="css-table-cell"><input type="checkbox"></div>
-		<div class="css-table-cell"><input type="checkbox"></div>
-		<div class="css-table-cell"><input type="checkbox"></div>
-		<div class="css-table-cell"><input type="checkbox"></div>
+		<div class="css-table-cell">
+			<input type="checkbox" ng-model="schedule.record.attended" ng-click="reportTask(0)">
+		</div>
+		<div class="css-table-cell">
+			<input type="checkbox" ng-model="schedule.record.video" ng-click="reportTask(1)">
+		</div>
+		<div class="css-table-cell">
+			<input type="checkbox" ng-model="schedule.record.text" ng-click="reportTask(2)">
+		</div>
+		<div class="css-table-cell">
+			<input type="checkbox" ng-model="schedule.record.reading" ng-click="reportTask(3)">
+		</div>
 	</div>
 </div>

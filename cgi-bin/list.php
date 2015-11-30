@@ -18,7 +18,7 @@ include_once 'connection.php';
 include_once 'tables.php';
 function list_students($medoo) {
 	
-	$users = get_user(null);
+	$users = get_users(null);
 
 // 	foreach ($users as $user) {
 // 		echo sprintf("INSERT INTO users(internal_id, name, password, sex, nickname, email, phone, address, 

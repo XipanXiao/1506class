@@ -19,7 +19,7 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['password'] )) {
 	$users = get_users($_POST['email']);
 	
 	if (sizeof($users) > 0) {
-		$_SESSION['user'] = serialize(current($users));
+		$_SESSION['LoggedInUser'] = serialize(current($users));
 		header("Location: ./index.php");
 		exit();
 	} else {
