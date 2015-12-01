@@ -62,9 +62,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 		report_task($student_id, $task_id, $count);
 		$response = ["sum" => task_sum($student_id, $task_id)];
 	} elseif ($resource_id == "schedule_tasks") {
-		$schedule_id = $_POST["schedule_id"];
-		$task_name = $_POST["task_name"];
-		report_schedule_task($student_id, $schedule_id, $task_name);
+		report_schedule_task($student_id, $_POST);
 	}
 }
 

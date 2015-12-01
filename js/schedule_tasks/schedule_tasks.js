@@ -6,8 +6,8 @@ define(['services'], function() {
 				$scope.schedules = response.data;
 			});
 			
-			$scope.reportTask = function (index) {
-				
+			$scope.reportTask = function (schedule) {
+				rpc.report_schedule_task(schedule);
 			};
 		})
 		.directive('scheduleTasks',

@@ -101,13 +101,37 @@ function report_task($user_id, $task_id, $count) {
 		"count" => $count]);
 }
 
-function report_schedule_task($user_id, $schedule_id, $task_name) {
-	global $medoo;
+function convert_schedule_record($source, $string_to_int) {
+	$target = array();
 	
-	$medoo->insert("schedule_records", [
-			"student_id" => $user_id,
-			"schedule_id" => $schedule_id,
-			$task_name => $count]);
+	foreach (["attended", "video", "text", "reading"] as $task) {
+		if (isset($source[$task])) {
+			if ($string_to_int) {
+				$target[$task] = $source[$task] == "true" ? 1 : 0;
+			} else {
+				$target[$task] = $source[$task] == 1 ? true : false;
+			}
+		}
+	}
+	
+	return $target;
+}
+
+function report_schedule_task($user_id, $schedule) {
+	global $medoo;
+		
+	$datas = convert_schedule_record($schedule, true);
+	
+	$where = ["schedule_id" => $schedule["id"], "student_id" => $user_id];
+	$rows = $medoo->update("schedule_records", $datas, $where);
+	
+	if ($rows == 0) {
+		$datas["student_id"] = $user_id;
+		$datas["schedule_id"] = $schedule["id"];
+		$rows = $medoo->insert("schedule_records", $datas, $where);
+	}
+	
+	return $rows;
 }
 
 function get_schedule_records($user_id) {
@@ -123,6 +147,15 @@ function get_schedule_records($user_id) {
 	return $result;
 }
 
+function mixin($target, $source) {
+	foreach ($source as $key => $value) {
+		if ($value != null) {
+			$target[$key] = $value;
+		}
+	}
+	
+	return $target;
+}
 
 function get_schedules($user, $with_records) {
 	global $medoo;
@@ -142,7 +175,9 @@ function get_schedules($user, $with_records) {
 		$records = get_schedule_records($user->id);
 
 		foreach ($records as $record) {
-			$schedules[$record["schedule_id"]]["record"] = $record;
+			$schedule = $schedules[$record["schedule_id"]];
+			$schedules[$record["schedule_id"]] = 
+				mixin($schedule, convert_schedule_record($record, false));
 		}
 	}
 

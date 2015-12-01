@@ -14,16 +14,16 @@
 		<div class="css-table-cell">{{schedule.dt}}</div>
 		<div class="css-table-cell">{{schedule.course_name}}</div>
 		<div class="css-table-cell">
-			<input type="checkbox" ng-model="schedule.record.attended" ng-click="reportTask(0)">
+			<input type="checkbox" ng-model="schedule.attended" ng-click="reportTask(schedule)">
 		</div>
 		<div class="css-table-cell">
-			<input type="checkbox" ng-model="schedule.record.video" ng-click="reportTask(1)">
+			<input type="checkbox" ng-model="schedule.video" ng-click="reportTask(schedule)">
 		</div>
 		<div class="css-table-cell">
-			<input type="checkbox" ng-model="schedule.record.text" ng-click="reportTask(2)">
+			<input type="checkbox" ng-model="schedule.text" ng-click="reportTask(schedule)">
 		</div>
 		<div class="css-table-cell">
-			<input type="checkbox" ng-model="schedule.record.reading" ng-click="reportTask(3)">
+			<input type="checkbox" ng-model="schedule.reading" ng-click="reportTask(schedule)">
 		</div>
 	</div>
 </div>

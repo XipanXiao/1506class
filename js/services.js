@@ -36,6 +36,11 @@ define(function() {
 				return http_form_post($http, $httpParamSerializerJQLike(data));
 			},
 		
+			report_schedule_task: function(schedule) {
+				schedule.rid = "schedule_tasks";
+				return http_form_post($http, $httpParamSerializerJQLike(schedule));
+			},
+		
 			get_group_tasks: function() {
 				return $http.get(serviceUrl + "rid=tasks");
 			},
