@@ -25,15 +25,15 @@ function parseUser($user, $str) {
 		return false;
 	}
 	
-	$user->internalId = $fields [1];
-	$user->name = $fields [2];
-	$user->sex = ($fields [3] == "男");
-	$user->phone = $fields [4];
-	$user->email = $fields [5];
-	$user->address = $fields [8];
+	$user->internalId = $fields [2];
+	$user->name = $fields [3];
+	$user->sex = ($fields [4] == "男");
+	$user->phone = $fields [5];
+	$user->email = $fields [6];
+	$user->address = $fields [9];
 	
 	if ($length > 11) {
-		$user->mentor = $fields [11];
+		//$user->mentor = $fields [11];
 	}
 	
 	$user->permission = $length > 13 ? $fields [13] : 1;
@@ -85,7 +85,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["submit"] )) {
 			<span class="padded-element">Select class:</span> <select
 				name="classId">
 <?php
-	$classes = get_classes($conn);
+	$classes = get_classes(null);
     foreach ($classes as $clazz) {
 ?>
 		<option value="<?=$clazz->id?>"><?=$clazz->name?></option>

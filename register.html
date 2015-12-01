@@ -1,0 +1,46 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="style.css"></link>
+<title>注册</title>
+</head>
+
+<body class="center">
+
+	<h1 class="center">新学员注册</h1>
+
+	<div class="css-table">
+		<form class="register-form" action="cgi-bin/register.php" method="post">
+			<fieldset>
+				<div class="css-table-row">
+					<label class="css-table-cell padded-element" for="name">姓名:</label>
+					<div class="css-table-cell"><input type="text" name="name" id="name"/></div>
+				</div>
+				<div class="css-table-row">
+					<label class="css-table-cell" for="email">Email:</label>
+					<div class="css-table-cell"><input type="email" name="email" id="email"/></div>
+				</div>
+				<div class="css-table-row">
+					<label class="css-table-cell">选择班级种类</label>
+					<class-groups class="css-table-cell" name="class_group" 
+						ng-controller="ClassGroupsController">
+					</class-groups>
+				</div>
+				<div class="css-table-row">
+					<label class="padded-element">选择班级</label>
+					<classes class="css-table-cell" name="class" ng-controller="ClassesController">
+					</classes>
+				</div>
+				<div class="css-table-row">
+					<div class="css-table-cell"><input type="submit" value="注册"/></div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+
+<script type="text/javascript" src="js/angular.js"></script>
+<script data-main="js/register_app.js" src="js/require.js"></script>
+
+</body>
+
+</html>

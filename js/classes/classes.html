@@ -1,5 +1,14 @@
-<div ng-repeat="classInfo in classList">
-	<div>
-		<a href="schedule.php?class_id={{classInfo.id}}">{{classInfo.name}}</a>
+<div ng-switch="listType">
+	<div ng-switch-when="list">
+		<div ng-repeat="classInfo in classes">
+			<div>
+				<a href="schedule.php?class_id={{classInfo.id}}">{{classInfo.name}}</a>
+			</div>
+		</div>
+	</div>
+	<div ng-switch-default="select">
+		<select>
+			<option ng-repeat="classInfo in classes" value="{{classInfo.id}}">{{classInfo.name}}</option>
+		</select>
 	</div>
 </div>

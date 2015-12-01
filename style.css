@@ -1,13 +1,12 @@
 body {
     font-family: arial,sans-serif;
     font-size: 16px;
+	width: 600px;
 }
 
-body,
 .center {
   margin-left: auto;
   margin-right: auto;
-  width: 600px;
 }
 
 body.wide-body {
@@ -86,7 +85,8 @@ input {
 	font-size: 80%;	
 }
 
-input[type="button"]:enabled {
+input[type="button"]:enabled,
+input[type="submit"]:enabled {
     color: blue;
 }
 
@@ -100,4 +100,15 @@ tasks {
 
 schedule-tasks {
 	width: 630px;
+}
+
+.register-form,
+.login-form {
+	width: 400px;
+}
+
+.register-form input.css-table-cell,
+.login-form input.css-table-cell {
+	width: 200px;
+	margin: 4px 0;
 }

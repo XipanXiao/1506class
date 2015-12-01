@@ -98,6 +98,7 @@ CREATE TABLE users(
 			      mentor_id INT,
 			      response VARCHAR(16),
 			      permission INT,
+                  start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			      notes VARCHAR(255));
 
 CREATE TABLE schedules (

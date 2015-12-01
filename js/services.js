@@ -23,6 +23,10 @@ define(function() {
 	return angular.module('ServicesModule', []).factory('rpc', function($http, 
 			$httpParamSerializerJQLike) {
 		return {
+			get_class_groups: function() {
+				return $http.get(serviceUrl + "rid=class_groups");
+			},
+		
 			get_classes: function(class_id) {
 				if (!class_id) {
 					class_id = '';

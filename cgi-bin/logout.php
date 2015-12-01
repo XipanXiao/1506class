@@ -1,18 +1,5 @@
-<html>
-
-<head>
-
-<meta charset="UTF-8">
-
-<link rel="stylesheet" type="text/css" href="../style.css"></link>
-<title>1506</title>
-</head>
-
-<body>
 <?php
-$_SESSION ['user'] = '';
+$_SESSION ['LoggedInUser'] = '';
 
-header('Location: login.php');
+header('Location: ../login.html');
 ?>
-</body>
-</html>

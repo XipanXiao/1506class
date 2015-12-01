@@ -4,6 +4,12 @@ include_once 'connection.php';
 
 $medoo = get_medoo();
 
+function get_class_groups() {
+	global $medoo;
+
+	return $medoo->select('class_groups', '*');
+}
+
 function get_classes($class_id) {
 	global $medoo;
 	
@@ -52,7 +58,7 @@ function get_users($email) {
 		$result = $medoo->select('users', '*', ["email" => $email]);
 	}
 
-	$classes = get_classes();
+	$classes = get_classes(null);
 	$users = array();
 	
 	foreach ($result as $index => $row) {

@@ -5,20 +5,36 @@ if (empty($_SESSION)) {
 	session_start ();
 }
 
+$response = null;
+
 if (empty($_SESSION["LoggedInUser"])) {
-	echo '{"error": "login needed"}';
+	if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
+		$resource_id = $_GET["rid"];
+	
+		if ($resource_id == "class_groups") {
+			$response = get_class_groups();
+		} elseif ($resource_id == "classes") {
+			$response = get_classes(null);
+		}
+	}
+	
+	if (!$response) {
+		echo '{"error": "login needed"}';
+	}
+
 	exit();
 }
 
 $user = unserialize($_SESSION["LoggedInUser"]);
 $student_id = $user->id;
-$response = null;
 
 if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 	$resource_id = $_GET["rid"];
 	$class_id = empty($_GET["class_id"]) ? $user->classId : $_GET["class_id"];
 
-	if ($resource_id == "classes") {
+	if ($resource_id == "class_groups") {
+		$response = get_class_groups();
+	} elseif ($resource_id == "classes") {
 		if (empty($_GET["class_id"])) {
 			$response = get_classes(null);
 		} else {

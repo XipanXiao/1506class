@@ -1,0 +1,35 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="style.css"></link>
+<title>登录</title>
+</head>
+
+<body class="center">
+
+	<h1 class="center">Member Login</h1>
+
+	<p class="center">
+		Thanks for visiting! Please either login below, or <a
+			href="register.html">click here to register</a>.
+	</p>
+
+	<div class="css-table">
+		<form class="login-form" action="cgi-bin/login.php" method="post">
+			<fieldset>
+				<div class="css-table-row">
+					<label class="css-table-cell" for="email">Email:</label>
+					<input class="css-table-cell" type="text" name="email" id="email"/>
+				</div>
+				<div class="css-table-row">
+					<label class="css-table-cell" for="password">Password:</label>
+					<input class="css-table-cell" type="password" name="password" id="password" />
+				</div>
+				<input type="submit" name="login" id="login" value="Login" />
+			</fieldset>
+		</form>
+	</div>
+
+</body>
+
+</html>
