@@ -88,6 +88,7 @@ CREATE TABLE users(
 			      sex BOOLEAN,
 			      nickname VARCHAR(32),
 			      email VARCHAR(32) NOT NULL,
+			      UNIQUE KEY email_idx(email),
 			      phone VARCHAR(16),
 			      address VARCHAR(64),
 			      yy VARCHAR(16),
@@ -105,6 +106,9 @@ CREATE TABLE schedules (
                       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 					  dt DATETIME,
 					  class_id INT,
+				      INDEX class_id_idx(class_id),
+				      FOREIGN KEY (class_id)
+				      	REFERENCES classes(id),
 					  course_id INT,
 					  open INT,
 					  review INT
