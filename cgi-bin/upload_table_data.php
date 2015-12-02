@@ -14,34 +14,50 @@ include_once "tables.php";
 
 $conn = get_medoo ();
 
-function parseUser($user, $str) {
+function parseHead($str) {
+	// 人数61,序号,姓名,性别,联系电话,电子邮箱或QQ号,居住省份/直辖市,市/县/区,选择共修时间,,,,,
+	$fields = explode(",", $str);
+	$head = [];
+	$head[0] = array_search('序号', $fields);
+	$head[1] = array_search('姓名', $fields);
+	$head[2] = array_search('性别', $fields);
+	$head[3] = array_search('联系电话', $fields);
+	$head[4] = array_search('电子邮箱或QQ号', $fields);
+	$head[5] = array_search('居住省份/直辖市', $fields);
+	$head[6] = array_search('市/县/区', $fields);
+	$head[7] = array_search('选择共修时间', $fields);
+	
+	return $head;
+}
+
+function parseUser($user, $head, $str) {
 	echo "Parsing " . $str . "<BR>";
 	$fields = explode ( ",", $str );
 	
-	$length = sizeof ( $fields );
+	$user->internalId = $fields [$head[0]];
+	$user->name = $fields [$head[1]];
+	$user->sex = ($fields [$head[2]] == "男");
+	$user->phone = $fields [$head[3]];
+	$user->email = $fields [$head[4]];
 	
-	if ($length < 8) {
-		echo "Length is " . $length . "<BR>";
-		return false;
+	$tm = $fields [$head[7]];
+	if ($tm == '周日早上') {
+		$user->classId = (2 << 16) | 2;
+	} elseif ($tm == '周四晚上') {
+		$user->classId = (2 << 16) | 1;
+	} elseif ($tm == '周一6:30') {
+		$user->classId = (4 << 16) | 1;
+	} elseif ($tm == '周二晚') {
+		$user->classId = (3 << 16) | 1;
+	} elseif ($tm == '周四晚') {
+		$user->classId = (3 << 16) | 2;
+	} elseif ($tm == '周六下午') {
+		$user->classId = (3 << 16) | 3;
 	}
 	
-	$user->internalId = $fields [2];
-	$user->name = $fields [3];
-	$user->sex = ($fields [4] == "男");
-	$user->phone = $fields [5];
-	$user->email = $fields [6];
-	$user->address = $fields [9];
+	$user->permission = 1;
 	
-	if ($length > 11) {
-		//$user->mentor = $fields [11];
-	}
-	
-	$user->permission = $length > 13 ? $fields [13] : 1;
-	if (! $user->permission || $user->permission == 0) {
-		$user->permission = 1;
-	}
-	
-	return true;
+	return !empty($user->name);
 }
 
 function create_users($conn, $filename, $classId) {
@@ -57,10 +73,10 @@ function create_users($conn, $filename, $classId) {
 	}
 	
 	// Skip the header.
-	fgets ( $handle );
+	$head = parseHead(fgets ( $handle ));
 	
 	while ( ($line = fgets ( $handle )) !== false ) {
-		if (parseUser ( $user, $line ) && $conn->insert("users", $user->toArray())) {
+		if (parseUser ( $user, $head, $line ) && $conn->insert("users", $user->toArray())) {
 			echo "Created student record for " . $user->name . "<BR>";
 		}
 		;
