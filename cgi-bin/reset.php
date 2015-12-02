@@ -7,11 +7,11 @@
 <body>
 
 <?php
-include "connection.php";
+include_once "connection.php";
 
-if ($_SERVER ["REQUEST_METHOD"] == "POST" && $_POST ["answer"] == "Xiaobai") {
+if ($_SERVER ["REQUEST_METHOD"] == "POST" && $_POST ["answer"] == $config->pet) {
 	$conn = get_connection ();
-	$commands = file_get_contents("create_tables.sql") . file_get_contents("../data/create_users.sql");
+	$commands = file_get_contents("create_tables.php") . file_get_contents("../data/create_users.php");
 	
 	$conn->multi_query($commands);
 	

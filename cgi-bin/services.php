@@ -1,10 +1,6 @@
 <?php
 include_once 'tables.php';
 
-if (empty($_SESSION)) {
-	session_start ();
-}
-
 $response = null;
 
 if (empty($_SESSION["LoggedInUser"])) {

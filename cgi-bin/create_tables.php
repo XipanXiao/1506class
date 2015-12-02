@@ -1,3 +1,5 @@
+-- <?php /* This SQL file is named as PHP to avoid accidental web access.
+
 drop database if exists buddcourses;
 CREATE DATABASE buddcourses;
 USE buddcourses;
@@ -30,6 +32,7 @@ CREATE TABLE classes (
                       email VARCHAR(32),
                       class_room VARCHAR(16),
 					  teacher_id INT,
+					  entrance_date DATETIME,
 					  start_date DATETIME,
 					  end_date DATETIME
                       );
@@ -87,7 +90,7 @@ CREATE TABLE users(
 			      password VARCHAR(32),
 			      sex BOOLEAN,
 			      nickname VARCHAR(32),
-			      email VARCHAR(32) NOT NULL,
+			      email VARCHAR(64) NOT NULL,
 			      UNIQUE KEY email_idx(email),
 			      phone VARCHAR(16),
 			      address VARCHAR(64),
@@ -154,3 +157,5 @@ CREATE TABLE schedule_records (
 				 reading BOOLEAN,
                  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                  );
+
+-- */ ?>
