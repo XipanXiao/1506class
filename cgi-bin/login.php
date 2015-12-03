@@ -14,7 +14,7 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['password'] )) {
 		
 //		$page = ($user->permission & 2) ? "admin.html" : "homework_report.html";
 		$page = 'homework_report.html';
-		client_redirect('../'. $page, 2, 'Authenticated successfully, redirecting...');
+		client_redirect('../'. $page, 1, 'Authenticated successfully, redirecting...');
 	} else {
 		echo "<h1>Error</h1>";
 		echo "<p>Sorry, your account could not be found. Please <a href=\"../login.html\">click here to try again</a>.</p>";

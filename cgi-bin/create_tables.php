@@ -116,6 +116,32 @@ CREATE TABLE schedules (
 					  open INT,
 					  review INT
                       );
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-01 19:00:00", (3 << 16) | 1, 1, 2, 0);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-08 19:00:00", (3 << 16) | 1, 2, 9, 5);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-15 19:00:00", (3 << 16) | 1, 3, 3, 7);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-22 19:00:00", (3 << 16) | 1, 0, 0, 0);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-29 19:00:00", (3 << 16) | 1, 4, 10, 1);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-01-05 19:00:00", (3 << 16) | 1, 5, 5, 19);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-01-12 19:00:00", (3 << 16) | 1, 6, 7, 6);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-01-19 19:00:00", (3 << 16) | 1, 7, 1, 15);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-01-26 19:00:00", (3 << 16) | 1, 8, 19, 11);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-02-02 19:00:00", (3 << 16) | 1, 9, 6, 18);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-02-09 19:00:00", (3 << 16) | 1, 0, 15, 8);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-02-16 19:00:00", (3 << 16) | 1, 10, 11, 16);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-02-23 19:00:00", (3 << 16) | 1, 11, 18, 13);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-03-01 19:00:00", (3 << 16) | 1, 12, 8, 17);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-03-08 19:00:00", (3 << 16) | 1, 13, 16, 12);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-03-15 19:00:00", (3 << 16) | 1, 14, 13, 9);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-03-22 19:00:00", (3 << 16) | 1, 15, 17, 14);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-03-29 19:00:00", (3 << 16) | 1, 16, 12, 10);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-04-05 19:00:00", (3 << 16) | 1, 17, 9, 2);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-04-12 19:00:00", (3 << 16) | 1, 18, 14, 7);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-04-19 19:00:00", (3 << 16) | 1, 19, 10, 3);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-04-26 19:00:00", (3 << 16) | 1, 20, 2, 19);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-05-03 19:00:00", (3 << 16) | 1, 21, 7, 5);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-05-10 19:00:00", (3 << 16) | 1, 22, 3, 15);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-05-17 19:00:00", (3 << 16) | 1, 23, 19, 1);
+
 INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-03 18:00:00", (3 << 16) | 2, 1, 2, 0);
 INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-10 18:00:00", (3 << 16) | 2, 2, 9, 5);
 INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-17 18:00:00", (3 << 16) | 2, 3, 3, 7);
@@ -141,6 +167,33 @@ INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-04-28
 INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-05-05 18:00:00", (3 << 16) | 2, 21, 7, 5);
 INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-05-12 18:00:00", (3 << 16) | 2, 22, 3, 15);
 INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-05-19 18:00:00", (3 << 16) | 2, 23, 19, 1);
+
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-05 11:00:00", (3 << 16) | 3, 1, 2, 0);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-12 11:00:00", (3 << 16) | 3, 2, 9, 5);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-19 11:00:00", (3 << 16) | 3, 3, 3, 7);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-26 11:00:00", (3 << 16) | 3, 0, 0, 0);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-01-02 11:00:00", (3 << 16) | 3, 4, 10, 1);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-01-09 11:00:00", (3 << 16) | 3, 5, 5, 19);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-01-16 11:00:00", (3 << 16) | 3, 6, 7, 6);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-01-23 11:00:00", (3 << 16) | 3, 7, 1, 15);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-01-30 11:00:00", (3 << 16) | 3, 8, 19, 11);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-02-06 11:00:00", (3 << 16) | 3, 9, 6, 18);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-02-13 11:00:00", (3 << 16) | 3, 0, 15, 8);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-02-20 11:00:00", (3 << 16) | 3, 10, 11, 16);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-02-27 11:00:00", (3 << 16) | 3, 11, 18, 13);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-03-05 11:00:00", (3 << 16) | 3, 12, 8, 17);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-03-12 11:00:00", (3 << 16) | 3, 13, 16, 12);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-03-19 11:00:00", (3 << 16) | 3, 14, 13, 9);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-03-26 11:00:00", (3 << 16) | 3, 15, 17, 14);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-04-02 11:00:00", (3 << 16) | 3, 16, 12, 10);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-04-09 11:00:00", (3 << 16) | 3, 17, 9, 2);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-04-16 11:00:00", (3 << 16) | 3, 18, 14, 7);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-04-23 11:00:00", (3 << 16) | 3, 19, 10, 3);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-04-30 11:00:00", (3 << 16) | 3, 20, 2, 19);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-05-07 11:00:00", (3 << 16) | 3, 21, 7, 5);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-05-14 11:00:00", (3 << 16) | 3, 22, 3, 15);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-05-21 11:00:00", (3 << 16) | 3, 23, 19, 1);
+
 
 CREATE TABLE task_records (
                  student_id INT not null,
