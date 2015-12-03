@@ -1,9 +1,10 @@
 <?php
+include_once 'config.php';
 include_once 'tables.php';
 
 $response = null;
 
-if (empty($_SESSION["LoggedInUser"])) {
+if (empty($_SESSION["user"])) {
 	if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 		$resource_id = $_GET["rid"];
 	
@@ -21,7 +22,7 @@ if (empty($_SESSION["LoggedInUser"])) {
 	exit();
 }
 
-$user = unserialize($_SESSION["LoggedInUser"]);
+$user = unserialize($_SESSION["user"]);
 $student_id = $user->id;
 
 if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {

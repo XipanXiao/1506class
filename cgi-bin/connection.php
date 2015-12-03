@@ -1,39 +1,6 @@
  <?php
- require 'medoo.php';
-	$config = null;
-	
-	read_config();
- 
- 	function read_config() {
- 		global $config;
- 		
- 		if ($config) {
- 			return $config;
- 		}
- 		
- 		if (isset($_SESSION['config'])) {
- 			$config = unserialize($_SESSION['config']);
- 			return $config;
- 		}
- 		
- 	 	$config = json_decode(file_get_contents('../data/config.php'));
- 	 	
- 		$test = ($_SERVER['HTTP_HOST'] == 'localhost');
-
- 		if ($test) {
- 			$config = $config->test;
- 		} else {
- 			$config = $config->production;
- 			session_save_path($config->session_path);
- 		}
- 		
- 		if (empty(session_id())) {
- 			session_start();
- 			$_SESSION['config'] = serialize($config);
- 		}
- 		
- 		return $config;
- 	}
+ 	include_once 'config.php';
+ 	include_once 'medoo.php';
  
 	function get_connection() {
  		global $config;
