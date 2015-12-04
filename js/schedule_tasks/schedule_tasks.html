@@ -9,7 +9,8 @@
 		<div class="css-table-cell"><strong>念诵</strong></div>
 	</div>
 
-	<div ng-repeat="schedule in schedules" class="css-table-row">
+	<div ng-repeat="schedule in schedules" class="css-table-row"
+			ng-class="{'vacation': schedule.course_id == 0 }">
 		<div class="css-table-cell">{{$index + 1}}</div>
 		<div class="css-table-cell">{{schedule.dt}}</div>
 		<div class="css-table-cell">{{schedule.course_name}}</div>

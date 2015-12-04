@@ -112,3 +112,8 @@ schedule-tasks {
 	width: 200px;
 	margin: 4px 0;
 }
+
+.vacation {
+	background-color: #860200 !important;
+	color: white;	
+}
