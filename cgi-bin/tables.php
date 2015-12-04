@@ -2,6 +2,8 @@
 include_once 'datatype.php';
 include_once 'connection.php';
 
+define("CLASS_GROUP_BIT_OFFSET", 24);
+
 $medoo = get_medoo();
 
 function get_class_groups() {
@@ -33,7 +35,8 @@ function get_classes($class_id) {
 function get_courses($class_id) {
 	global $medoo;
 
-	$sql = sprintf("SELECT * FROM courses where (course_group_id >> 16) = %d", $class_id >> 16);
+	$sql = sprintf("SELECT * FROM courses where (course_group_id >> %d) = %d",
+		CLASS_GROUP_BIT_OFFSET, $class_id >> CLASS_GROUP_BIT_OFFSET);
 	$result = $medoo->query($sql)->fetchAll();
 	
 	if (empty($result)) {
@@ -94,7 +97,8 @@ function task_sum($user_id, $task_id) {
 function get_tasks($class_id) {
 	global $medoo;
 
- 	$sql = sprintf("SELECT * FROM tasks WHERE (id >> 16) = %d;", $class_id >> 16);
+ 	$sql = sprintf("SELECT * FROM tasks WHERE (id >> %d) = %d;",
+ 		CLASS_GROUP_BIT_OFFSET, $class_id >> CLASS_GROUP_BIT_OFFSET);
  	return $medoo->query($sql)->fetchAll();
 }
 

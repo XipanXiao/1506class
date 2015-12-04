@@ -42,17 +42,17 @@ function parseUser($user, $head, $str) {
 	
 	$tm = $fields [$head[7]];
 	if ($tm == '周日早上') {
-		$user->classId = (2 << 16) | 2;
+		$user->classId = (2 << 24) | 2;
 	} elseif ($tm == '周四晚上') {
-		$user->classId = (2 << 16) | 1;
+		$user->classId = (2 << 24) | 1;
 	} elseif ($tm == '周一6:30') {
-		$user->classId = (4 << 16) | 1;
+		$user->classId = (4 << 24) | 1;
 	} elseif ($tm == '周二晚') {
-		$user->classId = (3 << 16) | 1;
+		$user->classId = (3 << 24) | 1;
 	} elseif ($tm == '周四晚') {
-		$user->classId = (3 << 16) | 2;
+		$user->classId = (3 << 24) | 2;
 	} elseif ($tm == '周六下午') {
-		$user->classId = (3 << 16) | 3;
+		$user->classId = (3 << 24) | 3;
 	}
 	
 	$user->permission = 1;
