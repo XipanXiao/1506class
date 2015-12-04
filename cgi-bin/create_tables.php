@@ -27,7 +27,8 @@ INSERT INTO tasks(id, name) VALUES ((2 << 24) | 2, "观音心咒");
 INSERT INTO tasks(id, name) VALUES ((3 << 24) | 1, "顶礼");
 INSERT INTO tasks(id, name) VALUES ((3 << 24) | 2, "观修");
 INSERT INTO tasks(id, name) VALUES ((3 << 24) | 3, "金刚萨埵心咒");
-INSERT INTO tasks(id, name) VALUES ((4 << 24) | 2, "阿弥陀佛心咒");
+INSERT INTO tasks(id, name) VALUES ((4 << 24) | 1, "阿弥陀佛圣号");
+INSERT INTO tasks(id, name) VALUES ((4 << 24) | 2, "阿弥陀佛圣号（藏文）");
 
 -- id = (group_id << 24) | class_id)
 CREATE TABLE classes (
@@ -53,8 +54,11 @@ CREATE TABLE course_groups(
       name VARCHAR(64),
       url VARCHAR(512)
 );
-INSERT INTO course_groups(id, name, url) VALUES((3 << 24) | 1, "前行广释", "http://www.zhibeifw.com/cmsc/list.php?fid=70");
 INSERT INTO course_groups(id, name, url) VALUES((2 << 24) | 1, "入行论", "http://www.zhibeifw.com/cmsc/list.php?fid=77");
+INSERT INTO course_groups(id, name, url) VALUES((3 << 24) | 1, "前行广释", "http://www.zhibeifw.com/cmsc/list.php?fid=70");
+INSERT INTO course_groups(id, name, url) VALUES((4 << 24) | 1, "佛说阿弥陀经释", "");
+INSERT INTO course_groups(id, name, url) VALUES((4 << 24) | 2, "普贤行愿品释", "");
+INSERT INTO course_groups(id, name, url) VALUES((4 << 24) | 3, "亲友书讲记", "");
 
 CREATE TABLE courses (
                       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -113,6 +117,31 @@ INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((2
 INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((2 << 24) | 1, "入行论广解41-42课", "", "");
 INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((2 << 24) | 1, "入行论广解43-44课", "", "");
 INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((2 << 24) | 1, "入行论广解45-46课", "", "");
+
+-- 47 ~ 69
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 1, "佛说阿弥陀经释第1课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 1, "佛说阿弥陀经释第2课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 1, "佛说阿弥陀经释第3课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 1, "佛说阿弥陀经释第4课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 2, "普贤行愿品释第1课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 2, "普贤行愿品释第2课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 2, "普贤行愿品释第3课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 2, "普贤行愿品释第4课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 2, "普贤行愿品释第5课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 2, "普贤行愿品释第6课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 2, "普贤行愿品释第7课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 2, "普贤行愿品释第8课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 2, "普贤行愿品释第9课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 2, "普贤行愿品释第10课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 2, "普贤行愿品释第11课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 2, "普贤行愿品释第12课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 3, "亲友书讲记第1课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 3, "亲友书讲记第2课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 3, "亲友书讲记第3课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 3, "亲友书讲记第4课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 3, "亲友书讲记第5课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 3, "亲友书讲记第6课", "", "");
+INSERT INTO courses(course_group_id, course_name, video_url, text_url) VALUES((4 << 24) | 3, "亲友书讲记第7课", "", "");
 
 
 CREATE TABLE users(
@@ -277,6 +306,32 @@ INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-05-01
 INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-05-08 06:30:00", (2 << 24) | 2, 44, 7, 5);
 INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-05-15 06:30:00", (2 << 24) | 2, 45, 3, 15);
 INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-05-22 06:30:00", (2 << 24) | 2, 46, 19, 1);
+
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-11-30 18:30:00", (4 << 24) | 1, 47, 2, 0);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-07 18:30:00", (4 << 24) | 1, 48, 9, 5);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-14 18:30:00", (4 << 24) | 1, 49, 3, 7);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-21 18:30:00", (4 << 24) | 1, 0, 0, 0);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2015-12-28 18:30:00", (4 << 24) | 1, 50, 10, 1);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-01-04 18:30:00", (4 << 24) | 1, 51, 5, 19);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-01-11 18:30:00", (4 << 24) | 1, 52, 7, 6);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-01-18 18:30:00", (4 << 24) | 1, 53, 1, 15);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-01-25 18:30:00", (4 << 24) | 1, 54, 19, 11);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-02-01 18:30:00", (4 << 24) | 1, 55, 6, 18);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-02-08 18:30:00", (4 << 24) | 1, 0, 15, 8);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-02-15 18:30:00", (4 << 24) | 1, 56, 11, 16);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-02-22 18:30:00", (4 << 24) | 1, 57, 18, 13);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-02-29 18:30:00", (4 << 24) | 1, 58, 8, 17);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-03-07 18:30:00", (4 << 24) | 1, 59, 16, 12);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-03-14 18:30:00", (4 << 24) | 1, 60, 13, 9);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-03-21 18:30:00", (4 << 24) | 1, 61, 17, 14);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-03-28 18:30:00", (4 << 24) | 1, 62, 12, 10);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-04-04 18:30:00", (4 << 24) | 1, 63, 9, 2);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-04-11 18:30:00", (4 << 24) | 1, 64, 14, 7);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-04-18 18:30:00", (4 << 24) | 1, 65, 10, 3);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-04-25 18:30:00", (4 << 24) | 1, 66, 2, 19);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-05-02 18:30:00", (4 << 24) | 1, 67, 7, 5);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-05-09 18:30:00", (4 << 24) | 1, 68, 3, 15);
+INSERT INTO schedules(dt, class_id, course_id, open, review) VALUES ("2016-05-16 18:30:00", (4 << 24) | 1, 69, 19, 1);
 
 
 CREATE TABLE task_records (
