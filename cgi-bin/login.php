@@ -13,7 +13,7 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['password'] )) {
 		$_SESSION['user'] = serialize($user);
 		
 //		$page = ($user->permission & 2) ? "admin.html" : "homework_report.html";
-		$page = 'homework_report.html';
+		$page = 'index.html';
 		client_redirect('../'. $page, 1, 'Authenticated successfully, redirecting...');
 	} else {
 		echo "<h1>Error</h1>";
