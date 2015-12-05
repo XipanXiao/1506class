@@ -26,7 +26,8 @@ INSERT INTO tasks(id, name) VALUES ((2 << 24) | 1, "观修");
 INSERT INTO tasks(id, name) VALUES ((2 << 24) | 2, "观音心咒");
 INSERT INTO tasks(id, name) VALUES ((3 << 24) | 1, "顶礼");
 INSERT INTO tasks(id, name) VALUES ((3 << 24) | 2, "观修");
-INSERT INTO tasks(id, name) VALUES ((3 << 24) | 3, "金刚萨埵心咒");
+INSERT INTO tasks(id, name) VALUES ((3 << 24) | 3, "念诵《开显解脱道》");
+INSERT INTO tasks(id, name) VALUES ((3 << 24) | 4, "金刚萨埵心咒");
 INSERT INTO tasks(id, name) VALUES ((4 << 24) | 1, "阿弥陀佛圣号");
 INSERT INTO tasks(id, name) VALUES ((4 << 24) | 2, "阿弥陀佛圣号（藏文）");
 
@@ -346,7 +347,6 @@ CREATE TABLE schedule_records (
                  attended BOOLEAN,
                  video BOOLEAN, 
                  text BOOLEAN, 
-				 reading BOOLEAN,
                  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                  );
 

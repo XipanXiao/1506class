@@ -114,7 +114,7 @@ function report_task($user_id, $task_id, $count) {
 function convert_schedule_record($source, $string_to_int) {
 	$target = array();
 	
-	foreach (["attended", "video", "text", "reading"] as $task) {
+	foreach (["attended", "video", "text"] as $task) {
 		if (isset($source[$task])) {
 			if ($string_to_int) {
 				$target[$task] = $source[$task] == "true" ? 1 : 0;
