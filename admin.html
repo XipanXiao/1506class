@@ -1,0 +1,20 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="style.css"></link>
+<title>学修记录</title>
+</head>
+
+<body class="center wide-body">
+
+<app-bar ng-controller="AppBarController"></app-bar>
+<classes class="left" ng-controller="ClassesController" list-type="list"
+	class-selected="alert('hello')"></classes>
+<learning-records class="left" ng-controller="LearningRecordsController"></learning-records>
+
+<script type="text/javascript" src="js/angular.js"></script>
+<script data-main="js/admin_app.js" src="js/require.js"></script>
+
+</body>
+
+</html>

@@ -1,12 +1,13 @@
 <div ng-switch="listType">
-	<div ng-switch-when="list">
-		<div ng-repeat="classInfo in classes">
-			<div>
-				<a href="schedule.php?class_id={{classInfo.id}}">{{classInfo.name}}</a>
+	<div ng-switch-when="list" class="padded-element">
+		<div ng-repeat="classInfo in classes" class="selectable">
+			<div ng-click="selected($index)" class="padded-element"
+					ng-class="{'selected': selectedIndex == $index}">
+				{{classInfo.name}}
 			</div>
 		</div>
 	</div>
-	<div ng-switch-default="select">
+	<div ng-switch-default>
 		<select>
 			<option ng-repeat="classInfo in classes" value="{{classInfo.id}}">{{classInfo.name}}</option>
 		</select>

@@ -117,3 +117,14 @@ schedule-tasks {
 	background-color: #860200 !important;
 	color: white;	
 }
+
+.selectable {
+	cursor: hand;
+	text-decoration: underline;
+}
+
+.selected,
+.selectable:hover {
+	background-color: #003399;
+	color: #eeeeee;
+}
