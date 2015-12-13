@@ -6,6 +6,7 @@ define("CLASS_GROUP_BIT_OFFSET", 24);
 
 $medoo = get_medoo();
 
+
 function get_class_groups() {
 	global $medoo;
 
@@ -167,30 +168,63 @@ function mixin($target, $source) {
 	return $target;
 }
 
+function keyed_by_id($rows) {
+	$result = array();
+	
+	foreach ($rows as $row) {
+		$result[$row['id']] = $row;
+	}
+	
+	return $result;
+}
+
+function get_schedules_for_group($group, $schedule_records) {
+	global $medoo;
+
+	$schedules = keyed_by_id($medoo->select("schedules", "*", ["group_id" => $group["id"]]));
+	$courses = $medoo->select("courses", "*", ["group_id" => $group["course_group"]]);
+
+	$index = 0;
+	$a_week = date_interval_create_from_date_string("7 days");
+	$start_time = new DateTime();
+	$start_time->setTimestamp(strtotime($group["start_time"]));
+	
+	foreach ($schedules as $schedule_id => $schedule) {
+		$schedule["dt"] = $start_time->format("Y-m-d H:i");
+		$start_time = $start_time->add($a_week);
+		if ($schedule["open"] == 0) {
+			$schedule["course_name"] = "放假";
+		} else {
+			$schedule["course_name"] = $courses[$index++]["name"];
+		}
+		
+		$schedules[$schedule_id] = $schedule;
+	}
+
+	if ($schedule_records) {
+		foreach ($schedule_records as $record) {
+			$schedule_id = $record["schedule_id"];
+			$schedule = $schedules[$schedule_id];
+			$schedules[$schedule_id] = mixin($schedule, convert_schedule_record($record, false));
+		}
+	}
+	
+	return $schedules;
+}
+
 function get_schedules($user, $with_records) {
 	global $medoo;
 
-	$result = $medoo->select("schedules", "*", ["class_id" => $user->classId]);
-	$courses = get_courses($user->classId);
+	date_default_timezone_set('America/Los_Angeles');
 	
-	$schedules = array();
-	foreach ($result as $schedule) {
-		$course_id = $schedule["course_id"];
-		$schedule["course_name"] = $course_id == 0 ? "放假" : $courses[$course_id]["course_name"];
+	$schedule_groups = keyed_by_id($medoo->select("schedule_groups", "*", ["class_id" => $user->classId]));
+	$schedule_records = $with_records ? get_schedule_records($user->id) : null;
 	
-		$schedules[$schedule["id"]] = $schedule;
+	foreach ($schedule_groups as $group_id => $group) {
+		$group["schedules"] = get_schedules_for_group($group, $schedule_records);
+		$schedule_groups[$group_id] = $group;
 	}
-
-	if ($with_records) {
-		$records = get_schedule_records($user->id);
-
-		foreach ($records as $record) {
-			$schedule = $schedules[$record["schedule_id"]];
-			$schedules[$record["schedule_id"]] = 
-				mixin($schedule, convert_schedule_record($record, false));
-		}
-	}
-
-	return $schedules;
+	
+	return $schedule_groups;
 }
 ?>

@@ -3,7 +3,7 @@ define(['services'], function() {
 		.controller('ScheduleTasksController', function($scope, rpc) {
 
 			rpc.get_schedules(true).then(function(response) {
-				$scope.schedules = response.data;
+				$scope.schedule_groups = response.data;
 			});
 			
 			$scope.reportTask = function (schedule) {
