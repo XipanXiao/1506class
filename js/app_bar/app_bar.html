@@ -1,6 +1,11 @@
 <div class="app-bar">
 	<div class="left">
-		<span>{{user.className}}</span>
+		<span>{{user.classInfo.name}}: 
+			<a target="_blank" class="app-bar-link"
+					href="http://www.yy.com/{{user.classInfo.class_room}}">
+				{{user.classInfo.class_room}}
+			</a>
+		</span>
 	</div>
 	<div class="right">
 		<span>{{user.name}}</span>

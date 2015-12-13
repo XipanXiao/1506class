@@ -20,7 +20,7 @@ class User {
 	public $notes;
 	
 	// Redundant fields.
-	public $className;
+	public $classInfo;
 	
 	public function __construct($row) {
 		$this->id = $row["id"];
@@ -69,16 +69,9 @@ class User {
 
 class ClassInfo {
 	public $id;
+	public $department_id;
 	public $name;
 	public $teacherId;
-	public $startDate;
-	public $endDate;
-}
-
-class ActionType {
-	public $name;
-
-	// 0: number, 1: boolean.
-	public $value_type;
+	public $startYear;
 }
 ?>

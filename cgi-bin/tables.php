@@ -2,54 +2,25 @@
 include_once 'datatype.php';
 include_once 'connection.php';
 
-define("CLASS_GROUP_BIT_OFFSET", 24);
-
 $medoo = get_medoo();
 
 
 function get_class_groups() {
 	global $medoo;
 
-	return $medoo->select('class_groups', '*');
+	return $medoo->select("class_groups", "*");
 }
 
 function get_classes($class_id) {
 	global $medoo;
 	
-	$classes = array();
-	$result = $medoo->select('classes', '*', $class_id ? ["id" => $class_id] : null);
-
-	foreach ($result as $clazz) {
-		$info = new ClassInfo();
-		$info->id = $clazz['id'];
-		$info->name = $clazz['name'];
-		$info->teacherId = $clazz['teacher_id'];
-		$info->startDate = $clazz['start_date'];
-		$info->endDate = $clazz['end_date'];
-		
-		$classes[$info->id] = $info;
-	}
-	
-	return $classes;
+	return keyed_by_id($medoo->select("classes", "*", $class_id ? ["id" => $class_id] : null));
 }
 
-function get_courses($class_id) {
+function get_courses($course_group_id) {
 	global $medoo;
 
-	$sql = sprintf("SELECT * FROM courses where (course_group_id >> %d) = %d",
-		CLASS_GROUP_BIT_OFFSET, $class_id >> CLASS_GROUP_BIT_OFFSET);
-	$result = $medoo->query($sql)->fetchAll();
-	
-	if (empty($result)) {
-		return $result;
-	}
-	
-	$courses = array();
-	foreach ($result as $course) {
-		$courses[$course["id"]] = $course;
-	}
-	
-	return $courses;
+	return $medoo->select("courses", "*", ["group_id" => $course_group_id]);
 }
 
 function get_users($email) {
@@ -59,15 +30,15 @@ function get_users($email) {
 	if (empty($email)) {
 		$result = $medoo->select("users", "*");
 	} else {
-		$result = $medoo->select('users', '*', ["email" => $email]);
+		$result = $medoo->select("users", "*", ["email" => $email]);
 	}
 
-	$classes = get_classes(null);
+	$classes = $email ? get_classes($result[0]["class_id"]) : [];
 	$users = array();
 	
 	foreach ($result as $index => $row) {
 		$user = new User($row);
-		$user->className = $classes[$user->classId]->name;
+		$user->classInfo = $classes[$user->classId];
 
 		$users[$index] = $user;
 	}
@@ -95,12 +66,10 @@ function task_sum($user_id, $task_id) {
 	return $sum == null ? 0 : $sum;
 }
 
-function get_tasks($class_id) {
+function get_tasks($department_id) {
 	global $medoo;
 
- 	$sql = sprintf("SELECT * FROM tasks WHERE (id >> %d) = %d;",
- 		CLASS_GROUP_BIT_OFFSET, $class_id >> CLASS_GROUP_BIT_OFFSET);
- 	return $medoo->query($sql)->fetchAll();
+	return $medoo->select("tasks", "*", ["department_id" => $department_id]);
 }
 
 function report_task($user_id, $task_id, $count) {
@@ -172,7 +141,7 @@ function keyed_by_id($rows) {
 	$result = array();
 	
 	foreach ($rows as $row) {
-		$result[$row['id']] = $row;
+		$result[$row["id"]] = $row;
 	}
 	
 	return $result;
@@ -181,8 +150,9 @@ function keyed_by_id($rows) {
 function get_schedules_for_group($group, $schedule_records) {
 	global $medoo;
 
-	$schedules = keyed_by_id($medoo->select("schedules", "*", ["group_id" => $group["id"]]));
-	$courses = $medoo->select("courses", "*", ["group_id" => $group["course_group"]]);
+	$group_id = $group["id"];
+	$schedules = keyed_by_id($medoo->select("schedules", "*", ["group_id" => $group_id]));
+	$courses = get_courses($group["course_group"]);
 
 	$index = 0;
 	$a_week = date_interval_create_from_date_string("7 days");
@@ -215,7 +185,7 @@ function get_schedules_for_group($group, $schedule_records) {
 function get_schedules($user, $with_records) {
 	global $medoo;
 
-	date_default_timezone_set('America/Los_Angeles');
+	date_default_timezone_set("America/Los_Angeles");
 	
 	$schedule_groups = keyed_by_id($medoo->select("schedule_groups", "*", ["class_id" => $user->classId]));
 	$schedule_records = $with_records ? get_schedule_records($user->id) : null;

@@ -51,7 +51,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 				$response = ["sum" => task_sum($student_id, $task_id)];
 			}
 		} else {
-			$response = get_tasks($user->classId);
+			$response = get_tasks($user->classInfo["department_id"]);
 		}
 	} elseif ($resource_id == "schedules") {
 		$with_records = isset($_GET["with_records"]) && $_GET["with_records"];
