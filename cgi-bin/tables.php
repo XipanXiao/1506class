@@ -23,22 +23,22 @@ function get_courses($course_group_id) {
 	return $medoo->select("courses", "*", ["group_id" => $course_group_id]);
 }
 
-function get_users($email) {
+function get_users($email, $class_id = null) {
 	global $medoo;
 
 	$result = null;
-	if (empty($email)) {
-		$result = $medoo->select("users", "*");
-	} else {
+	if ($class_id) {
+		$result = $medoo->select("users", "*", ["class_id" => $class_id]);
+	} elseif ($email){
 		$result = $medoo->select("users", "*", ["email" => $email]);
 	}
 
-	$classes = $email ? get_classes($result[0]["class_id"]) : [];
+	$classes = $email ? get_classes($result[0]["class_id"]) : null;
 	$users = array();
 	
 	foreach ($result as $index => $row) {
 		$user = new User($row);
-		$user->classInfo = $classes[$user->classId];
+		$user->classInfo = $classes ? $classes[$user->classId] : null;
 
 		$users[$index] = $user;
 	}
@@ -147,7 +147,7 @@ function keyed_by_id($rows) {
 	return $result;
 }
 
-function get_schedules_for_group($group, $schedule_records) {
+function get_schedules_for_group($group, $schedule_records, $class_mates) {
 	global $medoo;
 
 	$group_id = $group["id"];
@@ -164,7 +164,13 @@ function get_schedules_for_group($group, $schedule_records) {
 		$start_time = $start_time->add($a_week);
 		if ($schedule["open"] == 0) {
 			$schedule["course_name"] = "放假";
+			$schedule["open"] = "";
+			$schedule["review"] = "";
 		} else {
+			$schedule["open"] = $class_mates[$schedule["open"]]->name;
+			$schedule["review"] = 
+				$schedule["review"] == 0 ? "" : $class_mates[$schedule["review"]]->name;
+			
 			$schedule["course_name"] = $courses[$index++]["name"];
 		}
 		
@@ -189,9 +195,10 @@ function get_schedules($user, $with_records) {
 	
 	$schedule_groups = keyed_by_id($medoo->select("schedule_groups", "*", ["class_id" => $user->classId]));
 	$schedule_records = $with_records ? get_schedule_records($user->id) : null;
+	$class_mates = get_users(null, $user->classId);
 	
 	foreach ($schedule_groups as $group_id => $group) {
-		$group["schedules"] = get_schedules_for_group($group, $schedule_records);
+		$group["schedules"] = get_schedules_for_group($group, $schedule_records, $class_mates);
 		$schedule_groups[$group_id] = $group;
 	}
 	
