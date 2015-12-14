@@ -7,12 +7,6 @@ define(['services'], function() {
 					
 					$scope.selected = function (index) {
 						$scope.selectedIndex = index;
-						if ($scope.classSelected) {
-							//$scope.classSelected($scope.classes[index]);
-							$scope.exp = $parse($scope.classSelected);
-							//$scope.$apply(exp);
-							$scope.exp();
-						}
 					}
 				});
 			})

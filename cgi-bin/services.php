@@ -60,10 +60,12 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 		$response = get_courses($class_id);
 	} elseif ($resource_id == "users") {
 		$email = empty($_GET["email"]) ? null : $_GET["email"];
-		if (!$email || $email == $user->email) {
+		$class_id = empty($_GET["class_id"]) ? null : $_GET["class_id"];
+		
+		if ($class_id) {
+			$response = get_users($email, $class_id);
+		} elseif (!$email || $email == $user->email) {
 			$response = [$user];
-		} else {
-			$response = get_users($email);
 		}
 	}
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {

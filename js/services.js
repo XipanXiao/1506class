@@ -76,12 +76,16 @@ define(function() {
 				return $http.get(serviceUrl + "rid=courses&group_id=" + group_id);
 			},
 			
-			get_users: function(email) {
+			get_users: function(email, class_id) {
 				if (!email) {
 					email = '';
 				}
+
+				if (!class_id) {
+					class_id = '';
+				}
 				
-				return $http.get(serviceUrl + "rid=users&email=" + email);
+				return $http.get(serviceUrl + "rid=users&email=" + email + "&class_id=" + class_id);
 			}
 		};
 	});
