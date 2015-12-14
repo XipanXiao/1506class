@@ -1,13 +1,15 @@
 define(['services'], function() {
 	return angular.module('ClassesModule', ['ServicesModule'])
-		.controller('ClassesController', function($scope, $parse, rpc) {
+		.controller('ClassesController', function($scope, $rootScope, rpc) {
 				rpc.get_classes().then(function(response) {
 					$scope.classes = response.data;
-					$scope.selectedIndex = 0;
 					
-					$scope.selected = function (index) {
-						$scope.selectedIndex = index;
-					}
+					$scope.selected = function (id) {
+						$scope.selectedId = id;
+						$rootScope.$broadcast('class-selected', $scope.classes[id]);
+					};
+					
+					$scope.selected(1);
 				});
 			})
 		.directive('classes', function() {
