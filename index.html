@@ -13,38 +13,35 @@
 
 <app-bar ng-controller="AppBarController"></app-bar>
 
-<div class="left">
-<classes ng-controller="ClassesController" list-type="list"></classes>
-<tasks ng-controller="TasksController"></tasks>
-</div>
-<div class="left">
-	<paper-tabs selected="0">
-	  <paper-tab>学员名单</paper-tab>
-	  <paper-tab>考勤登记</paper-tab>
-	  <paper-tab>学修安排</paper-tab>
-	  <paper-tab>学修记录</paper-tab>
-	</paper-tabs>
-	
-	<iron-pages selected="0">
-	    <div>
-	    	<users ng-controller="UsersController"></users>
-	    </div>
-	    <div>
-			<schedule-tasks class="left" ng-controller="ScheduleTasksController"></schedule-tasks>
-	    </div>
-	    <div>
-	    	<learning-records ng-controller="LearningRecordsController"></learning-records>
-		</div>
-	</iron-pages>
-	<script>
-	     var pages = document.querySelector('iron-pages');
-	     var tabs = document.querySelector('paper-tabs');
-	
-	    tabs.addEventListener('iron-select', function() { 
-	        pages.selected = tabs.selected;
-	    });
-	</script>	
-</div>
+<paper-tabs selected="0">
+  <paper-tab>学员名单</paper-tab>
+  <paper-tab>考勤登记</paper-tab>
+  <paper-tab>学修安排</paper-tab>
+  <paper-tab>学修记录</paper-tab>
+</paper-tabs>
+
+<iron-pages selected="0">
+    <div>
+		<classes class="left" ng-controller="ClassesController" list-type="list"></classes>
+    	<users class="left padded-element" ng-controller="UsersController"></users>
+    </div>
+    <div>
+		<tasks class="left" ng-controller="TasksController"></tasks>
+		<schedule-tasks class="left" ng-controller="ScheduleTasksController"></schedule-tasks>
+    </div>
+    <div>
+		<classes class="left" ng-controller="ClassesController" list-type="list"></classes>
+    	<learning-records ng-controller="LearningRecordsController"></learning-records>
+	</div>
+</iron-pages>
+<script>
+     var pages = document.querySelector('iron-pages');
+     var tabs = document.querySelector('paper-tabs');
+
+    tabs.addEventListener('iron-select', function() { 
+        pages.selected = tabs.selected;
+    });
+</script>	
 
 <script type="text/javascript" src="js/angular.js"></script>
 <script data-main="js/admin_app.js" src="js/require.js"></script>
