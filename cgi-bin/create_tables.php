@@ -50,6 +50,9 @@ INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (
 INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (3, "2015加行（周六）", "99343758", "", 2015);
 INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (4, "2015净土（周一）", "99343758", "", 2015);
 
+-- id: 7. unassigned students are put temporarily here.
+INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (1, "默认基础班", "", "", 2015);
+
 CREATE TABLE course_groups(
       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
       department_id TINYINT,
@@ -159,6 +162,9 @@ CREATE TABLE users(
 			      qq VARCHAR(16),
 			      wechat VARCHAR(32),
 			      class_id INT,
+				      INDEX class_id_idx(class_id),
+				      FOREIGN KEY (class_id)
+				      	REFERENCES classes(id),
 			      future_class_group TINYINT,
 			      mentor_id INT,
 			      response VARCHAR(16),
@@ -169,6 +175,9 @@ CREATE TABLE users(
 CREATE TABLE schedule_groups (
                       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                       class_id INT,
+					      INDEX class_id_idx(class_id),
+					      FOREIGN KEY (class_id)
+					      	REFERENCES classes(id),
                       course_group INT,
                       name VARCHAR(64),
                       start_time DATETIME,
@@ -184,6 +193,9 @@ INSERT INTO schedule_groups(class_id, course_group, name, start_time, end_time) 
 CREATE TABLE schedules (
                       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                       group_id INT,
+					      INDEX group_id_idx(group_id),
+					      FOREIGN KEY (group_id)
+					      	REFERENCES schedule_groups(id),
 					  open INT,
 					  review INT
                       );
@@ -346,13 +358,16 @@ INSERT INTO schedules(group_id, open, review) VALUES (6, 19, 1);
 
 CREATE TABLE task_records (
                  student_id INT not null,
+				      INDEX student_id_idx(student_id),
                  task_id INT,
                  count MEDIUMINT, 
                  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                  );
 CREATE TABLE schedule_records (
                  student_id INT not null,
+				      INDEX student_id_idx(student_id),
                  schedule_id INT,
+				      INDEX schedule_id_idx(schedule_id),
                  attended BOOLEAN,
                  video BOOLEAN, 
                  text BOOLEAN, 
