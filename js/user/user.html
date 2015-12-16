@@ -1,0 +1,21 @@
+<div class="padded-element white user-info">
+	<div class="section">
+		<div class="css-table">
+			<div class="css-table-row padded-element">
+				<div class="css-table-cell">姓名</div>
+				<div class="css-table-cell">{{user.name}}</div>
+				<div class="css-table-cell"><iron-icon class="selectable" icon="chevron-right"></iron-icon></div>					
+			</div>
+			<div class="css-table-row padded-element">
+				<div class="css-table-cell">性别</div>
+				<div class="css-table-cell">{{user.sex == '1' ? '男' : '女'}}</div>
+				<div class="css-table-cell"><iron-icon class="selectable" icon="chevron-right"></iron-icon></div>					
+			</div>
+			<div class="css-table-row padded-element">
+				<div class="css-table-cell">地址</div>
+				<div class="css-table-cell">{{user.street}}</div>
+				<div class="css-table-cell"><iron-icon class="selectable" icon="chevron-right"></iron-icon></div>					
+			</div>
+		</div>
+	</div>
+</div>

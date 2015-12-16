@@ -157,20 +157,21 @@ CREATE TABLE users(
 			      email VARCHAR(64) NOT NULL,
 			      UNIQUE KEY email_idx(email),
 			      phone VARCHAR(16),
-			      address VARCHAR(64),
-			      yy VARCHAR(16),
-			      qq VARCHAR(16),
-			      wechat VARCHAR(32),
+			      street VARCHAR(64),
+			      city VARCHAR(32),
+			      state VARCHAR(16),
+			      zip VARCHAR(10),
+			      im VARCHAR(32),
 			      class_id INT,
 				      INDEX class_id_idx(class_id),
 				      FOREIGN KEY (class_id)
 				      	REFERENCES classes(id),
-			      future_class_group TINYINT,
+			      future_department TINYINT,
 			      mentor_id INT,
-			      response VARCHAR(16),
+			      role VARCHAR(16),
 			      permission INT,
-                  start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-			      notes VARCHAR(255));
+                  start_year MEDIUMINT,
+			      notes VARCHAR(16));
 
 CREATE TABLE schedule_groups (
                       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,

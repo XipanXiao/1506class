@@ -9,13 +9,11 @@ class User {
 	public $nickname;
 	public $email;
 	public $phone;
-	public $address;
-	public $yy;
-	public $qq;
-	public $wechat;
+	public $street;
+	public $im;
 	public $classId;
 	public $mentor;
-	public $response;
+	public $role;
 	public $permission;
 	public $notes;
 	
@@ -31,13 +29,11 @@ class User {
 		$this->nickname = $row['nickname']; 
 		$this->email = $row['email']; 
 		$this->phone = $row['phone']; 
-		$this->address = $row['address']; 
-		$this->yy = $row['yy']; 
-		$this->qq = $row['qq']; 
-		$this->wechat = $row['wechat']; 
+		$this->street = $row['street']; 
+		$this->im = $row['im']; 
 		$this->classId = $row['class_id']; 
 		$this->mentor = $row['mentor_id']; 
-		$this->response = $row['response']; 
+		$this->role = $row['role']; 
 		$this->permission = $row['permission']; 
 		$this->notes = $row['notes']; 
 	}

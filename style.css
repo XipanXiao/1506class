@@ -1,7 +1,7 @@
 body {
+	background: rgb(241, 241, 241);
     font-family: arial,sans-serif;
-    font-size: 16px;
-	width: 600px;
+    font-size: 14px;
 }
 
 .center {
@@ -9,12 +9,8 @@ body {
   margin-right: auto;
 }
 
-body.wide-body {
-	width: 900px;
-}
-
 .padded-element {
-    padding: 8px;
+    padding: 16px;
 }
 
 .app-bar {
@@ -29,9 +25,30 @@ a.app-bar-link {
 	color: white;
 }
 
+div.page-container {
+	background: transparent;
+	width: 920px;	
+}
+
+div.login-page {
+	background: transparent;
+	width: 400px;	
+}
+
+tasks {
+	padding-top: 40px;
+}
+
+.white {
+	background: white;	
+}
+
+.vmargin {
+	margin: 16px 0;
+}
+
 .css-table {
 	display: table;
-	font-size: 90%;
 }
 
 .css-table.odd-even > div:nth-child(odd) {
@@ -119,7 +136,7 @@ schedule-tasks {
 }
 
 .selectable {
-	cursor: hand;
+	cursor: pointer;
 }
 
 .selected {
@@ -129,4 +146,23 @@ schedule-tasks {
 
 .schedule-tasks {
 	width: 690px;
+}
+
+hr {
+	width: 100%;
+}
+
+.user-info {
+	width: 400px;
+}
+
+.separator {
+	border-right: 1px solid white;
+	display: inline;
+	height: 10px;	
+	margin: 0 4px;
+}
+
+.inline {
+	display: inline-block;
 }

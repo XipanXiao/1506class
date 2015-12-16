@@ -8,6 +8,13 @@
 		</span>
 	</div>
 	<div class="right">
+		<div ng-switch="admining" class="inline">
+			<a ng-switch-when="true" class="app-bar-link" href="index.html">学员页面</a>
+			<a ng-switch-default ng-if="user.permission > 1" class="app-bar-link" href="admin.html">
+				管理页面
+			</a>
+		</div>
+		<div class="separator"></div> 
 		<span>{{user.name}}</span>
 		<a class="app-bar-link" href="cgi-bin/logout.php">Logout</a> 
 	</div>
