@@ -15,18 +15,18 @@ Fontend Overview
 
 ```html
 <iron-pages selected="0">
-	    <div>
-			<tasks class="left" ng-controller="TasksController"></tasks>
-			<schedule-tasks class="left" ng-controller="ScheduleTasksController"></schedule-tasks>
-	    </div>
-	    <div>
-	    	<div class="center">
-		    	<h1>个人信息</h1>
-		    	<user ng-controller="UserController"></user>
-	    	</div>
-		</div>
-	</iron-pages>
-	```
+    <div>
+		<tasks class="left" ng-controller="TasksController"></tasks>
+		<schedule-tasks class="left" ng-controller="ScheduleTasksController"></schedule-tasks>
+    </div>
+    <div>
+    	<div class="center">
+	    	<h1>个人信息</h1>
+	    	<user ng-controller="UserController"></user>
+    	</div>
+	</div>
+</iron-pages>
+```
 
 
 Also [Polymer](https://www.polymer-project.org/1.0/) is used as the widget library.
