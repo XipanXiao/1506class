@@ -9,7 +9,7 @@ Database Design
 Fontend Overview
 ----------------
 ### Dependencies
-[RequireJS](http://requirejs.org/) is used to dynamically loading JavaScript files.
+[RequireJS](http://requirejs.org/) is used to dynamically load JavaScript files on demand.
 
 [AngularJS](https://angularjs.org/) is used to handle events and to define [custom directives](https://docs.angularjs.org/guide/directive). With the custom directives the page is built by blocks and looks really simple and clean, like:
 
