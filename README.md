@@ -3,7 +3,9 @@
 Design docs
 -----------
 [Database structure](https://docs.google.com/document/d/1SACT2kfJpqAU_GyAZNAFLb-LTRKl3gU1wRCzh0vSRVQ/edit?usp=sharing)
+
 [Frontend overview](https://docs.google.com/document/d/1gsLjFPVJML9gIhd_z-isD7rLHjKotTwRQ4f1rGDEFMk/edit?usp=sharing)
+
 [Access control](https://docs.google.com/document/d/1NxK2zozyfGPyECCN5seXgqHlCDPok4f0kDeiv4VNpAo/edit?usp=sharing)
 
 
