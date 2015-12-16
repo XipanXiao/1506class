@@ -6,6 +6,21 @@ Database Design
 
 [Access control](https://docs.google.com/document/d/1NxK2zozyfGPyECCN5seXgqHlCDPok4f0kDeiv4VNpAo/edit?usp=sharing)
 
+Backend Overview
+----------------
+### Dependencies
+
+[MySQL](https://www.mysql.com/) is used as the database.
+
+[PHP](https://secure.php.net/) is used to handle client requests.
+
+[Medoo](http://medoo.in/), "The lightest PHP database framework" is used to access the database.
+
+### Usage of PHP
+PHP is only used to handle requests, but not to render contents. That is, HTML are rendered from the client side instead of mixed with the PHP tags. This makes the code look clean and more readable.
+
+As a result, the server code is really thin thus easy to be replaced (If you prefer a different language, just rewrite it).
+
 Fontend Overview
 ----------------
 ### Dependencies
