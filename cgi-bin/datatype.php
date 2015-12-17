@@ -13,7 +13,6 @@ class User {
 	public $im;
 	public $classId;
 	public $mentor;
-	public $role;
 	public $permission;
 	public $notes;
 	
@@ -33,7 +32,6 @@ class User {
 		$this->im = $row['im']; 
 		$this->classId = $row['class_id']; 
 		$this->mentor = $row['mentor_id']; 
-		$this->role = $row['role']; 
 		$this->permission = $row['permission']; 
 		$this->notes = $row['notes']; 
 	}

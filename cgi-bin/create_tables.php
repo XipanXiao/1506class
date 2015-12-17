@@ -43,15 +43,15 @@ CREATE TABLE classes (
 					  teacher_id INT,
 					  start_year MEDIUMINT
                       );
+
+-- id: 1. unassigned students are put temporarily here.
+INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (1, "默认基础班", "", "", 2015);
 INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (2, "2015入行论（周四）", "99343758", "", 2015);
 INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (2, "2015入行论（周日）", "99343758", "", 2015);
 INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (3, "2015加行（周二）", "99343758", "", 2015);
 INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (3, "2015加行（周四）", "99343758", "", 2015);
 INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (3, "2015加行（周六）", "99343758", "", 2015);
 INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (4, "2015净土（周一）", "99343758", "", 2015);
-
--- id: 7. unassigned students are put temporarily here.
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (1, "默认基础班", "", "", 2015);
 
 CREATE TABLE course_groups(
       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -157,18 +157,18 @@ CREATE TABLE users(
 			      email VARCHAR(64) NOT NULL,
 			      UNIQUE KEY email_idx(email),
 			      phone VARCHAR(16),
-			      street VARCHAR(64),
+			      street VARCHAR(32),
+			      street2 VARCHAR(16),
 			      city VARCHAR(32),
 			      state VARCHAR(16),
+			      country VARCHAR(32),
 			      zip VARCHAR(10),
 			      im VARCHAR(32),
 			      class_id INT,
 				      INDEX class_id_idx(class_id),
 				      FOREIGN KEY (class_id)
 				      	REFERENCES classes(id),
-			      future_department TINYINT,
 			      mentor_id INT,
-			      role VARCHAR(16),
 			      permission INT,
                   start_year MEDIUMINT,
 			      notes VARCHAR(16));
@@ -184,12 +184,12 @@ CREATE TABLE schedule_groups (
                       start_time DATETIME,
                       end_time DATETIME                      
                       );
-INSERT INTO schedule_groups(class_id, course_group, name, start_time, end_time) VALUES (1, 1, "2015届入行论周四班2016年春季学期", "2015-12-03 18:00:00", "2016-05-31 22:00:00");
-INSERT INTO schedule_groups(class_id, course_group, name, start_time, end_time) VALUES (2, 1, "2015届入行论周日班2016年春季学期", "2015-12-06 06:30:00", "2016-05-31 22:00:00");
-INSERT INTO schedule_groups(class_id, course_group, name, start_time, end_time) VALUES (3, 2, "2015届加行周二班2016年春季学期", "2015-12-01 19:00:00", "2016-05-31 22:00:00");
-INSERT INTO schedule_groups(class_id, course_group, name, start_time, end_time) VALUES (4, 2, "2015届加行周四班2016年春季学期", "2015-12-03 18:00:00", "2016-05-31 22:00:00");
-INSERT INTO schedule_groups(class_id, course_group, name, start_time, end_time) VALUES (5, 2, "2015届加行周六班2016年春季学期", "2015-12-05 11:00:00", "2016-05-31 22:00:00");
-INSERT INTO schedule_groups(class_id, course_group, name, start_time, end_time) VALUES (6, 3, "2015届净土班2016年春季学期", "2015-11-30 18:30:00", "2016-05-31 22:00:00");
+INSERT INTO schedule_groups(class_id, course_group, name, start_time, end_time) VALUES (2, 1, "2015届入行论周四班2016年春季学期", "2015-12-03 18:00:00", "2016-05-31 22:00:00");
+INSERT INTO schedule_groups(class_id, course_group, name, start_time, end_time) VALUES (3, 1, "2015届入行论周日班2016年春季学期", "2015-12-06 06:30:00", "2016-05-31 22:00:00");
+INSERT INTO schedule_groups(class_id, course_group, name, start_time, end_time) VALUES (4, 2, "2015届加行周二班2016年春季学期", "2015-12-01 19:00:00", "2016-05-31 22:00:00");
+INSERT INTO schedule_groups(class_id, course_group, name, start_time, end_time) VALUES (5, 2, "2015届加行周四班2016年春季学期", "2015-12-03 18:00:00", "2016-05-31 22:00:00");
+INSERT INTO schedule_groups(class_id, course_group, name, start_time, end_time) VALUES (6, 2, "2015届加行周六班2016年春季学期", "2015-12-05 11:00:00", "2016-05-31 22:00:00");
+INSERT INTO schedule_groups(class_id, course_group, name, start_time, end_time) VALUES (7, 3, "2015届净土班2016年春季学期", "2015-11-30 18:30:00", "2016-05-31 22:00:00");
                       
 CREATE TABLE schedules (
                       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
