@@ -1,0 +1,18 @@
+{   "nothing" : "<?php /* This makes the following content invisible for web access",
+	"test": {
+		"servername": "localhost",
+		"username": "root",
+		"password": "1234567890",
+		"dbname": "buddcourses",
+		"pet": "cat"
+	},
+	"production": {
+		"servername": "mysql.server.com",
+		"username": "mysql",
+		"password": "password",
+		"dbname": "buddcourses",
+		"pet": "dog",
+		"session_path": "/tmp"
+	},
+	"closing": "*/?>"
+}
