@@ -67,6 +67,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 		} elseif (!$email || $email == $user->email) {
 			$response = [$user];
 		}
+	} elseif ($resource_id == "learning_records" && !empty($_GET["class_id"])) {
+		$response = get_learning_records($_GET["class_id"]);
 	}
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
 	$resource_id = $_POST["rid"];

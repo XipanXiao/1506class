@@ -1,9 +1,10 @@
 define(['services'], function() {
 	return angular.module('LearningRecordsModule', ['ServicesModule'])
 		.controller('LearningRecordsController', function($scope, rpc) {
-
-			rpc.get_schedules(true).then(function(response) {
-				$scope.schedules = response.data;
+			$scope.$on('class-selected', function(event, classInfo) {
+				rpc.get_learning_records(classInfo.id).then(function(response) {
+					$scope.schedules_groups = response.data;
+				});
 			});
 		})
 		.directive('learningRecords',

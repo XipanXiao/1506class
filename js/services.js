@@ -86,6 +86,10 @@ define(function() {
 				}
 				
 				return $http.get(serviceUrl + "rid=users&email=" + email + "&class_id=" + class_id);
+			},
+			
+			get_learning_records: function(class_id) {
+				return $http.get(serviceUrl + "rid=learning_records&class_id=" + class_id);
 			}
 		};
 	});

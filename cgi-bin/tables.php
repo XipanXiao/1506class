@@ -139,6 +139,8 @@ function mixin($target, $source) {
 
 function keyed_by_id($rows) {
 	$result = array();
+
+	if (empty($rows)) return $result;
 	
 	foreach ($rows as $row) {
 		$result[$row["id"]] = $row;
@@ -200,6 +202,39 @@ function get_schedules($user, $with_records) {
 	foreach ($schedule_groups as $group_id => $group) {
 		$group["schedules"] = get_schedules_for_group($group, $schedule_records, $class_mates);
 		$schedule_groups[$group_id] = $group;
+	}
+	
+	return $schedule_groups;
+}
+
+function get_learning_records($class_id) {
+	global $medoo;
+	
+	$schedule_groups = $medoo->select("schedule_groups", ["id", "course_group"], ["class_id" => $class_id]);
+	for ($g = 0; $g < count($schedule_groups); $g++) {
+		$group = $schedule_groups[$g];
+		$sql = sprintf("select id from schedules where group_id=%d and open != 0;", $group["id"]);
+		$schedules = $medoo->query($sql)->fetchAll();
+		$courses = get_courses($group["course_group"]);
+		for ($i = 0;$i < count($schedules); $i++) {
+			$schedules[$i]["course_name"] = $courses[$i]["name"];
+		}
+		
+		$users = $medoo->select("users", ["id", "name"], ["class_id" => $class_id]);
+		foreach ($users as $user) {
+			$results = $medoo->select("schedule_records", "*", ["student_id" => $user["id"]]);
+			$records = [];
+			foreach ($results as $record) {
+				$records[$record["schedule_id"]] = $record;
+			}
+			
+			$user["records"] = $records;
+		}
+		
+		$group["schedules"] = $schedules;
+		$group["users"] = $users;
+		
+		$schedule_groups[$g] = $group;
 	}
 	
 	return $schedule_groups;

@@ -1,14 +1,18 @@
-<div class="css-table odd-even padded-element">
-	<div class="css-table-row header">
-		<div ng-repeat="schedule in schedules" class="css-table-cell">{{schedule.course_name}}
+<div ng-repeat="group in schedules_groups">
+	<div class="css-table odd-even padded-element">
+		<div class="css-table-row header">
+			<div ng-repeat="schedule in group.schedules" class="css-table-cell">
+				{{schedule.course_name}}
+			</div>
 		</div>
-	</div>
-
-	<div ng-repeat="user in users" class="css-table-row">
-		<div ng-repeat="record in learningRecords[user.id]">
-			<input type="checkbox" ng-model="record.attended">
-			<input type="checkbox" ng-model="record.video">
-			<input type="checkbox" ng-model="record.text">
+	
+		<div ng-repeat="user in group.users" class="css-table-row">
+			<div>{{user.name}}</div>
+			<div ng-repeat="schedule in group.schedules" class="css-table-cell">
+				<input type="checkbox">
+				<input type="checkbox">
+				<input type="checkbox">
+			</div>
 		</div>
 	</div>
 </div>
