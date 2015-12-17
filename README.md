@@ -103,9 +103,9 @@ Getting started to contribute
 2. Install [PHP](https://secure.php.net/) and [MySQL](https://www.mysql.com/). Modify your Apache configuration to enable PHP and MySQL. Restart Apache if necessary.
 3. Install a [github](https://github.com) client or command line tool.
 4. Install any IDE like [Eclipse](http://www.eclipse.org).
-5. Download the code using your github client, put it under your Apache's web home directory, e.g. /Users/xipanxiao/Sites.
-6. Find the 'data' directory from the root directory of the source code, find config.php, modify the MySQL connection information based on your setup.
-7. Launch a browser and browse to the path of 'index.html'. e.g. http://localhost/~xipanxiao/1506class/index.html.
+5. Download the code using your github client, put it under your Apache's web home directory, e.g. '/Users/xipanxiao/Sites'.
+6. Find the 'data' directory from the root directory of the source code, rename 'config.php.template' to 'config.php', modify the MySQL connection information based on your setup. Rename 'create_users.php.template' to 'create_users.php'.
+7. Launch a browser and navigate to the path of 'reset.php'. e.g. 'http://localhost/~xipanxiao/1506class/cgi-bin/reset.php'. Input the answer to the question (It is setup in 'config.php' as 'pet') and submit. This will create the MySQL database for you. Then browse to the path of 'index.html', e.g. 'http://localhost/~xipanxiao/1506class/index.html'.
 8. Pick any open [issues](https://github.com/XipanXiao/1506class/issues) and start work on it.
 9. Create a 'pull request' using your github client. I'll be informed to review your submission.
 
