@@ -170,6 +170,8 @@ CREATE TABLE users(
 				      	REFERENCES classes(id),
 			      mentor_id INT,
 			      permission INT,
+			      occupation TINYINT,
+			      education TINYINT,
                   start_year MEDIUMINT,
 			      notes VARCHAR(16));
 
@@ -364,12 +366,14 @@ CREATE TABLE task_records (
                  count MEDIUMINT, 
                  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                  );
+
+-- attended: 0 absent, 1 present, 2 vacation
 CREATE TABLE schedule_records (
                  student_id INT not null,
 				      INDEX student_id_idx(student_id),
                  schedule_id INT,
 				      INDEX schedule_id_idx(schedule_id),
-                 attended BOOLEAN,
+                 attended TINYINT,
                  video BOOLEAN, 
                  text BOOLEAN, 
                  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

@@ -12,22 +12,18 @@
 <body class="center wide-body">
 
 <app-bar ng-controller="AppBarController"></app-bar>
+<classes class="left" ng-controller="ClassesController" list-type="list"></classes>
 
 <paper-tabs noink selected="0">
   <paper-tab>学员名单</paper-tab>
-  <paper-tab>学修安排</paper-tab>
+  <paper-tab>考勤</paper-tab>
   <paper-tab>学修记录</paper-tab>
 </paper-tabs>
 
 <iron-pages selected="0">
-    <div>
-		<classes class="left" ng-controller="ClassesController" list-type="list"></classes>
-    	<users class="left padded-element" ng-controller="UsersController"></users>
-    </div>
-    <div>
-		<classes class="left" ng-controller="ClassesController" list-type="list"></classes>
-    	<learning-records ng-controller="LearningRecordsController"></learning-records>
-	</div>
+    <users class="left padded-element" ng-controller="UsersController"></users>
+    <learning-records ng-controller="LearningRecordsController" attendence="true"></learning-records>
+    <learning-records ng-controller="LearningRecordsController"></learning-records>
 </iron-pages>
 <script>
      var pages = document.querySelector('iron-pages');

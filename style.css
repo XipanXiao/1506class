@@ -166,3 +166,11 @@ hr {
 .inline {
 	display: inline-block;
 }
+
+.name-field {
+	width: 60px;
+}
+
+.learning-records {
+	width: 880px;
+}

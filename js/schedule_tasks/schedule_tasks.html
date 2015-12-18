@@ -20,8 +20,10 @@
 			<div class="css-table-cell">{{schedule.review}}</div>
 			<div class="css-table-cell">{{schedule.open}}</div>
 			<div class="css-table-cell">
-				<input type="checkbox" ng-model="schedule.attended" ng-click="reportTask(schedule)"
-					 ng-if="schedule.course_id != 0">
+				<select ng-options="attendOptions[value] for value in [0, 1, 2]"
+						ng-model="schedule.attended" ng-change="reportTask(schedule)"
+						ng-if="schedule.course_id != 0">
+				</select>
 			</div>
 			<div class="css-table-cell">
 				<input type="checkbox" ng-model="schedule.video" ng-click="reportTask(schedule)"

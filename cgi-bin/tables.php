@@ -82,19 +82,17 @@ function report_task($user_id, $task_id, $count) {
 }
 
 function convert_schedule_record($source, $string_to_int) {
-	$target = array();
-	
-	foreach (["attended", "video", "text"] as $task) {
+	foreach (["video", "text"] as $task) {
 		if (isset($source[$task])) {
 			if ($string_to_int) {
-				$target[$task] = $source[$task] == "true" ? 1 : 0;
+				$source[$task] = $source[$task] == "true" ? 1 : 0;
 			} else {
-				$target[$task] = $source[$task] == 1 ? true : false;
+				$source[$task] = $source[$task] == 1 ? true : false;
 			}
 		}
 	}
 	
-	return $target;
+	return $source;
 }
 
 function report_schedule_task($user_id, $schedule) {
@@ -213,15 +211,19 @@ function get_learning_records($class_id) {
 	$schedule_groups = $medoo->select("schedule_groups", ["id", "course_group"], ["class_id" => $class_id]);
 	for ($g = 0; $g < count($schedule_groups); $g++) {
 		$group = $schedule_groups[$g];
+		
 		$sql = sprintf("select id from schedules where group_id=%d and open != 0;", $group["id"]);
 		$schedules = $medoo->query($sql)->fetchAll();
+		
 		$courses = get_courses($group["course_group"]);
 		for ($i = 0;$i < count($schedules); $i++) {
 			$schedules[$i]["course_name"] = $courses[$i]["name"];
 		}
 		
 		$users = $medoo->select("users", ["id", "name"], ["class_id" => $class_id]);
-		foreach ($users as $user) {
+		for ($i = 0;$i < count($users); $i++) {
+			$user = $users[$i];
+			
 			$results = $medoo->select("schedule_records", "*", ["student_id" => $user["id"]]);
 			$records = [];
 			foreach ($results as $record) {
@@ -229,6 +231,7 @@ function get_learning_records($class_id) {
 			}
 			
 			$user["records"] = $records;
+			$users[$i] = $user;
 		}
 		
 		$group["schedules"] = $schedules;
