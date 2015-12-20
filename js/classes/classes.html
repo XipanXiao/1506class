@@ -1,7 +1,7 @@
 <div ng-switch="listType">
 	<div ng-switch-when="list" class="padded-element">
 		<div ng-repeat="classInfo in classes" class="selectable">
-			<div ng-click="selected(classInfo.id)" class="padded-element"
+			<div ng-click="selected(classInfo.id)" class="padded-element class-name"
 					ng-class="{'selected': selectedId == classInfo.id}">
 				{{classInfo.name}}
 			</div>

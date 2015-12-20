@@ -14,25 +14,28 @@
 <app-bar ng-controller="AppBarController"></app-bar>
 <classes class="left" ng-controller="ClassesController" list-type="list"></classes>
 
-<paper-tabs noink selected="0">
-  <paper-tab>学员名单</paper-tab>
-  <paper-tab>考勤</paper-tab>
-  <paper-tab>学修记录</paper-tab>
-</paper-tabs>
-
-<iron-pages selected="0">
-    <users class="left padded-element" ng-controller="UsersController"></users>
-    <learning-records ng-controller="LearningRecordsController" attendence="true"></learning-records>
-    <learning-records ng-controller="LearningRecordsController"></learning-records>
-</iron-pages>
-<script>
-     var pages = document.querySelector('iron-pages');
-     var tabs = document.querySelector('paper-tabs');
-
-    tabs.addEventListener('iron-select', function() { 
-        pages.selected = tabs.selected;
-    });
-</script>	
+<div class="left right-pannel">
+	<paper-tabs noink selected="0">
+	  <paper-tab>学员名单</paper-tab>
+	  <paper-tab>考勤</paper-tab>
+	  <paper-tab>学修记录</paper-tab>
+	</paper-tabs>
+	
+	<iron-pages selected="0">
+	    <users class="padded-element" ng-controller="UsersController"></users>
+	    <learning-records ng-controller="LearningRecordsController" attendence="true">
+	    </learning-records>
+	    <learning-records ng-controller="LearningRecordsController"></learning-records>
+	</iron-pages>
+	<script>
+	     var pages = document.querySelector('iron-pages');
+	     var tabs = document.querySelector('paper-tabs');
+	
+	    tabs.addEventListener('iron-select', function() { 
+	        pages.selected = tabs.selected;
+	    });
+	</script>
+</div>
 
 <script type="text/javascript" src="js/angular.js"></script>
 <script data-main="js/admin_app.js" src="js/require.js"></script>

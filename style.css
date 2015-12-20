@@ -1,7 +1,9 @@
 body {
-	background: rgb(241, 241, 241);
-    font-family: arial,sans-serif;
-    font-size: 14px;
+  background: rgb(241, 241, 241);
+  font-family: arial,sans-serif;
+  font-size: 14px;
+  width: 1280px;
+  overflow-x: scroll;
 }
 
 .center {
@@ -10,167 +12,186 @@ body {
 }
 
 .padded-element {
-    padding: 16px;
+  padding: 16px;
 }
 
 .app-bar {
-	background-color: #860200;
-	color: white;
-	height: 40px;
-	width: 100%;
-	font-size: 80%;
+  background-color: #860200;
+  color: white;
+  height: 40px;
+  width: 100%;
+  font-size: 80%;
 }
 
 a.app-bar-link {
-	color: white;
+  color: white;
 }
 
 div.page-container {
-	background: transparent;
-	width: 920px;	
+  background: transparent;
+  width: 920px;  
 }
 
 div.login-page {
-	background: transparent;
-	width: 400px;	
+  background: transparent;
+  width: 400px;  
 }
 
 tasks {
-	padding-top: 40px;
+  padding-top: 40px;
 }
 
 .white {
-	background: white;	
+  background: white;  
 }
 
 .vmargin {
-	margin: 16px 0;
+  margin: 16px 0;
 }
 
 .css-table {
-	display: table;
+  display: table;
 }
 
 .css-table.odd-even > div:nth-child(odd) {
-	background-color: #CCC;
+  background-color: #CCC;
 }
 
 .css-table-row {
-	display: table-row;
-	padding: 4px 0;
+  display: table-row;
+  padding: 4px 0;
 }
 
 .header {
-	background-color: gray !important;
-	color: white;
+  background-color: gray !important;
+  color: white;
 }
 
 .css-table > .header {
-	height: 40px;
+  height: 40px;
 }
 
 .css-table-cell {
-	display: table-cell;
-	padding: 4px 8px;
+  display: table-cell;
+  padding: 4px 8px;
 }
 
 .left {
-	float: left;
+  float: left;
 }
 
 .right {
-	float: right;	
+  float: right;  
 }
 
 .class-list {
-	width: 120px;
+  width: 124px;
 }
 
 .left-line {
-	border-left: 1px solid;	
+  border-left: 1px solid;  
 }
 
 .section-header {
-	height: 30px;	
+  height: 30px;  
 }
 
 .count-input {
-	width: 80px;
+  width: 80px;
 }
 
 input {
-	font-size: 80%;	
+  font-size: 80%;  
 }
 
 input[type="button"]:enabled,
 input[type="submit"]:enabled {
-    color: blue;
+  color: blue;
 }
 
 .hidden {
-	display: none;
+  display: none;
 }
 
 tasks {
-	width: 200px;	
+  width: 200px;  
 }
 
 schedule-tasks {
-	width: 630px;
+  width: 630px;
 }
 
 .register-form,
 .login-form {
-	width: 400px;
+  width: 400px;
 }
 
 .register-form input.css-table-cell,
 .login-form input.css-table-cell {
-	width: 200px;
-	margin: 4px 0;
+  width: 200px;
+  margin: 4px 0;
 }
 
 .vacation {
-	background-color: #860200 !important;
-	color: white;	
+  background-color: #860200 !important;
+  color: white;  
 }
 
 .selectable {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 .selected {
-	background-color: gray;
-	color: white;
+  background-color: gray;
+  color: white;
 }
 
 .schedule-tasks {
-	width: 690px;
+  width: 690px;
 }
 
 hr {
-	width: 100%;
+  width: 100%;
 }
 
 .user-info {
-	width: 400px;
+  width: 400px;
 }
 
 .separator {
-	border-right: 1px solid white;
-	display: inline;
-	height: 10px;	
-	margin: 0 4px;
+  border-right: 1px solid white;
+  display: inline;
+  height: 10px;  
+  margin: 0 4px;
 }
 
 .inline {
-	display: inline-block;
+  display: inline-block;
 }
 
 .name-field {
-	width: 60px;
+  width: 60px;
+  display: block;
 }
 
 .learning-records {
-	width: 880px;
+  width: 1000px;
+  overflow-x: scroll;
+}
+
+classes {
+  background: white;
+  height: 100%;
+}
+
+.class-name.selected {
+	margin: 0 -16px;
+}
+
+.right-panel {
+	width: 1000px;
+}
+
+paper-tabs {
+	width: 1000px;
 }
