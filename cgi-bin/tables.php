@@ -41,7 +41,7 @@ function get_users($email, $class_id = null) {
     $user = new User($row);
     $user->classInfo = $classes ? $classes[$user->classId] : null;
 
-    $users[$index] = $user;
+    $users[$user->id] = $user;
   }
   
   return $users;
@@ -174,10 +174,13 @@ function get_schedules_for_group($group, $schedule_records, $class_mates) {
       $schedule["open"] = "";
       $schedule["review"] = "";
     } else {
-      $schedule["open"] = $class_mates[$schedule["open"]]->name;
-      $schedule["review"] = 
-        $schedule["review"] == 0 ? "" : $class_mates[$schedule["review"]]->name;
-      
+    	$open = empty($class_mates[$schedule["open"]]) ?
+    			"" : $class_mates[$schedule["open"]]->name;
+      $schedule["open"] = $open;
+    	$review = empty($class_mates[$schedule["review"]]) ?
+    			"" : $class_mates[$schedule["review"]]->name;
+      $schedule["review"] = $review;
+
       $schedule["course_name"] = $courses[$index++]["name"];
     }
     
