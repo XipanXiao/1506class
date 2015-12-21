@@ -49,6 +49,15 @@ tasks {
   margin: 16px 0;
 }
 
+.section {
+  background: white;
+  border: 1px solid rgba(0,0,0,0.25);
+  border-radius: 4px;
+  margin: 16px;
+  max-height: 980px;
+  overflow: scroll;
+}
+
 .css-table {
   display: table;
 }
@@ -82,10 +91,6 @@ tasks {
 
 .right {
   float: right;  
-}
-
-.class-list {
-  width: 124px;
 }
 
 .left-line {
@@ -147,7 +152,10 @@ schedule-tasks {
 }
 
 .schedule-tasks {
-  width: 690px;
+  background: white;
+  border: 1px solid rgba(0,0,0,0.25);
+  border-radius: 4px;
+  width: 800px;
 }
 
 hr {
@@ -155,7 +163,10 @@ hr {
 }
 
 .user-info {
-  width: 400px;
+  background: white;
+  border: 1px solid rgba(0,0,0,0.25);
+  border-radius: 4px;
+	width: 400px;
 }
 
 .separator {
@@ -174,13 +185,15 @@ hr {
   display: block;
 }
 
-.learning-records {
+.learning-groups {
+  height: 1000px;
+  overflow: scroll;
   width: 1000px;
-  overflow-x: scroll;
 }
 
 classes {
-  background: white;
+  align-self: stretch;
+	background: white;
   height: 100%;
 }
 
@@ -194,4 +207,20 @@ classes {
 
 paper-tabs {
 	width: 1000px;
+}
+
+.flex {
+	display: flex;
+}
+
+.admin-page {
+	height: 1100px;
+	overflow-y: scroll;
+}
+
+.task {
+  background: white;
+  border: 1px solid rgba(0,0,0,0.25);
+  border-radius: 4px;
+  padding-bottom: 16px;
 }

@@ -1,6 +1,6 @@
-<div class="learning-records">
-	<div ng-repeat="group in schedules_groups">
-	  <div class="css-table odd-even padded-element">
+<div class="learning-groups">
+	<div ng-repeat="group in schedules_groups" class="section">
+	  <div class="css-table odd-even">
 	    <div class="css-table-row header">
 	      <div ng-if="group.schedules.length > 0" class="css-table-cell name-field"></div>
 	      <div ng-repeat="schedule in group.schedules" class="css-table-cell">

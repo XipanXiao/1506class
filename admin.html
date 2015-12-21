@@ -9,32 +9,34 @@
 <link rel="import" href="bower_components/iron-pages/iron-pages.html">
 </head>
 
-<body class="center wide-body">
+<body class="center">
 
 <app-bar ng-controller="AppBarController"></app-bar>
-<classes class="left" ng-controller="ClassesController" list-type="list"></classes>
-
-<div class="left right-pannel">
-	<paper-tabs noink selected="0">
-	  <paper-tab>学员名单</paper-tab>
-	  <paper-tab>考勤</paper-tab>
-	  <paper-tab>学修记录</paper-tab>
-	</paper-tabs>
+<div class="flex admin-page">
+	<classes class="class-list" ng-controller="ClassesController" list-type="list"></classes>
 	
-	<iron-pages selected="0">
-	    <users class="padded-element" ng-controller="UsersController"></users>
-	    <learning-records ng-controller="LearningRecordsController" attendence="true">
-	    </learning-records>
-	    <learning-records ng-controller="LearningRecordsController"></learning-records>
-	</iron-pages>
-	<script>
-	     var pages = document.querySelector('iron-pages');
-	     var tabs = document.querySelector('paper-tabs');
-	
-	    tabs.addEventListener('iron-select', function() { 
-	        pages.selected = tabs.selected;
-	    });
-	</script>
+	<div class="right-pannel">
+		<paper-tabs noink selected="0">
+		  <paper-tab>学员名单</paper-tab>
+		  <paper-tab>考勤</paper-tab>
+		  <paper-tab>学修记录</paper-tab>
+		</paper-tabs>
+		
+		<iron-pages selected="0">
+		    <users ng-controller="UsersController"></users>
+		    <learning-records ng-controller="LearningRecordsController" attendence="true">
+		    </learning-records>
+		    <learning-records ng-controller="LearningRecordsController"></learning-records>
+		</iron-pages>
+		<script>
+		     var pages = document.querySelector('iron-pages');
+		     var tabs = document.querySelector('paper-tabs');
+		
+		    tabs.addEventListener('iron-select', function() { 
+		        pages.selected = tabs.selected;
+		    });
+		</script>
+	</div>
 </div>
 
 <script type="text/javascript" src="js/angular.js"></script>

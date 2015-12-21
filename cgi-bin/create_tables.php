@@ -45,7 +45,7 @@ CREATE TABLE classes (
                       );
 
 -- id: 1. unassigned students are put temporarily here.
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (1, "默认基础班", "", "", 2015);
+INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (1, "新注册学员", "", "", 2015);
 INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (2, "2015入行论（周四）", "99343758", "", 2015);
 INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (2, "2015入行论（周日）", "99343758", "", 2015);
 INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (3, "2015加行（周二）", "99343758", "", 2015);

@@ -8,9 +8,18 @@ define(['services'], function() {
 						$scope.selectedId = id;
 						$rootScope.$broadcast('class-selected', $scope.classes[id]);
 					};
-					
-					$scope.selected(1);
+
+					$scope.selectUserClass();
 				});
+
+				$scope.selectUserClass = function(classId) {
+				  if (!$scope.selected || !$scope.classId) return;
+          $scope.selected($scope.classId);
+				}
+				$scope.$on('user-loaded', function(event, user) {
+				  $scope.classId = user.classId;
+          $scope.selectUserClass();
+	      });
 			})
 		.directive('classes', function() {
 			return {

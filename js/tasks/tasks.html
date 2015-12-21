@@ -1,5 +1,5 @@
-<div ng-repeat="task in tasks">
-	<div class="padded-element">
+<div ng-repeat="task in tasks" class="padded-element">
+	<div class="task">
 		<div class="header section-header">{{task.name}}</div>
 		<div ng-switch="task.lastRecord.sum">
 			<div ng-switch-when="0">暂时没有学修记录。</div>
