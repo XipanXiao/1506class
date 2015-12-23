@@ -20,19 +20,19 @@ class User {
 	public $classInfo;
 	
 	public function __construct($row) {
-		$this->id = $row["id"];
+		$this->id = intval($row["id"]);
 		$this->internalId = $row['internal_id'];
 		$this->name = $row['name']; 
 		$this->password = $row['password']; 
-		$this->sex = $row['sex']; 
+		$this->sex = intval($row['sex']); 
 		$this->nickname = $row['nickname']; 
 		$this->email = $row['email']; 
 		$this->phone = $row['phone']; 
 		$this->street = $row['street']; 
 		$this->im = $row['im']; 
-		$this->classId = $row['class_id']; 
-		$this->mentor = $row['mentor_id']; 
-		$this->permission = $row['permission']; 
+		$this->classId = intval($row['class_id']); 
+		$this->mentor = intval($row['mentor_id']); 
+		$this->permission = intval($row['permission']); 
 		$this->notes = $row['notes']; 
 	}
 	

@@ -1,96 +1,127 @@
 define(function() {
-	if (!String.prototype.format) {
-		String.prototype.format = function() {
-			var args = arguments;
-			return this.replace(/{(\d+)}/g, function(match, number) {
-				return typeof args[number] != 'undefined' ? args[number]
-						: match;
-			});
-		};
-	}
+  if (!String.prototype.format) {
+    String.prototype.format = function() {
+      var args = arguments;
+      return this.replace(/{(\d+)}/g, function(match, number) {
+        return typeof args[number] != 'undefined' ? args[number]
+            : match;
+      });
+    };
+  }
 
-	var serviceUrl = "cgi-bin/services.php?";
-	
-	function http_form_post($http, data) {
-		return $http({
-		    method: "POST",
-		    url: serviceUrl,
-		    data: data,
-		    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-		});
-	}
+  var userPromise;
+  var classMatesPromises = {};
+  var learningRecordsPromise = {};
+  var scheduleRecordsPromise = {};
+  var serviceUrl = 'cgi-bin/services.php';
+  
+  function http_form_post($http, data) {
+    return $http({
+        method: 'POST',
+        url: serviceUrl,
+        data: data,
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    });
+  }
 
-	return angular.module('ServicesModule', []).factory('rpc', function($http, 
-			$httpParamSerializerJQLike) {
-		return {
-			get_class_groups: function() {
-				return $http.get(serviceUrl + "rid=class_groups");
-			},
-		
-			get_classes: function(class_id) {
-				if (!class_id) {
-					class_id = '';
-				}
-				
-				return $http.get(serviceUrl + "rid=classes&class_id=" + class_id);
-			},
-		
-			report_task: function(task_id, count) {
-				var data = {"rid": "tasks", "task_id": task_id, "count": count};
-				return http_form_post($http, $httpParamSerializerJQLike(data));
-			},
-		
-			report_schedule_task: function(schedule) {
-				schedule.rid = "schedule_tasks";
-				return http_form_post($http, $httpParamSerializerJQLike(schedule));
-			},
-		
-			get_group_tasks: function() {
-				return $http.get(serviceUrl + "rid=tasks");
-			},
-		
-			get_last_task_record: function(task_id) {
-				return $http.get(serviceUrl + "rid=tasks&pos=last&task_id=" + task_id);
-			},
-			
-			get_schedules: function(with_records, class_id) {
-				if (!class_id) {
-					class_id = '';
-				}
-				
-				if (with_records != true) {
-					with_records = false;
-				}
-				
-				var url = "{0}rid=schedules&with_records={1}&class_id={2}"
-					.format(serviceUrl, with_records, class_id);
+  return angular.module('ServicesModule', []).factory('rpc', function($http, 
+      $httpParamSerializerJQLike) {
+    return {
+      get_class_groups: function() {
+        return $http.get(serviceUrl + '?rid=class_groups');
+      },
+    
+      get_classes: function(class_id) {
+        if (!class_id) {
+          class_id = '';
+        }
+        
+        return $http.get(serviceUrl + '?rid=classes&class_id=' + class_id);
+      },
+    
+      report_task: function(task_id, count) {
+        var data = {'rid': 'tasks', 'task_id': task_id, 'count': count};
+        return http_form_post($http, $httpParamSerializerJQLike(data));
+      },
+    
+      report_schedule_task: function(schedule) {
+        schedule.rid = 'schedule_tasks';
+        return http_form_post($http, $httpParamSerializerJQLike(schedule));
+      },
+    
+      get_group_tasks: function() {
+        return $http.get(serviceUrl + '?rid=tasks');
+      },
+    
+      get_last_task_record: function(task_id) {
+        return $http.get(serviceUrl + '?rid=tasks&pos=last&task_id=' + task_id);
+      },
+      
+      get_schedules: function(with_records, class_id) {
+        if (!class_id) {
+          class_id = '';
+        }
+        
+        if (with_records != true) {
+          with_records = false;
+        }
+        
+        if (class_id && scheduleRecordsPromise[class_id]) {
+          return scheduleRecordsPromise[class_id];
+        }
+        
+        var url = '{0}?rid=schedules&with_records={1}&class_id={2}'
+          .format(serviceUrl, with_records, class_id);
 
-				return $http.get(url);
-			},
+        var promise = $http.get(url);
+        if (class_id) scheduleRecordsPromise[class_id] = promise;
 
-			get_courses: function(group_id) {
-				if (!group_id) {
-					group_id = '';
-				}
-				
-				return $http.get(serviceUrl + "rid=courses&group_id=" + group_id);
-			},
-			
-			get_users: function(email, class_id) {
-				if (!email) {
-					email = '';
-				}
+        return promise;
+      },
 
-				if (!class_id) {
-					class_id = '';
-				}
-				
-				return $http.get(serviceUrl + "rid=users&email=" + email + "&class_id=" + class_id);
-			},
-			
-			get_learning_records: function(class_id) {
-				return $http.get(serviceUrl + "rid=learning_records&class_id=" + class_id);
-			}
-		};
-	});
+      get_courses: function(group_id) {
+        if (!group_id) {
+          group_id = '';
+        }
+        
+        return $http.get(serviceUrl + '?rid=courses&group_id=' + group_id);
+      },
+      
+      get_users: function(email, class_id) {
+        if (!email) {
+          email = '';
+        }
+
+        if (!class_id) {
+          class_id = '';
+        }
+
+        if (!email && !class_id && userPromise) return userPromise;
+        if (!email && class_id && classMatesPromises[class_id]) {
+          return classMatesPromises[class_id];
+        }
+        
+        var promise = $http.get('{0}?rid=users&email={1}&class_id={2}'.
+            format(serviceUrl, email, class_id));
+        if (!email && !class_id) {
+          userPromise = promise;
+        }
+        if (!email && class_id) {
+          classMatesPromises[class_id] = promise;
+        }
+        
+        return promise;
+      },
+      
+      get_learning_records: function(class_id) {
+        if (learningRecordsPromise[class_id]) {
+          return learningRecordsPromise[class_id];
+        }
+        
+        var url = "{0}?rid=learning_records&class_id={1}".
+            format(serviceUrl, class_id);
+        return learningRecordsPromise[class_id] = $http.get(url);
+      }
+    };
+  });
 });

@@ -224,3 +224,8 @@ paper-tabs {
   border-radius: 4px;
   padding-bottom: 16px;
 }
+
+iron-icon.small-icon {
+	width: 16px;
+	height: 16px;
+}

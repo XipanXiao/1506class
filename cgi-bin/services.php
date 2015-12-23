@@ -54,8 +54,10 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       $response = get_tasks($user->classInfo["department_id"]);
     }
   } elseif ($resource_id == "schedules") {
+    $class_id = empty($_GET["class_id"]) ? $user->classId : $_GET["class_id"];
     $with_records = isset($_GET["with_records"]) && $_GET["with_records"];
-    $response = get_schedules($user, $with_records);
+
+    $response = get_schedules($class_id, $with_records ? $user->id : null);
   } elseif ($resource_id == "courses") {
     $response = get_courses($class_id);
   } elseif ($resource_id == "users") {
