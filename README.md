@@ -100,7 +100,11 @@ Getting started to contribute
 -----------------------------
 ### Environment setup
 1. Install an [Apache](http://www.apache.org/) server if you don't have one. On some systems like Linux or Mac an Apache server might be pre-installed. Setup ([Mac](https://discussions.apple.com/docs/DOC-3083)) and launch it.
-2. Install [PHP](https://secure.php.net/) and [MySQL](https://www.mysql.com/). Modify your Apache configuration to enable PHP and MySQL. Restart Apache if necessary ([Mac](https://discussions.apple.com/docs/DOC-3082)).
+2. Install [PHP](https://secure.php.net/) and [MySQL](https://www.mysql.com/). Modify your Apache configuration to enable PHP and MySQL. Restart Apache if necessary ([Mac](https://discussions.apple.com/docs/DOC-3082)). Edit php.ini to enable the following two lines:
+```ini
+extension=php_mysqli.dll
+extension=php_pdo_mysql.dll
+```
 3. Install a [github](https://github.com) client or command line tool.
 4. Install any IDE like [Eclipse](http://www.eclipse.org).
 5. Download the code using your github client, put it under your Apache's web home directory, e.g. '/Users/xipanxiao/Sites'.
