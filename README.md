@@ -99,8 +99,8 @@ And with custom directives HTML code is separated from JavaScript as templates:
 Getting started to contribute
 -----------------------------
 ### Environment setup
-1. Install an [Apache](http://www.apache.org/) server if you don't have one. On some systems like Linux or Mac an Apache server might be pre-installed. Setup and launch it.
-2. Install [PHP](https://secure.php.net/) and [MySQL](https://www.mysql.com/). Modify your Apache configuration to enable PHP and MySQL. Restart Apache if necessary.
+1. Install an [Apache](http://www.apache.org/) server if you don't have one. On some systems like Linux or Mac an Apache server might be pre-installed. Setup ([Mac](https://discussions.apple.com/docs/DOC-3083)) and launch it.
+2. Install [PHP](https://secure.php.net/) and [MySQL](https://www.mysql.com/). Modify your Apache configuration to enable PHP and MySQL. Restart Apache if necessary ([Mac](https://discussions.apple.com/docs/DOC-3082)).
 3. Install a [github](https://github.com) client or command line tool.
 4. Install any IDE like [Eclipse](http://www.eclipse.org).
 5. Download the code using your github client, put it under your Apache's web home directory, e.g. '/Users/xipanxiao/Sites'.
@@ -108,10 +108,3 @@ Getting started to contribute
 7. Launch a browser and navigate to the path of 'reset.php'. e.g. 'http://localhost/~xipanxiao/1506class/cgi-bin/reset.php'. Input the answer to the question (It is setup in 'config.php' as 'pet') and submit. This will create the MySQL database for you. Then browse to the path of 'index.html', e.g. 'http://localhost/~xipanxiao/1506class/index.html'.
 8. Pick any open [issues](https://github.com/XipanXiao/1506class/issues) and start work on it.
 9. Create a 'pull request' using your github client. I'll be informed to review your submission.
-
-To hackers
-----------
-阿弥陀佛！如果您莅临本站，敬请高抬贵手，本站不盈利不作恶，是给五明佛学院的在线学员上课用的平台，一心服务大众。感恩！顶礼！
-Amitabha! 
-
-If you break into this site, please don't delete the data. This site is not profitable and it does no evil. It is a platform to maintain our learning records of the Wumin Buddhist College students. Thanks! Bow!
