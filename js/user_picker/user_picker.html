@@ -1,10 +1,10 @@
  <div ng-switch="showPicker">
-   <select ng-switch-when="true" ng-options="classMates[value].name for value in classMates"
-       ng-model="userName" ng-change="showPicker = false; selected()">
+   <select ng-switch-when="true" ng-model="selectedUser.name" ng-change="select()"
+      ng-options="name for name in users">
    </select>
-   <div ng-switch-default ng-switch="userName" ng-click="edit()" class="selectable">
-     <span ng-switch-when="null">{{userName}}</span>
-     <iron-icon ng-switch-default icon="editor:border-color" class="small-icon">
+   <div ng-switch-default ng-switch="selectedUser.name" ng-click="edit()" class="selectable">
+     <iron-icon ng-switch-when="null" icon="editor:border-color" class="small-icon">
      </iron-icon>
+     <span ng-switch-default>{{selectedUser.name}}</span>
    </div>
  </div>

@@ -49,6 +49,11 @@ define(function() {
         return http_form_post($http, $httpParamSerializerJQLike(schedule));
       },
     
+      update_schedule: function(schedule) {
+        schedule.rid = 'schedule';
+        return http_form_post($http, $httpParamSerializerJQLike(schedule));
+      },
+    
       get_group_tasks: function() {
         return $http.get(serviceUrl + '?rid=tasks');
       },
@@ -62,16 +67,12 @@ define(function() {
           class_id = '';
         }
         
-        if (with_records != true) {
-          with_records = false;
-        }
-        
         if (class_id && scheduleRecordsPromise[class_id]) {
           return scheduleRecordsPromise[class_id];
         }
         
         var url = '{0}?rid=schedules&with_records={1}&class_id={2}'
-          .format(serviceUrl, with_records, class_id);
+          .format(serviceUrl, with_records ? 1 : 0, class_id);
 
         var promise = $http.get(url);
         if (class_id) scheduleRecordsPromise[class_id] = promise;

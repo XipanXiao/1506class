@@ -4,7 +4,8 @@ define(['services'], function() {
       $scope.attendOptions = ['缺席', '出席', '请假'];
       $scope.$on('class-selected', function(event, classInfo) {
         rpc.get_learning_records(classInfo.id).then(function(response) {
-          $scope.schedules_groups = response.data;
+          $scope.schedules_groups = response.data.groups;
+          $scope.users = response.data.users;
           $scope.attendence = $attrs.attendence;
         });
       });

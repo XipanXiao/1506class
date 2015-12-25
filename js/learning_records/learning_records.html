@@ -3,13 +3,15 @@
 	  <div class="css-table odd-even">
 	    <div class="css-table-row header">
 	      <div ng-if="group.schedules" class="css-table-cell name-field"></div>
-	      <div ng-repeat="schedule in group.schedules" class="css-table-cell">
+	      <div ng-repeat="schedule in group.schedules" ng-if="schedule.course_id"
+	          class="css-table-cell">
 	        {{schedule.course_name}}
 	      </div>
 	    </div>
-	    <div ng-repeat="user in group.users" class="css-table-row">
+	    <div ng-repeat="user in users" class="css-table-row">
 	      <div class="css-table-cell name-field">{{user.name}}</div>
-	      <div ng-repeat="schedule in group.schedules" class="css-table-cell">
+	      <div ng-repeat="schedule in group.schedules" ng-if="schedule.course_id"
+	          class="css-table-cell">
 	        <div ng-switch="attendence">
 	          <div ng-switch-when="true">
 	            <select ng-options="attendOptions[value] for value in [0, 1, 2]"

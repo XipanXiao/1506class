@@ -88,6 +88,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = ["sum" => task_sum($task_user_id, $task_id)];
   } elseif ($resource_id == "schedule_tasks") {
     $response = ["updated" => report_schedule_task($task_user_id, $_POST)];
+  } elseif ($resource_id == "schedule") {
+    $response = ["updated" => update_schedule($_POST)];
   }
 }
 

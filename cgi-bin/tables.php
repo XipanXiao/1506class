@@ -15,7 +15,7 @@ function get_classes($class_id) {
   global $medoo;
   
   return keyed_by_id($medoo->select("classes", "*",
-  		$class_id ? ["id" => $class_id] : null));
+      $class_id ? ["id" => $class_id] : null));
 }
 
 function get_courses($course_group_id) {
@@ -31,7 +31,7 @@ function get_users($email, $class_id = null) {
   if ($class_id) {
     $result = $medoo->select("users", "*", ["class_id" => $class_id]);
   } elseif ($email){
-  	$result = $medoo->select("users", "*", ["email" => $email]);
+    $result = $medoo->select("users", "*", ["email" => $email]);
   }
 
   $classes = $email ? get_classes($result[0]["class_id"]) : null;
@@ -62,7 +62,7 @@ function task_sum($user_id, $task_id) {
   global $medoo;
   
   $sql = sprintf("SELECT sum(count) FROM task_records".
-  		" WHERE student_id=%d AND task_id=%d;", $user_id, $task_id);
+      " WHERE student_id=%d AND task_id=%d;", $user_id, $task_id);
   $sum = current(current($medoo->query($sql)->fetchAll()));
   return $sum == null ? 0 : $sum;
 }
@@ -123,7 +123,7 @@ function get_schedule_records($user_id) {
   global $medoo;
 
   $records = $medoo->select("schedule_records", "*",
-  		["student_id" => $user_id]);
+      ["student_id" => $user_id]);
   
   $result = array();
   foreach ($records as $record) {
@@ -153,12 +153,12 @@ function keyed_by_id($rows, $id_key = "id") {
   return $result;
 }
 
-function get_schedules_for_group($group, $schedule_records, $class_mates) {
+function get_schedules_for_group($group, $schedule_records) {
   global $medoo;
 
   $group_id = $group["id"];
   $schedules = keyed_by_id($medoo->select("schedules", "*",
-  		["group_id" => $group_id]));
+      ["group_id" => $group_id]));
   $courses = get_courses($group["course_group"]);
 
   $a_week = date_interval_create_from_date_string("7 days");
@@ -170,20 +170,8 @@ function get_schedules_for_group($group, $schedule_records, $class_mates) {
     $start_time = $start_time->add($a_week);
     $course_id = intval($schedule["course_id"]);
     $schedule["course_id"] = $course_id;
-    if ($course_id == 0) {
-      $schedule["course_name"] = "放假";
-      $schedule["open"] = "";
-      $schedule["review"] = "";
-    } else {
-    	$open = empty($class_mates[$schedule["open"]]) ?
-    			"" : $class_mates[$schedule["open"]]->name;
-      $schedule["open"] = $open;
-    	$review = empty($class_mates[$schedule["review"]]) ?
-    			"" : $class_mates[$schedule["review"]]->name;
-      $schedule["review"] = $review;
-
-      $schedule["course_name"] = $courses[$course_id]["name"];
-    }
+    $schedule["course_name"] =
+        $course_id == 0 ? "放假" : $courses[$course_id]["name"];
     
     $schedules[$schedule_id] = $schedule;
   }
@@ -200,66 +188,80 @@ function get_schedules_for_group($group, $schedule_records, $class_mates) {
   return $schedules;
 }
 
+function get_user_names($class_id) {
+  global $medoo;
+
+  $users = $medoo->select("users", ["id", "name"], ["class_id" => $class_id]);
+  $result = [];
+  
+  foreach ($users as $user) {
+    $result[intval($user["id"])] = $user["name"];
+  }
+  
+  return $result;
+}
+
 function get_schedules($class_id, $user_id) {
   global $medoo;
   
   date_default_timezone_set("America/Los_Angeles");
   
   $schedule_groups =
-  		keyed_by_id($medoo->select("schedule_groups", "*",
-  				["class_id" => $class_id]));
+      keyed_by_id($medoo->select("schedule_groups", "*",
+          ["class_id" => $class_id]));
   $schedule_records = $user_id ? get_schedule_records($user_id) : null;
-  $class_mates = get_users(null, $class_id);
   
   foreach ($schedule_groups as $group_id => $group) {
     $group["schedules"] =
-    		get_schedules_for_group($group, $schedule_records, $class_mates);
+        get_schedules_for_group($group, $schedule_records);
     $schedule_groups[$group_id] = $group;
   }
   
-  return $schedule_groups;
+  return ["groups" => $schedule_groups, "users" => get_user_names($class_id)];
 }
 
 function get_learning_records($class_id) {
   global $medoo;
   
   $schedule_groups =
-  		$medoo->select("schedule_groups", ["id", "course_group"],
-  				["class_id" => $class_id]);
-  for ($g = 0; $g < count($schedule_groups); $g++) {
-    $group = $schedule_groups[$g];
-    
-    $sql =
-    		sprintf("select id, course_id from schedules where group_id=%d".
-    				" and course_id != 0;", $group["id"]);
-    $schedules = keyed_by_id($medoo->query($sql)->fetchAll());
+      keyed_by_id($medoo->select("schedule_groups",
+          ["id", "course_group", "class_id"], ["class_id" => $class_id]));
+
+  foreach ($schedule_groups as $group_id => $group) {
+    $schedules = keyed_by_id($medoo->select("schedules", "*",
+        ["group_id" => $group_id]));
     
     $courses = get_courses($group["course_group"]);
     foreach ($schedules as $schedule) {
-    	$course_id = intval($schedule["course_id"]);
-    	$schedule["course_id"] = $course_id;
-      $schedule["course_name"] = $courses[$course_id]["name"];
+      $course_id = intval($schedule["course_id"]);
+      $schedule["course_id"] = $course_id;
+      $schedule["course_name"] = $course_id ? $courses[$course_id]["name"] : "";
       $schedules[$schedule["id"]] = $schedule;
     }
     
-    $users = $medoo->select("users", ["id", "name"], ["class_id" => $class_id]);
-    for ($i = 0;$i < count($users); $i++) {
-      $user = $users[$i];
-      
-      $records =
-      		keyed_by_id($medoo->select("schedule_records", "*",
-      				["student_id" => $user["id"]]), "schedule_id");
-      
-      $user["records"] = array_map("convert_schedule_record", $records);
-      $users[$i] = $user;
-    }
-    
     $group["schedules"] = $schedules;
-    $group["users"] = $users;
-    
-    $schedule_groups[$g] = $group;
+    $schedule_groups[$group_id] = $group;
   }
   
-  return $schedule_groups;
+  $users =
+      keyed_by_id($medoo->select("users", ["id", "name"],
+          ["class_id" => $class_id]));
+  foreach ($users as $user_id => $user) {
+    $records =
+        keyed_by_id($medoo->select("schedule_records", "*",
+            ["student_id" => $user_id]), "schedule_id");
+      
+    $user["records"] = array_map("convert_schedule_record", $records);
+    $users[$user_id] = $user;
+  }
+      
+  return ["groups" => $schedule_groups, "users" => $users ];
+}
+
+function update_schedule($schedule) {
+  global $medoo;
+
+  return $medoo->update("schedules", ["open" => intval($schedule["open"]),
+      "review" => intval($schedule["review"])], ["id" => $schedule["id"]]);
 }
 ?>

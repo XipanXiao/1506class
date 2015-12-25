@@ -1,34 +1,32 @@
 define(['services'], function() {
 	return angular.module('UserPickerModule', ['ServicesModule'])
 		.directive('userPicker', function(rpc) {
+		  var indexOf = function(map, obj) {
+		    for (var key in map) {
+		      if (obj == map[key]) return key;
+		    }
+		    
+		    return null;
+		  };
+		  
 			return {
-//			  scope: {
-//          user: '='
-//        },
-			  link: function($scope, $attrs) {
+			  scope: {
+			    onChange: '=',
+          userId: '=',
+          users: '='
+        },
+			  link: function($scope) {
 		      $scope.showPicker = false;
-		      $scope.userName = $attrs.userName;
-		      console.log($attrs.classId);
+		      $scope.selectedUser = {name: $scope.users[$scope.userId]};
 
 		      $scope.edit = function() {
-		        if ($scope.classMates) {
-		          $scope.showPicker = true;
-		        } else {
-		          rpc.get_users(null, $attrs.classId).then(function(response) {
-		            console.log(response.data);
-		            $scope.classMates = response.data;//{};
-//		            for (var key in response.data) {
-//		              var user = response.data[key];
-//		              $scope.classMates[user.id] = user.name;
-//		            }
-		            
-		            $scope.showPicker = true;
-		          });
-		        }
+		        $scope.showPicker = true;
 		      };
 		      
-		      $scope.selected = function() {
-		        console.log($scope.userName);
+		      $scope.select = function() {
+		        $scope.userId = indexOf($scope.users, $scope.selectedUser.name);
+		        if ($scope.onChange) $scope.onChange();
+		        $scope.showPicker = false;
 		      };
 		    },
 				templateUrl : 'js/user_picker/user_picker.html'

@@ -17,8 +17,8 @@
       <div class="css-table-cell">{{$index + 1}}</div>
       <div class="css-table-cell">{{schedule.dt}}</div>
       <div class="css-table-cell">{{schedule.course_name}}</div>
-      <div class="css-table-cell">{{schedule.review}}</div>
-      <div class="css-table-cell">{{schedule.open}}</div>
+      <div class="css-table-cell">{{users[schedule.review]}}</div>
+      <div class="css-table-cell">{{users[schedule.open]}}</div>
       <div class="css-table-cell">
         <select ng-options="attendOptions[value] for value in [0, 1, 2]"
             ng-model="schedule.attended" ng-change="reportTask(schedule)"
