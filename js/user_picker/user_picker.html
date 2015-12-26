@@ -2,8 +2,8 @@
    <select ng-switch-when="true" ng-model="selectedUser.name" ng-change="select()"
       ng-options="name for name in users">
    </select>
-   <div ng-switch-default ng-switch="selectedUser.name" ng-click="edit()" class="selectable">
-     <iron-icon ng-switch-when="null" icon="editor:border-color" class="small-icon">
+   <div ng-switch-default ng-switch="!selectedUser.name" ng-click="edit()" class="selectable">
+     <iron-icon ng-switch-when="true" icon="editor:border-color" class="small-icon">
      </iron-icon>
      <span ng-switch-default>{{selectedUser.name}}</span>
    </div>

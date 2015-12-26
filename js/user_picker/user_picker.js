@@ -11,7 +11,7 @@ define(['services'], function() {
 		  
 			return {
 			  scope: {
-			    onChange: '=',
+			    userPicked: '&',
           userId: '=',
           users: '='
         },
@@ -25,7 +25,7 @@ define(['services'], function() {
 		      
 		      $scope.select = function() {
 		        $scope.userId = indexOf($scope.users, $scope.selectedUser.name);
-		        if ($scope.onChange) $scope.onChange();
+		        if ($scope.userPicked) $scope.userPicked({userId: $scope.userId});
 		        $scope.showPicker = false;
 		      };
 		    },

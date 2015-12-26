@@ -10,7 +10,8 @@ define(['services', 'user_picker/user_picker'], function() {
 	      });
       });
 			
-      $scope.update = function(schedule) {
+      $scope.update = function(schedule, key, value) {
+        schedule[key] = value;
         rpc.update_schedule(schedule);
       };
 		})

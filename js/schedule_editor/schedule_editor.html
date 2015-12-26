@@ -15,12 +15,13 @@
       <div class="css-table-cell">{{schedule.dt}}</div>
       <div class="css-table-cell">{{schedule.course_name}}</div>
       <div class="css-table-cell">
-        <user-picker ng-if="schedule.course_id" user-id="schedule.review" users="users">
+        <user-picker ng-if="schedule.course_id" user-id="schedule.review" users="users"
+            user-picked="update(schedule, 'review', userId)">
         </user-picker>
       </div>
       <div class="css-table-cell">
         <user-picker ng-if="schedule.course_id" user-id="schedule.open" users="users"
-            on-change="alert('a')">
+            user-picked="update(schedule, 'open', userId)">
         </user-picker>
       </div>
     </div>
