@@ -52,6 +52,12 @@ INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (
 INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (3, "2015加行（周四）", "99343758", "", 2015);
 INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (3, "2015加行（周六）", "99343758", "", 2015);
 INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (4, "2015净土（周一）", "99343758", "", 2015);
+INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (2, "微信入行论", "99343758", "", 2015);  -- 8
+INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (3, "微信加行", "99343758", "", 2015);  -- 9
+INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (4, "微信净土", "99343758", "", 2015);  -- 10
+
+INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (2, "2014入行论", "99343758", "", 2014); -- 11
+INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (3, "2014加行", "99343758", "", 2014); -- 12
 
 CREATE TABLE course_groups(
       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,

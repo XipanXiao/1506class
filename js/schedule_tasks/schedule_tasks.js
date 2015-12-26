@@ -7,7 +7,7 @@ define(['services'], function() {
 			};
 			
 			rpc.get_schedules(true).then(function(response) {
-				$scope.schedule_groups = response.data;
+				$scope.schedule_groups = response.data.groups;
 				$scope.users = response.data.users;
 			});
 			
