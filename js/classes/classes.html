@@ -1,3 +1,7 @@
+<div class="center padded-element">
+	<select ng-options="year for year in years" ng-model="year" ng-update="yearChanged()">
+	</select>
+</div>
 <div ng-switch="listType">
 	<div ng-switch-when="list" class="padded-element">
 		<div ng-repeat="classInfo in classes" class="selectable">
