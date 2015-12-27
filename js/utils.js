@@ -30,6 +30,14 @@ define(function() {
         
         return result;
       },
+      map: function(arr, callback) {
+        var result = [];
+        for (var key in arr) {
+          result.push(callback(arr[key]));
+        }
+        
+        return result;
+      },
       groupBy: function(arr, key) {
         var groups = {};
         for (var idx in arr) {
@@ -37,10 +45,10 @@ define(function() {
           var value = item[key];
           var group = groups[value];
           if (!group) {
-            group = groups[value] = [];
+            group = groups[value] = {};
           }
           
-          group.push(item);
+          group[idx] = item;
         }
         
         return groups;

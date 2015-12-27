@@ -166,7 +166,16 @@ hr {
   background: white;
   border: 1px solid rgba(0,0,0,0.25);
   border-radius: 4px;
-	width: 400px;
+  width: 400px;
+}
+
+.user-info-editor {
+  background: white;
+  border: 1px solid rgba(0,0,0,0.25);
+  border-radius: 4px;
+  margin-left: 16px;
+  padding: 16px;
+  width: 300px;
 }
 
 .separator {

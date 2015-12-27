@@ -1,19 +1,21 @@
-<div class="center padded-element">
-	<select ng-options="year for year in years" ng-model="year" ng-update="yearChanged()">
-	</select>
-</div>
 <div ng-switch="listType">
 	<div ng-switch-when="list" class="padded-element">
+		<div class="center padded-element">
+		  <select ng-options="year for year in years" ng-model="year" ng-update="yearChanged()">
+		  </select>
+		</div>
 		<div ng-repeat="classInfo in classes" class="selectable">
-			<div ng-click="selected(classInfo.id)" class="padded-element class-name"
-					ng-class="{'selected': selectedId == classInfo.id}">
+			<div ng-click="selected(classInfo)" class="padded-element class-name"
+					ng-class="{'selected': selectedClass.id == classInfo.id}">
 				{{classInfo.name}}
 			</div>
 		</div>
 	</div>
 	<div ng-switch-default>
-		<select>
-			<option ng-repeat="classInfo in classes" value="{{classInfo.id}}">{{classInfo.name}}</option>
+     <select ng-options="year for year in years" ng-model="year" ng-update="yearChanged()">
+     </select>
+		<select ng-options="value.name for value in classes" ng-model="selectedClass"
+		    ng-change="selected(selectedClass)">
 		</select>
 	</div>
 </div>

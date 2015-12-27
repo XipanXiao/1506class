@@ -122,6 +122,11 @@ define(function() {
         var url = "{0}?rid=learning_records&class_id={1}".
             format(serviceUrl, class_id);
         return learningRecordsPromise[class_id] = $http.get(url);
+      },
+      
+      update_user: function(user) {
+        user.rid = 'user';
+        return http_form_post($http, $httpParamSerializerJQLike(user));
       }
     };
   });
