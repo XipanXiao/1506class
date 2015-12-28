@@ -28,7 +28,11 @@
 	    </div>
 	    <div class="css-table-row padded-element">
 	      <div class="css-table-cell">地址</div>
-	      <div class="css-table-cell">{{user.street}}</div>
+	      <div class="css-table-cell">
+         <div>{{user.street}}</div>
+         <div>{{user.street1}}</div>
+         <div>{{user.city}} {{user.State}} {{user.zip}}</div>
+	     </div>
 	      <div class="css-table-cell">
           <iron-icon class="selectable" icon="chevron-right" ng-click="editing = 'address'">
           </iron-icon>
