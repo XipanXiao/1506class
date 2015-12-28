@@ -1,6 +1,7 @@
-define(['services', 'classes/classes'], function() {
-	return angular.module('UserModule', ['ServicesModule', 'ClassesModule'])
-		.controller('UserController', function($scope, rpc) {
+define(['services', 'utils', 'classes/classes'], function() {
+	return angular.module('UserModule', ['ServicesModule', 'ClassesModule',
+      'UtilsModule'])
+		.controller('UserController', function($scope, rpc, utils) {
 		  $scope.sexLabel = ['女', '男'];
 			$scope.$on('user-loaded', function(event, user) {
 				$scope.user = user;
@@ -11,7 +12,7 @@ define(['services', 'classes/classes'], function() {
 			};
 			
       $scope.admining = window.location.href.indexOf('admin.html') > 0;
-      $scope.states = {
+      $scope.stateMap = {
           "AL": "Alabama",
           "AK": "Alaska",
           "AS": "American Samoa",
@@ -72,6 +73,8 @@ define(['services', 'classes/classes'], function() {
           "WI": "Wisconsin",
           "WY": "Wyoming"
       };
+      
+      $scope.states = utils.keys($scope.stateMap);
 		})
 		.directive('user', function() {
 			return {

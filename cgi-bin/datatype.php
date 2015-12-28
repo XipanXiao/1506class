@@ -29,6 +29,11 @@ class User {
 		$this->email = $row['email']; 
 		$this->phone = $row['phone']; 
 		$this->street = $row['street']; 
+		$this->street1 = $row['street1']; 
+		$this->city = $row['city']; 
+		$this->state = $row['state']; 
+		$this->zip = $row['zip']; 
+		$this->birthday = $row['birthday']; 
 		$this->im = $row['im']; 
 		$this->classId = intval($row['class_id']); 
 		$this->mentor = intval($row['mentor_id']); 
@@ -47,7 +52,12 @@ class User {
 		$row['nickname'] = $this->nickname;
 		$row['email'] = $this->email;
 		$row['phone'] = $this->phone;
-		$row['address'] = $this->address;
+		$row['street'] = $this->street; 
+		$row['street1'] = $this->street1; 
+		$row['city'] = $this->city; 
+		$row['state'] = $this->state; 
+		$row['zip'] = $this->zip; 
+		$row['birthday'] = $this->birthday; 
 		$row['yy'] = $this->yy;
 		$row['qq'] = $this->qq;
 		$row['wechat'] = $this->wechat;
