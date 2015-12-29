@@ -21,7 +21,7 @@
 	      <div class="css-table-cell">班级</div>
 	      <div class="css-table-cell">{{user.classInfo.name}}</div>
 	      <div class="css-table-cell">
-          <iron-icon class="selectable" icon="chevron-right" ng-click="editing = 'class'"
+          <iron-icon class="selectable" icon="chevron-right" ng-click="editing = 'class_id'"
               ng-if="admining">
           </iron-icon>
 	      </div>          
@@ -30,7 +30,7 @@
 	      <div class="css-table-cell">地址</div>
 	      <div class="css-table-cell">
          <div>{{user.street}}</div>
-         <div>{{user.street1}}</div>
+         <div>{{user.street2}}</div>
          <div>{{user.city}} {{user.state}} {{user.zip}}</div>
 	     </div>
 	      <div class="css-table-cell">
@@ -48,7 +48,7 @@
 	      <select ng-switch-when="sex" ng-model="user.sex" autofocus
 	          ng-options="sexLabel[value] for value in [0, 1]">
 	      </select>
-	      <classes ng-switch-when="class" class-id="user.classId"></classes>
+	      <classes ng-switch-when="class_id" class-id="user.classId"></classes>
 	      <div ng-switch-when="address" class="css-table">
           <div class="css-table-row">
             <div class="css-table-cell"><label for="street">Street</label></div>
@@ -57,8 +57,8 @@
             </div>
           </div>
           <div class="css-table-row">
-            <div class="css-table-cell"><label for="street1">Street 2</label></div>
-            <div class="css-table-cell"><input type="text" id="street1" ng-model="user.street1"></div>
+            <div class="css-table-cell"><label for="street2">Street 2</label></div>
+            <div class="css-table-cell"><input type="text" id="street2" ng-model="user.street2"></div>
           </div>
           <div class="css-table-row">
             <div class="css-table-cell"><label for="city">City</label></div>
@@ -74,7 +74,7 @@
           <div class="css-table-row">
             <div class="css-table-cell"><label for="zip">Zip code</label></div>
             <div class="css-table-cell">
-              <input type="text" id="zip" pattern="[\d]{5}(-[\d]{4})" ng-model="user.zip">
+              <input type="text" id="zip" pattern="[0-9]{5}(-[0-9]{4})?" ng-model="user.zip">
             </div>
           </div>
 	      </div>

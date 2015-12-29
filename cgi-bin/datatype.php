@@ -29,7 +29,7 @@ class User {
 		$this->email = $row['email']; 
 		$this->phone = $row['phone']; 
 		$this->street = $row['street']; 
-		$this->street1 = $row['street1']; 
+		$this->street2 = $row['street2']; 
 		$this->city = $row['city']; 
 		$this->state = $row['state']; 
 		$this->zip = $row['zip']; 
@@ -53,7 +53,7 @@ class User {
 		$row['email'] = $this->email;
 		$row['phone'] = $this->phone;
 		$row['street'] = $this->street; 
-		$row['street1'] = $this->street1; 
+		$row['street2'] = $this->street2; 
 		$row['city'] = $this->city; 
 		$row['state'] = $this->state; 
 		$row['zip'] = $this->zip; 

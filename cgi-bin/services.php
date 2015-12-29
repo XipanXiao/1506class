@@ -90,6 +90,13 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = ["updated" => report_schedule_task($task_user_id, $_POST)];
   } elseif ($resource_id == "schedule") {
     $response = ["updated" => update_schedule($_POST)];
+  } elseif ($resource_id == "user") {
+  	$result = update_user($_POST);
+  	if ($result) {
+  		//$user = mixin($user, $_POST);
+  	}
+
+  	$response = ["updated" => $result];
   }
 }
 

@@ -191,7 +191,7 @@ CREATE TABLE users(
 			      occupation VARCHAR(32),
 			      education TINYINT,
             start_year MEDIUMINT,
-            birthday VARCHAR(10),
+            birthday DATETIME,
 			      notes VARCHAR(16));
 
 CREATE TABLE schedule_groups (

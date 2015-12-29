@@ -47,6 +47,25 @@ function get_users($email, $class_id = null) {
   return $users;
 }
 
+function update_user($user) {
+	global $medoo;
+
+	$datas = [];
+	
+	$int_fields = ["sex", "class_id", "mentor", "permission"];
+	$ignore_fields = ["id", "rid"];
+	
+	foreach ($user as $key => $value) {
+		if (in_array($key, $int_fields)) {
+			$datas[$key] = intval($value);
+		} elseif (!in_array($key, $ignore_fields)) {
+			$datas[$key] = $value;
+		}
+	}
+	
+	return $medoo->update("users", $datas, ["id" => intval($user["id"])]);
+}
+
 function get_last_task_record($user_id, $task_id) {
   global $medoo;
   

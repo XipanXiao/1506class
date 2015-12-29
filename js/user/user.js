@@ -3,12 +3,32 @@ define(['services', 'utils', 'classes/classes'], function() {
       'UtilsModule'])
 		.controller('UserController', function($scope, rpc, utils) {
 		  $scope.sexLabel = ['女', '男'];
-			$scope.$on('user-loaded', function(event, user) {
+
+      $scope.$on('user-loaded', function(event, user) {
 				$scope.user = user;
 			});
 			
 			$scope.save = function() {
-			  rpc.update_user($scope.user);
+			  var user = $scope.user;
+        var data = {id: user.id};
+			  switch ($scope.editing) {
+        case 'name':
+        case 'sex':
+        case 'class_id':
+          data[$scope.editing] = user[$scope.editing];
+          break;
+        case 'address':
+          data.street = user.street;
+          data.street2 = user.street2;
+          data.city = user.city;
+          data.state = user.state;
+          data.zip = user.zip;
+          break;
+        default:
+          return;
+			  }
+			  
+			  rpc.update_user(data);
 			};
 			
       $scope.admining = window.location.href.indexOf('admin.html') > 0;
