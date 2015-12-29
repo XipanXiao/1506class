@@ -12,11 +12,6 @@ define(['services', 'utils', 'classes/classes'], function() {
 			  var user = $scope.user;
         var data = {id: user.id};
 			  switch ($scope.editing) {
-        case 'name':
-        case 'sex':
-        case 'class_id':
-          data[$scope.editing] = user[$scope.editing];
-          break;
         case 'address':
           data.street = user.street;
           data.street2 = user.street2;
@@ -25,7 +20,8 @@ define(['services', 'utils', 'classes/classes'], function() {
           data.zip = user.zip;
           break;
         default:
-          return;
+          data[$scope.editing] = user[$scope.editing];
+          break;
 			  }
 			  
 			  rpc.update_user(data);

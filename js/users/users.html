@@ -1,14 +1,17 @@
-<div class="css-table section odd-even">
-	<div class="css-table-row header">
-		<div class="css-table-cell"><strong>姓名</strong></div>
-		<div class="css-table-cell"><strong>性别</strong></div>
-		<div class="css-table-cell"><strong>电子邮件</strong></div>
-		<div class="css-table-cell"><strong>电话</strong></div>
+<div class="flex">
+	<div class="css-table section odd-even">
+		<div class="css-table-row header">
+			<div class="css-table-cell"><strong>姓名</strong></div>
+			<div class="css-table-cell"><strong>性别</strong></div>
+			<div class="css-table-cell"><strong>电子邮件</strong></div>
+			<div class="css-table-cell"><strong>电话</strong></div>
+		</div>
+		<div ng-repeat="user in users" class="css-table-row selectable" ng-click="showInfo(user)">
+			<div class="css-table-cell">{{user.name}}</div>
+			<div class="css-table-cell">{{user.sex == '1' ? '男' : '女'}}</div>
+			<div class="css-table-cell">{{user.email}}</div>
+			<div class="css-table-cell"><strong>{{user.phone}}</strong></div>
+		</div>
 	</div>
-	<div ng-repeat="user in users" class="css-table-row selectable">
-		<div class="css-table-cell">{{user.name}}</div>
-		<div class="css-table-cell">{{user.sex == '1' ? '男' : '女'}}</div>
-		<div class="css-table-cell">{{user.email}}</div>
-		<div class="css-table-cell"><strong>{{user.phone}}</strong></div>
-	</div>
+  <user ng-if="user" ng-controller="UserController"></user>
 </div>
