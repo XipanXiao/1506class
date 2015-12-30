@@ -114,6 +114,16 @@ define(function() {
         return promise;
       },
       
+      get_user: function(email) {
+        return this.get_users(email).then(function(response) {
+          if (response.data.error == "login needed") {
+            window.location.href = "./login.html";
+          } else {
+            return response.data && response.data[0];
+          }
+        });
+      },
+      
       get_learning_records: function(class_id) {
         if (learningRecordsPromise[class_id]) {
           return learningRecordsPromise[class_id];

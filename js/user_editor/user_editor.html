@@ -1,4 +1,4 @@
-<div class="flex">
+<div class="flex user-container">
 	<div class="user-info">
 		<div class="css-table">
 			<div class="css-table-row padded-element">
@@ -77,9 +77,13 @@
               <input type="text" id="zip" pattern="[0-9]{5}(-[0-9]{4})?" ng-model="user.zip">
             </div>
           </div>
+          <div class="css-table-row">
+            <input type="button" value="Save" ng-click="save()" class="css-table-cell">
+          </div>
 	      </div>
 			</div>
-			<input type="button" value="Save" ng-click="save()" class="css-table-cell">
+			<input ng-if="editing != 'address'" type="button" value="Save" ng-click="save()"
+			    class="css-table-cell">
 		</div>
 	</div>
 </div>

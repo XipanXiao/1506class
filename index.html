@@ -13,7 +13,7 @@
 
 <body class="center wide-body">
 
-<app-bar ng-controller="AppBarController"></app-bar>
+<app-bar user="user"></app-bar>
 
 <div class="center page-container">
 	<paper-tabs noink selected="0">
@@ -29,7 +29,7 @@
 	    <div>
 	    	<div class="center">
 		    	<h1>个人信息</h1>
-		    	<user ng-controller="UserController"></user>
+		    	<user-editor user="user"></user-editor>
 	    	</div>
 		</div>
 	</iron-pages>

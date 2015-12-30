@@ -1,18 +1,20 @@
-define(['services', 'user/user'], function() {
-	return angular.module('UsersModule', ['ServicesModule', 'UserModule'])
-		.controller('UsersController', function($scope, $rootScope, rpc) {
-			$scope.$on('class-selected', function(event, classInfo) {
-				rpc.get_users(null, classInfo.id).then(function(response) {
-					$scope.users = response.data;
-				});
-			});
-
-			$scope.showInfo = function(user) {
-			  $scope.user = user;
-			};
-		})
-		.directive('users', function() {
+define(['services', 'user_editor/user_editor'], function() {
+	return angular.module('UsersModule', ['ServicesModule', 'UserEditorModule'])
+		.directive('users', function($rootScope, rpc) {
 			return {
+			  scope: {
+			    classId: '=',
+			  },
+			  link: function($scope) {
+			    $scope.$watch('classId', function(classId) {
+			      rpc.get_users(null, classId).then(function(response) {
+			        $scope.users = response.data;
+			      });
+			    });
+		      $scope.showInfo = function(user) {
+		        $scope.editingUser = user;
+		      };
+			  },
 				templateUrl : 'js/users/users.html'
 			};
 		});

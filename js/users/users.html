@@ -13,5 +13,5 @@
 			<div class="css-table-cell"><strong>{{user.phone}}</strong></div>
 		</div>
 	</div>
-  <user ng-if="user" ng-controller="UserController"></user>
+  <user-editor ng-if="editingUser" user="editingUser" class="padded-element"></user-editor>
 </div>

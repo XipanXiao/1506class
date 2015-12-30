@@ -13,9 +13,9 @@
 
 <body class="center">
 
-<app-bar ng-controller="AppBarController"></app-bar>
+<app-bar user="user"></app-bar>
 <div class="flex admin-page">
-	<classes class="class-list" list-type="list"></classes>
+	<classes class="class-list" list-type="list" class-id="classId"></classes>
 	
 	<div class="right-pannel">
 		<paper-tabs noink selected="0">
@@ -25,7 +25,7 @@
 		</paper-tabs>
 		
 		<iron-pages selected="0">
-		    <users ng-controller="UsersController"></users>
+		    <users class-id="classId"></users>
 		    <learning-records ng-controller="LearningRecordsController" attendence="true">
 		    </learning-records>
 		    <learning-records ng-controller="LearningRecordsController"></learning-records>

@@ -166,6 +166,7 @@ hr {
   background: white;
   border: 1px solid rgba(0,0,0,0.25);
   border-radius: 4px;
+  margin: 16px;
   width: 400px;
 }
 
@@ -173,9 +174,17 @@ hr {
   background: white;
   border: 1px solid rgba(0,0,0,0.25);
   border-radius: 4px;
-  margin-left: 16px;
+  margin: 16px;
   padding: 16px;
   width: 300px;
+}
+
+.user-container {
+  flex-wrap: wrap;
+}
+
+select#state {
+	width: 140px;
 }
 
 .separator {
@@ -237,4 +246,8 @@ paper-tabs {
 iron-icon.small-icon {
 	width: 16px;
 	height: 16px;
+}
+
+.class-list {
+	width: 200px;
 }
