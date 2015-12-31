@@ -9,6 +9,7 @@ define(['services', 'user_editor/user_editor'], function() {
 			    $scope.$watch('classId', function(classId) {
 			      rpc.get_users(null, classId).then(function(response) {
 			        $scope.users = response.data;
+	            $scope.editingUser = null;
 			      });
 			    });
 		      $scope.showInfo = function(user) {

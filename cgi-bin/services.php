@@ -97,7 +97,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = ["updated" => update_schedule($_POST)];
   } elseif ($resource_id == "user") {
   	$result = update_user($_POST);
-  	if ($result) {
+  	if ($result && $result->id == $user->id) {
   		$user = $result;
 		  $_SESSION['user'] = serialize($user);
   	}

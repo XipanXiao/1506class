@@ -7,11 +7,14 @@ define(['services', 'utils', 'classes/classes'], function() {
       },
       link: function($scope) {
         $scope.sexLabel = ['女', '男'];
+        
+        if (!$scope.user.classInfo) {
+          var classId = $scope.user.classId;
+          rpc.get_classes(classId).then(function(response) {
+            $scope.user.classInfo = response.data[classId];
+          });
+        }
 
-//        $scope.$on('user-loaded', function(event, user) {
-//          $scope.user = user;
-//        });
-      
         $scope.save = function() {
           var user = $scope.user;
           var data = {id: user.id};
@@ -28,7 +31,11 @@ define(['services', 'utils', 'classes/classes'], function() {
             break;
           }
           
-          rpc.update_user(data);
+          rpc.update_user(data).then(function(response) {
+            if (response.data.updated) {
+              window.location.href = window.location.href;
+            }
+          });
         };
         
         $scope.admining = window.location.href.indexOf('admin.html') > 0;

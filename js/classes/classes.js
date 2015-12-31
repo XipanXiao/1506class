@@ -20,7 +20,7 @@ define(['services', 'utils'], function() {
             
             $scope.yearChanged = function() {
               $scope.classes = $scope.alumnis[$scope.currentClass.year];
-              $scope.classIds = utils.keys($scope.classes);
+              $scope.classIds = utils.map(utils.keys($scope.classes), parseInt);
             };
 
             $scope.yearChanged();
@@ -30,18 +30,6 @@ define(['services', 'utils'], function() {
             $scope.classId = id;
             $scope.currentClass.id = id;
           };
-
-//          $scope.selectClass = function() {
-//            if (!$scope.classes || !$scope.classId) return;
-//            $scope.selected($scope.classes[$scope.classId]);
-//          };
-//
-//          if (!$scope.classId) {
-//            $scope.$on('user-loaded', function(event, user) {
-//              $scope.classId = user.classId;
-//              $scope.selectClass();
-//            });
-//          }
         },
         templateUrl : 'js/classes/classes.html'
       };

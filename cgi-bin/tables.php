@@ -24,7 +24,7 @@ function get_courses($course_group_id) {
   return keyed_by_id($medoo->select("courses", "*", ["group_id" => $course_group_id]));
 }
 
-function get_users($email, $class_id = null) {
+function get_users($email, $class_id = null, $user_id = null) {
   global $medoo;
 
   $result = null;
@@ -32,9 +32,11 @@ function get_users($email, $class_id = null) {
     $result = $medoo->select("users", "*", ["class_id" => $class_id]);
   } elseif ($email){
     $result = $medoo->select("users", "*", ["email" => $email]);
+  } elseif ($user_id) {
+  	$result = $medoo->select("users", "*", ["id" => $user_id]);
   }
 
-  $classes = $email ? get_classes($result[0]["class_id"]) : null;
+  $classes = ($email || $user_id) ? get_classes($result[0]["class_id"]) : null;
   $users = array();
 
   foreach ($result as $index => $row) {
@@ -52,8 +54,8 @@ function update_user($user) {
 
   $datas = [];
   
-  $int_fields = ["sex", "class_id", "mentor", "permission"];
-  $ignore_fields = ["id", "rid"];
+  $int_fields = ["sex", "mentor", "permission"];
+  $ignore_fields = ["id", "rid", "classId"];
   
   foreach ($user as $key => $value) {
     if (in_array($key, $int_fields)) {
@@ -63,8 +65,12 @@ function update_user($user) {
     }
   }
   
+  if ($user["classId"]) {
+  	$datas["class_id"] = intval($user["classId"]);
+  }
+  
   if ($medoo->update("users", $datas, ["id" => intval($user["id"])])) {
-    return current($medoo->select("users", "*", ["id" => intval($user["id"])]));
+    return current(get_users(null, null, intval($user["id"])));
   }
 
   return null;

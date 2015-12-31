@@ -21,8 +21,8 @@
 	      <div class="css-table-cell">班级</div>
 	      <div class="css-table-cell">{{user.classInfo.name}}</div>
 	      <div class="css-table-cell">
-          <iron-icon class="selectable" icon="chevron-right" ng-click="editing = 'class_id'"
-              ng-if="admining">
+          <iron-icon ng-show="admining" class="selectable" icon="chevron-right"
+              ng-click="editing = 'classId'">
           </iron-icon>
 	      </div>          
 	    </div>
@@ -48,7 +48,7 @@
 	      <select ng-switch-when="sex" ng-model="user.sex" autofocus
 	          ng-options="sexLabel[value] for value in [0, 1]">
 	      </select>
-	      <classes ng-switch-when="class_id" class-id="user.classId"></classes>
+	      <classes ng-switch-when="classId" class-id="user.classId"></classes>
 	      <div ng-switch-when="address" class="css-table">
           <div class="css-table-row">
             <div class="css-table-cell"><label for="street">Street</label></div>
