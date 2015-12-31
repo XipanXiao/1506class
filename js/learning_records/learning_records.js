@@ -10,11 +10,11 @@ define(['services'], function() {
         });
       });
       
-      $scope.reportTask = function(user, schedule_id) {
-        var schedule = user.records[schedule_id];
-        schedule.student_id = user.id;
-        schedule.id = schedule_id;
-        rpc.report_schedule_task(schedule);
+      $scope.reportTask = function(user, course_id) {
+        var record = user.records[course_id];
+        record.student_id = user.id;
+        record.course_id = course_id;
+        rpc.report_schedule_task(record);
       };
     })
     .directive('learningRecords',

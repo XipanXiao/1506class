@@ -1,23 +1,28 @@
 define(['services'], function() {
 	return angular.module('ScheduleTasksModule', ['ServicesModule'])
-		.controller('ScheduleTasksController', function($scope, rpc) {
-			$scope.attendOptions = ['缺席', '出席', '请假'];
-			$scope.vacation = function(schedule) {
-			  return schedule.course_name == '放假'; 
-			};
-			
-			rpc.get_schedules(true).then(function(response) {
-				$scope.schedule_groups = response.data.groups;
-				$scope.users = response.data.users;
-			});
-			
-			$scope.reportTask = function (schedule) {
-				rpc.report_schedule_task(schedule);
-			};
-		})
-		.directive('scheduleTasks',
-				function() {
+		.directive('scheduleTasks', function(rpc) {
 					return {
+					  scope: {
+					    user: '='
+					  },
+					  link: function($scope) {
+				      $scope.attendOptions = ['缺席', '出席', '请假'];
+				      $scope.vacation = function(schedule) {
+				        return !schedule.course_id; 
+				      };
+				      
+				      rpc.get_schedules(true).then(function(response) {
+				        $scope.schedule_groups = response.data.groups;
+				        $scope.users = response.data.users;
+				        $scope.records = $scope.users[$scope.user.id].records;
+				      });
+				      
+				      $scope.reportTask = function (schedule) {
+				        var record = $scope.records[schedule.course_id];
+				        record.course_id = schedule.course_id;
+				        rpc.report_schedule_task(record);
+				      };
+					  },
 						templateUrl : 'js/schedule_tasks/schedule_tasks.html'
 					};
 				});

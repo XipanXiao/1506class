@@ -15,15 +15,15 @@
 	        <div ng-switch="attendence">
 	          <div ng-switch-when="true">
 	            <select ng-options="attendOptions[value] for value in [0, 1, 2]"
-	                ng-model="user.records[schedule.id].attended"
-	                ng-change="reportTask(user, schedule.id)">
+	                ng-model="user.records[schedule.course_id].attended"
+	                ng-change="reportTask(user, schedule.course_id)">
 	            </select>
 	          </div>
 	          <div ng-switch-default>
-	            <input type="checkbox" ng-model="user.records[schedule.id].video" title="听传承"
-	              ng-click="reportTask(user, schedule.id)">
-	            <input type="checkbox" ng-model="user.records[schedule.id].text" title="读法本"
-	              ng-click="reportTask(user, schedule.id)">
+	            <input type="checkbox" ng-model="user.records[schedule.course_id].video" title="听传承"
+	              ng-click="reportTask(user, schedule.course_id)">
+	            <input type="checkbox" ng-model="user.records[schedule.course_id].text" title="读法本"
+	              ng-click="reportTask(user, schedule.course_id)">
 	          </div>
 	        </div>
 	      </div>

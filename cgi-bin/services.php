@@ -55,9 +55,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     }
   } elseif ($resource_id == "schedules") {
     $class_id = empty($_GET["class_id"]) ? $user->classId : $_GET["class_id"];
-    $with_records = isset($_GET["with_records"]) && $_GET["with_records"];
-
-    $response = get_schedules($class_id, $with_records ? $user->id : null);
+    $response = get_learning_records($class_id, $user->id);
   } elseif ($resource_id == "courses") {
     $response = get_courses($class_id);
   } elseif ($resource_id == "users") {
@@ -76,9 +74,16 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   $resource_id = $_POST["rid"];
   
   $task_user_id = $student_id;
-  if ($user->permission > 1 && !empty($_POST["student_id"])) {
-    // Admins can report for others.
-    $task_user_id = $_POST["student_id"];
+  if (!empty($_POST["student_id"])) {
+  	if ($user->permission <= 1) {
+  		$response =
+  		    ["error" => "permission denied, you can't report tasks for others"];
+  		echo json_encode($response);
+  		return;
+  	} else {
+	    // Admins can report for others.
+	    $task_user_id = $_POST["student_id"];
+  	}
   } 
   
   if ($resource_id == "tasks") {
@@ -93,10 +98,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "user") {
   	$result = update_user($_POST);
   	if ($result) {
-  		//$user = mixin($user, $_POST);
+  		$user = $result;
+		  $_SESSION['user'] = serialize($user);
   	}
 
-  	$response = ["updated" => $result];
+  	$response = ["updated" => ($result ? 1 : 0)];
   }
 }
 

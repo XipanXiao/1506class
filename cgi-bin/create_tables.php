@@ -390,8 +390,8 @@ CREATE TABLE task_records (
 CREATE TABLE schedule_records (
                  student_id INT not null,
 				      INDEX student_id_idx(student_id),
-                 schedule_id INT,
-				      INDEX schedule_id_idx(schedule_id),
+                 course_id INT,
+				      INDEX course_id_idx(course_id),
                  attended TINYINT,
                  video BOOLEAN, 
                  text BOOLEAN, 

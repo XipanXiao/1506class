@@ -1,21 +1,20 @@
 <div class="app-bar">
-	<div class="left">
-		<span>{{user.classInfo.name}}: 
-			<a target="_blank" class="app-bar-link"
-					href="http://www.yy.com/{{user.classInfo.class_room}}">
-				{{user.classInfo.class_room}}
-			</a>
-		</span>
-	</div>
-	<div class="right">
-		<div ng-switch="admining" class="inline">
-			<a ng-switch-when="true" class="app-bar-link" href="index.html">学员页面</a>
-			<a ng-switch-default ng-if="user.permission > 1" class="app-bar-link" href="admin.html">
-				管理页面
-			</a>
-		</div>
-		<div class="separator"></div> 
-		<span>{{user.name}}</span>
-		<a class="app-bar-link" href="cgi-bin/logout.php">Logout</a> 
-	</div>
+  <div class="left">
+    <span>{{user.classInfo.name}}: 
+      <a target="_blank" class="app-bar-link"
+          href="http://www.yy.com/{{user.classInfo.class_room}}">
+        {{user.classInfo.class_room}}
+      </a>
+    </span>
+  </div>
+  <div class="right">
+    <div ng-switch="admining" class="inline">
+      <a ng-switch-when="true" class="app-bar-link" href="index.html">学员页面</a>
+      <a ng-switch-default ng-if="user.permission > 1" class="app-bar-link" href="admin.html">
+        管理页面
+      </a>
+    </div>
+    <span>{{user.name}}</span>
+    <a class="app-bar-link" href="cgi-bin/logout.php">Logout</a> 
+  </div>
 </div>

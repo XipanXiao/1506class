@@ -45,8 +45,16 @@ define(function() {
       },
     
       report_schedule_task: function(schedule) {
-        schedule.rid = 'schedule_tasks';
-        return http_form_post($http, $httpParamSerializerJQLike(schedule));
+        var data = {
+            rid: 'schedule_tasks',
+            student_id: schedule.student_id,
+            course_id: schedule.course_id,
+            attended: schedule.attended,
+            video: schedule.video,
+            text: schedule.text
+        };
+
+        return http_form_post($http, $httpParamSerializerJQLike(data));
       },
     
       update_schedule: function(schedule) {
