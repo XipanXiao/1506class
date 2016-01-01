@@ -161,13 +161,13 @@ function keyed_by_id($rows, $id_key = "id") {
   return $result;
 }
 
-function get_learning_records($class_id, $user_id = null) {
+function get_schedules($class_id, $records, $user_id) {
   global $medoo;
   
   date_default_timezone_set("America/Los_Angeles");
   $schedule_groups =
       keyed_by_id($medoo->select("schedule_groups",
-          ["id", "course_group", "class_id", "start_time"],
+          ["id", "name", "course_group", "class_id", "start_time"],
       		["class_id" => $class_id]));
 
   $a_week = date_interval_create_from_date_string("7 days");
@@ -200,7 +200,7 @@ function get_learning_records($class_id, $user_id = null) {
           ["class_id" => $class_id]));
   
   foreach ($users as $id => $user) {
-  	if ($user_id && $id != $user_id) continue;
+  	if ($records == 'none' || $records == 'mine' && $id != $user_id) continue;
 
     $records =
         keyed_by_id($medoo->select("schedule_records", "*",

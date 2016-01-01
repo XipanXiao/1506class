@@ -12,7 +12,6 @@ define(function() {
   var userPromise;
   var classMatesPromises = {};
   var learningRecordsPromise = {};
-  var scheduleRecordsPromise = {};
   var serviceUrl = 'cgi-bin/services.php';
   
   function http_form_post($http, data) {
@@ -70,24 +69,6 @@ define(function() {
         return $http.get(serviceUrl + '?rid=tasks&pos=last&task_id=' + task_id);
       },
       
-      get_schedules: function(with_records, class_id) {
-        if (!class_id) {
-          class_id = '';
-        }
-        
-        if (class_id && scheduleRecordsPromise[class_id]) {
-          return scheduleRecordsPromise[class_id];
-        }
-        
-        var url = '{0}?rid=schedules&with_records={1}&class_id={2}'
-          .format(serviceUrl, with_records ? 1 : 0, class_id);
-
-        var promise = $http.get(url);
-        if (class_id) scheduleRecordsPromise[class_id] = promise;
-
-        return promise;
-      },
-
       get_courses: function(group_id) {
         if (!group_id) {
           group_id = '';
@@ -132,13 +113,14 @@ define(function() {
         });
       },
       
-      get_learning_records: function(class_id) {
+      // records: 'class', 'mine' or 'none'.
+      get_schedules: function(class_id, records) {
         if (learningRecordsPromise[class_id]) {
           return learningRecordsPromise[class_id];
         }
         
-        var url = "{0}?rid=learning_records&class_id={1}".
-            format(serviceUrl, class_id);
+        var url = "{0}?rid=learning_records&class_id={1}&records={2}".
+            format(serviceUrl, class_id, records || 'none');
         return learningRecordsPromise[class_id] = $http.get(url);
       },
       

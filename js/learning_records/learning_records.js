@@ -11,8 +11,9 @@ define(['services'], function() {
               $scope.attendOptions = ['缺席', '出席', '请假'];
 
               $scope.$watch('classId', function() {
-                rpc.get_learning_records($scope.classId).then(function(response) {
-                  $scope.schedules_groups = response.data.groups;
+                rpc.get_schedules($scope.classId, 'class')
+                    .then(function(response) {
+                  $scope.schedule_groups = response.data.groups;
                   $scope.users = response.data.users;
                 });
               });

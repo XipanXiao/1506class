@@ -53,9 +53,6 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     } else {
       $response = get_tasks($user->classInfo["department_id"]);
     }
-  } elseif ($resource_id == "schedules") {
-    $class_id = empty($_GET["class_id"]) ? $user->classId : $_GET["class_id"];
-    $response = get_learning_records($class_id, $user->id);
   } elseif ($resource_id == "courses") {
     $response = get_courses($class_id);
   } elseif ($resource_id == "users") {
@@ -68,7 +65,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       $response = [$user];
     }
   } elseif ($resource_id == "learning_records" && !empty($_GET["class_id"])) {
-    $response = get_learning_records($_GET["class_id"]);
+    $response = get_schedules($_GET["class_id"], $_GET["records"], $user->id);
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];
