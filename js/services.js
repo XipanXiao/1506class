@@ -31,9 +31,7 @@ define(function() {
       },
     
       get_classes: function(class_id) {
-        if (!class_id) {
-          class_id = '';
-        }
+        class_id = class_id || '';
         
         return $http.get(serviceUrl + '?rid=classes&class_id=' + class_id);
       },
@@ -70,21 +68,14 @@ define(function() {
       },
       
       get_courses: function(group_id) {
-        if (!group_id) {
-          group_id = '';
-        }
+        group_id = group_id || '';
         
         return $http.get(serviceUrl + '?rid=courses&group_id=' + group_id);
       },
       
       get_users: function(email, class_id) {
-        if (!email) {
-          email = '';
-        }
-
-        if (!class_id) {
-          class_id = '';
-        }
+        email = email || '';
+        class_id = class_id || '';
 
         if (!email && !class_id && userPromise) return userPromise;
         if (!email && class_id && classMatesPromises[class_id]) {
