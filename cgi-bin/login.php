@@ -19,7 +19,7 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['password'] )) {
 		
 		$_SESSION['user'] = serialize($user);
 		
-		$page = 'index.html';
+		$page = $user->classId > 1 ? 'index.html' : 'admin.html';
 		client_redirect('../'.$page, 1, 'Authenticated successfully, redirecting...');
 	} else {
 		echo "<h1>Error</h1>";
