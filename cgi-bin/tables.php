@@ -15,14 +15,14 @@ function get_classes($class_id) {
   global $medoo;
   
   function convert_class_record($classInfo) {
+  	$classInfo["id"] = intval($classInfo["id"]);
   	$classInfo["department_id"] = intval($classInfo["department_id"]);
   	$classInfo["start_year"] = intval($classInfo["start_year"]);
   	return $classInfo;
   }
   
-  return array_map("convert_class_record",
-  		keyed_by_id($medoo->select("classes", "*",
-  				$class_id ? ["id" => $class_id] : null)));
+  return keyed_by_id(array_map("convert_class_record",
+  		$medoo->select("classes", "*", $class_id ? ["id" => $class_id] : null)));
 }
 
 function get_courses($course_group_id) {

@@ -33,6 +33,7 @@ define(['services', 'utils'], function() {
           
           $scope.locateClass = function (classInfo) {
             $scope.currentClass.year = classInfo.start_year;
+            $scope.yearChanged();
             $scope.select(classInfo.id);
           };
           
