@@ -71,6 +71,10 @@ tasks {
   padding: 4px 0;
 }
 
+.css-table-row.selected {
+  background-color: blue !important;
+}
+
 .header {
   background-color: gray !important;
   color: white;
@@ -250,4 +254,9 @@ iron-icon.small-icon {
 
 .class-list {
 	width: 200px;
+}
+
+.search-box {
+	margin-left: 100px;
+	width: 300px;
 }

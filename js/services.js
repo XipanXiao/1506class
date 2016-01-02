@@ -108,7 +108,7 @@ define(function() {
           if (response.data.error == "login needed") {
             window.location.href = "./login.html";
           } else {
-            return response.data && response.data[0];
+            return response.data;
           }
         });
       },
@@ -127,6 +127,10 @@ define(function() {
       update_user: function(user) {
         user.rid = 'user';
         return http_form_post($http, $httpParamSerializerJQLike(user));
+      },
+      
+      search: function(prefix) {
+        return $http.get(serviceUrl + '?rid=search&prefix=' + prefix);
       }
     };
   });

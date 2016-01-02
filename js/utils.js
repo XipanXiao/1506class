@@ -114,6 +114,13 @@ define(function() {
         }
         
         return groups;
+      },
+      firstElement: function(arr, key, value) {
+        for (var idx in arr) {
+          if (arr[idx][key] == value) return arr[idx];
+        }
+        
+        return null;
       }
     };
   });

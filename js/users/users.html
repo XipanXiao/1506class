@@ -6,7 +6,8 @@
 			<div class="css-table-cell"><strong>电子邮件</strong></div>
 			<div class="css-table-cell"><strong>电话</strong></div>
 		</div>
-		<div ng-repeat="user in users" class="css-table-row selectable" ng-click="showInfo(user)">
+		<div ng-repeat="user in users" class="css-table-row selectable" ng-click="showInfo(user)"
+		    ng-class="{'selected': editingUser && editingUser.id == user.id}">
 			<div class="css-table-cell">{{user.name}}</div>
 			<div class="css-table-cell">{{user.sex == '1' ? '男' : '女'}}</div>
 			<div class="css-table-cell">{{user.email}}</div>

@@ -219,4 +219,11 @@ function update_schedule($schedule) {
   return $medoo->update("schedules", ["open" => intval($schedule["open"]),
       "review" => intval($schedule["review"])], ["id" => $schedule["id"]]);
 }
+
+function search($prefix) {
+	global $medoo;
+	
+	return $medoo->select("users", ["class_id", "name", "email"],
+			["OR" => ["name[~]" => $prefix, "email[~]" => $prefix]]);
+}
 ?>

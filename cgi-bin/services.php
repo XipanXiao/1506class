@@ -61,11 +61,15 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     
     if ($class_id) {
       $response = get_users($email, $class_id);
-    } elseif (!$email || $email == $user->email) {
-      $response = [$user];
+    } elseif ($email) {
+    	$response = current(get_users($email));
+    } else {
+    	$response = $user;
     }
   } elseif ($resource_id == "learning_records" && !empty($_GET["class_id"])) {
     $response = get_schedules($_GET["class_id"], $_GET["records"], $user->id);
+  } elseif ($resource_id == "search") {
+  	$response = search($_GET["prefix"]);
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];

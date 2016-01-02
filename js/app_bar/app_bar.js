@@ -1,7 +1,6 @@
-define(['services'], function() {
-	return angular.module('AppBarModule', ['ServicesModule'])
-		.directive('appBar',
-				function($rootScope, rpc) {
+define(["search_bar/search_bar"], function() {
+	return angular.module('AppBarModule', ["SearchBarModule"])
+		.directive('appBar', function() {
 					return {
 					  scope: {
 					    admining: '=',
