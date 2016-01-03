@@ -7,13 +7,17 @@ define(['services', 'utils', 'classes/classes'], function() {
       },
       link: function($scope) {
         $scope.sexLabel = ['女', '男'];
-        
-        if (!$scope.user.classInfo) {
+
+        $scope.$watch('user', function() {
+          if (!$scope.user || $scope.user.classInfo) return;
+
           var classId = $scope.user.classId;
           rpc.get_classes(classId).then(function(response) {
-            $scope.user.classInfo = response.data[classId];
+            console.log(response.data);
+            $scope.user.classInfo =
+              response.data[classId] || response.data['' + classId];
           });
-        }
+        });
 
         $scope.save = function() {
           var user = $scope.user;

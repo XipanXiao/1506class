@@ -10,7 +10,6 @@ define(function() {
   }
 
   var userPromise;
-  var classPromises = {};
   var classMatesPromises = {};
   var learningRecordsPromise = {};
   var serviceUrl = 'cgi-bin/services.php';
@@ -34,9 +33,8 @@ define(function() {
       get_classes: function(class_id) {
         class_id = class_id || '';
 
-        if (classPromises[class_id]) return classPromises[class_id];
-        return classPromises[class_id] =
-            $http.get(serviceUrl + '?rid=classes&class_id=' + class_id);
+        return $http.get(serviceUrl + '?rid=classes&class_id=' + class_id,
+            {cache: true});
       },
     
       report_task: function(task_id, count) {
