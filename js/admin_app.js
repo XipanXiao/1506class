@@ -9,6 +9,12 @@ require(["app_bar/app_bar", "classes/classes", "users/users",
               $scope.user = user;
               $scope.classId = user.classId;
             });
+            
+            $scope.$on('editing-user-changed', function(event, editingUser) {
+              if (!editingUser) return;
+              document.querySelector('paper-tabs').selected = 0;
+              document.querySelector('iron-pages').selected = 0;
+            });
           }
         }
       });
