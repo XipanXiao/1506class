@@ -31,10 +31,9 @@ define(function() {
       },
     
       get_classes: function(class_id) {
-        class_id = class_id || '';
-
-        return $http.get(serviceUrl + '?rid=classes&class_id=' + class_id,
-            {cache: true});
+        var url = '{0}?rid=classes&class_id={1}'.format(serviceUrl,
+            class_id || '');
+        return $http.get(url, {cache: true});
       },
     
       report_task: function(task_id, count) {
@@ -123,6 +122,10 @@ define(function() {
       
       search: function(prefix) {
         return $http.get(serviceUrl + '?rid=search&prefix=' + prefix);
+      },
+      
+      get_file: function(url) {
+        return $http.get(url, {cache: true});
       }
     };
   });

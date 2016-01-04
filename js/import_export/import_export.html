@@ -1,0 +1,27 @@
+<div class="padded-element">
+  <label>选择需要导入的tsv文件
+    <input type="file" accept=".tsv" file="file">
+  </label>
+  <input type="submit" value="Preview" ng-click="preview()" ng-enabled="file">
+</div>
+
+<div ng-if="result.users.length">
+  <div>Imported</div>
+	<div class="padded-element css-table odd-even section">
+	  <div class="css-table-row">
+	    <div ng-repeat="header in result.headers" class="css-table-cell">{{header}}</div>
+	  </div>
+	  <div ng-repeat="user in result.users" class="css-table-row">
+	    <div ng-repeat="column in result.columns" class="css-table-cell">{{user[column]}}</div>
+	  </div>
+	</div>
+</div>
+
+<div ng-if="result.skipped.length">
+	<div>Skipped</div>
+	<div class="padded-element css-table odd-even section">
+	  <div ng-repeat="line in result.skipped track by $index" class="css-table-row">
+	    <div class="css-table-cell">{{line}}</div>
+	  </div>
+	</div>
+</div>
