@@ -260,3 +260,20 @@ iron-icon.small-icon {
 	margin-left: 100px;
 	width: 300px;
 }
+
+.import-analysis {
+	height: 768px;
+	width: 1024px;
+  overflow: scroll;
+}
+
+paper-dialog {
+	padding: 16px;
+}
+
+.css-table-cell.compact {
+  max-width: 150px;
+  overflow: hidden; 
+  padding: 0 2px;
+  text-overflow: ellipsis;
+}

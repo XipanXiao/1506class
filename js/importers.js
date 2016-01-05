@@ -94,11 +94,11 @@ define(['utils'], function() {
           };
           
           user.name = cutOff(user.name, 16);
-          if (!user.name) return null;
+          if (!user.name) return false;
           
           user.email = extractFromPatter(
               /(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+)/, user.email);
-          if (!user.email) return null;
+          if (!user.email) return false;
           
           user.birthday = extractFromPatter(/([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})/,
               user.birthday);
@@ -120,7 +120,7 @@ define(['utils'], function() {
           user.start_year = columnMap.start_year[user.year];
           user.sex = columnMap.sex[user.sex_label];
           user.education = columnMap.education[user.education_label];
-          return user;
+          return true;
         };
 
         var line;
@@ -131,7 +131,7 @@ define(['utils'], function() {
         var result = {
           headers: reader.columns,
           columns: utils.map(reader.columns, headerToColumn),
-          users: [],
+          records: [],
           skipped: []
         };
         while (line = reader.next()) {
@@ -149,20 +149,12 @@ define(['utils'], function() {
             user[dbColumnName] = converter ? converter[value] : value; 
           }
           
-          if (user = validate(user)) {
-            result.users.push(user);
-          } else {
+          if (validate(user)) {
+            result.records.push(user);
+          } else if (user.name) {
             result.skipped.push(line);
           }
         }
-        
-        var computedFields = ['zip', 
-            'class_id', 'start_year', 'sex', 'education'];
-        
-        computedFields.forEach(function(field) {
-          result.headers.push(field);
-          result.columns.push(field);
-        });
 
         return result;
       }

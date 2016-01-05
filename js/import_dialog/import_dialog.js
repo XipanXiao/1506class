@@ -1,17 +1,20 @@
 define(['services', 'importers'], function() {
-  return angular.module('ImportExportModule', ['ServicesModule',
-      'ImportersModule']).directive('importExport', function(rpc, importers) {
+  return angular.module('ImportDialogModule', ['ServicesModule',
+      'ImportersModule']).directive('importDialog', function(rpc, importers) {
         return {
           scope: {
-            file: '='
+            file: '=',
+            show: '='
           },
           link: function($scope, element, attributes) {
+            $scope.page = -1;
+
             $scope.result = {
-              users: [],
+              records: [],
               skipped: []
             };
 
-            $scope.preview = function() {
+            $scope.analyze = function() {
               var reader = new FileReader();
 
               reader.onload = function(event) {
@@ -21,13 +24,23 @@ define(['services', 'importers'], function() {
                 rpc.get_classes().then(function(response) {
                   var classes = response.data;
                   $scope.result = importers[importer](text, {classes: classes});
+                  $scope.openDialog('analysis');
                 });
               };
 
-              reader.readAsText($scope.file, "UTF-8");
+              reader.readAsText($scope.file, 'UTF-8');
+            };
+            
+            $scope.$watch('show', function() {
+              if (!$scope.show) return;
+              $scope.openDialog('selector');
+            });
+            
+            $scope.openDialog = function(id) {
+              document.querySelector('#' + id).open();
             };
           },
-          templateUrl : 'js/import_export/import_export.html'
+          templateUrl : 'js/import_dialog/import_dialog.html'
         };
       }).directive('file', function() {
         return {

@@ -1,13 +1,15 @@
-define(['services', 'utils'], function() {
-  return angular.module('ClassesModule', ['ServicesModule', 'UtilsModule'])
+define(['import_dialog/import_dialog', 'services', 'utils'], function() {
+  return angular.module('ClassesModule', ['ImportDialogModule',
+      'ServicesModule', 'UtilsModule'])
     .directive('classes', function($rootScope, rpc, utils) {
       return {
         scope: {
           classId: '=',
           listType: '@'
         },
-        link: function($scope, attributes) {
+        link: function($scope, element) {
           rpc.get_classes().then(function(response) {
+            $scope.showImportDialog = false;
             $scope.alumnis = utils.groupBy(response.data, 'start_year');
             $scope.years = utils.map(utils.keys($scope.alumnis), parseInt);
 

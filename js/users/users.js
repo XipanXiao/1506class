@@ -1,6 +1,5 @@
-define(['services', 'user_editor/user_editor', 'utils',
-    "import_export/import_export"], function() {
-	return angular.module('UsersModule', ['ImportExportModule', 'ServicesModule',
+define(['services', 'user_editor/user_editor', 'utils'], function() {
+	return angular.module('UsersModule', ['ServicesModule',
     'UserEditorModule', 'UtilsModule'])
         .directive('users', function($rootScope, rpc, utils) {
 			return {
