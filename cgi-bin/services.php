@@ -97,6 +97,23 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "schedule") {
     $response = ["updated" => update_schedule($_POST)];
   } elseif ($resource_id == "user") {
+  	if (intval($_POST["classId"]) == 0 && !empty($_POST["classId_label"]) &&
+  			!empty($_POST["start_year_label"] && !empty($_POST["start_year"]))) {
+  		$class_name = $_POST["start_year_label"]. $_POST_POST["classId_label"];
+  		$class_id = get_class_id($class_name);
+  		
+  		if (!$class_id) {
+  			$class_id = create_class($class_name, intval($_POST["start_year"]));
+  			
+  		}
+  		
+  		if (!class_id) {
+  		  $response = ["error" => "failed to create class ". $class_name];
+  		} else {
+  			$_POST["classId"] = $class_id;
+  		}
+  	}
+  	
   	$result = update_user($_POST);
   	if ($result && $result->id == $user->id) {
   		$user = $result;

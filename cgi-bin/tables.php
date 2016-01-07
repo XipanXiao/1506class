@@ -25,6 +25,20 @@ function get_classes($class_id) {
   		$medoo->select("classes", "*", $class_id ? ["id" => $class_id] : null)));
 }
 
+function get_class_id($class_name) {
+	global $medoo;
+	
+	$result = $medoo->select("classes", ["id"], ["name" => $class_name]);
+	return empty($result) ? null : $result[0]["id"];
+}
+
+function create_class($class_name, $start_year) {
+	global $medoo;
+	
+	return $medoo->insert("classes",
+			["name" => $class_name, "start_year" => $start_year]);
+}
+
 function get_courses($course_group_id) {
   global $medoo;
 
@@ -61,13 +75,16 @@ function update_user($user) {
 
   $datas = [];
   
-  $int_fields = ["sex", "mentor", "permission"];
+  $int_fields = ["sex", "mentor", "permission", "education", "start_year"];
+  $fields = ["internal_id", "name", "password", "nickname", "email",
+  		"phone", "street", "street2", "city", "state", "country", "zip",
+  		"im", "occupation", "birtyday", "notes"];
   $ignore_fields = ["id", "rid", "classId"];
   
   foreach ($user as $key => $value) {
     if (in_array($key, $int_fields)) {
       $datas[$key] = intval($value);
-    } elseif (!in_array($key, $ignore_fields)) {
+    } elseif (!in_array($key, $ignore_fields) && in_array($key, $fields)) {
       $datas[$key] = $value;
     }
   }
@@ -76,8 +93,14 @@ function update_user($user) {
   	$datas["class_id"] = intval($user["classId"]);
   }
   
-  if ($medoo->update("users", $datas, ["id" => intval($user["id"])])) {
-    return current(get_users(null, null, intval($user["id"])));
+  if ($user["id"]) {
+	  if ($medoo->update("users", $datas, ["id" => intval($user["id"])])) {
+	    return current(get_users(null, null, intval($user["id"])));
+	  }
+  } else {
+  	if ($id = $medoo->insert("users", $datas)) {
+	    return current(get_users(null, null, intval($id)));
+  	}
   }
 
   return null;

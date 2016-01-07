@@ -1,35 +1,40 @@
 <link rel="import" href="bower_components/paper-button/paper-button.html">
 <link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="bower_components/paper-progress/paper-progress.html">
 		<paper-dialog id="selector">
       <h2>选择文件</h2>
 		  <label>选择需要导入的tsv文件
 		    <input type="file" accept=".tsv" file="file">
 		  </label>
-      <paper-button raised autofocus ng-click="analyze()">分析</paper-button>
+      <paper-button dialog-confirm raised autofocus ng-click="analyze()">分析</paper-button>
 		</paper-dialog>
 
     <paper-dialog id="analysis">		
       <h2>文件分析结果</h2>
-      <paper-button raised autofocus ng-click="preview()">预览</paper-button>
-      <div class="import-analysis">
-				<div ng-show="result.records.length">
-				  <div>提取的用户</div>
+      <paper-button dialog-confirm raised autofocus ng-click="preview()">预览</paper-button>
+			<div ng-show="result.records.length">
+			  <div>正确解析的条目({{result.records.length}})</div>
+			  <div class="import-analysis">
 					<div class="padded-element css-table odd-even">
 					  <div class="css-table-row">
 					    <div ng-repeat="header in result.headers" class="css-table-cell">{{header}}</div>
 					  </div>
 					  <div ng-repeat="record in result.records" class="css-table-row">
-					    <div ng-repeat="column in result.columns" class="css-table-cell compact">{{record[column]}}</div>
+					    <div ng-repeat="column in result.columns" class="css-table-cell compact">
+                {{record[column + '_label'] || record[column]}}
+					    </div>
 					  </div>
 					</div>
 				</div>
+			</div>
 				
-				<div ng-show="result.skipped.length">
-					<div>格式有问题的行</div>
+			<div ng-show="result.skipped.length">
+				<div>格式有问题的条目({{result.skipped.length}})</div>
+        <div class="import-analysis">
 					<div class="padded-element css-table odd-even">
-            <div class="css-table-row">
-              <div ng-repeat="header in result.headers" class="css-table-cell">{{header}}</div>
-            </div>
+	           <div class="css-table-row">
+	             <div ng-repeat="header in result.headers" class="css-table-cell">{{header}}</div>
+	           </div>
 					  <div ng-repeat="line in result.skipped track by $index" class="css-table-row">
 					    <div ng-repeat="word in line.split('\t') track by $index" class="css-table-cell">{{word}}</div>
 					  </div>
@@ -39,6 +44,34 @@
 	  </paper-dialog>
 	  
 	  <paper-dialog id="preview">
-      <h2>预览</h2>
-      <paper-button dialog-confirm raised autofocus ng-click="submit()">提交</paper-button>
+      <h2>预览更改</h2>
+      <div>
+        <div class="padded-element">
+          修改: <span class="diff-modified legend">&nbsp;</span>
+        </div>
+        <div class="padded-element">
+          新增: <span class="diff-added legend">&nbsp;</span>
+        </div>
+	      <paper-progress value="{{processed}}" max="{{result.records.length}}"
+	          class="preview-progress padded-element">
+	      </paper-progress>
+      </div>
+      <paper-button dialog-confirm raised autofocus>关闭</paper-button>
+      <paper-button raised autofocus ng-click="submit()">提交</paper-button>
+      <div class="error-section">
+        <div ng-repeat="error in errors">{{error}}</div>
+      </div>
+      <div ng-show="result.records.length" class="preview-section">
+        <div class="padded-element css-table odd-even">
+          <div class="css-table-row">
+            <div ng-repeat="header in result.headers" class="css-table-cell">{{header}}</div>
+          </div>
+          <div ng-repeat="record in result.records" class="css-table-row">
+            <div ng-repeat="column in result.columns"
+                class="css-table-cell compact {{diffType(record, column)}}">
+              {{record[column + '_label'] || record[column]}}
+            </div>
+          </div>
+        </div>
+      </div>
 	  </paper-dialog>

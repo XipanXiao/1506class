@@ -262,13 +262,28 @@ iron-icon.small-icon {
 }
 
 .import-analysis {
-	height: 768px;
-	width: 1024px;
+  max-height: 300px;
   overflow: scroll;
+  padding: 16px;
+  max-width: 1024px;
+}
+
+.preview-section {
+  max-height: 500px;
+  overflow: scroll;
+  padding: 16px;
+  max-width: 1024px;
 }
 
 paper-dialog {
-	padding: 16px;
+  overflow: auto;
+  padding: 16px;
+}
+
+paper-dialog#analysis,
+paper-dialog#preview {
+  height: 800px;
+	width: 1056px;
 }
 
 .css-table-cell.compact {
@@ -276,4 +291,21 @@ paper-dialog {
   overflow: hidden; 
   padding: 0 2px;
   text-overflow: ellipsis;
+}
+
+.diff-modified {
+	background: red;
+}
+
+.diff-added {
+	background: green;
+}
+
+.preview-progress {
+	width: 100%;
+}
+
+.legend {
+	width: 100px;
+	padding: 0 16px;
 }
