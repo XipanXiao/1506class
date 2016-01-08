@@ -12,6 +12,8 @@
     <paper-dialog id="analysis">		
       <h2>文件分析结果</h2>
       <paper-button dialog-confirm raised autofocus ng-click="preview()">预览</paper-button>
+      <paper-progress value="{{processed}}" max="{{max}}" class="preview-progress padded-element">
+      </paper-progress>
 			<div ng-show="result.records.length">
 			  <div>正确解析的条目({{result.records.length}})</div>
 			  <div class="import-analysis">
@@ -46,16 +48,14 @@
 	  <paper-dialog id="preview">
       <h2>预览更改</h2>
       <div>
-        <div class="padded-element">
-          修改: <span class="diff-modified legend">&nbsp;</span>
-        </div>
-        <div class="padded-element">
-          新增: <span class="diff-added legend">&nbsp;</span>
-        </div>
-	      <paper-progress value="{{processed}}" max="{{result.records.length}}"
-	          class="preview-progress padded-element">
-	      </paper-progress>
+        修改: <span class="diff-modified legend">&nbsp;</span>
       </div>
+      <div>
+        新增: <span class="diff-added legend">&nbsp;</span>
+      </div>
+	    <paper-progress value="{{processed}}" max="{{result.records.length}}"
+	        class="preview-progress padded-element">
+	    </paper-progress>
       <paper-button dialog-confirm raised autofocus>关闭</paper-button>
       <paper-button raised autofocus ng-click="submit()">提交</paper-button>
       <div class="error-section">
@@ -66,10 +66,21 @@
           <div class="css-table-row">
             <div ng-repeat="header in result.headers" class="css-table-cell">{{header}}</div>
           </div>
+          <div class="css-table-row">
+            <div ng-repeat="column in result.columns" class="css-table-cell">{{column}}</div>
+          </div>
           <div ng-repeat="record in result.records" class="css-table-row">
-            <div ng-repeat="column in result.columns"
+            <div ng-repeat="column in result.columns" ng-if="!record.identical"
                 class="css-table-cell compact {{diffType(record, column)}}">
-              {{record[column + '_label'] || record[column]}}
+                <div ng-switch="diffType(record, column)">
+                  <div ng-switch-when="diff-modified">
+                    <div class="old-data">{{record.oldData[column]}}</div>
+                    <div>{{record[column]}}</div>
+                  </div>
+                  <div ng-switch-default>
+                    {{record[column + '_label'] || record[column]}}
+                  </div>
+                </div>
             </div>
           </div>
         </div>

@@ -8,7 +8,8 @@ define(['services', 'utils'], function() {
       columns: lines[0].split(delimiter),
       next: function() {
         return lines[index++];
-      }
+      },
+      lines: lines.length
     };
   };
   
@@ -133,10 +134,9 @@ define(['services', 'utils'], function() {
 
     return {
       userImporter: {
-        analyze: function(text) {
+        analyze: function(text, progress, scope) {
 
           return rpc.get_classes().then(function(response) {
-            var line;
             var reader = lineReader(text, true);
             var headerToColumn = function(header) {
               return columnMap.columns[header];
@@ -148,7 +148,11 @@ define(['services', 'utils'], function() {
               skipped: []
             };
   
-            while (line = reader.next()) {
+            var index = 0;
+            var next = function() {
+              var line = reader.next();
+              if (!line) return;
+              
               var user = {};
               var columnValues = line.split(delimiter);
               for (var c = 0; c < reader.columns.length; c++) {
@@ -160,9 +164,17 @@ define(['services', 'utils'], function() {
               } else if (user.name) {
                 result.skipped.push(line);
               }
-            }
-  
-            return result;
+
+              progress && progress(++index, reader.lines, result);
+              
+              /// Yield every 10 records to update UI.
+              index % 10 == 0 ? setTimeout(function() {
+                scope.$apply();
+                next();
+              }, 0) : next();
+            };
+            
+            next();
           });
         },
         
@@ -175,7 +187,19 @@ define(['services', 'utils'], function() {
             rpc.get_user(user.email).then(function(existingUser) {
               if (!existingUser || !existingUser.email) existingUser = null;
               user.oldData = existingUser;
-              callback && callback(idx, user);
+              if (existingUser) {
+                var identical = true;
+                for (var key in existingUser) {
+                  if (key == 'id') continue;
+                  identical = !existingUser[key] && !user[key] ||
+                      existingUser[key] == user[key];
+                  if (!identical) break;
+                }
+                
+                user.identical = identical;
+              }
+              
+              callback && callback(idx);
               next();
             });
           };
@@ -196,7 +220,7 @@ define(['services', 'utils'], function() {
               if (!response.data.updated && errback) {
                 errback(user, response.data.error);
               }
-              callback && callback(idx, user);
+              callback && callback(idx);
               next();
             };
             

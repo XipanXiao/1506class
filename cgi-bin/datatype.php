@@ -2,7 +2,8 @@
 class User {
 	// Database fields.
 	public $id;
-	public $internalId;
+	public $internal_id;
+	public $start_year;
 	public $name;
 	public $password;
 	public $sex;
@@ -21,7 +22,8 @@ class User {
 	
 	public function __construct($row) {
 		$this->id = intval($row["id"]);
-		$this->internalId = $row['internal_id'];
+		$this->internal_id = $row['internal_id'];
+		$this->start_year = $row['start_year'];
 		$this->name = $row['name']; 
 		$this->password = $row['password']; 
 		$this->sex = intval($row['sex']); 
@@ -35,7 +37,7 @@ class User {
 		$this->zip = $row['zip']; 
 		$this->birthday = $row['birthday']; 
 		$this->im = $row['im']; 
-		$this->classId = intval($row['class_id']); 
+		$this->classId = intval($row['classId']); 
 		$this->mentor = intval($row['mentor_id']); 
 		$this->permission = intval($row['permission']); 
 		$this->notes = $row['notes']; 
@@ -45,7 +47,8 @@ class User {
 		$row = array();
 
 		$row["id"] = $this->id;
-		$row['internal_id'] = $this->internalId;
+		$row['internal_id'] = $this->internal_id;
+		$row['start_year'] = $this->start_year;
 		$row['name'] = $this->name;
 		$row['password'] = $this->password;
 		$row['sex'] = $this->sex;
@@ -61,7 +64,7 @@ class User {
 		$row['yy'] = $this->yy;
 		$row['qq'] = $this->qq;
 		$row['wechat'] = $this->wechat;
-		$row['class_id'] = $this->classId;
+		$row['classId'] = $this->classId;
 		$row['mentor_id'] = $this->mentor;
 		$row['response'] = $this->response;
 		$row['permission'] = $this->permission;

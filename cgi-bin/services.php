@@ -27,15 +27,15 @@ $student_id = $user->id;
 
 if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   $resource_id = $_GET["rid"];
-  $class_id = empty($_GET["class_id"]) ? $user->classId : $_GET["class_id"];
+  $classId = empty($_GET["classId"]) ? $user->classId : $_GET["classId"];
 
   if ($resource_id == "class_groups") {
     $response = get_class_groups();
   } elseif ($resource_id == "classes") {
-    if (empty($_GET["class_id"])) {
+    if (empty($_GET["classId"])) {
       $response = get_classes(null);
     } else {
-      $response = get_classes($class_id);
+      $response = get_classes($classId);
     }
   } else if ($resource_id == "tasks") {
     if (isset($_GET["task_id"]) && isset($_GET["pos"])) {
@@ -54,20 +54,20 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       $response = get_tasks($user->classInfo["department_id"]);
     }
   } elseif ($resource_id == "courses") {
-    $response = get_courses($class_id);
+    $response = get_courses($classId);
   } elseif ($resource_id == "users") {
     $email = empty($_GET["email"]) ? null : $_GET["email"];
-    $class_id = empty($_GET["class_id"]) ? null : $_GET["class_id"];
+    $classId = empty($_GET["classId"]) ? null : $_GET["classId"];
     
-    if ($class_id) {
-      $response = get_users($email, $class_id);
+    if ($classId) {
+      $response = get_users($email, $classId);
     } elseif ($email) {
     	$response = current(get_users($email));
     } else {
     	$response = $user;
     }
-  } elseif ($resource_id == "learning_records" && !empty($_GET["class_id"])) {
-    $response = get_schedules($_GET["class_id"], $_GET["records"], $user->id);
+  } elseif ($resource_id == "learning_records" && !empty($_GET["classId"])) {
+    $response = get_schedules($_GET["classId"], $_GET["records"], $user->id);
   } elseif ($resource_id == "search") {
   	$response = search($_GET["prefix"]);
   }
@@ -100,17 +100,16 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   	if (intval($_POST["classId"]) == 0 && !empty($_POST["classId_label"]) &&
   			!empty($_POST["start_year_label"] && !empty($_POST["start_year"]))) {
   		$class_name = $_POST["start_year_label"]. $_POST_POST["classId_label"];
-  		$class_id = get_class_id($class_name);
+  		$classId = get_class_id($class_name);
   		
-  		if (!$class_id) {
-  			$class_id = create_class($class_name, intval($_POST["start_year"]));
-  			
+  		if (!$classId) {
+  			$classId = create_class($class_name, intval($_POST["start_year"]));
   		}
   		
-  		if (!class_id) {
+  		if (!classId) {
   		  $response = ["error" => "failed to create class ". $class_name];
   		} else {
-  			$_POST["classId"] = $class_id;
+  			$_POST["classId"] = $classId;
   		}
   	}
   	

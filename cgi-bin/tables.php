@@ -11,7 +11,7 @@ function get_class_groups() {
   return $medoo->select("class_groups", "*");
 }
 
-function get_classes($class_id) {
+function get_classes($classId) {
   global $medoo;
   
   function convert_class_record($classInfo) {
@@ -22,7 +22,7 @@ function get_classes($class_id) {
   }
   
   return keyed_by_id(array_map("convert_class_record",
-  		$medoo->select("classes", "*", $class_id ? ["id" => $class_id] : null)));
+  		$medoo->select("classes", "*", $classId ? ["id" => $classId] : null)));
 }
 
 function get_class_id($class_name) {
@@ -45,19 +45,19 @@ function get_courses($course_group_id) {
   return keyed_by_id($medoo->select("courses", "*", ["group_id" => $course_group_id]));
 }
 
-function get_users($email, $class_id = null, $user_id = null) {
+function get_users($email, $classId = null, $user_id = null) {
   global $medoo;
 
   $result = null;
-  if ($class_id) {
-    $result = $medoo->select("users", "*", ["class_id" => $class_id]);
+  if ($classId) {
+    $result = $medoo->select("users", "*", ["classId" => $classId]);
   } elseif ($email){
     $result = $medoo->select("users", "*", ["email" => $email]);
   } elseif ($user_id) {
   	$result = $medoo->select("users", "*", ["id" => $user_id]);
   }
 
-  $classes = ($email || $user_id) ? get_classes($result[0]["class_id"]) : null;
+  $classes = ($email || $user_id) ? get_classes($result[0]["classId"]) : null;
   $users = array();
 
   foreach ($result as $index => $row) {
@@ -75,11 +75,12 @@ function update_user($user) {
 
   $datas = [];
   
-  $int_fields = ["sex", "mentor", "permission", "education", "start_year"];
+  $int_fields = ["sex", "mentor", "permission", "education", "start_year",
+  		"classId"];
   $fields = ["internal_id", "name", "password", "nickname", "email",
   		"phone", "street", "street2", "city", "state", "country", "zip",
   		"im", "occupation", "birtyday", "notes"];
-  $ignore_fields = ["id", "rid", "classId"];
+  $ignore_fields = ["id", "rid"];
   
   foreach ($user as $key => $value) {
     if (in_array($key, $int_fields)) {
@@ -88,11 +89,7 @@ function update_user($user) {
       $datas[$key] = $value;
     }
   }
-  
-  if ($user["classId"]) {
-  	$datas["class_id"] = intval($user["classId"]);
-  }
-  
+    
   if ($user["id"]) {
 	  if ($medoo->update("users", $datas, ["id" => intval($user["id"])])) {
 	    return current(get_users(null, null, intval($user["id"])));
@@ -191,14 +188,14 @@ function keyed_by_id($rows, $id_key = "id") {
   return $result;
 }
 
-function get_schedules($class_id, $records, $user_id) {
+function get_schedules($classId, $records, $user_id) {
   global $medoo;
   
   date_default_timezone_set("America/Los_Angeles");
   $schedule_groups =
       keyed_by_id($medoo->select("schedule_groups",
-          ["id", "name", "course_group", "class_id", "start_time"],
-      		["class_id" => $class_id]));
+          ["id", "name", "course_group", "classId", "start_time"],
+      		["classId" => $classId]));
 
   $a_week = date_interval_create_from_date_string("7 days");
   $start_time = new DateTime();
@@ -227,7 +224,7 @@ function get_schedules($class_id, $records, $user_id) {
   
   $users =
       keyed_by_id($medoo->select("users", ["id", "name"],
-          ["class_id" => $class_id]));
+          ["classId" => $classId]));
   
   foreach ($users as $id => $user) {
   	if ($records == 'none' || $records == 'mine' && $id != $user_id) continue;
@@ -253,7 +250,7 @@ function update_schedule($schedule) {
 function search($prefix) {
 	global $medoo;
 	
-	return $medoo->select("users", ["class_id", "name", "email"],
+	return $medoo->select("users", ["classId", "name", "email"],
 			["OR" => ["name[~]" => $prefix, "email[~]" => $prefix]]);
 }
 ?>

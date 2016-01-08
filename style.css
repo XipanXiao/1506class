@@ -265,14 +265,14 @@ iron-icon.small-icon {
   max-height: 300px;
   overflow: scroll;
   padding: 16px;
-  max-width: 1024px;
+  max-width: 1280px;
 }
 
 .preview-section {
   max-height: 500px;
   overflow: scroll;
   padding: 16px;
-  max-width: 1024px;
+  max-width: 1280px;
 }
 
 paper-dialog {
@@ -283,7 +283,7 @@ paper-dialog {
 paper-dialog#analysis,
 paper-dialog#preview {
   height: 800px;
-	width: 1056px;
+	width: 1280px;
 }
 
 .css-table-cell.compact {
@@ -302,10 +302,18 @@ paper-dialog#preview {
 }
 
 .preview-progress {
-	width: 100%;
+	width: 1100px;
 }
 
 .legend {
 	width: 100px;
 	padding: 0 16px;
+}
+
+.old-data {
+  text-decoration: line-through;	
+}
+
+paper-dialog > * {
+  margin-top: 0;	
 }

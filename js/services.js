@@ -30,9 +30,9 @@ define(function() {
         return $http.get(serviceUrl + '?rid=class_groups');
       },
     
-      get_classes: function(class_id) {
-        var url = '{0}?rid=classes&class_id={1}'.format(serviceUrl,
-            class_id || '');
+      get_classes: function(classId) {
+        var url = '{0}?rid=classes&classId={1}'.format(serviceUrl,
+            classId || '');
         return $http.get(url, {cache: true});
       },
     
@@ -73,22 +73,22 @@ define(function() {
         return $http.get(serviceUrl + '?rid=courses&group_id=' + group_id);
       },
       
-      get_users: function(email, class_id) {
+      get_users: function(email, classId) {
         email = email || '';
-        class_id = class_id || '';
+        classId = classId || '';
 
-        if (!email && !class_id && userPromise) return userPromise;
-        if (!email && class_id && classMatesPromises[class_id]) {
-          return classMatesPromises[class_id];
+        if (!email && !classId && userPromise) return userPromise;
+        if (!email && classId && classMatesPromises[classId]) {
+          return classMatesPromises[classId];
         }
         
-        var promise = $http.get('{0}?rid=users&email={1}&class_id={2}'.
-            format(serviceUrl, email, class_id));
-        if (!email && !class_id) {
+        var promise = $http.get('{0}?rid=users&email={1}&classId={2}'.
+            format(serviceUrl, email, classId));
+        if (!email && !classId) {
           userPromise = promise;
         }
-        if (!email && class_id) {
-          classMatesPromises[class_id] = promise;
+        if (!email && classId) {
+          classMatesPromises[classId] = promise;
         }
         
         return promise;
@@ -105,14 +105,14 @@ define(function() {
       },
       
       // records: 'class', 'mine' or 'none'.
-      get_schedules: function(class_id, records) {
-        if (learningRecordsPromise[class_id]) {
-          return learningRecordsPromise[class_id];
+      get_schedules: function(classId, records) {
+        if (learningRecordsPromise[classId]) {
+          return learningRecordsPromise[classId];
         }
         
-        var url = "{0}?rid=learning_records&class_id={1}&records={2}".
-            format(serviceUrl, class_id, records || 'none');
-        return learningRecordsPromise[class_id] = $http.get(url);
+        var url = "{0}?rid=learning_records&classId={1}&records={2}".
+            format(serviceUrl, classId, records || 'none');
+        return learningRecordsPromise[classId] = $http.get(url);
       },
       
       update_user: function(user) {

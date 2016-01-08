@@ -19,13 +19,11 @@ define(['importers'], function() {
             $scope.analyze = function() {
               var reader = new FileReader();
 
+              $scope.openDialog('analysis');
               reader.onload = function(event) {
                 var text = event.target.result;
 
-                importers[importer].analyze(text).then(function(result) {
-                  $scope.result = result;  
-                  $scope.openDialog('analysis');
-                });
+                importers[importer].analyze(text, $scope.progress, $scope);
               };
 
               reader.readAsText($scope.file, 'UTF-8');
@@ -47,8 +45,10 @@ define(['importers'], function() {
               });
             };
             
-            $scope.progress = function(value) {
+            $scope.progress = function(value, max, result) {
+              $scope.max = max;
               $scope.processed = value;
+              if (result) $scope.result = result;
             };
             
             $scope.diffType = function(record, key) {
