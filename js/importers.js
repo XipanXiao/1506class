@@ -29,7 +29,8 @@ define(['services', 'utils'], function() {
       "居住省份/直辖市": "state",
       "市/县/区": "city",
       "街道": "street",
-      "Status": "notes"
+      "Status": "notes",
+      "zip": "zip"
     },
     "start_year": {
       "1206": 2012,
@@ -151,7 +152,13 @@ define(['services', 'utils'], function() {
             var index = 0;
             var next = function() {
               var line = reader.next();
-              if (!line) return;
+              if (!line) {
+                setTimeout(function() {
+                  progress && progress(++index, reader.lines, null, result);
+                  scope.$apply();
+                }, 0);
+                return;
+              }
               
               var user = {};
               var columnValues = line.split(delimiter);
@@ -165,7 +172,7 @@ define(['services', 'utils'], function() {
                 result.skipped.push(line);
               }
 
-              progress && progress(++index, reader.lines, result);
+              progress && progress(++index, reader.lines, null, result);
               
               /// Yield every 10 records to update UI.
               index % 10 == 0 ? setTimeout(function() {
@@ -186,20 +193,22 @@ define(['services', 'utils'], function() {
             if (!user) return;
             rpc.get_user(user.email).then(function(existingUser) {
               if (!existingUser || !existingUser.email) existingUser = null;
-              user.oldData = existingUser;
               if (existingUser) {
-                var identical = true;
-                for (var key in existingUser) {
-                  if (key == 'id') continue;
-                  identical = !existingUser[key] && !user[key] ||
-                      existingUser[key] == user[key];
-                  if (!identical) break;
-                }
-                
-                user.identical = identical;
+                var ignored = ['classInfo', 'password', 'permission'];
+                ignored.forEach(function(key) {delete existingUser[key]});
+
+                user.id = existingUser.id;
+                utils.diff(existingUser, user);
+              } else {
+                user.id = 0;
+                user.changed = true;
+              }
+
+              if (user.changed) {
+                user.checked = true;
               }
               
-              callback && callback(idx);
+              callback && callback(idx, null, user);
               next();
             });
           };
@@ -213,8 +222,22 @@ define(['services', 'utils'], function() {
           var next = function() {
             var user = users[idx++];
             if (!user) return;
+            if (user.id && !user.changed) {
+              setTimeout(next, 0);
+              return;
+            }
             
-            user.id = user.oldData && user.oldData.id || 0;
+            var update = {id: user.id};
+            if (user.oldData) {
+              for (var key in user.oldData) {
+                update[key] = user[key];
+              }
+            } else {
+              for (var key in columnMap.columns) {
+                var column = columnMap[key];
+                update[column] = user[column];
+              }
+            }
             
             var then = function(response) {
               if (!response.data.updated && errback) {
@@ -224,7 +247,7 @@ define(['services', 'utils'], function() {
               next();
             };
             
-            rpc.update_user(user).then(then);
+            rpc.update_user(update).then(then);
           };
           
           next();

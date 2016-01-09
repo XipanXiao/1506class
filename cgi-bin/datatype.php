@@ -13,6 +13,8 @@ class User {
 	public $street;
 	public $im;
 	public $classId;
+	public $education;
+	public $occupation;
 	public $mentor;
 	public $permission;
 	public $notes;
@@ -38,6 +40,8 @@ class User {
 		$this->birthday = $row['birthday']; 
 		$this->im = $row['im']; 
 		$this->classId = intval($row['classId']); 
+		$this->education = intval($row['education']); 
+		$this->occupation = $row['occupation']; 
 		$this->mentor = intval($row['mentor_id']); 
 		$this->permission = intval($row['permission']); 
 		$this->notes = $row['notes']; 
@@ -65,6 +69,8 @@ class User {
 		$row['qq'] = $this->qq;
 		$row['wechat'] = $this->wechat;
 		$row['classId'] = $this->classId;
+		$row['education'] = $this->education; 
+		$row['occupation'] = $this->occupation; 
 		$row['mentor_id'] = $this->mentor;
 		$row['response'] = $this->response;
 		$row['permission'] = $this->permission;
@@ -72,13 +78,5 @@ class User {
 		
 		return $row;
 	}
-}
-
-class ClassInfo {
-	public $id;
-	public $department_id;
-	public $name;
-	public $teacherId;
-	public $startYear;
 }
 ?>

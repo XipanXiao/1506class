@@ -121,6 +121,19 @@ define(function() {
         }
         
         return null;
+      },
+      diff: function(orig, updated) {
+        var changed = false;
+        var result = {};
+        for (var key in orig) {
+          if ((orig[key] || updated[key]) && orig[key] != updated[key]) {
+            result[key] = orig[key];
+            changed = true;
+          }
+        }
+        
+        updated.oldData = result;
+        return updated.changed = changed;
       }
     };
   });

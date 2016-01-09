@@ -31,12 +31,12 @@ define(['importers'], function() {
             
             $scope.preview = function() {
               $scope.processed = 0;
+              $scope.changed = 0;
               importers[importer].diff($scope.result.records, $scope.progress); 
               $scope.openDialog('preview');
             };
             
             $scope.submit = function() {
-              $scope.errors = [];
               $scope.processed = 0;
               importers[importer].submit($scope.result.records,
                   $scope.progress, function(record, message) {
@@ -45,17 +45,18 @@ define(['importers'], function() {
               });
             };
             
-            $scope.progress = function(value, max, result) {
-              $scope.max = max;
+            $scope.progress = function(value, max, record, result) {
               $scope.processed = value;
+              $scope.max = max;
+              if (record && record.changed) $scope.changed++;
+
               if (result) $scope.result = result;
             };
             
             $scope.diffType = function(record, key) {
               if (!record.oldData) return 'diff-added';
-              return (!record[key] && !record.oldData[key] || 
-                  record[key] == record.oldData[key]) ?
-                  'diff-identical' : 'diff-modified';
+              return record.oldData.hasOwnProperty(key) ?
+                  'diff-modified' : 'diff-identical';
             };
 
             $scope.$watch('show', function() {
@@ -70,6 +71,12 @@ define(['importers'], function() {
             $scope.openDialog = function(id) {
               document.querySelector('#' + id).open();
             };
+            
+            $scope.selectAll = function() {
+              $scope.result.records.forEach(function(record) {
+                if (record.changed) record.checked = true;
+              })
+            }
           },
           templateUrl : 'js/import_dialog/import_dialog.html'
         };
