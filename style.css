@@ -317,3 +317,11 @@ paper-dialog#preview {
 paper-dialog > * {
   margin-top: 0;	
 }
+
+iron-icon[icon="icons:done"] {
+	color: green;
+}
+
+iron-icon[icon="icons:error"] {
+	color: red;
+}

@@ -103,6 +103,13 @@ function update_user($user) {
   return null;
 }
 
+function get_db_error() {
+	global $medoo;
+	
+	$errors = $medoo->error();
+	return empty($errors) ? null : $errors[2];
+}
+
 function get_last_task_record($user_id, $task_id) {
   global $medoo;
   

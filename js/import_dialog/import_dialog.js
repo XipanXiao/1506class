@@ -1,6 +1,7 @@
-define(['importers'], function() {
-  return angular.module('ImportDialogModule', ['ImportersModule'])
-      .directive('importDialog', function(importers) {
+define(['importers', 'utils'], function() {
+  return angular.module('ImportDialogModule',
+      ['ImportersModule', 'UtilsModule'])
+      .directive('importDialog', function(importers, utils) {
         return {
           scope: {
             file: '=',
@@ -38,17 +39,22 @@ define(['importers'], function() {
             
             $scope.submit = function() {
               $scope.processed = 0;
-              importers[importer].submit($scope.result.records,
-                  $scope.progress, function(record, message) {
-                $scope.errors.push('failed to update ' + record.email + ':'
-                    + message);
+              $scope.submitted = 0;
+              $scope.ignored = utils.count($scope.result.records,
+                  function(record) {
+                return !record.checked;
               });
+              
+              importers[importer].submit($scope.result.records,
+                  $scope.progress);
+              $scope.openDialog('submit');
             };
             
             $scope.progress = function(value, max, record, result) {
               $scope.processed = value;
               $scope.max = max;
               if (record && record.changed) $scope.changed++;
+              if (record && record.submitted) $scope.submitted++;
 
               if (result) $scope.result = result;
             };
@@ -72,9 +78,9 @@ define(['importers'], function() {
               document.querySelector('#' + id).open();
             };
             
-            $scope.selectAll = function() {
+            $scope.toggleAll = function() {
               $scope.result.records.forEach(function(record) {
-                if (record.changed) record.checked = true;
+                if (record.changed) record.checked = !record.checked;
               })
             }
           },

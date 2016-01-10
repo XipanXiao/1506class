@@ -115,7 +115,7 @@ define(['services', 'utils'], function() {
       
       ['start_year', 'sex', 'education'].forEach(function(key) {
         user[key + '_label'] = user[key];
-        user[key] = columnMap[key][user[key] || 'default'];
+        user[key] = columnMap[key][user[key] && user[key].trim() || 'default'];
       });
       
       user.phone = cutOff(user.phone, 16);
@@ -191,6 +191,7 @@ define(['services', 'utils'], function() {
           var next = function() {
             var user = users[idx++];
             if (!user) return;
+
             rpc.get_user(user.email).then(function(existingUser) {
               if (!existingUser || !existingUser.email) existingUser = null;
               if (existingUser) {
@@ -216,13 +217,13 @@ define(['services', 'utils'], function() {
           next();
         },
         
-        submit: function(users, callback, errback) {
+        submit: function(users, callback) {
           var idx = 0;
           
           var next = function() {
             var user = users[idx++];
             if (!user) return;
-            if (user.id && !user.changed) {
+            if (!user.changed || !user.checked) {
               setTimeout(next, 0);
               return;
             }
@@ -240,10 +241,10 @@ define(['services', 'utils'], function() {
             }
             
             var then = function(response) {
-              if (!response.data.updated && errback) {
-                errback(user, response.data.error);
-              }
-              callback && callback(idx);
+              user.submitted = (1 == response.data.updated);
+              user.error = response.data.error;
+
+              callback(idx, null, user);
               next();
             };
             

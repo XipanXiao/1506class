@@ -120,6 +120,9 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   	}
 
   	$response = ["updated" => ($result ? 1 : 0)];
+  	if (!$result) {
+  		$response["error"] = get_db_error();
+  	}
   }
 }
 

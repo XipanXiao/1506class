@@ -134,6 +134,21 @@ define(function() {
         
         updated.oldData = result;
         return updated.changed = changed;
+      },
+      removeWhere: function(list, test) {
+        for (var key in list) {
+          if (test(list[key])) {
+            delete list[key];
+          }
+        }
+      },
+      count: function(list, test) {
+        var total = 0;
+        for (var key in list) {
+          if (test(list[key])) ++total;
+        }
+        
+        return total;
       }
     };
   });

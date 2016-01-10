@@ -13,7 +13,6 @@ define(['services', 'utils', 'classes/classes'], function() {
 
           var classId = $scope.user.classId;
           rpc.get_classes(classId).then(function(response) {
-            console.log(response.data);
             $scope.user.classInfo =
               response.data[classId] || response.data['' + classId];
           });
