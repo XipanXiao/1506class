@@ -40,6 +40,7 @@ define(['importers', 'utils'], function() {
             $scope.submit = function() {
               $scope.processed = 0;
               $scope.submitted = 0;
+              $scope.errors = 0;
               $scope.ignored = utils.count($scope.result.records,
                   function(record) {
                 return !record.checked;
@@ -53,8 +54,11 @@ define(['importers', 'utils'], function() {
             $scope.progress = function(value, max, record, result) {
               $scope.processed = value;
               $scope.max = max;
-              if (record && record.changed) $scope.changed++;
-              if (record && record.submitted) $scope.submitted++;
+              if (record) {
+                if (record.changed) $scope.changed++;
+                if (record.submitted) $scope.submitted++;
+                else $scope.errors++;
+              }
 
               if (result) $scope.result = result;
             };

@@ -93,7 +93,9 @@ define(['services', 'utils'], function() {
       var cutOff = function(value, len) {
         return value && value.substring(0, len);
       };
-      
+
+      user.classId = user.classId && user.classId.trim() || 1;
+
       user.name = cutOff(user.name, 16);
       if (!user.name) return false;
       
@@ -101,10 +103,11 @@ define(['services', 'utils'], function() {
           /(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+)/, user.email);
       if (!user.email) return false;
       
+      user.email = user.email.toLowerCase();
       user.birthday = extractFromPatter(/([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})/,
           user.birthday);
       user.birthday_label = user.birthday;
-      if (user.birthday) user.birthday = user.birthday + ' 00:00:00'; 
+      user.birthday = user.birthday ? (user.birthday + ' 00:00:00') : ''; 
       
       user.occupation = cutOff(user.occupation, 16);
 
@@ -114,8 +117,9 @@ define(['services', 'utils'], function() {
       user.classId = (classInfo && classInfo.id) || 0;
       
       ['start_year', 'sex', 'education'].forEach(function(key) {
-        user[key + '_label'] = user[key];
-        user[key] = columnMap[key][user[key] && user[key].trim() || 'default'];
+        var label = user[key] && user[key].trim() || 'default';
+        user[key + '_label'] = label;
+        user[key] = columnMap[key][label];
       });
       
       user.phone = cutOff(user.phone, 16);
@@ -127,9 +131,6 @@ define(['services', 'utils'], function() {
       
       user.street = cutOff(user.street && user.street.split(',')[0] || '',
           32);
-      user.start_year = columnMap.start_year[user.start_year_label];
-      user.sex = columnMap.sex[user.sex_label];
-      user.education = columnMap.education[user.education_label];
       return true;
     };
 
@@ -149,7 +150,8 @@ define(['services', 'utils'], function() {
               skipped: []
             };
   
-            var index = 0;
+            var index = 1;
+            var recordsMap = {};
             var next = function() {
               var line = reader.next();
               if (!line) {
@@ -166,8 +168,9 @@ define(['services', 'utils'], function() {
                 user[result.columns[c]] = columnValues[c];
               }
               
-              if (validate(user, response.data)) {
+              if (validate(user, response.data) && !recordsMap[user.email]) {
                 result.records.push(user);
+                recordsMap[user.email] = true;
               } else if (user.name) {
                 result.skipped.push(line);
               }
@@ -199,6 +202,7 @@ define(['services', 'utils'], function() {
                 ignored.forEach(function(key) {delete existingUser[key]});
 
                 user.id = existingUser.id;
+                user.birthday = user.birthday || existingUser.birthday;
                 utils.diff(existingUser, user);
               } else {
                 user.id = 0;
@@ -235,11 +239,16 @@ define(['services', 'utils'], function() {
               }
             } else {
               for (var key in columnMap.columns) {
-                var column = columnMap[key];
+                var column = columnMap.columns[key];
                 update[column] = user[column];
               }
             }
             
+            if (!user.classId){
+              update.classId_label = user.classId_label;
+              update.start_year_label = user.start_year_label;
+            }
+
             var then = function(response) {
               user.submitted = (1 == response.data.updated);
               user.error = response.data.error;

@@ -17,7 +17,7 @@
   <paper-progress value="{{processed}}" max="{{max}}" class="preview-progress padded-element">
   </paper-progress>
 	<div ng-show="result.records.length">
-	  <div>正确解析的条目({{result.records.length}})</div>
+	  <div>正确解析的数据({{result.records.length}}条)</div>
 	  <div class="import-analysis">
 	    <div class="padded-element css-table odd-even">
 	      <div class="css-table-row">
@@ -33,7 +33,7 @@
 	</div>
     
   <div ng-show="result.skipped.length">
-    <div>格式有问题的条目({{result.skipped.length}})</div>
+    <div>格式有问题或者email重复的数据({{result.skipped.length}}条)</div>
       <div class="import-analysis">
       <div class="padded-element css-table odd-even">
           <div class="css-table-row">
@@ -86,7 +86,7 @@
             <div ng-switch="diffType(record, column)">
               <div ng-switch-when="diff-modified">
                 <div class="old-data">{{record.oldData[column]}}</div>
-                <div>{{record[column]}}</div>
+                <div>{{record[column + '_label'] || record[column]}}</div>
               </div>
               <div ng-switch-default>
                 {{record[column + '_label'] || record[column]}}
@@ -100,7 +100,7 @@
 
 <paper-dialog id="submit">
   <h2>保存</h2>
-  <div>正在保存数据，已经保存{{submitted}}条。{{result.records.length - submitted - ignored}}条出错。</div>  
+  <div>正在保存数据，已经保存{{submitted}}条。{{errors}}条出错。</div>  
   <paper-progress value="{{processed}}" max="{{result.records.length}}"
       class="preview-progress padded-element">
   </paper-progress>

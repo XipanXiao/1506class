@@ -35,8 +35,9 @@ function get_class_id($class_name) {
 function create_class($class_name, $start_year) {
 	global $medoo;
 	
-	return $medoo->insert("classes",
+	$medoo->insert("classes",
 			["name" => $class_name, "start_year" => $start_year]);
+	return get_class_id($class_name);
 }
 
 function get_courses($course_group_id) {
