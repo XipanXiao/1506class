@@ -80,7 +80,7 @@ function update_user($user) {
   		"classId"];
   $fields = ["internal_id", "name", "password", "nickname", "email",
   		"phone", "street", "street2", "city", "state", "country", "zip",
-  		"im", "occupation", "birtyday", "notes"];
+  		"im", "occupation", "birthday", "notes"];
   $ignore_fields = ["id", "rid"];
   
   foreach ($user as $key => $value) {
@@ -90,7 +90,7 @@ function update_user($user) {
       $datas[$key] = $value;
     }
   }
-    
+  
   if ($user["id"]) {
 	  if ($medoo->update("users", $datas, ["id" => intval($user["id"])])) {
 	    return current(get_users(null, null, intval($user["id"])));

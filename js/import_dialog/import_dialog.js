@@ -86,7 +86,11 @@ define(['importers', 'utils'], function() {
               $scope.result.records.forEach(function(record) {
                 if (record.changed) record.checked = !record.checked;
               })
-            }
+            };
+            
+            $scope.refresh = function() {
+              window.location.href = window.location.href;
+            };
           },
           templateUrl : 'js/import_dialog/import_dialog.html'
         };

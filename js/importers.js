@@ -12,7 +12,11 @@ define(['services', 'utils'], function() {
       lines: lines.length
     };
   };
-  
+
+  function encode_utf8(s) {
+    return unescape(encodeURIComponent(s));
+  }
+
   var columnMap = {
     "table": "users",
     "columns": {
@@ -94,8 +98,6 @@ define(['services', 'utils'], function() {
         return value && value.substring(0, len);
       };
 
-      user.classId = user.classId && user.classId.trim() || 1;
-
       user.name = cutOff(user.name, 16);
       if (!user.name) return false;
       
@@ -111,10 +113,14 @@ define(['services', 'utils'], function() {
       
       user.occupation = cutOff(user.occupation, 16);
 
-      user.classId_label = user.classId;
-      var classInfo = utils.firstElement(classes,
-          'name', user.start_year + user.classId_label);
-      user.classId = (classInfo && classInfo.id) || 0;
+      user.classId_label = user.classId && user.classId.trim();
+      if (!user.classId_label) {
+        user.classId = 1;
+      } else {
+        var classInfo = utils.firstElement(classes,
+            'name', user.start_year + user.classId_label);
+        user.classId = (classInfo && classInfo.id) || 0;
+      }
       
       ['start_year', 'sex', 'education'].forEach(function(key) {
         var label = user[key] && user[key].trim() || 'default';
@@ -124,13 +130,20 @@ define(['services', 'utils'], function() {
       
       user.phone = cutOff(user.phone, 16);
       user.state = cutOff(user.state, 8);
-      user.city = cutOff(user.city, 32);
+      user.city = cutOff(user.city, 16);
+      if (encode_utf8(user.city).length > 32) {
+        user.city = cutOff(user.city, 8);
+      }
       
       var zip = user.street && user.street.substring(user.street.length-5);
       user.zip = /[0-9]{5}/.test(zip) ? zip : '';
       
-      user.street = cutOff(user.street && user.street.split(',')[0] || '',
+      user.street = cutOff(user.street && user.street.split(/[,，]/)[0] || '',
           32);
+      if (encode_utf8(user.street).length > 64) {
+        user.street = cutOff(user.street, 16);
+      }
+
       return true;
     };
 

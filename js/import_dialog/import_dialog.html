@@ -61,7 +61,7 @@
       class="preview-progress padded-element">
   </paper-progress>
   <paper-button dialog-confirm raised autofocus>关闭</paper-button>
-  <paper-button raised autofocus ng-click="submit()">提交</paper-button>
+  <paper-button dialog-confirm raised autofocus ng-click="submit()">提交</paper-button>
 
   <div ng-show="result.records.length" class="preview-section">
     <div class="padded-element css-table odd-even">
@@ -105,6 +105,7 @@
       class="preview-progress padded-element">
   </paper-progress>
   <paper-button dialog-confirm raised autofocus>关闭</paper-button>
+  <paper-button dialog-confirm raised ng-click="refresh()">刷新页面</paper-button>
 
   <div ng-show="result.records.length" class="preview-section">
     <div class="padded-element css-table odd-even">

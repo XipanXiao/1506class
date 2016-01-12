@@ -62,29 +62,29 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     if ($classId) {
       $response = get_users($email, $classId);
     } elseif ($email) {
-    	$response = current(get_users($email));
+      $response = current(get_users($email));
     } else {
-    	$response = $user;
+      $response = $user;
     }
   } elseif ($resource_id == "learning_records" && !empty($_GET["classId"])) {
     $response = get_schedules($_GET["classId"], $_GET["records"], $user->id);
   } elseif ($resource_id == "search") {
-  	$response = search($_GET["prefix"]);
+    $response = search($_GET["prefix"]);
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];
   
   $task_user_id = $student_id;
   if (!empty($_POST["student_id"])) {
-  	if ($user->permission <= 1) {
-  		$response =
-  		    ["error" => "permission denied, you can't report tasks for others"];
-  		echo json_encode($response);
-  		return;
-  	} else {
-	    // Admins can report for others.
-	    $task_user_id = $_POST["student_id"];
-  	}
+    if ($user->permission <= 1) {
+      $response =
+          ["error" => "permission denied, you can't report tasks for others"];
+      echo json_encode($response);
+      return;
+    } else {
+      // Admins can report for others.
+      $task_user_id = $_POST["student_id"];
+    }
   } 
   
   if ($resource_id == "tasks") {
@@ -97,32 +97,39 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "schedule") {
     $response = ["updated" => update_schedule($_POST)];
   } elseif ($resource_id == "user") {
-  	if (intval($_POST["classId"]) == 0 && !empty($_POST["classId_label"]) &&
-  			!empty($_POST["start_year_label"] && !empty($_POST["start_year"]))) {
-  		$class_name = $_POST["start_year_label"]. $_POST_POST["classId_label"];
-  		$classId = get_class_id($class_name);
-  		
-  		if (!$classId) {
-  			$classId = create_class($class_name, intval($_POST["start_year"]));
-  		}
-  		
-  		if (!classId) {
-  		  $response = ["error" => "failed to create class ". $class_name];
-  		} else {
-  			$_POST["classId"] = $classId;
-  		}
-  	}
-  	
-  	$result = update_user($_POST);
-  	if ($result && $result->id == $user->id) {
-  		$user = $result;
-		  $_SESSION['user'] = serialize($user);
-  	}
-
-  	$response = ["updated" => ($result ? 1 : 0)];
-  	if (!$result) {
-  		$response["error"] = get_db_error();
-  	}
+    if (isset($_POST["classId"]) && intval($_POST["classId"]) == 0) {
+      if(!empty($_POST["classId_label"]) &&
+          !empty($_POST["start_year_label"] && !empty($_POST["start_year"]))) {
+            $class_name = $_POST["start_year_label"]. $_POST["classId_label"];
+            $classId = get_class_id($class_name);
+      
+            if (!$classId) {
+              $classId = create_class($class_name,
+                  intval($_POST["start_year"]));
+            }
+      
+            if (!$classId) {
+              $response = ["error" => "failed to create class ". $class_name];
+            } else {
+              $_POST["classId"] = $classId;
+            }
+          } else {
+            $response = ["error" => "check your class_label and start_year"];
+          }
+    }
+    
+    if (!$response) {
+      $result = update_user($_POST);
+      if ($result && $result->id == $user->id) {
+        $user = $result;
+        $_SESSION['user'] = serialize($user);
+      }
+  
+      $response = ["updated" => ($result ? 1 : 0)];
+      if (!$result) {
+        $response["error"] = get_db_error();
+      }
+    }
   }
 }
 
