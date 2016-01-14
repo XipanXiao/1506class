@@ -1,0 +1,19 @@
+<link rel="import" href="bower_components/paper-progress/paper-progress.html">
+
+<div class="padded-element">
+  <label>
+    选择一项任务：
+    <select ng-options="value.name for value in tasks" ng-model="selectedTask">
+    </select>
+  </label>
+</div>
+<div class="css-table task-stats">
+  <div ng-repeat="user in task_stats" class="css-table-row">
+    <div class="css-table-cell">{{user.name}}</div>
+    <div class="css-table-cell">
+      <paper-progress value="{{user.lastRecord.sum}}" max="{{selectedTask.max}}" class="task-stats">
+      </paper-progress>
+    </div>
+    <div class="css-table-cell">{{user.lastRecord.sum}}</div>
+  </div>
+</div>

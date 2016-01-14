@@ -1,8 +1,10 @@
 require(['app_bar/app_bar', 'tasks/tasks', 'schedule_tasks/schedule_tasks',
-    'user_editor/user_editor', 'services'], function() {
+    'task_stats/task_stats', 'user_editor/user_editor', 'services'],
+    function() {
+
   angular.module('AppModule', ['AppBarModule', 'TasksModule',
-      'ScheduleTasksModule', 'UserEditorModule', 'ServicesModule'])
-      .directive('body', function(rpc) {
+      'ScheduleTasksModule', 'TaskStatsModule', 'UserEditorModule',
+      'ServicesModule']).directive('body', function(rpc) {
         return {
           link: function($scope) {
             rpc.get_user().then(function(user) {

@@ -19,19 +19,21 @@
   <paper-tabs noink selected="0">
     <paper-tab>考勤登记</paper-tab>
     <paper-tab>个人信息</paper-tab>
+    <paper-tab>报数统计</paper-tab>
   </paper-tabs>
   
   <iron-pages selected="0">
-      <div>
-        <tasks class="left" ng-controller="TasksController"></tasks>
-        <schedule-tasks class="left" user="user"></schedule-tasks>
-      </div>
-      <div>
-        <div class="center">
-          <h1>个人信息</h1>
-          <user-editor user="user"></user-editor>
-        </div>
+    <div>
+      <tasks class="left" ng-controller="TasksController"></tasks>
+      <schedule-tasks class="left" user="user"></schedule-tasks>
     </div>
+    <div>
+      <div class="center">
+        <h1>个人信息</h1>
+        <user-editor user="user"></user-editor>
+      </div>
+    </div>
+    <task-stats user="user"></task-stats>
   </iron-pages>
   <script>
        var pages = document.querySelector('iron-pages');

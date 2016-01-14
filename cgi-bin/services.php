@@ -65,6 +65,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = get_schedules($_GET["classId"], $_GET["records"], $user->id);
   } elseif ($resource_id == "search") {
     $response = search($_GET["prefix"]);
+  } elseif ($resource_id == "task_stats") {
+  	$response = get_class_task_stats($classId, $_GET["task_id"]);
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];

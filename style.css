@@ -329,3 +329,14 @@ iron-icon[icon="icons:error"] {
 paper-progress.task-progress {
 	width: 100%;
 }
+
+div.task-stats {
+  background: white;
+  border: 1px solid rgba(0,0,0,0.25);
+  border-radius: 4px;
+  width: 800px;
+}
+
+paper-progress.task-stats {
+  width: 600px;
+}

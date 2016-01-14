@@ -70,6 +70,12 @@ define(function() {
         return $http.get(serviceUrl + '?rid=tasks&pos=last&task_id=' + task_id);
       },
       
+      get_class_task_stats: function(classId, task_id) {
+        var url = '{0}?rid=task_stats&classId={1}&task_id={2}'.format(
+            serviceUrl, classId, task_id);
+        return $http.get(url);
+      },
+      
       get_courses: function(group_id) {
         group_id = group_id || '';
         
