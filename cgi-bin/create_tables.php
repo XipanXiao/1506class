@@ -23,14 +23,15 @@ CREATE TABLE tasks (
 				      INDEX department_id_idx(department_id),
 				      FOREIGN KEY (department_id)
 				      	REFERENCES deparments(id),
-                    name VARCHAR(32)
+                    name VARCHAR(32),
+                    max INT
                       );
 INSERT INTO tasks(department_id, name) VALUES (2, "观修");
 INSERT INTO tasks(department_id, name) VALUES (2, "观音心咒");
-INSERT INTO tasks(department_id, name) VALUES (3, "顶礼");
+INSERT INTO tasks(department_id, name, max) VALUES (3, "顶礼", 100000);
 INSERT INTO tasks(department_id, name) VALUES (3, "观修");
 INSERT INTO tasks(department_id, name) VALUES (3, "念诵《开显解脱道》");
-INSERT INTO tasks(department_id, name) VALUES (3, "金刚萨埵心咒");
+INSERT INTO tasks(department_id, name, max) VALUES (3, "金刚萨埵心咒", 100000);
 INSERT INTO tasks(department_id, name) VALUES (4, "阿弥陀佛圣号");
 INSERT INTO tasks(department_id, name) VALUES (4, "阿弥陀佛圣号（藏文）");
 
@@ -382,7 +383,8 @@ CREATE TABLE task_records (
                  student_id INT not null,
 				      INDEX student_id_idx(student_id),
                  task_id INT,
-                 count MEDIUMINT, 
+                 count MEDIUMINT,
+                 sum INT,
                  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                  );
 

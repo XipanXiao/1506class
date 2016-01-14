@@ -325,3 +325,7 @@ iron-icon[icon="icons:done"] {
 iron-icon[icon="icons:error"] {
 	color: red;
 }
+
+paper-progress.task-progress {
+	width: 100%;
+}

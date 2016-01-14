@@ -114,21 +114,12 @@ function get_db_error() {
 function get_last_task_record($user_id, $task_id) {
   global $medoo;
   
-  $sql = sprintf("SELECT count, ts FROM task_records WHERE 
+  $sql = sprintf("SELECT count, ts, sum FROM task_records WHERE 
     student_id=%d AND task_id=%d ORDER BY ts DESC LIMIT 1;",
-    $user_id, $task_id);
+    intval($user_id), intval($task_id));
   $result = $medoo->query($sql)->fetchAll();
   
   return empty($result) ? null : current($result); 
-}
-
-function task_sum($user_id, $task_id) {
-  global $medoo;
-  
-  $sql = sprintf("SELECT sum(count) FROM task_records".
-      " WHERE student_id=%d AND task_id=%d;", $user_id, $task_id);
-  $sum = current(current($medoo->query($sql)->fetchAll()));
-  return $sum == null ? 0 : $sum;
 }
 
 function get_tasks($department_id) {
@@ -137,13 +128,15 @@ function get_tasks($department_id) {
   return $medoo->select("tasks", "*", ["department_id" => $department_id]);
 }
 
-function report_task($user_id, $task_id, $count) {
+function report_task($user_id, $task_id, $count, $sum) {
   global $medoo;
   
-  $medoo->insert("task_records", [
-    "student_id" => $user_id, 
-    "task_id" => $task_id, 
-    "count" => $count]);
+  return $medoo->insert("task_records", [
+    "student_id" => intval($user_id), 
+    "task_id" => intval($task_id), 
+    "count" => intval($count),
+  	"sum" => intval($sum)
+  ]);
 }
 
 function convert_schedule_record($source, $string_to_int = false) {

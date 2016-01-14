@@ -36,8 +36,11 @@ define(function() {
         return $http.get(url, {cache: true});
       },
     
-      report_task: function(task_id, count) {
-        var data = {'rid': 'tasks', 'task_id': task_id, 'count': count};
+      report_task: function(task_id, count, sum) {
+        var data = {'rid': 'tasks', 
+            'task_id': task_id, 
+            'count': count, 
+            'sum': sum};
         return http_form_post($http, $httpParamSerializerJQLike(data));
       },
     

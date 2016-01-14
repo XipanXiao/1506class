@@ -43,12 +43,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       $pos = $_GET["pos"];
       
       if ($pos == "last") {
-        $last_record = get_last_task_record($student_id, $task_id);
-        $last_record["sum"] = task_sum($student_id, $task_id);
-
-        $response = $last_record;
-      } else if ($pos == "sum") {
-        $response = ["sum" => task_sum($student_id, $task_id)];
+        $response = get_last_task_record($student_id, $task_id);
       }
     } else {
       $response = get_tasks($user->classInfo["department_id"]);
@@ -88,10 +83,9 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } 
   
   if ($resource_id == "tasks") {
-    $task_id = $_POST["task_id"];
-    $count = $_POST["count"];
-    report_task($task_user_id, $task_id, $count);
-    $response = ["sum" => task_sum($task_user_id, $task_id)];
+  	$task_id = $_POST["task_id"];
+    report_task($task_user_id, $task_id, $_POST["count"], $_POST["sum"]);
+    $response = get_last_task_record($task_user_id, $task_id);
   } elseif ($resource_id == "schedule_tasks") {
     $response = ["updated" => report_schedule_task($task_user_id, $_POST)];
   } elseif ($resource_id == "schedule") {
