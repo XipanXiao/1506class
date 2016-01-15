@@ -1,55 +1,55 @@
 <div class="flex user-container">
-	<div class="user-info">
-		<div class="css-table">
-			<div class="css-table-row padded-element">
-				<div class="css-table-cell">姓名</div>
-				<div class="css-table-cell">{{user.name}}</div>
-				<div class="css-table-cell">
-					<iron-icon class="selectable" icon="chevron-right" ng-click="editing = 'name'">
-					</iron-icon>
-				</div>					
-			</div>
-			<div class="css-table-row padded-element">
-				<div class="css-table-cell">性别</div>
-				<div class="css-table-cell">{{sexLabel[user.sex]}}</div>
-				<div class="css-table-cell">
+  <div class="user-info">
+    <div class="css-table">
+      <div class="css-table-row padded-element">
+        <div class="css-table-cell">姓名</div>
+        <div class="css-table-cell">{{user.name}}</div>
+        <div class="css-table-cell">
+          <iron-icon class="selectable" icon="chevron-right" ng-click="editing = 'name'">
+          </iron-icon>
+        </div>          
+      </div>
+      <div class="css-table-row padded-element">
+        <div class="css-table-cell">性别</div>
+        <div class="css-table-cell">{{sexLabel[user.sex]}}</div>
+        <div class="css-table-cell">
           <iron-icon class="selectable" icon="chevron-right" ng-click="editing = 'sex'">
           </iron-icon>
-				</div>					
-			</div>
-	    <div class="css-table-row padded-element">
-	      <div class="css-table-cell">班级</div>
-	      <div class="css-table-cell">{{user.classInfo.name}}</div>
-	      <div class="css-table-cell">
+        </div>          
+      </div>
+      <div class="css-table-row padded-element">
+        <div class="css-table-cell">班级</div>
+        <div class="css-table-cell">{{user.classInfo.name}}</div>
+        <div class="css-table-cell">
           <iron-icon ng-show="admining" class="selectable" icon="chevron-right"
               ng-click="editing = 'classId'">
           </iron-icon>
-	      </div>          
-	    </div>
-	    <div class="css-table-row padded-element">
-	      <div class="css-table-cell">地址</div>
-	      <div class="css-table-cell">
+        </div>          
+      </div>
+      <div class="css-table-row padded-element">
+        <div class="css-table-cell">地址</div>
+        <div class="css-table-cell">
          <div>{{user.street}}</div>
          <div>{{user.street2}}</div>
          <div>{{user.city}} {{user.state}} {{user.zip}}</div>
-	     </div>
-	      <div class="css-table-cell">
+       </div>
+        <div class="css-table-cell">
           <iron-icon class="selectable" icon="chevron-right" ng-click="editing = 'address'">
           </iron-icon>
-	      </div>          
-	    </div>
-		</div>
-	</div>
-	
-	<div ng-if="editing" class="css-table user-info-editor">
-	 <div class="css-table-row">
-			<div ng-switch="editing" class="css-table-cell">
-	      <input ng-switch-when="name" ng-model="user.name" type="text" autofocus>
-	      <select ng-switch-when="sex" ng-model="user.sex" autofocus
-	          ng-options="sexLabel[value] for value in [0, 1]">
-	      </select>
-	      <classes ng-switch-when="classId" class-id="user.classId"></classes>
-	      <div ng-switch-when="address" class="css-table">
+        </div>          
+      </div>
+    </div>
+  </div>
+  
+  <div ng-if="editing" class="css-table user-info-editor">
+   <div class="css-table-row">
+      <div ng-switch="editing" class="css-table-cell">
+        <input ng-switch-when="name" ng-model="user.name" type="text" autofocus>
+        <select ng-switch-when="sex" ng-model="user.sex" autofocus
+            ng-options="sexLabel[value] for value in [0, 1]">
+        </select>
+        <classes ng-switch-when="classId" class-id="user.classId"></classes>
+        <div ng-switch-when="address" class="css-table">
           <div class="css-table-row">
             <div class="css-table-cell"><label for="street">Street</label></div>
             <div class="css-table-cell">
@@ -80,10 +80,10 @@
           <div class="css-table-row">
             <input type="button" value="Save" ng-click="save()" class="css-table-cell">
           </div>
-	      </div>
-			</div>
-			<input ng-if="editing != 'address'" type="button" value="Save" ng-click="save()"
-			    class="css-table-cell">
-		</div>
-	</div>
+        </div>
+      </div>
+      <input ng-if="editing != 'address'" type="button" value="Save" ng-click="save()"
+          class="css-table-cell">
+    </div>
+  </div>
 </div>
