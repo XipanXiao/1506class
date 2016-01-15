@@ -71,6 +71,10 @@ tasks {
   padding: 4px 0;
 }
 
+.css-table-row.admin {
+  background-color: #860200 !important;
+}
+
 .css-table-row.selected {
   background-color: blue !important;
 }

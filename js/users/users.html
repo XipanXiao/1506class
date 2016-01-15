@@ -7,7 +7,8 @@
 			<div class="css-table-cell"><strong>电话</strong></div>
 		</div>
 		<div ng-repeat="user in users" class="css-table-row selectable" ng-click="showInfo(user)"
-		    ng-class="{'selected': editingUser && editingUser.id == user.id}">
+		    ng-class=
+		    "{'selected': editingUser && editingUser.id == user.id, 'admin': user.permission > 7}">
 			<div class="css-table-cell">{{user.name}}</div>
 			<div class="css-table-cell">{{user.sex == '1' ? '男' : '女'}}</div>
 			<div class="css-table-cell">{{user.email}}</div>

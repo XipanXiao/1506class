@@ -27,12 +27,21 @@
         </div>          
       </div>
       <div class="css-table-row padded-element">
+        <div class="css-table-cell">权限</div>
+        <div class="css-table-cell">{{permissionLabel[user.permission]}}</div>
+        <div class="css-table-cell">
+          <iron-icon ng-show="admining" class="selectable" icon="chevron-right"
+              ng-click="editing = 'permission'">
+          </iron-icon>
+        </div>          
+      </div>
+      <div class="css-table-row padded-element">
         <div class="css-table-cell">地址</div>
         <div class="css-table-cell">
-         <div>{{user.street}}</div>
-         <div>{{user.street2}}</div>
-         <div>{{user.city}} {{user.state}} {{user.zip}}</div>
-       </div>
+          <div>{{user.street}}</div>
+          <div>{{user.street2}}</div>
+          <div>{{user.city}} {{user.state}} {{user.zip}}</div>
+        </div>
         <div class="css-table-cell">
           <iron-icon class="selectable" icon="chevron-right" ng-click="editing = 'address'">
           </iron-icon>
@@ -49,6 +58,9 @@
             ng-options="sexLabel[value] for value in [0, 1]">
         </select>
         <classes ng-switch-when="classId" class-id="user.classId"></classes>
+        <select ng-switch-when="permission" ng-model="user.permission" autofocus
+            ng-options="permissionLabel[value] for value in permissions">
+        </select>
         <div ng-switch-when="address" class="css-table">
           <div class="css-table-row">
             <div class="css-table-cell"><label for="street">Street</label></div>
