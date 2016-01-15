@@ -7,8 +7,8 @@
         <div>累计报数：{{task.lastRecord.sum}}</div>
         <div>上次报数：{{task.lastRecord.count}}</div>
         <div>（{{task.lastRecord.ts}}）</div>
-        <paper-progress value="{{task.lastRecord.sum}}" max="{{task.max}}" class="task-progress">
-        </paper-progress>
+        <progress-bar value="{{task.lastRecord.sum}}" max="{{task.max}}" class="task-progress">
+        <progress-bar>
       </div>
       <div ng-switch-default>暂时没有学修记录。</div>
     </div>

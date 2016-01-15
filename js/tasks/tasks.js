@@ -1,5 +1,5 @@
-define(['services'], function() {
-  return angular.module('TasksModule', ['ServicesModule'])
+define(['progress_bar/progress_bar', 'services'], function() {
+  return angular.module('TasksModule', ['ProgressBarModule', 'ServicesModule'])
     .controller('TasksController', function($scope, rpc) {
       rpc.get_group_tasks().then(function(response) {
         $scope.tasks = [];

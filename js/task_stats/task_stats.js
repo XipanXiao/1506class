@@ -1,6 +1,6 @@
-define(['services'], function() {
-  return angular.module('TaskStatsModule', ['ServicesModule'])
-    .directive('taskStats', function(rpc) {
+define(['progress_bar/progress_bar', 'services'], function() {
+  return angular.module('TaskStatsModule', ['ProgressBarModule',
+      'ServicesModule']).directive('taskStats', function(rpc) {
       return {
         scope: {
           user: '='
