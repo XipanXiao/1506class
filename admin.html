@@ -22,13 +22,15 @@
       <paper-tab>学员名单</paper-tab>
       <paper-tab>考勤</paper-tab>
       <paper-tab>学修记录</paper-tab>
+      <paper-tab>任务进度</paper-tab>
     </paper-tabs>
     
     <iron-pages selected="0">
-        <users class-id="classId"></users>
-        <learning-records class-id="classId" attendence="true">
-        </learning-records>
-        <learning-records class-id="classId"></learning-records>
+      <users class-id="classId"></users>
+      <learning-records class-id="classId" attendence="true">
+      </learning-records>
+      <learning-records class-id="classId"></learning-records>
+      <task-stats class-id="{{classId}}"></task-stats>
     </iron-pages>
   </div>
 </div>

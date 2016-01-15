@@ -3,7 +3,7 @@ define(['progress_bar/progress_bar', 'services'], function() {
       'ServicesModule']).directive('taskStats', function(rpc) {
       return {
         scope: {
-          user: '='
+          classId: '@'
         },
         link: function(scope) {
           rpc.get_group_tasks().then(function(response) {
@@ -11,14 +11,17 @@ define(['progress_bar/progress_bar', 'services'], function() {
             scope.selectedTask = scope.tasks[0];
           });
           
-          scope.$watch('selectedTask', function() {
+          var refreshStats = function() {
             if (!scope.selectedTask) return;
             
-            rpc.get_class_task_stats(scope.user.classId, scope.selectedTask.id)
+            rpc.get_class_task_stats(scope.classId, scope.selectedTask.id)
                 .then(function(response) {
                   scope.task_stats = response.data;
                 });
-          });
+          };
+          
+          scope.$watch('classId', refreshStats);
+          scope.$watch('selectedTask', refreshStats);
         },
         templateUrl: 'js/task_stats/task_stats.html'
       };

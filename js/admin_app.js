@@ -1,7 +1,7 @@
-require(["app_bar/app_bar", "classes/classes",
-    "users/users", "learning_records/learning_records"], function() {
+require(['app_bar/app_bar', 'classes/classes', 'task_stats/task_stats',
+    'users/users', 'learning_records/learning_records'], function() {
   angular.module('AppModule', ['AppBarModule', 'ClassesModule',
-      'UsersModule', 'LearningRecordsModule'])
+      'TaskStatsModule', 'UsersModule', 'LearningRecordsModule'])
       .directive('body', function(rpc) {
         return {
           link: function($scope) {
