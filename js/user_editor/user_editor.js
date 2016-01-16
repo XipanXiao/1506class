@@ -43,8 +43,8 @@ define(['services', 'utils', 'classes/classes'], function() {
           }
           
           rpc.update_user(data).then(function(response) {
-            if (response.data.updated) {
-              window.location.href = window.location.href;
+            if (response.data.updated && $scope.editing == 'classId') {
+              utils.refresh();
             }
           });
         };

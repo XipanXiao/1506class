@@ -1,11 +1,19 @@
 require(['app_bar/app_bar', 'classes/classes', 'task_stats/task_stats',
-    'users/users', 'learning_records/learning_records'], function() {
+    'users/users', 'learning_records/learning_records', 'services',
+    'permission', 'utils'], function() {
+
   angular.module('AppModule', ['AppBarModule', 'ClassesModule',
-      'TaskStatsModule', 'UsersModule', 'LearningRecordsModule'])
-      .directive('body', function(rpc) {
+      'TaskStatsModule', 'UsersModule', 'LearningRecordsModule',
+      'ServicesModule', 'PermissionModule', 'UtilsModule'])
+      .directive('body', function(rpc, perm, utils) {
         return {
           link: function($scope) {
             rpc.get_user().then(function(user) {
+              if (!perm.isAdmin(user)) {
+                utils.redirect('login.html');
+                return;
+              }
+
               $scope.user = user;
               $scope.classId = user.classId;
             });

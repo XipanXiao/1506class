@@ -88,9 +88,7 @@ define(['importers', 'utils'], function() {
               })
             };
             
-            $scope.refresh = function() {
-              window.location.href = window.location.href;
-            };
+            $scope.refresh = utils.refresh;
           },
           templateUrl : 'js/import_dialog/import_dialog.html'
         };

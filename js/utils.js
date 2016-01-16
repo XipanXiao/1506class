@@ -149,6 +149,12 @@ define(function() {
         }
         
         return total;
+      },
+      redirect: function(url) {
+        window.location.href = url;
+      },
+      refresh: function() {
+        window.location.reload();
       }
     };
   });
