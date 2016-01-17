@@ -13,18 +13,18 @@ define(['services'], function() {
 			  scope: {
 			    userPicked: '&',
           userId: '=',
-          users: '='
+          userList: '='
         },
 			  link: function($scope) {
 		      $scope.showPicker = false;
-		      $scope.selectedUser = {name: $scope.users[$scope.userId]};
+		      $scope.selectedUser = {name: $scope.userList[$scope.userId]};
 
 		      $scope.edit = function() {
 		        $scope.showPicker = true;
 		      };
 		      
 		      $scope.select = function() {
-		        $scope.userId = indexOf($scope.users, $scope.selectedUser.name);
+		        $scope.userId = indexOf($scope.userList, $scope.selectedUser.name);
 		        if ($scope.userPicked) $scope.userPicked({userId: $scope.userId});
 		        $scope.showPicker = false;
 		      };
