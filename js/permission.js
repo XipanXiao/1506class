@@ -3,24 +3,41 @@ define(function() {
   return angular.module('PermissionModule', []).factory('perm',
       function() {
     return {
+      user: null,
       ROLES: {
-        PRINCIPAL: {perm: 0xFF, label: '管理员'},
-        INSPECTION: {perm: 0x55, label: '学院督察'},
-        TEACHER: {perm: 0x3F, label: '辅导员'},
-        LEADER: {perm: 0xF, label: '组长'},
-        STUDENT: {perm: 0x7, label: '学员'},
-        NONE: {perm: 0, label: '客人'}
+        ANONYMOUS: 0,
+        STUDENT: 0x7,
+        LEADER: 0xF,
+        TEACHER: 0x3F,
+        INSPECTION: 0x55,
+        ADMIN: 0xFF
       },
-      getRole: function(user, classInfo) {
-        if (!user.permission || user.permission < 0) return ROLES.NONE;
-        
-        for (var key in this.ROLES) {
-          var role = this.ROLES[key];
-          if (user.permission >= role.perm) return role;
+      permissions: {
+        0xFF: '管理员',  //4: 11111111  rw all data
+        0x55: '学院督查', //4: 01010101
+        0x3F: '辅导员', //3: 111111    rw class year data
+        0xF: '组长',    //2: 1111     rw class data
+        0x7: '学员',    //2: 0111       rw own data, r class data
+        0x0: '所有人'   //0: 
+      },
+      isAdmin: function() {
+        return this.user.permission > this.ROLES.STUDENT;
+      },
+      canRead: function(classInfo) {
+        if (classInfo.teacher_id == this.user.id) return true;
+        return this.user.permission >> (classInfo.perm_level*2);
+      },
+      canWrite: function(classInfo) {
+        if (classInfo.teacher_id == this.user.id) return true;
+        return (this.user.permission >> (classInfo.perm_level*2)) & 0x2;
+      },
+      level: function(permission) {
+        var result = 0;
+        for (;permission > 0; result++) {
+          permission = (permission >> 2);
         }
-      },
-      isAdmin: function(user) {
-        return user.permission > this.ROLES.STUDENT.perm;
+        
+        return result;
       }
     };
   });

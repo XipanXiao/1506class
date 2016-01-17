@@ -1,7 +1,8 @@
-define(['import_dialog/import_dialog', 'services', 'utils'], function() {
+define(['import_dialog/import_dialog', 'permission', 'services', 'utils'],
+    function() {
   return angular.module('ClassesModule', ['ImportDialogModule',
-      'ServicesModule', 'UtilsModule'])
-    .directive('classes', function($rootScope, rpc, utils) {
+      'PermissionModule', 'ServicesModule', 'UtilsModule'])
+    .directive('classes', function($rootScope, perm, rpc, utils) {
       return {
         scope: {
           classId: '=',
@@ -29,6 +30,12 @@ define(['import_dialog/import_dialog', 'services', 'utils'], function() {
           });
 
           $scope.select = function (id) {
+            var classInfo = $scope.classes[id];
+            if (!perm.canRead(classInfo)) {
+              alert('Permission denied');
+              return;
+            }
+            
             $scope.classId = id;
             $scope.currentClass.id = id;
           };

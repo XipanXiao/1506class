@@ -9,7 +9,8 @@ require(['app_bar/app_bar', 'classes/classes', 'task_stats/task_stats',
         return {
           link: function($scope) {
             rpc.get_user().then(function(user) {
-              if (!perm.isAdmin(user)) {
+              perm.user = user;
+              if (!perm.isAdmin()) {
                 utils.redirect('login.html');
                 return;
               }

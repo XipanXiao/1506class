@@ -92,6 +92,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = ["updated" => report_schedule_task($task_user_id, $_POST)];
   } elseif ($resource_id == "schedule") {
     $response = ["updated" => update_schedule($_POST)];
+  } elseif ($resource_id == "class") {
+  	$response = ["updated" => update_class($_POST)]; 
   } elseif ($resource_id == "user") {
     if (isset($_POST["classId"]) && intval($_POST["classId"]) == 0) {
       if(!empty($_POST["classId_label"]) &&

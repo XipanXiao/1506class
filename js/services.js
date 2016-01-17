@@ -35,6 +35,11 @@ define(function() {
             classId || '');
         return $http.get(url, {cache: true});
       },
+      
+      update_class: function(classInfo) {
+        classInfo.rid = 'class';
+        return http_form_post($http, $httpParamSerializerJQLike(classInfo));
+      },
     
       report_task: function(task_id, count, sum) {
         var data = {'rid': 'tasks', 

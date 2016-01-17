@@ -1,3 +1,11 @@
+<div ng-if="showPermEditor" class="padded-element">
+  <label>
+    设置谁可以读写本班数据
+    <select ng-model="classInfo.perm_level" autofocus ng-change="updatePerm()"
+        ng-options="permissionLabel[value] for value in permissions">
+    </select>
+  </label>
+</div>
 <div class="flex">
 	<div class="css-table section odd-even">
 		<div class="css-table-row header">
@@ -8,7 +16,7 @@
 		</div>
 		<div ng-repeat="user in users" class="css-table-row selectable" ng-click="showInfo(user)"
 		    ng-class=
-		    "{'selected': editingUser && editingUser.id == user.id, 'admin': user.permission > 7}">
+		    "{'selected': editingUser && editingUser.id == user.id, 'admin': isAdmin(user)}">
 			<div class="css-table-cell">{{user.name}}</div>
 			<div class="css-table-cell">{{user.sex == '1' ? '男' : '女'}}</div>
 			<div class="css-table-cell">{{user.email}}</div>

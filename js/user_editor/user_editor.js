@@ -1,20 +1,15 @@
-define(['services', 'utils', 'classes/classes'], function() {
+define(['services', 'utils', 'classes/classes', 'permission'], function() {
   return angular.module('UserEditorModule', ['ServicesModule', 'ClassesModule',
-      'UtilsModule']).directive('userEditor', function(rpc, utils) {
+      'PermissionModule', 'UtilsModule']).directive('userEditor',
+          function(perm, rpc, utils) {
     return {
       scope: {
         user: '='
       },
       link: function($scope) {
         $scope.sexLabel = ['女', '男'];
-        $scope.permissionLabel = {
-            0x7: '学员',    //0111       rw own data, r class data
-            0xF: '组长',    //1111     rw class data
-            0x3F: '辅导员', //111111    rw class year data
-            0xFF: '管理员',  //11111111  rw all data
-            0x55: '学院查看' //01010101
-        };
-        $scope.permissions = utils.keys($scope.permissionLabel);
+        $scope.permissionLabel = perm.permissions;
+        $scope.permissions = utils.keys(perm.permissions);
 
         $scope.$watch('user', function() {
           if (!$scope.user || $scope.user.classInfo) return;

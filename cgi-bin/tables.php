@@ -40,6 +40,21 @@ function create_class($class_name, $start_year) {
   return get_class_id($class_name);
 }
 
+function update_class($classInfo) {
+  global $medoo;
+  
+  $datas = [];
+  $fields = ["department_id", "name", "class_room", "email", "start_year", 
+      "perm_level"];
+  foreach ($fields as $field) {
+  	if (!empty($classInfo[$field])) {
+  		$datas[$field] = $classInfo[$field];
+  	}
+  }
+  
+  return $medoo->update("classes", $datas, ["id" => $classInfo["id"]]);
+}
+
 function get_courses($course_group_id) {
   global $medoo;
 

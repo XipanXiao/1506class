@@ -35,6 +35,7 @@ INSERT INTO tasks(department_id, name, max) VALUES (3, "金刚萨埵心咒", 100
 INSERT INTO tasks(department_id, name) VALUES (4, "阿弥陀佛圣号");
 INSERT INTO tasks(department_id, name) VALUES (4, "阿弥陀佛圣号（藏文）");
 
+-- perm_level: 0 everyone 1 leader 2 teacher 3 admin
 CREATE TABLE classes (
                     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                     department_id TINYINT,
@@ -42,7 +43,8 @@ CREATE TABLE classes (
                       email VARCHAR(32),
                       class_room VARCHAR(16),
 					  teacher_id INT,
-					  start_year MEDIUMINT
+					  start_year MEDIUMINT,
+					  perm_level INT DEFAULT 0
                       );
 
 -- id: 1. unassigned students are put temporarily here.
