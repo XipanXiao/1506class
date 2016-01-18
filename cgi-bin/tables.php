@@ -11,6 +11,47 @@ function get_class_groups() {
   return $medoo->select("class_groups", "*");
 }
 
+function get_course_groups() {
+	global $medoo;
+	
+	$groups = $medoo->select("course_groups", "*");
+	
+	foreach ($groups as $key => $group) {
+		$group["courses"] =
+		    $medoo->select("courses", "*", ["group_id" => $group["id"]]);
+		$groups[$key] = $group;
+	}
+	return $groups;
+}
+
+function update_course_group($group) {
+	global $medoo;
+	
+  $datas = [];
+  $fields = ["department_id", "name", "url"];
+  foreach ($fields as $field) {
+  	if (!empty($group[$field])) {
+  		$datas[$field] = $group[$field];
+  	}
+  }
+
+  return $medoo->update("course_groups", $datas, ["id" => $group["id"]]);
+}
+
+function update_course($course) {
+	global $medoo;
+	
+  $datas = [];
+  $fields = ["group_id", "name", "video_url", "text_url"];
+  foreach ($fields as $field) {
+  	if (!empty($course[$field])) {
+  		$datas[$field] = $course[$field];
+  	}
+  }
+
+  return $medoo->update("courses", $datas, ["id" => $course["id"]]);
+}
+
 function get_classes($classId) {
   global $medoo;
   

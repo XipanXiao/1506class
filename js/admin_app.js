@@ -1,12 +1,14 @@
 require(['app_bar/app_bar', 'classes/classes', 'task_stats/task_stats',
     'users/users', 'learning_records/learning_records',
-    'schedule_editor/schedule_editor', 'services', 'permission', 'utils'],
+    'schedule_editor/schedule_editor', 'course_editor/course_editor',
+    'services', 'permission', 'utils'],
     function() {
 
   angular.module('AppModule', ['AppBarModule', 'ClassesModule',
       'TaskStatsModule', 'UsersModule', 'LearningRecordsModule',
-      'ScheduleEditorModule', 'ServicesModule', 'PermissionModule',
-      'UtilsModule']).directive('body', function(rpc, perm, utils) {
+      'ScheduleEditorModule', 'CourseEditorModule', 'ServicesModule',
+      'PermissionModule', 'UtilsModule'])
+      .directive('body', function(rpc, perm, utils) {
         return {
           link: function($scope) {
             rpc.get_user().then(function(user) {

@@ -138,8 +138,19 @@ define(function() {
         return $http.get(serviceUrl + '?rid=search&prefix=' + prefix);
       },
       
-      get_file: function(url) {
+      get_course_groups: function() {
+        var url = "{0}?rid=course_groups".format(serviceUrl);
         return $http.get(url, {cache: true});
+      },
+
+      update_course_group: function(group) {
+        group.rid = 'course_group';
+        return http_form_post($http, $httpParamSerializerJQLike(group));
+      },
+      
+      update_course: function(course) {
+        course.rid = 'course';
+        return http_form_post($http, $httpParamSerializerJQLike(course));
       }
     };
   });

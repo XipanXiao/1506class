@@ -37,7 +37,9 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     } else {
       $response = get_classes($classId);
     }
-  } else if ($resource_id == "tasks") {
+  } elseif ($resource_id == "course_groups") {
+    $response = get_course_groups();
+  } elseif ($resource_id == "tasks") {
     if (isset($_GET["task_id"]) && isset($_GET["pos"])) {
       $task_id = $_GET["task_id"];
       $pos = $_GET["pos"];
@@ -94,6 +96,10 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = ["updated" => update_schedule($_POST)];
   } elseif ($resource_id == "class") {
   	$response = ["updated" => update_class($_POST)]; 
+  } elseif ($resource_id == "course_group") {
+  	$response = ["updated" => update_course_group($_POST)]; 
+  }  elseif ($resource_id == "course") {
+  	$response = ["updated" => update_course($_POST)]; 
   } elseif ($resource_id == "user") {
     if (isset($_POST["classId"]) && intval($_POST["classId"]) == 0) {
       if(!empty($_POST["classId_label"]) &&

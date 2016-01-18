@@ -1,0 +1,10 @@
+<label>{{label}}
+  <span ng-switch="editing">
+    <input ng-switch-when="true" ng-model="editor.value" ng-keyup="keyPressed($event)" autofocus>
+    <span ng-switch-default ng-switch="!value" class="selectable" ng-click="edit()">
+	    <iron-icon ng-switch-when="true" icon="editor:border-color" class="small-icon">
+	    </iron-icon>
+	    <span ng-switch-default>{{value}}</span>
+	    </span>
+  </span>
+</label>

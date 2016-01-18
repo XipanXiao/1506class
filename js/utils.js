@@ -150,6 +150,14 @@ define(function() {
         
         return total;
       },
+      toList: function(map) {
+        var list = [];
+        for (var key in map) {
+          list.push(map[key]);
+        }
+        
+        return list;
+      },
       redirect: function(url) {
         window.location.href = url;
       },
