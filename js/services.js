@@ -66,6 +66,11 @@ define(function() {
         schedule.rid = 'schedule';
         return http_form_post($http, $httpParamSerializerJQLike(schedule));
       },
+      
+      update_schedule_group: function(group) {
+        group.rid = 'schedule_group';
+        return http_form_post($http, $httpParamSerializerJQLike(group));
+      },
     
       get_group_tasks: function() {
         return $http.get(serviceUrl + '?rid=tasks');
@@ -82,9 +87,8 @@ define(function() {
       },
       
       get_courses: function(group_id) {
-        group_id = group_id || '';
-        
-        return $http.get(serviceUrl + '?rid=courses&group_id=' + group_id);
+        return $http.get(serviceUrl + '?rid=courses&group_id=' + 
+            (group_id || ''));
       },
       
       get_users: function(email, classId) {
@@ -138,8 +142,9 @@ define(function() {
         return $http.get(serviceUrl + '?rid=search&prefix=' + prefix);
       },
       
-      get_course_groups: function() {
-        var url = "{0}?rid=course_groups".format(serviceUrl);
+      get_course_groups: function(detailed) {
+        var url = "{0}?rid=course_groups&detailed={1}".format(serviceUrl,
+            detailed || false);
         return $http.get(url, {cache: true});
       },
 

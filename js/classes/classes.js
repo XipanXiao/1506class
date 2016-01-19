@@ -2,13 +2,13 @@ define(['import_dialog/import_dialog', 'permission', 'services', 'utils'],
     function() {
   return angular.module('ClassesModule', ['ImportDialogModule',
       'PermissionModule', 'ServicesModule', 'UtilsModule'])
-    .directive('classes', function($rootScope, perm, rpc, utils) {
+    .directive('classes', function(perm, rpc, utils) {
       return {
         scope: {
           classId: '=',
           listType: '@'
         },
-        link: function($scope, element) {
+        link: function($scope) {
           rpc.get_classes().then(function(response) {
             $scope.showImportDialog = false;
             $scope.alumnis = utils.groupBy(response.data, 'start_year');

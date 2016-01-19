@@ -1,5 +1,21 @@
+<link rel="import" href="bower_components/iron-icons/editor-icons.html">
 <div ng-repeat="group in schedule_groups" class="padded-element">
-  <div class="center"><h2>{{group.name}}</h2></div>
+  <div class="center">
+    <h2>{{group.name}}</h2>
+    <iron-icon icon="editor:border-color" title="编辑" ng-click="editGroup(group)">
+    </iron-icon>
+    <iron-icon icon="icons:delete" title="删除" ng-click="removeGroup(group)">
+    </iron-icon>
+    <iron-icon icon="icons:add" title="添加" ng-click="addGroup()">
+    </iron-icon>
+  </div>
+  <div ng-show="group.editing" class="section group-editing padded-element">
+    <div>课程：<course-editor group-id="group.course_group" class="inline"></course-editor></div>
+    <div>名称：<editable-label value="group.name"></editable-label></div>
+    <div>开始时间：<input type="datetime" ng-model="group.start_time"></div>
+    <input type="button" value="Cancel" ng-click="cancelEditing(group)">
+    <input type="submit" value="Save" ng-click="saveGroup(group)">
+  </div>
   <div class="css-table odd-even schedule-tasks">
     <div class="css-table-row header">
       <div class="css-table-cell"><strong>周数</strong></div>

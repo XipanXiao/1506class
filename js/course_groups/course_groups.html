@@ -1,0 +1,15 @@
+<div ng-switch="listType">
+	<div ng-switch-when="list" class="padded-element group-list">
+		<div ng-repeat="group in course_groups" class="selectable">
+			<div ng-click="select(group.id)" class="padded-element group-name"
+					ng-class="{'selected': currentGroup.id == group.id}">
+				{{group.name}}
+			</div>
+		</div>
+	</div>
+	<div ng-switch-default>
+		<select ng-options="course_groups[value].name for value in groupIds" ng-model="currentGroup.id"
+		    ng-change="select(currentGroup.id)">
+		</select>
+	</div>
+</div>
