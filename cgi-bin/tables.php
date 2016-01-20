@@ -40,7 +40,24 @@ function update_course_group($group) {
   	}
   }
 
-  return $medoo->update("course_groups", $datas, ["id" => $group["id"]]);
+  $id = intval($group["id"]);
+  if ($id == 0) {
+  	$id = $medoo->insert("course_groups", $datas);
+  	if ($id) {
+  		$group["id"] = $id;
+  		return $group;
+  	}
+  } elseif($medoo->update("course_groups", $datas, ["id" => $id])) {
+  	return $group;
+  }
+
+  return null;
+}
+
+function remove_course_group($id) {
+  global $medoo;
+  
+  return $medoo->delete("course_groups", ["id" => $id]);
 }
 
 function update_course($course) {
@@ -54,7 +71,18 @@ function update_course($course) {
   	}
   }
 
-  return $medoo->update("courses", $datas, ["id" => $course["id"]]);
+  $id = intval($course["id"]);
+  if ($id == 0) {
+  	$id = $medoo->insert("courses", $datas);
+  	if ($id) {
+  		$course["id"] = $id;
+  		return $course;
+  	}
+  } elseif($medoo->update("courses", $datas, ["id" => $id])) {
+  	return $course;
+  }
+
+  return null;
 }
 
 function get_classes($classId) {

@@ -24,12 +24,21 @@ define(function() {
 					    };
 					    scope.edit = function() {
 					      scope.editing = true;
+                scope.editor.value = scope.value;
+					    };
+					    scope.cancel = function() {
+					      scope.editing = false;
+                scope.editor.value = scope.value;
 					    };
 					    scope.keyPressed = function(event) {
 					      if (event.keyCode == 13) {
 					        scope.commit();
+					        //event.stopPropagation();
+					        event.preventDefault();
 					      } else if (event.keyCode == 27) {
-					        scope.editing = false;
+					        scope.cancel();
+                  //event.stopPropagation();
+					        event.preventDefault();
 					      }
 					    };
 					  },

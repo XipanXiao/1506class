@@ -361,3 +361,21 @@ div.task-stats {
 .group-editing {
 	width: 500px;
 }
+
+paper-dialog#course-editor-dlg {
+  width: 1024px;
+}
+
+div.course-groups {
+	width: 200px;
+}
+
+.course-name {
+  min-width: 100px;
+}
+
+div.compact-url {
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
