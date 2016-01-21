@@ -153,6 +153,11 @@ define(function() {
         return http_form_post($http, $httpParamSerializerJQLike(group));
       },
       
+      remove_course: function(course_id) {
+        var url = '{0}?rid=course&id={1}'.format(serviceUrl, course_id);
+        return $http.delete(url);
+      },
+      
       remove_course_group: function(group_id) {
         var url = '{0}?rid=course_group&id={1}'.format(serviceUrl, group_id);
         return $http.delete(url);

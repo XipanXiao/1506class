@@ -15,7 +15,7 @@ define(['editable_label/editable_label', 'services', 'utils'], function() {
                     name: '新建',
                     courses: {}
                   };
-                  $scope.groupIds = utils.keys($scope.course_groups);
+                  $scope.groupIds = utils.positiveKeys($scope.course_groups);
                   $scope.group = utils.firstElement($scope.course_groups, 'id',
                       $scope.groupId);
                   
@@ -29,7 +29,7 @@ define(['editable_label/editable_label', 'services', 'utils'], function() {
                   if (group && group.id && creatingNew) {
                     group.courses = {};
                     $scope.course_groups[group.id] = group;
-                    $scope.groupIds = utils.keys($scope.course_groups);
+                    $scope.groupIds = utils.positiveKeys($scope.course_groups);
                     $scope.select(group.id);
                   }
                 });
@@ -40,22 +40,36 @@ define(['editable_label/editable_label', 'services', 'utils'], function() {
               };
               
               $scope.removeGroup = function(group) {
+                if (group.courses && 
+                    utils.any(group.courses, function(course) {
+                      return course.id;
+                    })) {
+                  alert('请先删除所有课程，再删除课程组。');
+                  return;
+                }
+
                 rpc.remove_course_group(group.id).then(function(response) {
                   if (parseInt(response.data.deleted) == 1) {
                     delete $scope.course_groups[group.id];
-                    $scope.groupIds = utils.keys($scope.course_groups);
+                    $scope.groupIds = utils.positiveKeys($scope.course_groups);
                     $scope.select(0);
                   }
                 });
               };
               
               $scope.updateCourse = function(course) {
-                rpc.update_course(course);
+                rpc.update_course(course).then(function(response) {
+                  var updated = response.data;
+                  if (updated.id && !course.id) {
+                    course.id = updated.id;
+                  }
+                });
               };
               
               $scope.appendCourse = function(group) {
+                var id = utils.maxKey(group.courses) + 1;
                 var length = utils.keys(group.courses).length;
-                group.courses[0] = {
+                group.courses[id] = {
                   id: 0,
                   group_id: group.id,
                   name: '{0}第{1}节'.format(group.name, length + 1)
@@ -77,17 +91,38 @@ define(['editable_label/editable_label', 'services', 'utils'], function() {
                 if (!id) return;
 
                 rpc.get_courses(id).then(function(response) {
-                  $scope.group.courses = response.data || {};
+                  var courses = response.data;
+                  if (!courses || typeof courses == 'string' ||
+                      courses instanceof String) {
+                    courses = {};
+                  }
+                  
+                  $scope.group.courses = courses;
                 });
               };
               
-              $scope.hasCourses = function(group) {
-                for (var course in group.courses) {
-                  return true;
+              $scope.hasNewCourses = function() {
+                return $scope.group && $scope.group.courses &&
+                    utils.any($scope.group.courses, function(course) {
+                      return !course.id;
+                    });
+              };
+              
+              $scope.saveNewCourses = function() {
+                for (var id in $scope.group.courses) {
+                  var course = $scope.group.courses[id];
+                  if (course.id) continue;
+                  
+                  $scope.updateCourse(course);
                 }
-                
-                return false;
-              }
+              };
+              
+              $scope.removeCourse = function(course) {
+                rpc.remove_course(course.id).then(function(response) {
+                  if (!response.data.deleted) return;
+                  delete $scope.group.courses[course.id];
+                });
+              };
 					  },
 						templateUrl : 'js/course_editor/course_editor.html'
 					};

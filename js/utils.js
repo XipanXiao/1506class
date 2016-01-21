@@ -92,6 +92,29 @@ define(function() {
         
         return result;
       },
+      positiveKeys: function(map) {
+        var result = [];
+        for (var key in map) {
+          if (key) result.push(key);
+        }
+        
+        return result;
+      },
+      maxKey: function(map) {
+        var result = 0;
+        for (var key in map) {
+          if (key > result) result = key;
+        }
+        
+        return result;
+      },
+      any: function(map, test) {
+        for (var key in map) {
+          if (test(map[key])) return true;
+        }
+        
+        return false;
+      },
       map: function(arr, callback) {
         var result = [];
         for (var key in arr) {

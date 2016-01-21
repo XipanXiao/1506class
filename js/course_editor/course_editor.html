@@ -24,7 +24,8 @@
       <editable-label value="group.url" label="课程链接" on-change="updateGroup(group)"
           class="padded-element">
       </editable-label>
-      <div class="css-table odd-even course" ng-show="hasCourses(group)">
+      <input type="button" value="保存新加的课程" ng-show="hasNewCourses()" ng-click="saveNewCourses()">
+      <div class="css-table odd-even course" ng-show="group.id">
         <div class="css-table-row header">
           <div class="css-table-cell"><strong>节数</strong></div>
           <div class="css-table-cell course-name"><strong>上课内容</strong></div>
@@ -34,7 +35,7 @@
         </div>
       
         <div ng-repeat="course in group.courses" class="css-table-row">
-          <div class="css-table-cell">{{$index + 1}}</div>
+          <div class="css-table-cell">{{course.id ? '' : '*'}}{{$index + 1}}</div>
           <div class="css-table-cell">
             <editable-label value="course.name" on-change="updateCourse(course)"></editable-label>
           </div>
@@ -51,7 +52,7 @@
             </div>
           </div>
           <div class="css-table-cell">
-		        <iron-icon icon="icons:delete" title="删除" ng-click="removeCourse(group, course)"
+		        <iron-icon icon="icons:delete" title="删除" ng-click="removeCourse(course)"
 		            class="selectable">
 		        </iron-icon>
           </div>

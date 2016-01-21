@@ -57,6 +57,9 @@ function update_course_group($group) {
 function remove_course_group($id) {
   global $medoo;
   
+  $courses = $medoo->select("courses", "*", ["group_id" => $id]);
+  if (!empty($courses) && count(courses) > 0) return false;
+
   return $medoo->delete("course_groups", ["id" => $id]);
 }
 
@@ -83,6 +86,12 @@ function update_course($course) {
   }
 
   return null;
+}
+
+function remove_course($id) {
+	global $medoo;
+	
+	return $medoo->delete("courses", ["id" => $id]);
 }
 
 function get_classes($classId) {
@@ -285,9 +294,9 @@ function report_schedule_task($user_id, $schedule) {
 }
 
 function keyed_by_id($rows, $id_key = "id") {
-  $result = array();
+  $result = [];
 
-  if (empty($rows)) return $result;
+  if (!is_array($rows) || empty($rows)) return $result;
   
   foreach ($rows as $row) {
     $result[$row[$id_key]] = $row;
