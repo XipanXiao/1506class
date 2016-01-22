@@ -16,7 +16,7 @@
         ng-class="{'vacation': vacation(schedule)}">
       <div class="css-table-cell">{{$index + 1}}</div>
       <div class="css-table-cell">{{schedule.dt}}</div>
-      <div class="css-table-cell">{{schedule.course_name}}</div>
+      <div class="css-table-cell">{{group.courses[schedule.course_id].name}}</div>
       <div class="css-table-cell">{{users[schedule.review].name}}</div>
       <div class="css-table-cell">{{users[schedule.open].name}}</div>
       <div class="css-table-cell">

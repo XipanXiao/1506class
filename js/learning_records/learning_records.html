@@ -5,7 +5,7 @@
 	      <div ng-if="group.schedules" class="css-table-cell name-field"></div>
 	      <div ng-repeat="schedule in group.schedules" ng-if="schedule.course_id"
 	          class="css-table-cell">
-	        {{schedule.course_name}}
+	        {{group.courses[schedule.course_id].name}}
 	      </div>
 	    </div>
 	    <div ng-repeat="user in users" class="css-table-row">

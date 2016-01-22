@@ -12,43 +12,43 @@ function get_class_groups() {
 }
 
 function get_course_groups($detailed) {
-	global $medoo;
-	
-	$groups = $medoo->select("course_groups", "*");
-	
-	$result = [];
-	foreach ($groups as $group) {
-		if ($detailed == "true") {
-  		$group["courses"] =
-		      $medoo->select("courses", "*", ["group_id" => $group["id"]]);
-		}
+  global $medoo;
+  
+  $groups = $medoo->select("course_groups", "*");
+  
+  $result = [];
+  foreach ($groups as $group) {
+    if ($detailed == "true") {
+      $group["courses"] =
+          $medoo->select("courses", "*", ["group_id" => $group["id"]]);
+    }
 
-		$result[$group["id"]] = $group;
-	}
+    $result[$group["id"]] = $group;
+  }
 
-	return $result;
+  return $result;
 }
 
 function update_course_group($group) {
-	global $medoo;
-	
+  global $medoo;
+  
   $datas = [];
   $fields = ["department_id", "name", "url"];
   foreach ($fields as $field) {
-  	if (!empty($group[$field])) {
-  		$datas[$field] = $group[$field];
-  	}
+    if (!empty($group[$field])) {
+      $datas[$field] = $group[$field];
+    }
   }
 
   $id = intval($group["id"]);
   if ($id == 0) {
-  	$id = $medoo->insert("course_groups", $datas);
-  	if ($id) {
-  		$group["id"] = $id;
-  		return $group;
-  	}
+    $id = $medoo->insert("course_groups", $datas);
+    if ($id) {
+      $group["id"] = $id;
+      return $group;
+    }
   } elseif($medoo->update("course_groups", $datas, ["id" => $id])) {
-  	return $group;
+    return $group;
   }
 
   return null;
@@ -64,34 +64,34 @@ function remove_course_group($id) {
 }
 
 function update_course($course) {
-	global $medoo;
-	
+  global $medoo;
+  
   $datas = [];
   $fields = ["group_id", "name", "video_url", "text_url"];
   foreach ($fields as $field) {
-  	if (!empty($course[$field])) {
-  		$datas[$field] = $course[$field];
-  	}
+    if (!empty($course[$field])) {
+      $datas[$field] = $course[$field];
+    }
   }
 
   $id = intval($course["id"]);
   if ($id == 0) {
-  	$id = $medoo->insert("courses", $datas);
-  	if ($id) {
-  		$course["id"] = $id;
-  		return $course;
-  	}
+    $id = $medoo->insert("courses", $datas);
+    if ($id) {
+      $course["id"] = $id;
+      return $course;
+    }
   } elseif($medoo->update("courses", $datas, ["id" => $id])) {
-  	return $course;
+    return $course;
   }
 
   return null;
 }
 
 function remove_course($id) {
-	global $medoo;
-	
-	return $medoo->delete("courses", ["id" => $id]);
+  global $medoo;
+  
+  return $medoo->delete("courses", ["id" => $id]);
 }
 
 function get_classes($classId) {
@@ -130,9 +130,9 @@ function update_class($classInfo) {
   $fields = ["department_id", "name", "class_room", "email", "start_year", 
       "perm_level"];
   foreach ($fields as $field) {
-  	if (!empty($classInfo[$field])) {
-  		$datas[$field] = $classInfo[$field];
-  	}
+    if (!empty($classInfo[$field])) {
+      $datas[$field] = $classInfo[$field];
+    }
   }
   
   return $medoo->update("classes", $datas, ["id" => $classInfo["id"]]);
@@ -141,7 +141,8 @@ function update_class($classInfo) {
 function get_courses($course_group_id) {
   global $medoo;
 
-  return keyed_by_id($medoo->select("courses", "*", ["group_id" => $course_group_id]));
+  return keyed_by_id($medoo->select("courses", "*", 
+      ["group_id" => $course_group_id]));
 }
 
 function get_users($email, $classId = null, $user_id = null) {
@@ -323,15 +324,15 @@ function get_schedules($classId, $records, $user_id) {
     
     $start_time->setTimestamp(strtotime($group["start_time"]));
 
-    $courses = get_courses($group["course_group"]);
+    $group["courses"] =
+        keyed_by_id($medoo->select("courses", ["id", "name"],
+        		["group_id" => $group["course_group"]]));
     foreach ($schedules as $schedule) {
       $schedule["dt"] = $start_time->format("Y-m-d H:i");
       $start_time = $start_time->add($a_week);
 
       $course_id = intval($schedule["course_id"]);
       $schedule["course_id"] = $course_id;
-      $schedule["course_name"] =
-          $course_id ? $courses[$course_id]["name"] : "放假";
       $schedules[$schedule["id"]] = $schedule;
     }
     
@@ -370,9 +371,9 @@ function update_schedule_group($group) {
   $datas = [];
   $fields = ["classId", "course_group", "name", "start_time", "end_time"];
   foreach ($fields as $field) {
-  	if (!empty($group[$field])) {
-  		$datas[$field] = $group[$field];
-  	}
+    if (!empty($group[$field])) {
+      $datas[$field] = $group[$field];
+    }
   }
 
   return $medoo->update("schedule_groups", datas, ["id" => $group["id"]]);

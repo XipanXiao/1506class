@@ -10,7 +10,11 @@
     </iron-icon>
   </div>
   <div ng-show="group.editing" class="section group-editing padded-element">
-    <div>课程：<course-editor group-id="group.course_group" class="inline"></course-editor></div>
+    <div>课程：
+      <course-editor group-id="group.course_group" class="inline"
+          on-change="courseGroupChanged(group)">
+      </course-editor>
+    </div>
     <div>名称：<editable-label value="group.name"></editable-label></div>
     <div>开始时间：<input type="datetime" ng-model="group.start_time"></div>
     <input type="button" value="Cancel" ng-click="cancelEditing(group)">
@@ -29,7 +33,7 @@
         ng-class="{'vacation': !schedule.course_id}">
       <div class="css-table-cell">{{$index + 1}}</div>
       <div class="css-table-cell">{{schedule.dt}}</div>
-      <div class="css-table-cell">{{schedule.course_name}}</div>
+      <div class="css-table-cell">{{group.courses[schedule.course_id].name}}</div>
       <div class="css-table-cell">
         <user-picker ng-if="schedule.course_id" user-id="schedule.review" user-list="users"
             user-picked="update(schedule, 'review', userId)">

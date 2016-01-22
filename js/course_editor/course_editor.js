@@ -5,7 +5,8 @@ define(['editable_label/editable_label', 'services', 'utils'], function() {
 				function(rpc, utils) {
 					return {
 					  scope: {
-					    groupId: '='
+					    groupId: '=',
+					    onChange: '&'
 					  },
 					  link: function($scope) {
                 rpc.get_course_groups().then(function(response) {
@@ -90,14 +91,14 @@ define(['editable_label/editable_label', 'services', 'utils'], function() {
                 $scope.groupId = id;
                 if (!id) return;
 
-                rpc.get_courses(id).then(function(response) {
-                  var courses = response.data;
-                  if (!courses || typeof courses == 'string' ||
-                      courses instanceof String) {
-                    courses = {};
-                  }
-                  
+                rpc.get_courses(id).then(function(courses) {
                   $scope.group.courses = courses;
+                  if ($scope.onChange) {
+                    setTimeout(function() {
+                      $scope.$apply();
+                      $scope.onChange();
+                    }, 0);
+                  }
                 });
               };
               

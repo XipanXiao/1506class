@@ -95,7 +95,7 @@ define(function() {
       positiveKeys: function(map) {
         var result = [];
         for (var key in map) {
-          if (key) result.push(key);
+          if (parseInt(key) > 0) result.push(key);
         }
         
         return result;

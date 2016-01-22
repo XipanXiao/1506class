@@ -11,7 +11,6 @@ define(function() {
 
   var userPromise;
   var classMatesPromises = {};
-  var learningRecordsPromise = {};
   var serviceUrl = 'cgi-bin/services.php';
   
   function http_form_post($http, data) {
@@ -88,7 +87,15 @@ define(function() {
       
       get_courses: function(group_id) {
         return $http.get(serviceUrl + '?rid=courses&group_id=' + 
-            (group_id || ''));
+            (group_id || ''), {cache: true}).then(function(response) {
+              var courses = response.data;
+              if (!courses || typeof courses == 'string' ||
+                  courses instanceof String) {
+                courses = {};
+              }
+              
+              return courses;
+            });
       },
       
       get_users: function(email, classId) {
@@ -124,13 +131,9 @@ define(function() {
       
       // records: 'class', 'mine' or 'none'.
       get_schedules: function(classId, records) {
-        if (learningRecordsPromise[classId]) {
-          return learningRecordsPromise[classId];
-        }
-        
         var url = "{0}?rid=learning_records&classId={1}&records={2}".
             format(serviceUrl, classId, records || 'none');
-        return learningRecordsPromise[classId] = $http.get(url);
+        return $http.get(url, {cache: true});
       },
       
       update_user: function(user) {
