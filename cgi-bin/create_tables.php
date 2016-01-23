@@ -208,12 +208,12 @@ CREATE TABLE schedule_groups (
                       start_time DATETIME,
                       end_time DATETIME                      
                       );
-INSERT INTO schedule_groups(classId, course_group, name, start_time, end_time) VALUES (2, 1, "2015届入行论周四班2016年春季学期", "2015-12-03 18:00:00", "2016-05-31 22:00:00");
-INSERT INTO schedule_groups(classId, course_group, name, start_time, end_time) VALUES (3, 1, "2015届入行论周日班2016年春季学期", "2015-12-06 06:30:00", "2016-05-31 22:00:00");
-INSERT INTO schedule_groups(classId, course_group, name, start_time, end_time) VALUES (4, 2, "2015届加行周二班2016年春季学期", "2015-12-01 19:00:00", "2016-05-31 22:00:00");
-INSERT INTO schedule_groups(classId, course_group, name, start_time, end_time) VALUES (5, 2, "2015届加行周四班2016年春季学期", "2015-12-03 18:00:00", "2016-05-31 22:00:00");
-INSERT INTO schedule_groups(classId, course_group, name, start_time, end_time) VALUES (6, 2, "2015届加行周六班2016年春季学期", "2015-12-05 11:00:00", "2016-05-31 22:00:00");
-INSERT INTO schedule_groups(classId, course_group, name, start_time, end_time) VALUES (7, 3, "2015届净土班2016年春季学期", "2015-11-30 18:30:00", "2016-05-31 22:00:00");
+INSERT INTO schedule_groups(classId, course_group, name, start_time, end_time) VALUES (2, 1, "2015届入行论周四班2016年春季学期", "2015-12-04 02:00:00", "2016-05-31 22:00:00");
+INSERT INTO schedule_groups(classId, course_group, name, start_time, end_time) VALUES (3, 1, "2015届入行论周日班2016年春季学期", "2015-12-06 14:30:00", "2016-05-31 22:00:00");
+INSERT INTO schedule_groups(classId, course_group, name, start_time, end_time) VALUES (4, 2, "2015届加行周二班2016年春季学期", "2015-12-02 03:00:00", "2016-05-31 22:00:00");
+INSERT INTO schedule_groups(classId, course_group, name, start_time, end_time) VALUES (5, 2, "2015届加行周四班2016年春季学期", "2015-12-04 02:00:00", "2016-05-31 22:00:00");
+INSERT INTO schedule_groups(classId, course_group, name, start_time, end_time) VALUES (6, 2, "2015届加行周六班2016年春季学期", "2015-12-05 19:00:00", "2016-05-31 22:00:00");
+INSERT INTO schedule_groups(classId, course_group, name, start_time, end_time) VALUES (7, 3, "2015届净土班2016年春季学期", "2015-12-01 02:30:00", "2016-05-31 22:00:00");
                       
 CREATE TABLE schedules (
              id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,

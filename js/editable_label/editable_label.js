@@ -6,15 +6,38 @@ define(function() {
 					  scope: {
               onChange: '&',
 					    label: '@',
+					    type: '@',
 					    value: '='
 					  },
 					  link: function(scope) {
+					    scope.convertValue = function(toLocal) {
+					      if (toLocal) {
+					        if (scope.type == 'datetime') {
+					          scope.localValue =
+					            new Date(scope.value + ' UTC').toLocaleString();
+					        } else {
+					          scope.localValue = scope.value;
+					        }
+					      } else {
+					        if (scope.type == 'datetime') {
+					          scope.value =
+					            new Date(scope.localValue).toUTCString()
+					                .replace(' GMT', '')
+					        } else {
+					          scope.value = scope.localValue;
+					        }
+					      }
+					    };
+
+					    scope.convertValue(true);
+					    
 					    scope.editor = {
-					      value: scope.value
+					      value: scope.localValue
 					    };
 					    scope.commit = function() {
 					      scope.editing = false;
-					      scope.value = scope.editor.value;
+					      scope.localValue = scope.editor.value;
+	              scope.convertValue(false);
 					      if (scope.onChange) {
 					        setTimeout(function() {
 					          scope.$apply();
@@ -24,20 +47,18 @@ define(function() {
 					    };
 					    scope.edit = function() {
 					      scope.editing = true;
-                scope.editor.value = scope.value;
+                scope.editor.value = scope.localValue;
 					    };
 					    scope.cancel = function() {
 					      scope.editing = false;
-                scope.editor.value = scope.value;
+                scope.editor.value = scope.localValue;
 					    };
 					    scope.keyPressed = function(event) {
 					      if (event.keyCode == 13) {
 					        scope.commit();
-					        //event.stopPropagation();
 					        event.preventDefault();
 					      } else if (event.keyCode == 27) {
 					        scope.cancel();
-                  //event.stopPropagation();
 					        event.preventDefault();
 					      }
 					    };

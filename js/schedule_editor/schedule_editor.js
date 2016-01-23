@@ -10,6 +10,12 @@ define(['course_editor/course_editor', 'editable_label/editable_label',
 					    classId: '='
 					  },
 					  link: function($scope) {
+					    $scope.week = 1000*3600*24*7;
+					    
+					    $scope.getWeeklyTime = function(group, index) {
+					      return utils.getWeeklyTime(group.start_time, index);
+					    };
+					    
               $scope.$watch('classId', function() {
                 if (!$scope.classId) return;
                 $scope.loadSchedules();

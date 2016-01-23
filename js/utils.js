@@ -186,6 +186,11 @@ define(function() {
       },
       refresh: function() {
         window.location.reload();
+      },
+      getWeeklyTime: function(time, week) {
+        var date = new Date(time + ' UTC');
+        date.setDate(date.getDate() + 7 * week);
+        return date.toLocaleString();
       }
     };
   });

@@ -16,7 +16,7 @@
       </course-editor>
     </div>
     <div>名称：<editable-label value="group.name"></editable-label></div>
-    <div>开始时间：<input type="datetime" ng-model="group.start_time"></div>
+    <div>开始时间：<editable-label type="datetime" value="group.start_time"></editable-label></div>
     <input type="button" value="Cancel" ng-click="cancelEditing(group)">
     <input type="submit" value="Save" ng-click="saveGroup(group)">
   </div>
@@ -32,7 +32,7 @@
     <div ng-repeat="schedule in group.schedules" class="css-table-row"
         ng-class="{'vacation': !schedule.course_id}">
       <div class="css-table-cell">{{$index + 1}}</div>
-      <div class="css-table-cell">{{schedule.dt}}</div>
+      <div class="css-table-cell">{{getWeeklyTime(group, $index)}}</div>
       <div class="css-table-cell">{{group.courses[schedule.course_id].name}}</div>
       <div class="css-table-cell">
         <user-picker ng-if="schedule.course_id" user-id="schedule.review" user-list="users"

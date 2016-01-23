@@ -309,34 +309,19 @@ function keyed_by_id($rows, $id_key = "id") {
 function get_schedules($classId, $records, $user_id) {
   global $medoo;
   
-  date_default_timezone_set("America/Los_Angeles");
   $schedule_groups =
       keyed_by_id($medoo->select("schedule_groups",
           ["id", "name", "course_group", "classId", "start_time"],
           ["classId" => $classId]));
 
-  $a_week = date_interval_create_from_date_string("7 days");
-  $start_time = new DateTime();
-
   foreach ($schedule_groups as $group_id => $group) {
-    $schedules = keyed_by_id($medoo->select("schedules", "*",
+    $group["schedules"] = keyed_by_id($medoo->select("schedules", "*",
         ["group_id" => $group_id]));
     
-    $start_time->setTimestamp(strtotime($group["start_time"]));
-
     $group["courses"] =
         keyed_by_id($medoo->select("courses", ["id", "name"],
         		["group_id" => $group["course_group"]]));
-    foreach ($schedules as $schedule) {
-      $schedule["dt"] = $start_time->format("Y-m-d H:i");
-      $start_time = $start_time->add($a_week);
-
-      $course_id = intval($schedule["course_id"]);
-      $schedule["course_id"] = $course_id;
-      $schedules[$schedule["id"]] = $schedule;
-    }
     
-    $group["schedules"] = $schedules;
     $schedule_groups[$group_id] = $group;
   }
   

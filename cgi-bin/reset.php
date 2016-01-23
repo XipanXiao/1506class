@@ -12,6 +12,7 @@ include_once "connection.php";
 if ($_SERVER ["REQUEST_METHOD"] == "POST" && $_POST ["answer"] == $config->pet) {
 	$conn = get_connection ();
 	$commands = file_get_contents("create_tables.php") . file_get_contents("../data/create_users.php");
+	date_default_timezone_set("UTC");
 	
 	$conn->multi_query($commands);
 	
