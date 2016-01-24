@@ -24,7 +24,7 @@ define(['course_editor/course_editor', 'editable_label/editable_label',
                 var course_ids = utils.keys(courses);
                 for (var id in group.schedules) {
                   var schedule = group.schedules[id];
-                  if (!schedule.course_id) continue;
+                  if (!parseInt(schedule.course_id)) continue;
                   schedule.course_id = course_ids[index++];
                 }
                 

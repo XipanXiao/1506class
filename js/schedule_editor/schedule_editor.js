@@ -42,29 +42,6 @@ define(['course_editor/course_editor', 'editable_label/editable_label',
               $scope.editGroup = function(group) {
                 group.editing = true;
               };
-//              $scope.cancelEditing = function(group) {
-//                group.editing = false;
-//                $scope.loadSchedules();
-//              };
-//              $scope.saveGroup = function(group) {
-//                group.editing = false;
-//                
-//                rpc.update_schedule_group(group);
-//              };
-//              
-//              $scope.courseGroupChanged = function(group) {
-//                rpc.get_courses(group.course_group).then(function(courses) {
-//                  group.courses = courses;
-//
-//                  var index = 0;
-//                  var course_ids = utils.keys(courses);
-//                  for (var id in group.schedules) {
-//                    var schedule = group.schedules[id];
-//                    if (!schedule.course_id) continue;
-//                    schedule.course_id = course_ids[index++];
-//                  }
-//                });
-//              };
 					  },
 						templateUrl : 'js/schedule_editor/schedule_editor.html'
 					};
