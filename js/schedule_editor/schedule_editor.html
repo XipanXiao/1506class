@@ -1,15 +1,16 @@
 <link rel="import" href="bower_components/iron-icons/editor-icons.html">
+
 <div ng-repeat="group in schedule_groups" class="padded-element">
   <div class="center">
     <h2>{{group.name}}</h2>
-    <iron-icon icon="editor:border-color" title="编辑" ng-click="editGroup(group)">
+    <iron-icon icon="editor:border-color" title="编辑" ng-click="editGroup(group)" class="selectable">
     </iron-icon>
-    <iron-icon icon="icons:delete" title="删除" ng-click="removeGroup(group)">
-    </iron-icon>
-    <iron-icon icon="icons:add" title="添加" ng-click="addGroup()">
+    <iron-icon icon="icons:delete" title="删除" ng-click="removeGroup(group)" class="selectable"
+        ng-if="group.id">
     </iron-icon>
   </div>
-  <schedule-group-editor ng-show="group.editing" group="group" on-cancel="loadSchedules()">
+  <schedule-group-editor ng-show="group.editing" group="group" on-cancel="loadSchedules()"
+      on-save="loadSchedules()">
   </schedule-group-editor>
   <div class="css-table odd-even schedule-tasks">
     <div class="css-table-row header">

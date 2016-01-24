@@ -133,7 +133,7 @@ define(function() {
       get_schedules: function(classId, records) {
         var url = "{0}?rid=learning_records&classId={1}&records={2}".
             format(serviceUrl, classId, records || 'none');
-        return $http.get(url, {cache: true});
+        return $http.get(url);
       },
       
       update_user: function(user) {
@@ -166,6 +166,11 @@ define(function() {
         return $http.delete(url);
       },
       
+      remove_schedule_group: function(group_id) {
+        var url = '{0}?rid=schedule_group&id={1}'.format(serviceUrl, group_id);
+        return $http.delete(url);
+      },
+
       update_course: function(course) {
         course.rid = 'course';
         return http_form_post($http, $httpParamSerializerJQLike(course));

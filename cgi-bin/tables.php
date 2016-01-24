@@ -63,6 +63,15 @@ function remove_course_group($id) {
   return $medoo->delete("course_groups", ["id" => $id]);
 }
 
+function remove_schedule_group($id) {
+  global $medoo;
+  
+  $schedules = $medoo->select("schedules", "*", ["group_id" => $id]);
+  if (!empty($schedules) && count($schedules) > 0) return false;
+
+  return $medoo->delete("schedule_groups", ["id" => $id]);
+}
+
 function update_course($course) {
   global $medoo;
   
@@ -361,7 +370,12 @@ function update_schedule_group($group) {
     }
   }
 
-  return $medoo->update("schedule_groups", $datas, ["id" => $group["id"]]);
+  $id = $group["id"];
+  if ($id == 0) {
+  	return $medoo->insert("schedule_groups", $datas);
+  }
+
+  return $medoo->update("schedule_groups", $datas, ["id" => $id]);
 }
 
 function search($prefix) {

@@ -143,6 +143,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   $resource_id = $_REQUEST["rid"];
   if ($resource_id == "course_group") {
   	$response = ["deleted" => remove_course_group($_REQUEST["id"])];
+  } elseif ($resource_id == "schedule_group") {
+  	$response = ["deleted" => remove_schedule_group($_REQUEST["id"])];
   } elseif ($resource_id == "course") {
   	$response = ["deleted" => remove_course($_REQUEST["id"])];
   }  	 

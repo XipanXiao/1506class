@@ -31,6 +31,14 @@ define(['course_editor/course_editor', 'editable_label/editable_label',
                     $scope.users[id] = response.data.users[id].name;
                   }
                   
+                  $scope.schedule_groups[0] = {
+                    id: 0,
+                    classId: $scope.classId,
+                    name: '新的学修安排模板',
+                    start_time: (new Date()).toUTCString(),
+                    course_group: 0
+                  };
+
                   return $scope.schedule_groups;
                 });
               };
@@ -42,6 +50,17 @@ define(['course_editor/course_editor', 'editable_label/editable_label',
               $scope.editGroup = function(group) {
                 group.editing = true;
               };
+              $scope.removeGroup = function(group) {
+                if (group.schedules &&
+                    utils.positiveKeys(group.schedules).length > 0) {
+                  alert('要先删除每节安排，才能删除该组');
+                  return;
+                }
+                
+                rpc.remove_schedule_group(group.id).then(function(response) {
+                  if (parseInt(response.data.deleted)) $scope.loadSchedules();
+                });
+              }
 					  },
 						templateUrl : 'js/schedule_editor/schedule_editor.html'
 					};
