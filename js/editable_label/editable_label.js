@@ -30,6 +30,10 @@ define(function() {
 					    };
 
 					    scope.convertValue(true);
+
+					    scope.$watch('value', function() {
+					      scope.convertValue(true);
+					    });
 					    
 					    scope.editor = {
 					      value: scope.localValue

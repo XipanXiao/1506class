@@ -1,5 +1,5 @@
-<select ng-options="course_groups[value].name for value in groupIds" ng-model="group.id"
-    ng-change="select(group.id)">
+<select ng-options="course_groups[value].name for value in groupIds" ng-model="selected.id"
+    ng-change="select(selected.id)">
 </select>
 <iron-icon icon="editor:border-color" class="small-icon selectable" ng-click="expand()">
 </iron-icon>
@@ -9,7 +9,8 @@
   <paper-dialog-scrollable class="flex">
     <div class="course-groups">
       <div ng-repeat="course_group in course_groups" class="padded-element"
-          ng-click="select(course_group.id)" ng-class="{'selected': course_group.id == group.id}">
+          ng-click="select(course_group.id)"
+          ng-class="{'selected': course_group.id == selected.id}">
         {{course_group.name}}
       </div>
     </div>

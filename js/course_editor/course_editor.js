@@ -9,19 +9,22 @@ define(['editable_label/editable_label', 'services', 'utils'], function() {
 					    onChange: '&'
 					  },
 					  link: function($scope) {
-                rpc.get_course_groups().then(function(response) {
-                  $scope.course_groups = response.data;
-                  $scope.course_groups[0] = {
-                    id: 0,
-                    name: '新建',
-                    courses: {}
-                  };
-                  $scope.groupIds = utils.positiveKeys($scope.course_groups);
-                  $scope.group = utils.firstElement($scope.course_groups, 'id',
-                      $scope.groupId);
-                  
-                  if ($scope.group) $scope.select($scope.group.id);
-                });
+					    $scope.selected = {id: 0};
+
+              rpc.get_course_groups().then(function(response) {
+                $scope.course_groups = response.data;
+                $scope.course_groups[0] = {
+                  id: 0,
+                  name: '新建',
+                  courses: {}
+                };
+                $scope.groupIds = utils.positiveKeys($scope.course_groups);
+                $scope.select($scope.groupId);
+              });
+
+              $scope.$watch('groupId', function() {
+                $scope.select($scope.groupId);
+              });  
 
               $scope.updateGroup = function(group) {
                 var creatingNew = !group.id;
@@ -83,23 +86,24 @@ define(['editable_label/editable_label', 'services', 'utils'], function() {
               };
               
               $scope.select = function(id) {
-                if ($scope.group.id != id) {
-                  $scope.group = utils.firstElement($scope.course_groups, 'id',
-                      id);
-                }
+                if (!$scope.course_groups) return;
 
-                $scope.groupId = id;
+                $scope.selected.id = id;
+                $scope.group = $scope.course_groups[id];
+
                 if (!id) return;
+                
+                $scope.groupId = id;
 
-                rpc.get_courses(id).then(function(courses) {
-                  $scope.group.courses = courses;
-                  if ($scope.onChange) {
-                    setTimeout(function() {
-                      $scope.$apply();
-                      $scope.onChange();
-                    }, 0);
-                  }
-                });
+                var course_group = $scope.course_groups[id];
+                if (course_group.courses) {
+                  $scope.onChange({courses: course_group.courses});
+                } else {
+                  rpc.get_courses(id).then(function(courses) {
+                    $scope.course_groups[id].courses = courses;
+                    $scope.onChange({courses: courses});
+                  });
+                }
               };
               
               $scope.hasNewCourses = function() {

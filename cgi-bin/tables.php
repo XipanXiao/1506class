@@ -361,7 +361,7 @@ function update_schedule_group($group) {
     }
   }
 
-  return $medoo->update("schedule_groups", datas, ["id" => $group["id"]]);
+  return $medoo->update("schedule_groups", $datas, ["id" => $group["id"]]);
 }
 
 function search($prefix) {
