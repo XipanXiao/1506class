@@ -36,15 +36,21 @@ define(['course_editor/course_editor', 'editable_label/editable_label',
                   }
                 } else {
                   // creating new schedules.
+                  var courseIndex = 0;
                   group.schedules = {};
-                  for (var id in courses) {
+                  var weeks = Math.max(course_ids.length, 25);  
+                  for (index = 0; index < weeks; index++) {
+                    var courseId = 0;
+                    var holiday = utils.isHolidayWeek(group.start_time, index);
+                    if (!utils.isHolidayWeek(group.start_time, index)) {
+                      courseId = course_ids[courseIndex++] || 0; 
+                    }
+
                     group.schedules[index] = {
                       id: 0,
-                      course_id: course_ids[index],
+                      course_id: courseId, 
                       group_id: group.id
                     };
-                    
-                    index++;
                   }
                 }
                 

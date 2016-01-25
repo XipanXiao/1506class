@@ -19,7 +19,7 @@ define(function() {
       return result;
     };
   }
-
+  
   return angular.module('UtilsModule', []).factory('utils', function() {
     return {
       stateMap: {
@@ -191,6 +191,24 @@ define(function() {
         var date = new Date(time + ' UTC');
         date.setDate(date.getDate() + 7 * week);
         return date.toLocaleString();
+      },
+      getDefaultStartTime: function() {
+        var date = new Date();
+        var month = date.getUTCMonth();
+        
+        month = month < 5 ? 5 : 11;
+        date.setUTCMonth(month);
+        date.setUTCDate(1);
+        
+        return date;
+      },
+      isHolidayWeek: function(startTime, week) {
+        var firstHalf = startTime.getMonth() == 5;
+        if (firstHalf) {
+          return week == 17 || week == 24;
+        } else {
+          return week == 3 || week == 10;
+        }
       }
     };
   });

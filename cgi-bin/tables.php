@@ -103,6 +103,12 @@ function remove_course($id) {
   return $medoo->delete("courses", ["id" => $id]);
 }
 
+function remove_schedule($id) {
+  global $medoo;
+  
+  return $medoo->delete("schedules", ["id" => $id]);
+}
+
 function get_classes($classId) {
   global $medoo;
   
@@ -329,7 +335,7 @@ function get_schedules($classId, $records, $user_id) {
     
     $group["courses"] =
         keyed_by_id($medoo->select("courses", ["id", "name"],
-        		["group_id" => $group["course_group"]]));
+            ["group_id" => $group["course_group"]]));
     
     $schedule_groups[$group_id] = $group;
   }
@@ -354,9 +360,19 @@ function get_schedules($classId, $records, $user_id) {
 
 function update_schedule($schedule) {
   global $medoo;
+  
+  $datas = ["open" => intval($schedule["open"]),
+      "review" => intval($schedule["review"]),
+      "course_id" => intval($schedule["course_id"]),
+      "group_id" => intval($schedule["group_id"])
+  ];
+  
+  $id = $schedule["id"];
+  if ($id == 0) {
+    return $medoo->insert("schedules", $datas);
+  }
 
-  return $medoo->update("schedules", ["open" => intval($schedule["open"]),
-      "review" => intval($schedule["review"])], ["id" => $schedule["id"]]);
+  return $medoo->update("schedules", $datas, ["id" => $id]);
 }
 
 function update_schedule_group($group) {
@@ -372,7 +388,15 @@ function update_schedule_group($group) {
 
   $id = $group["id"];
   if ($id == 0) {
-  	return $medoo->insert("schedule_groups", $datas);
+    $id = $medoo->insert("schedule_groups", $datas);
+    if (!$id) return false;
+    
+    foreach ($group["schedules"] as $schedule) {
+    	$schedule["group_id"] = $id;
+    	update_schedule($schedule);
+    }
+
+    return $id;
   }
 
   return $medoo->update("schedule_groups", $datas, ["id" => $id]);

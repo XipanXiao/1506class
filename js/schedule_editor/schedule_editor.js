@@ -35,7 +35,7 @@ define(['course_editor/course_editor', 'editable_label/editable_label',
                     id: 0,
                     classId: $scope.classId,
                     name: '新的学修安排模板',
-                    start_time: (new Date()).toUTCString(),
+                    start_time: utils.getDefaultStartTime(),
                     course_group: 0
                   };
 
@@ -60,7 +60,15 @@ define(['course_editor/course_editor', 'editable_label/editable_label',
                 rpc.remove_schedule_group(group.id).then(function(response) {
                   if (parseInt(response.data.deleted)) $scope.loadSchedules();
                 });
-              }
+              };
+              $scope.remove = function(schedule) {
+                rpc.remove_schedule(schedule.id).then(function(response) {
+                  if (parseInt(response.data.deleted)) $scope.loadSchedules();
+                });
+              };
+              $scope.vacation = function(schedule) {
+                return !schedule.course_id || !parseInt(schedule.course_id);
+              };
 					  },
 						templateUrl : 'js/schedule_editor/schedule_editor.html'
 					};

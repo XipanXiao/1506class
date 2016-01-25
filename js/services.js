@@ -166,6 +166,11 @@ define(function() {
         return $http.delete(url);
       },
       
+      remove_schedule: function(schedule_id) {
+        var url = '{0}?rid=schedule&id={1}'.format(serviceUrl, schedule_id);
+        return $http.delete(url);
+      },
+
       remove_schedule_group: function(group_id) {
         var url = '{0}?rid=schedule_group&id={1}'.format(serviceUrl, group_id);
         return $http.delete(url);
