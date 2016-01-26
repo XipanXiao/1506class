@@ -1,11 +1,11 @@
-define(['course_editor/course_editor', 'editable_label/editable_label',
+define(['course_editor_dialog/course_editor_dialog', 'editable_label/editable_label',
     'schedule_group_editor/schedule_group_editor', 'services',
     'user_picker/user_picker', 'utils'], function() {
 
   return angular.module('ScheduleEditorModule',
-	    ['CourseEditorModule', 'EditableLabelModule', 'ScheduleGroupEditorModule', 
-	     'ServicesModule', 'UserPickerModule', 'UtilsModule'])
-	     .directive('scheduleEditor', function(rpc, utils) {
+	    ['CourseEditorDialogModule', 'EditableLabelModule',
+	     'ScheduleGroupEditorModule', 'ServicesModule', 'UserPickerModule',
+	     'UtilsModule']).directive('scheduleEditor', function(rpc, utils) {
 					return {
 					  scope: {
 					    classId: '='

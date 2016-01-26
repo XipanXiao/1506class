@@ -9,7 +9,7 @@
         ng-if="group.id">
     </iron-icon>
   </div>
-  <schedule-group-editor ng-show="group.editing" group="group" on-cancel="loadSchedules()"
+  <schedule-group-editor ng-if="group.editing" group="group" on-cancel="loadSchedules()"
       on-save="loadSchedules()">
   </schedule-group-editor>
   <div class="css-table odd-even schedule-tasks">
@@ -47,3 +47,5 @@
     </div>
   </div>
 </div>
+
+<course-editor-dialog></course-editor-dialog>

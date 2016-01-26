@@ -1,8 +1,8 @@
-define(['course_editor/course_editor', 'editable_label/editable_label',
+define(['course_groups/course_groups', 'editable_label/editable_label',
     'services', 'utils'], function() {
 
   return angular.module('ScheduleGroupEditorModule',
-	    ['CourseEditorModule', 'EditableLabelModule', 'ServicesModule',
+	    ['CourseGroupsModule', 'EditableLabelModule', 'ServicesModule',
 	     'UtilsModule']).directive('scheduleGroupEditor',
 				function(rpc, utils) {
 					return {
@@ -16,7 +16,7 @@ define(['course_editor/course_editor', 'editable_label/editable_label',
                 rpc.update_schedule_group(group).then(function(response) {
                   if (parseInt(response.data.updated)) {
                     group.editing = false;
-                    onSave();
+                    scope.onSave();
                   }
                 });
               };
