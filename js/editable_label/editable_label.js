@@ -20,9 +20,14 @@ define(function() {
 					        }
 					      } else {
 					        if (scope.type == 'datetime') {
-					          scope.value =
-					            new Date(scope.localValue).toUTCString()
-					                .replace(' GMT', '')
+					          var timestamp = Date.parse(scope.localValue);
+					          if (isNaN(timestamp)) {
+					            alert('错误的时间格式，请重新输入');
+					            scope.editing = true;
+					            return;
+					          }
+					          scope.value = new Date(scope.localValue).toUTCString()
+					              .replace(' GMT', '');
 					        } else {
 					          scope.value = scope.localValue;
 					        }

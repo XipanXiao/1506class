@@ -83,6 +83,7 @@ CREATE TABLE course_groups(
 INSERT INTO course_groups(department_id, name, url) VALUES(2, "入行论", "http://www.zhibeifw.com/cmsc/list.php?fid=77");
 INSERT INTO course_groups(department_id, name, url) VALUES(3, "前行广释", "http://www.zhibeifw.com/cmsc/list.php?fid=70");
 INSERT INTO course_groups(department_id, name, url) VALUES(4, "佛说阿弥陀经释+普贤行愿品释+亲友书讲记", "");
+INSERT INTO course_groups(department_id, name, url) VALUES(1, "离幸福很近", "");
 
 CREATE TABLE courses (
                       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -167,6 +168,30 @@ INSERT INTO courses(group_id, name, video_url, text_url) VALUES(3, "亲友书讲
 INSERT INTO courses(group_id, name, video_url, text_url) VALUES(3, "亲友书讲记第6课", "", "");
 INSERT INTO courses(group_id, name, video_url, text_url) VALUES(3, "亲友书讲记第7课", "", "");
 
+-- 70 ~ 92
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "怎样面对痛苦", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "金钱，到底有多值钱", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "问佛陀情为何物", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "幸福的根本是心", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "科技发达时代的佛法教育", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "佛法的生命科学观", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "来世生命及往生净土", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "信心是最好的财富", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "初学者不应视师如佛", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "有十种事情不能做", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "略说忏罪", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "让你重新认识佛教", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "怎么样学佛", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "佛教的未来需要你我", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "如何寻找大乘的方向", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "三殊胜", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "再谈放生", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "为临终者献爱心", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "以佛法利益亡者", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "观音心咒之功德", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "什么是密宗	", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "胜利道歌讲记第1课", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "胜利道歌讲记第2课", "", "");
 
 CREATE TABLE users(
 			      id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
