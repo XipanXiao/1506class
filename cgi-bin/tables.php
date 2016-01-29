@@ -5,10 +5,10 @@ include_once 'connection.php';
 $medoo = get_medoo();
 
 
-function get_class_groups() {
+function get_departments() {
   global $medoo;
 
-  return $medoo->select("class_groups", "*");
+  return keyed_by_id($medoo->select("departments", "*"));
 }
 
 function get_course_groups($detailed) {
@@ -150,7 +150,12 @@ function update_class($classInfo) {
     }
   }
   
-  return $medoo->update("classes", $datas, ["id" => $classInfo["id"]]);
+  $id = intval($classInfo["id"]);
+  if ($id == 0) {
+    return $medoo->insert("classes", $datas);
+  }
+
+  return $medoo->update("classes", $datas, ["id" => $id]);
 }
 
 function get_courses($course_group_id) {
@@ -183,6 +188,13 @@ function get_users($email, $classId = null, $user_id = null) {
   }
   
   return $users;
+}
+
+function get_admins($permission) {
+  global $medoo;
+
+  return keyed_by_id($medoo->select("users", "*",
+      ["permission" => $permission]));
 }
 
 function update_user($user) {
@@ -392,8 +404,8 @@ function update_schedule_group($group) {
     if (!$id) return false;
     
     foreach ($group["schedules"] as $schedule) {
-    	$schedule["group_id"] = $id;
-    	update_schedule($schedule);
+      $schedule["group_id"] = $id;
+      update_schedule($schedule);
     }
 
     return $id;

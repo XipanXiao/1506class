@@ -8,8 +8,8 @@ if (empty($_SESSION["user"])) {
   if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $resource_id = $_GET["rid"];
   
-    if ($resource_id == "class_groups") {
-      $response = get_class_groups();
+    if ($resource_id == "departments") {
+      $response = get_departments();
     } elseif ($resource_id == "classes") {
       $response = get_classes(null);
     }
@@ -29,8 +29,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   $resource_id = $_GET["rid"];
   $classId = empty($_GET["classId"]) ? $user->classId : $_GET["classId"];
 
-  if ($resource_id == "class_groups") {
-    $response = get_class_groups();
+  if ($resource_id == "departments") {
+    $response = get_departments();
   } elseif ($resource_id == "classes") {
     if (empty($_GET["classId"])) {
       $response = get_classes(null);
@@ -39,6 +39,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     }
   } elseif ($resource_id == "course_groups") {
     $response = get_course_groups($_GET["detailed"]);
+  } elseif ($resource_id == "admins") {
+    $response = get_admins(intval($_GET["permission"]));
   } elseif ($resource_id == "tasks") {
     if (isset($_GET["task_id"]) && isset($_GET["pos"])) {
       $task_id = $_GET["task_id"];

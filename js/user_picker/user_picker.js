@@ -28,6 +28,10 @@ define(['services'], function() {
 		        if ($scope.userPicked) $scope.userPicked({userId: $scope.userId});
 		        $scope.showPicker = false;
 		      };
+		      
+		      $scope.keyPressed = function(event) {
+		        if (event.keyCode == 27) $scope.showPicker = false;
+		      };
 		    },
 				templateUrl : 'js/user_picker/user_picker.html'
 			};

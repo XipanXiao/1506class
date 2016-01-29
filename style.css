@@ -379,3 +379,8 @@ div.compact-url {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.class-editor {
+	width: 500px;
+  flex-wrap: wrap;
+}

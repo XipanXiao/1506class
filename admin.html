@@ -19,7 +19,7 @@
   
   <div class="right-pannel">
     <paper-tabs noink selected="0">
-      <paper-tab>学员名单</paper-tab>
+      <paper-tab>班级信息</paper-tab>
       <paper-tab>学修安排</paper-tab>
       <paper-tab>考勤</paper-tab>
       <paper-tab>学修记录</paper-tab>
@@ -27,7 +27,10 @@
     </paper-tabs>
     
     <iron-pages selected="0">
-      <users class-id="classId"></users>
+      <div>
+        <class-editor class-id="classId"></class-editor>
+        <users class-id="classId"></users>
+      </div>
       <schedule-editor class-id="classId"></schedule-editor>
       <learning-records class-id="classId" attendence="true">
       </learning-records>

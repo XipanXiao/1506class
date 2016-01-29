@@ -25,8 +25,8 @@ define(function() {
   return angular.module('ServicesModule', []).factory('rpc', function($http, 
       $httpParamSerializerJQLike) {
     return {
-      get_class_groups: function() {
-        return $http.get(serviceUrl + '?rid=class_groups');
+      get_departments: function() {
+        return $http.get(serviceUrl + '?rid=departments');
       },
     
       get_classes: function(classId) {
@@ -129,6 +129,12 @@ define(function() {
         });
       },
       
+      get_admins: function(permission) {
+        var url = "{0}?rid=admins&permission={1}".format(serviceUrl,
+            permission);
+        return $http.get(url);
+      },
+
       // records: 'class', 'mine' or 'none'.
       get_schedules: function(classId, records) {
         var url = "{0}?rid=learning_records&classId={1}&records={2}".

@@ -8,7 +8,7 @@ define(['services', 'utils'], function() {
             link: function($scope) {
               $scope.attendOptions = ['缺席', '出席', '请假'];
               $scope.vacation = function(schedule) {
-                return !schedule.course_id; 
+                return !parseInt(schedule.course_id); 
               };
 
               $scope.getWeeklyTime = function(group, index) {

@@ -52,6 +52,9 @@ define(['import_dialog/import_dialog', 'permission', 'services', 'utils'],
               $scope.locateClass(editingUser.classInfo);
             }
           });
+          
+          $scope.createNewClass = function() {
+          };
         },
         templateUrl : 'js/classes/classes.html'
       };

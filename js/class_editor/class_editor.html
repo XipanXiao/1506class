@@ -1,0 +1,38 @@
+<div class="section class-editor padded-element flex">
+  <div class="padded-element">
+    类别：
+    <departments department-id="classInfo.department_id" on-update="update()"></departments>
+  </div>
+  <div class="padded-element">
+    名称：
+    <editable-label value="classInfo.name" on-change="update()"></editable-label>
+  </div>
+  <label class="padded-element">
+    届别：
+    <select ng-options="year for year in years" ng-model="classInfo.start_year"
+        ng-change="update()">
+    </select> 
+  </label>
+  <div class="padded-element">
+    YY房间：
+    <editable-label value="classInfo.class_room" on-change="update()"></editable-label>
+  </div>
+  <div class="padded-element">
+    email：
+    <editable-label value="classInfo.email" on-change="update()"></editable-label>
+  </div>
+  <div class="padded-element">
+    辅导员：
+    <user-picker class="inline" user-id="classInfo.teacher_id" user-list="teachers"
+        user-picked="update()">
+    </user-picker>
+  </div>
+	<div ng-if="showPermEditor" class="padded-element">
+	  <label>
+	    设置谁可以读写本班数据
+	    <select ng-model="classInfo.perm_level" autofocus ng-change="update()"
+	        ng-options="permissionLabel[value] for value in permissions">
+	    </select>
+	  </label>
+	</div>
+</div>

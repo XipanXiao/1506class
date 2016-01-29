@@ -8,21 +8,21 @@ USE buddcourses;
 -- deparment 2: 入行论班
 -- deparment 3: 加行班
 -- deparment 4: 净土班
-CREATE TABLE deparments (
+CREATE TABLE departments (
                           id TINYINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                           name VARCHAR(32)
                           );
-INSERT INTO deparments(name) VALUES ("基础班");
-INSERT INTO deparments(name) VALUES ("入行论班");
-INSERT INTO deparments(name) VALUES ("加行班");
-INSERT INTO deparments(name) VALUES ("净土班");
+INSERT INTO departments(name) VALUES ("基础班");
+INSERT INTO departments(name) VALUES ("入行论班");
+INSERT INTO departments(name) VALUES ("加行班");
+INSERT INTO departments(name) VALUES ("净土班");
 
 CREATE TABLE tasks (
                     id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                     department_id TINYINT,
 				      INDEX department_id_idx(department_id),
 				      FOREIGN KEY (department_id)
-				      	REFERENCES deparments(id),
+				      	REFERENCES departments(id),
                     name VARCHAR(32),
                     max INT
                       );
