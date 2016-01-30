@@ -32,7 +32,7 @@ define(function() {
       get_classes: function(classId) {
         var url = '{0}?rid=classes&classId={1}'.format(serviceUrl,
             classId || '');
-        return $http.get(url, {cache: true});
+        return $http.get(url);
       },
       
       update_class: function(classInfo) {
@@ -179,6 +179,11 @@ define(function() {
 
       remove_schedule_group: function(group_id) {
         var url = '{0}?rid=schedule_group&id={1}'.format(serviceUrl, group_id);
+        return $http.delete(url);
+      },
+
+      remove_class: function(classId) {
+        var url = '{0}?rid=class&id={1}'.format(serviceUrl, classId);
         return $http.delete(url);
       },
 

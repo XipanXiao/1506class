@@ -72,6 +72,12 @@ function remove_schedule_group($id) {
   return $medoo->delete("schedule_groups", ["id" => $id]);
 }
 
+function remove_class($id) {
+  global $medoo;
+  
+  return $medoo->delete("classes", ["id" => $id]);
+}
+
 function update_course($course) {
   global $medoo;
   

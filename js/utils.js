@@ -209,6 +209,27 @@ define(function() {
         } else {
           return week == 3 || week == 10;
         }
+      },
+      classTemplate : function() {
+        return {
+          id: 0,
+          department_id: 0,
+          name: '新班级模板',
+          email: '',
+          class_room: '',
+          teacher_id: 0,
+          start_year: (new Date()).getFullYear(),
+          perm_level: 0
+        };
+      },
+      isEmpty: function(map) {
+        if (map instanceof String || typeof(map) == 'string') return true;
+
+        for (var key in map) {
+          if (map[key]) return false;
+        }
+        
+        return true;
       }
     };
   });

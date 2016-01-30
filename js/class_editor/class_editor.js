@@ -4,7 +4,7 @@ define(['departments/departments', 'editable_label/editable_label',
   return angular.module('ClassEditorModule',
       ['DepartmentsModule', 'EditableLabelModule', 'ServicesModule',
        'UserPickerModule', 'UtilsModule']).directive('classEditor',
-        function(perm, rpc, utils) {
+        function($rootScope, perm, rpc, utils) {
           return {
             scope: {
               classId: '='
@@ -23,19 +23,39 @@ define(['departments/departments', 'editable_label/editable_label',
               };
               
               scope.update = function() {
-                rpc.update_class(scope.classInfo);
+                rpc.update_class(scope.classInfo).then(function(response) {
+                  if (response.data.updated && !scope.classInfo.id) {
+                    var id = response.data.updated;
+                    $rootScope.$broadcast('class-added', id);
+                  }
+                });
               };
               
-              scope.$watch('classId', function(classId) {
-                if (!classId) return;
-                
-                rpc.get_classes(classId).then(function(response) {
-                  scope.classInfo = response.data[classId];
-                  scope.setupPermissionEditor(scope.classInfo);
+              scope.remove = function() {
+                var id = scope.classInfo.id;
+                rpc.remove_class(id).then(function(response) {
+                  if (response.data.deleted) {
+                    $rootScope.$broadcast('class-deleted', id);
+                  }
                 });
+              }
+              
+              scope.$watch('classId', function(classId) {
+                if (classId == 0) {
+                  scope.classInfo = utils.classTemplate();
+                  scope.setupPermissionEditor(scope.classInfo);
+                } else if (classId) {
+                  rpc.get_classes(classId).then(function(response) {
+                    scope.classInfo = response.data[classId];
+                    scope.setupPermissionEditor(scope.classInfo);
+                  });
+                }
               });
               
-              scope.years = [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019];
+              scope.years = [];
+              for (var index = 0; index < 25; index++) {
+                scope.years[index] = 2012 + index;
+              }
               
               scope.teachers = {};
               rpc.get_admins(perm.ROLES.TEACHER).then(function(response) {
