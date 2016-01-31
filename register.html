@@ -3,44 +3,49 @@
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css" href="style.css"></link>
 <title>注册</title>
+<script type="text/javascript">
+  function checkPassword() {
+    var confirm = document.getElementById('confirm'); 
+    var valid = document.getElementById('password').value == confirm.value;
+    confirm.setCustomValidity(valid ? '' : '两次输入的密码不匹配');
+    return valid;
+  }
+</script>
 </head>
 
 <body class="center">
 
-	<h1 class="center">新学员注册</h1>
+	<div class="css-table center">
+    <h1>新学员注册</h1>
 
-	<div class="css-table">
-		<form class="register-form" action="cgi-bin/register.php" method="post">
+		<form class="register-form" action="cgi-bin/register.php" method="post"
+		    onsubmit="return checkPassword()">
 			<fieldset>
 				<div class="css-table-row">
 					<label class="css-table-cell padded-element" for="name">姓名:</label>
-					<div class="css-table-cell"><input type="text" name="name" id="name"/></div>
+					<div class="css-table-cell"><input type="text" name="name" id="name" required></div>
 				</div>
-				<div class="css-table-row">
-					<label class="css-table-cell" for="email">Email:</label>
-					<div class="css-table-cell"><input type="email" name="email" id="email"/></div>
-				</div>
-				<div class="css-table-row">
-					<label class="css-table-cell">选择班级种类</label>
-					<class-groups class="css-table-cell" name="class_group" 
-						ng-controller="ClassGroupsController">
-					</class-groups>
-				</div>
-				<div class="css-table-row">
-					<label class="padded-element">选择班级</label>
-					<classes class="css-table-cell" name="class">
-					</classes>
-				</div>
+        <div class="css-table-row">
+          <label class="css-table-cell" for="email">Email:</label>
+          <div class="css-table-cell"><input type="email" name="email" id="email" required></div>
+        </div>
+        <div class="css-table-row">
+          <label class="css-table-cell" for="password">Password:</label>
+          <div class="css-table-cell"><input type="password" name="password" id="password"></div>
+        </div>
+        <div class="css-table-row">
+          <label class="css-table-cell" for="confirm">Confirm password:</label>
+          <div class="css-table-cell">
+            <input type="password" name="confirm" id="confirm" onchange="checkPassword()">
+            <div id="error" style="color:red;"></div>
+          </div>
+        </div>
 				<div class="css-table-row">
 					<div class="css-table-cell"><input type="submit" value="注册"/></div>
 				</div>
 			</fieldset>
 		</form>
 	</div>
-
-<script type="text/javascript" src="js/angular.js"></script>
-<script data-main="js/register_app.js" src="js/require.js"></script>
-
 </body>
 
 </html>

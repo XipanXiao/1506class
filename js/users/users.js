@@ -9,7 +9,7 @@ define(['permission', 'services', 'user_editor/user_editor', 'utils'],
           classId: '=',
         },
         link: function($scope) {
-          $scope.$watch('classId', function(classId) {
+          $scope.reload = function(classId) {
             if (!classId) {
               $scope.users = [];
               $scope.editingUser = null;
@@ -22,6 +22,9 @@ define(['permission', 'services', 'user_editor/user_editor', 'utils'],
                     utils.firstElement($scope.users, 'id', $scope.editingUser.id);
               });
             }
+          };
+          $scope.$watch('classId', function(classId) {
+            $scope.reload(classId);
           });
           $scope.isAdmin = function(user) {
             return user.permission > perm.ROLES.STUDENT;
@@ -32,6 +35,13 @@ define(['permission', 'services', 'user_editor/user_editor', 'utils'],
           $scope.$on('editing-user-changed', function(event, editingUser) {
             $scope.editingUser = editingUser;
           });
+          $scope.remove = function(user) {
+            if (confirm('Are you sure to remove ' + user.email + '?')) {
+              rpc.remove_user(user.id).then(function() {
+                $scope.reload($scope.classId);
+              });
+            }
+          };
         },
         templateUrl : 'js/users/users.html'
       };

@@ -48,7 +48,7 @@ CREATE TABLE classes (
                       );
 
 -- id: 1. unassigned students are put temporarily here.
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (1, "未分班学员", "", "", 2015); -- 1
+INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (1, "未分班学员", "", "", 0); -- 1
 INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (2, "1506周四入行论", "99343758", "", 2015); -- 2
 INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (2, "1506周日入行论", "99343758", "", 2015); -- 3
 INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (3, "1506周二加行", "99343758", "", 2015); -- 4
@@ -210,7 +210,7 @@ CREATE TABLE users(
 			      country VARCHAR(32),
 			      zip VARCHAR(10),
 			      im VARCHAR(32),
-			      classId INT,
+			      classId INT NOT NULL,
 				      INDEX classId_idx(classId),
 				      FOREIGN KEY (classId)
 				      	REFERENCES classes(id),
@@ -409,6 +409,8 @@ INSERT INTO schedules(group_id, course_id, open, review) VALUES (6, 69, 19, 1);
 CREATE TABLE task_records (
                  student_id INT not null,
 				      INDEX student_id_idx(student_id),
+				      FOREIGN KEY (student_id)
+				      	REFERENCES users(id),
                  task_id MEDIUMINT,
 				      INDEX task_id_idx(task_id),
 				      FOREIGN KEY (task_id)
@@ -422,6 +424,8 @@ CREATE TABLE task_records (
 CREATE TABLE schedule_records (
                  student_id INT not null,
 				      INDEX student_id_idx(student_id),
+				      FOREIGN KEY (student_id)
+				      	REFERENCES users(id),
                  course_id INT,
 				      INDEX course_id_idx(course_id),
                  attended TINYINT,

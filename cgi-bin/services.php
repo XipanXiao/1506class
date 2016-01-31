@@ -159,6 +159,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   	$response = ["deleted" => remove_class($_REQUEST["id"])];
   } elseif ($resource_id == "task") {
   	$response = ["deleted" => remove_task($_REQUEST["id"])];
+  } elseif ($resource_id == "user") {
+  	$response = ["deleted" => remove_user($_REQUEST["id"])];
   }  	 
 }
 

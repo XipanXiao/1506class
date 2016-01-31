@@ -4,7 +4,8 @@
 			<div class="css-table-cell"><strong>姓名</strong></div>
 			<div class="css-table-cell"><strong>性别</strong></div>
 			<div class="css-table-cell"><strong>电子邮件</strong></div>
-			<div class="css-table-cell"><strong>电话</strong></div>
+      <div class="css-table-cell"><strong>电话</strong></div>
+      <div class="css-table-cell"></div>
 		</div>
 		<div ng-repeat="user in users" class="css-table-row selectable" ng-click="showInfo(user)"
 		    ng-class=
@@ -13,6 +14,10 @@
 			<div class="css-table-cell">{{user.sex == '1' ? '男' : '女'}}</div>
 			<div class="css-table-cell">{{user.email}}</div>
 			<div class="css-table-cell"><strong>{{user.phone}}</strong></div>
+      <div class="css-table-cell">
+		    <iron-icon icon="icons:delete" title="删除" ng-click="remove(user)" class="selectable">
+		    </iron-icon>
+      </div>
 		</div>
 	</div>
   <user-editor ng-if="editingUser" user="editingUser" class="padded-element"></user-editor>

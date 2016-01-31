@@ -208,6 +208,10 @@ function get_users($email, $classId = null, $user_id = null) {
     $result = $medoo->select("users", "*", ["id" => $user_id]);
   }
 
+  if (empty($result)) {
+  	return [];
+  }
+
   $classes = ($email || $user_id) ? get_classes($result[0]["classId"]) : null;
   $users = array();
 
@@ -226,6 +230,12 @@ function get_admins($permission) {
 
   return keyed_by_id($medoo->select("users", "*",
       ["permission" => $permission]));
+}
+
+function remove_user($id) {
+  global $medoo;
+
+  return $medoo->delete("users", ["id" => $id]);
 }
 
 function update_user($user) {
@@ -247,8 +257,12 @@ function update_user($user) {
       $datas[$key] = $value;
     }
   }
-  
-  if ($user["id"]) {
+
+  if (empty($datas["classId"]) || intval($datas["classId"]) == 0) {
+    $datas["classId"] = 1;
+  }
+
+  if (!empty($user["id"]) && intval($user["id"]) > 0) {
     if ($medoo->update("users", $datas, ["id" => intval($user["id"])])) {
       return current(get_users(null, null, intval($user["id"])));
     }

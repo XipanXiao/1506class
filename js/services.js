@@ -9,8 +9,6 @@ define(function() {
     };
   }
 
-  var userPromise;
-  var classMatesPromises = {};
   var serviceUrl = 'cgi-bin/services.php';
   
   function http_form_post($http, data) {
@@ -106,24 +104,8 @@ define(function() {
       },
       
       get_users: function(email, classId) {
-        email = email || '';
-        classId = classId || '';
-
-        if (!email && !classId && userPromise) return userPromise;
-        if (!email && classId && classMatesPromises[classId]) {
-          return classMatesPromises[classId];
-        }
-        
-        var promise = $http.get('{0}?rid=users&email={1}&classId={2}'.
-            format(serviceUrl, email, classId));
-        if (!email && !classId) {
-          userPromise = promise;
-        }
-        if (!email && classId) {
-          classMatesPromises[classId] = promise;
-        }
-        
-        return promise;
+        return $http.get('{0}?rid=users&email={1}&classId={2}'.
+            format(serviceUrl, email || '', classId || ''));
       },
       
       get_user: function(email) {
@@ -196,6 +178,11 @@ define(function() {
 
       remove_task: function(task_id) {
         var url = '{0}?rid=task&id={1}'.format(serviceUrl, task_id);
+        return $http.delete(url);
+      },
+
+      remove_user: function(user_id) {
+        var url = '{0}?rid=user&id={1}'.format(serviceUrl, user_id);
         return $http.delete(url);
       },
 

@@ -24,6 +24,7 @@ define(['import_dialog/import_dialog', 'permission', 'services', 'utils'],
               
               $scope.yearChanged = function() {
                 $scope.classes = $scope.alumnis[$scope.currentClass.year];
+                $scope.classes[1] = response.data[1];
                 $scope.classIds = utils.map(utils.keys($scope.classes), parseInt);
               };
   
