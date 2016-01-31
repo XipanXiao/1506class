@@ -58,7 +58,7 @@ define(['import_dialog/import_dialog', 'permission', 'services', 'utils'],
             }
           });
           
-          $scope.$on('class-added', function(event, classId) {
+          $scope.$on('class-updated', function(event, classId) {
             $scope.classId = classId;
             $scope.reload();
           });

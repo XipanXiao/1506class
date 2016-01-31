@@ -22,11 +22,11 @@ define(['departments/departments', 'editable_label/editable_label',
                 scope.showPermEditor = perm.canWrite(scope.classInfo);
               };
               
-              scope.update = function() {
+              scope.save = function() {
                 rpc.update_class(scope.classInfo).then(function(response) {
-                  if (response.data.updated && !scope.classInfo.id) {
-                    var id = response.data.updated;
-                    $rootScope.$broadcast('class-added', id);
+                  if (response.data.updated) {
+                    var id = scope.classInfo.id || response.data.updated;
+                    $rootScope.$broadcast('class-updated', id);
                   }
                 });
               };
@@ -41,15 +41,7 @@ define(['departments/departments', 'editable_label/editable_label',
               }
               
               scope.$watch('classId', function(classId) {
-                if (classId == 0) {
-                  scope.classInfo = utils.classTemplate();
-                  scope.setupPermissionEditor(scope.classInfo);
-                } else if (classId) {
-                  rpc.get_classes(classId).then(function(response) {
-                    scope.classInfo = response.data[classId];
-                    scope.setupPermissionEditor(scope.classInfo);
-                  });
-                }
+                scope.reload(classId);
               });
               
               scope.years = [];
@@ -63,6 +55,22 @@ define(['departments/departments', 'editable_label/editable_label',
                   scope.teachers[id] = response.data[id].name;
                 };
               });
+              
+              scope.reload = function(classId) {
+                if (classId == 0) {
+                  scope.classInfo = utils.classTemplate();
+                  scope.setupPermissionEditor(scope.classInfo);
+                } else if (classId) {
+                  rpc.get_classes(classId).then(function(response) {
+                    scope.classInfo = response.data[classId];
+                    scope.setupPermissionEditor(scope.classInfo);
+                  });
+                }
+              };
+              
+              scope.cancel = function() {
+                scope.reload(scope.classId);
+              };
             },
             templateUrl : 'js/class_editor/class_editor.html'
           };
