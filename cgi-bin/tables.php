@@ -78,6 +78,12 @@ function remove_class($id) {
   return $medoo->delete("classes", ["id" => $id]);
 }
 
+function remove_task($id) {
+  global $medoo;
+  
+  return $medoo->delete("tasks", ["id" => $id]);
+}
+
 function update_course($course) {
   global $medoo;
   
@@ -162,6 +168,25 @@ function update_class($classInfo) {
   }
 
   return $medoo->update("classes", $datas, ["id" => $id]);
+}
+
+function update_task($task) {
+  global $medoo;
+  
+  $datas = [];
+  $fields = ["department_id", "name", "max"];
+  foreach ($fields as $field) {
+    if (!empty($task[$field])) {
+      $datas[$field] = $task[$field];
+    }
+  }
+  
+  $id = intval($task["id"]);
+  if ($id == 0) {
+    return $medoo->insert("tasks", $datas);
+  }
+
+  return $medoo->update("tasks", $datas, ["id" => $id]);
 }
 
 function get_courses($course_group_id) {
@@ -263,7 +288,8 @@ function get_last_task_record($user_id, $task_id) {
 function get_tasks($department_id) {
   global $medoo;
 
-  return $medoo->select("tasks", "*", ["department_id" => $department_id]);
+  return $medoo->select("tasks", "*",
+  		$department_id ? ["department_id" => $department_id] : null);
 }
 
 function get_class_task_stats($classId, $task_id) {

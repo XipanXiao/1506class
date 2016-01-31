@@ -49,8 +49,10 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       if ($pos == "last") {
         $response = get_last_task_record($student_id, $task_id);
       }
+    } elseif (isset($_GET["department_id"])) {
+      $response = get_tasks($_GET["department_id"]);
     } else {
-      $response = get_tasks($user->classInfo["department_id"]);
+    	$response = get_tasks(null);
     }
   } elseif ($resource_id == "courses") {
     $response = get_courses($_GET["group_id"]);
@@ -92,6 +94,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   	$task_id = $_POST["task_id"];
     report_task($task_user_id, $task_id, $_POST["count"], $_POST["sum"]);
     $response = get_last_task_record($task_user_id, $task_id);
+  } elseif ($resource_id == "task") {
+  	$response = ["updated" => update_task($_POST)];
   } elseif ($resource_id == "schedule_tasks") {
     $response = ["updated" => report_schedule_task($task_user_id, $_POST)];
   } elseif ($resource_id == "schedule") {
@@ -153,6 +157,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   	$response = ["deleted" => remove_schedule($_REQUEST["id"])];
   } elseif ($resource_id == "class") {
   	$response = ["deleted" => remove_class($_REQUEST["id"])];
+  } elseif ($resource_id == "task") {
+  	$response = ["deleted" => remove_task($_REQUEST["id"])];
   }  	 
 }
 

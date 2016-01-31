@@ -1,17 +1,16 @@
-define(['progress_bar/progress_bar', 'services'], function() {
+define(['progress_bar/progress_bar', 'services',
+    'task_editor_dialog/task_editor_dialog'], function() {
   return angular.module('TaskStatsModule', ['ProgressBarModule',
-      'ServicesModule']).directive('taskStats', function(rpc) {
+      'ServicesModule', 'TaskEditorDialogModule'])
+      .directive('taskStats', function(rpc) {
+
       return {
         scope: {
+          admining: '@',
           classId: '@'
         },
         link: function(scope) {
-          rpc.get_group_tasks().then(function(response) {
-            scope.tasks = response.data;
-            scope.selectedTask = scope.tasks[0];
-          });
-          
-          var refreshStats = function() {
+          scope.refreshStats = function() {
             if (!scope.selectedTask) return;
             
             rpc.get_class_task_stats(scope.classId, scope.selectedTask.id)
@@ -19,9 +18,31 @@ define(['progress_bar/progress_bar', 'services'], function() {
                   scope.task_stats = response.data;
                 });
           };
+
+          scope.reload = function() {
+            rpc.get_classes(scope.classId).then(function(response) {
+              var classInfo = response.data[scope.classId];
+              rpc.get_tasks(classInfo.department_id).then(function(response) {
+                scope.tasks = response.data;
+                scope.selectedTask = scope.tasks[0];
+                
+                scope.refreshStats();
+              });
+            });
+          };
           
-          scope.$watch('classId', refreshStats);
-          scope.$watch('selectedTask', refreshStats);
+          
+          scope.$watch('classId', function() {
+            scope.reload();
+          });
+          scope.$watch('selectedTask', function() {
+            scope.refreshStats();
+          });
+          scope.expand = function() {
+            if (scope.admining) {
+              document.querySelector('#task-editor-dlg').open();
+            }
+          }
         },
         templateUrl: 'js/task_stats/task_stats.html'
       };

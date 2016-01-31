@@ -4,6 +4,9 @@
     <select ng-options="value.name for value in tasks" ng-model="selectedTask">
     </select>
   </label>
+	<iron-icon icon="editor:border-color" class="small-icon selectable" ng-click="expand()"
+	    ng-if="admining">
+	</iron-icon>
 </div>
 <div class="css-table task-stats">
   <div class="css-table-row">
@@ -20,3 +23,5 @@
     <div class="css-table-cell">{{user.lastRecord.sum}}</div>
   </div>
 </div>
+
+<task-editor-dialog ng-if="admining"></task-editor-dialog>

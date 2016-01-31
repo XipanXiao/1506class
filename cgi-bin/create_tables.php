@@ -409,7 +409,10 @@ INSERT INTO schedules(group_id, course_id, open, review) VALUES (6, 69, 19, 1);
 CREATE TABLE task_records (
                  student_id INT not null,
 				      INDEX student_id_idx(student_id),
-                 task_id INT,
+                 task_id MEDIUMINT,
+				      INDEX task_id_idx(task_id),
+				      FOREIGN KEY (task_id)
+				      	REFERENCES tasks(id),
                  count MEDIUMINT,
                  sum INT,
                  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

@@ -26,7 +26,7 @@ define(function() {
       $httpParamSerializerJQLike) {
     return {
       get_departments: function() {
-        return $http.get(serviceUrl + '?rid=departments');
+        return $http.get(serviceUrl + '?rid=departments', {cache: true});
       },
     
       get_classes: function(classId) {
@@ -38,6 +38,11 @@ define(function() {
       update_class: function(classInfo) {
         classInfo.rid = 'class';
         return http_form_post($http, $httpParamSerializerJQLike(classInfo));
+      },
+    
+      update_task: function(task) {
+        task.rid = 'task';
+        return http_form_post($http, $httpParamSerializerJQLike(task));
       },
     
       report_task: function(task_id, count, sum) {
@@ -71,8 +76,10 @@ define(function() {
         return http_form_post($http, $httpParamSerializerJQLike(group));
       },
     
-      get_group_tasks: function() {
-        return $http.get(serviceUrl + '?rid=tasks');
+      get_tasks: function(department_id) {
+        var url = '{0}?rid=tasks&department_id={1}'.format(serviceUrl,
+            department_id || '');
+        return $http.get(url);
       },
     
       get_last_task_record: function(task_id) {
@@ -184,6 +191,11 @@ define(function() {
 
       remove_class: function(classId) {
         var url = '{0}?rid=class&id={1}'.format(serviceUrl, classId);
+        return $http.delete(url);
+      },
+
+      remove_task: function(task_id) {
+        var url = '{0}?rid=task&id={1}'.format(serviceUrl, task_id);
         return $http.delete(url);
       },
 

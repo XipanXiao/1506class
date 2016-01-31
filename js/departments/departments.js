@@ -4,11 +4,11 @@ define(['services', 'utils'], function() {
 			return {
 			  scope: {
 			    departmentId: '=',
-			    onUpdate: '&'
+			    onChange: '&'
 			  },
 			  link: function(scope) {
 			    scope.selected = {
-			      id: scope.departmentId
+			      id: parseInt(scope.departmentId)
 			    };
 	        rpc.get_departments().then(function(response) {
 	          scope.departments = response.data;
@@ -16,10 +16,12 @@ define(['services', 'utils'], function() {
 	        });
 	        scope.update = function() {
 	          scope.departmentId = scope.selected.id;
-	          if (onUpdate) onUpdate();
+	          if (scope.onChange) {
+	            scope.onChange({department: scope.departmentId});
+	          }
 	        };
 	        scope.$watch('departmentId', function(id) {
-	          scope.selected.id = id;
+	          scope.selected.id = parseInt(id);
 	        });
 			  },
 				templateUrl : 'js/departments/departments.html'
