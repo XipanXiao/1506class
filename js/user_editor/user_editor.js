@@ -32,6 +32,8 @@ define(['services', 'utils', 'classes/classes', 'permission'], function() {
             data.state = user.state;
             data.zip = user.zip;
             break;
+          case 'password':
+            if (user.password != user.confirm) return;
           default:
             data[$scope.editing] = user[$scope.editing];
             break;

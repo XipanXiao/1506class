@@ -384,3 +384,7 @@ div.compact-url {
 	width: 500px;
   flex-wrap: wrap;
 }
+
+.error {
+  color: red;
+}

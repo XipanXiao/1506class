@@ -9,6 +9,7 @@ require(['app_bar/app_bar', 'tasks/tasks', 'schedule_tasks/schedule_tasks',
           link: function($scope) {
             rpc.get_user().then(function(user) {
               $scope.user = user;
+              $scope.hasTask = user.classInfo.department_id > 1;
             });
           }
         }

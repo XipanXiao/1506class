@@ -36,6 +36,15 @@
         </div>          
       </div>
       <div class="css-table-row padded-element">
+        <div class="css-table-cell">密码</div>
+        <div class="css-table-cell">******</div>
+        <div class="css-table-cell">
+          <iron-icon ng-show="admining" class="selectable" icon="chevron-right"
+              ng-click="editing = 'password'">
+          </iron-icon>
+        </div>          
+      </div>
+      <div class="css-table-row padded-element">
         <div class="css-table-cell">地址</div>
         <div class="css-table-cell">
           <div>{{user.street}}</div>
@@ -61,6 +70,11 @@
         <select ng-switch-when="permission" ng-model="user.permission" autofocus
             ng-options="permissionLabel[value] for value in permissions">
         </select>
+        <div ng-switch-when="password">
+          <input type="password" ng-model="user.password" autofocus>
+          <input type="password" ng-model="user.confirm" autofocus>
+          <div ng-if="user.password != user.confirm" class="error">两次输入的密码不匹配</div>
+        </div>
         <div ng-switch-when="address" class="css-table">
           <div class="css-table-row">
             <div class="css-table-cell"><label for="street">Street</label></div>
@@ -94,7 +108,7 @@
           </div>
         </div>
       </div>
-      <input ng-if="editing != 'address'" type="button" value="Save" ng-click="save()"
+      <input ng-if="editing != 'address'" type="submit" value="Save" ng-click="save()"
           class="css-table-cell">
     </div>
   </div>
