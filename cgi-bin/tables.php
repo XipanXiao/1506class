@@ -264,7 +264,7 @@ function update_user($user) {
     $datas["classId"] = 1;
   }
   if (empty($datas["permission"])) {
-  	$datas["permission"] = 1;
+  	$datas["permission"] = 7;
   }
   
   if (!empty($user["id"]) && intval($user["id"]) > 0) {

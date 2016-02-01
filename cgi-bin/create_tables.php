@@ -48,31 +48,31 @@ CREATE TABLE classes (
                       );
 
 -- id: 1. unassigned students are put temporarily here.
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (1, "未分班学员", "", "", 0); -- 1
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (2, "1506周四入行论", "99343758", "", 2015); -- 2
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (2, "1506周日入行论", "99343758", "", 2015); -- 3
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (3, "1506周二加行", "99343758", "", 2015); -- 4
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (3, "1506周四加行", "99343758", "", 2015); -- 5
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (3, "1506周六加行", "99343758", "", 2015); -- 6
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (4, "1506周一净土", "99343758", "", 2015); -- 7
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (2, "1506微信入行论班", "99343758", "", 2015);  -- 8
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (3, "1506微信加行班", "99343758", "", 2015);  -- 9
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (4, "1506微信净土班", "99343758", "", 2015);  -- 10
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (1, "未分班学员", "", "", 0, 1); -- 1
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (2, "1506周四入行论", "99343758", "", 2015, 1); -- 2
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (2, "1506周日入行论", "99343758", "", 2015, 1); -- 3
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (3, "1506周二加行", "99343758", "", 2015, 1); -- 4
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (3, "1506周四加行", "99343758", "", 2015, 1); -- 5
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (3, "1506周六加行", "99343758", "", 2015, 1); -- 6
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (4, "1506周一净土", "99343758", "", 2015, 1); -- 7
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (2, "1506微信入行论班", "99343758", "", 2015, 1);  -- 8
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (3, "1506微信加行班", "99343758", "", 2015, 1);  -- 9
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (4, "1506微信净土班", "99343758", "", 2015, 1);  -- 10
 
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (2, "1406入行论", "99343758", "", 2014); -- 11
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (3, "1406加行", "99343758", "", 2014); -- 12
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (3, "1406西雅圖加行", "99343758", "", 2014); -- 13
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (2, "1406入行论", "99343758", "", 2014, 1); -- 11
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (3, "1406加行", "99343758", "", 2014, 1); -- 12
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (3, "1406西雅圖加行", "99343758", "", 2014, 1); -- 13
 
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (3, "1312加行", "99343758", "", 2013); -- 14
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (2, "1312入行论", "99343758", "", 2013); -- 15
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (2, "1306入行论", "99343758", "", 2013); -- 16
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (3, "1306加行", "99343758", "", 2013); -- 17
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (4, "1306淨土", "99343758", "", 2013);  -- 18
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (3, "1312加行", "99343758", "", 2013, 1); -- 14
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (2, "1312入行论", "99343758", "", 2013, 1); -- 15
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (2, "1306入行论", "99343758", "", 2013, 1); -- 16
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (3, "1306加行", "99343758", "", 2013, 1); -- 17
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (4, "1306淨土", "99343758", "", 2013, 1);  -- 18
 
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (3, "1212加行", "99343758", "", 2012); -- 19
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (2, "1206地方入行论", "99343758", "", 2012); -- 20
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (2, "1206入行论", "99343758", "", 2012); -- 21
-INSERT INTO classes(department_id, name, class_room, email, start_year) VALUES (3, "1206加行", "99343758", "", 2012); -- 22
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (3, "1212加行", "99343758", "", 2012, 1); -- 19
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (2, "1206地方入行论", "99343758", "", 2012, 1); -- 20
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (2, "1206入行论", "99343758", "", 2012, 1); -- 21
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (3, "1206加行", "99343758", "", 2012, 1); -- 22
 
 CREATE TABLE course_groups(
       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,

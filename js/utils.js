@@ -230,6 +230,15 @@ define(function() {
         }
         
         return true;
+      },
+      where: function(map, test) {
+        var result = {};
+        for (var key in map) {
+          var value = map[key];
+          if (test(value)) result[key] = value;
+        }
+        
+        return result;
       }
     };
   });

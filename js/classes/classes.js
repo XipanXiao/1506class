@@ -6,18 +6,23 @@ define(['import_dialog/import_dialog', 'permission', 'services', 'utils'],
       return {
         scope: {
           classId: '=',
-          listType: '@'
+          listType: '@',
+          permission: '@'
         },
         link: function($scope) {
           $scope.reload = function() {
             rpc.get_classes().then(function(response) {
               $scope.showImportDialog = false;
-              $scope.alumnis = utils.groupBy(response.data, 'start_year');
-              $scope.years = utils.map(utils.keys($scope.alumnis), parseInt);
+              var classes = utils.where(response.data, function(info) {
+                return perm.canWrite(info);
+              });
+              $scope.alumnis = utils.groupBy(classes, 'start_year');
+              $scope.years =
+                  utils.map(utils.positiveKeys($scope.alumnis), parseInt);
   
               $scope.currentClass = {
                   year: $scope.classId ?
-                      parseInt(response.data[$scope.classId].start_year) :
+                      parseInt(classes[$scope.classId].start_year) :
                           (new Date()).getFullYear(),
                   id: $scope.classId
               };
