@@ -1,6 +1,6 @@
-define(['progress_bar/progress_bar', 'services'], function() {
-  return angular.module('TasksModule', ['ProgressBarModule', 'ServicesModule'])
-    .directive('tasks', function(rpc) {
+define(['progress_bar/progress_bar', 'services', 'utils'], function() {
+  return angular.module('TasksModule', ['ProgressBarModule', 'ServicesModule',
+      'UtilsModule']).directive('tasks', function(rpc, utils) {
       return {
         scope: {
           departmentId: '@'
@@ -10,7 +10,10 @@ define(['progress_bar/progress_bar', 'services'], function() {
             if (!$scope.departmentId) return;
 
             rpc.get_tasks($scope.departmentId).then(function(response) {
+              $scope.isNotEmpty = !utils.isEmpty(response.data);
               $scope.tasks = [];
+              
+              if (!$scope.isNotEmpty) return;
               
               angular.forEach(response.data, function(value) {
                 var task = angular.copy(value);

@@ -239,6 +239,7 @@ INSERT INTO schedule_groups(classId, course_group, name, start_time, end_time) V
 INSERT INTO schedule_groups(classId, course_group, name, start_time, end_time) VALUES (5, 2, "2015届加行周四班2016年春季学期", "2015-12-04 02:00:00", "2016-05-31 22:00:00");
 INSERT INTO schedule_groups(classId, course_group, name, start_time, end_time) VALUES (6, 2, "2015届加行周六班2016年春季学期", "2015-12-05 19:00:00", "2016-05-31 22:00:00");
 INSERT INTO schedule_groups(classId, course_group, name, start_time, end_time) VALUES (7, 3, "2015届净土班2016年春季学期", "2015-12-01 02:30:00", "2016-05-31 22:00:00");
+INSERT INTO schedule_groups(classId, course_group, name) VALUES (1, 4, "基础班第一学期");
                       
 CREATE TABLE schedules (
              id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -405,6 +406,32 @@ INSERT INTO schedules(group_id, course_id, open, review) VALUES (6, 66, 2, 19);
 INSERT INTO schedules(group_id, course_id, open, review) VALUES (6, 67, 7, 5);
 INSERT INTO schedules(group_id, course_id, open, review) VALUES (6, 68, 3, 15);
 INSERT INTO schedules(group_id, course_id, open, review) VALUES (6, 69, 19, 1);
+
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 70, 2, 0);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 71, 9, 5);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 72, 3, 7);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 73, 10, 1);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 74, 5, 19);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 75, 7, 6);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 76, 1, 15);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 77, 19, 11);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 78, 6, 18);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 79, 11, 16);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 80, 18, 13);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 81, 8, 17);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 82, 16, 12);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 83, 13, 9);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 84, 17, 14);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 85, 12, 10);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 86, 9, 2);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 0, 0, 0);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 87, 14, 7);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 88, 10, 3);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 89, 2, 19);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 90, 7, 5);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 91, 3, 15);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 0, 0, 0);
+INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 92, 19, 1);
 
 CREATE TABLE task_records (
                  student_id INT not null,
