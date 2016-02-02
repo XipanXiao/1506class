@@ -48,7 +48,7 @@ CREATE TABLE classes (
                       );
 
 -- id: 1. unassigned students are put temporarily here.
-INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (1, "未分班学员", "", "", 0, 2); -- 1
+INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (1, "未分班学员", "", "", 0, 0); -- 1
 INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (2, "1506周四入行论", "99343758", "", 2015, 2); -- 2
 INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (2, "1506周日入行论", "99343758", "", 2015, 2); -- 3
 INSERT INTO classes(department_id, name, class_room, email, start_year, perm_level) VALUES (3, "1506周二加行", "99343758", "", 2015, 2); -- 4

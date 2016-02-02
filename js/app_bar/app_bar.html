@@ -9,12 +9,8 @@
   </div>
   <search-bar class="left" ng-if="admining"></search-bar>
   <div class="right">
-    <div ng-switch="admining" class="inline">
-      <a ng-switch-when="true" class="app-bar-link" href="index.html">学员页面</a>
-      <a ng-switch-default ng-if="user.permission > 1" class="app-bar-link" href="admin.html">
-        管理页面
-      </a>
-    </div>
+    <a ng-if="admining" class="app-bar-link" href="index.html">学员页面</a>
+    <a ng-if="isAdmin() && !admining" class="app-bar-link" href="admin.html">管理页面</a>
     <span>{{user.name}}</span>
     <a class="app-bar-link" href="cgi-bin/logout.php">Logout</a> 
   </div>
