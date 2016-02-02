@@ -37,7 +37,7 @@
       ng-if="classInfo.id">
   </iron-icon>
   <div class="padded-element">
-	  <input type="button" value="Cancel" ng-click="cancel()">
-	  <input type="submit" value="Save" ng-click="save()">
+	  <input type="button" value="Cancel" ng-click="cancel()" ng-disabled="!isDirty()">
+	  <input type="submit" value="Save" ng-click="save()" ng-disabled="!isDirty()">
   </div>
 </div>

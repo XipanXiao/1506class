@@ -59,10 +59,12 @@ define(['departments/departments', 'editable_label/editable_label',
               scope.reload = function(classId) {
                 if (classId == 0) {
                   scope.classInfo = utils.classTemplate();
+                  scope.oldInfo = angular.copy(scope.classInfo);
                   scope.setupPermissionEditor(scope.classInfo);
                 } else if (classId) {
                   rpc.get_classes(classId).then(function(response) {
                     scope.classInfo = response.data[classId];
+                    scope.oldInfo = angular.copy(scope.classInfo);
                     scope.setupPermissionEditor(scope.classInfo);
                   });
                 }
@@ -70,6 +72,10 @@ define(['departments/departments', 'editable_label/editable_label',
               
               scope.cancel = function() {
                 scope.reload(scope.classId);
+              };
+              
+              scope.isDirty = function() {
+                return !angular.equals(scope.classInfo, scope.oldInfo);
               };
             },
             templateUrl : 'js/class_editor/class_editor.html'
