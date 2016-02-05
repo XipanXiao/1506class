@@ -196,11 +196,13 @@ function get_courses($course_group_id) {
       ["group_id" => $course_group_id]));
 }
 
-function get_users($email, $classId = null, $user_id = null) {
+function get_users($email, $classId = null, $user_id = null, $all = null) {
   global $medoo;
 
   $result = null;
-  if ($classId) {
+  if ($all) {
+    $result = $medoo->select("users", "*");
+  } elseif ($classId) {
     $result = $medoo->select("users", "*", ["classId" => $classId]);
   } elseif ($email){
     $result = $medoo->select("users", "*", ["email" => $email]);

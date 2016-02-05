@@ -36,7 +36,9 @@ require(['app_bar/app_bar', 'classes/classes', 'class_editor/class_editor',
             });
           }
         }
-      });
+      }).config( ['$compileProvider', function( $compileProvider ) {   
+        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|blob):/);
+      }]);
 
   angular.element(document.body).ready(function() {
     angular.bootstrap(document.body, ['AppModule']);

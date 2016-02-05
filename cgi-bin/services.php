@@ -59,8 +59,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "users") {
     $email = empty($_GET["email"]) ? null : $_GET["email"];
     $classId = empty($_GET["classId"]) ? null : $_GET["classId"];
+    $all = empty($_GET["all"]) ? null : $_GET["all"];
     
-    if ($classId) {
+    if ($all) {
+    	$response = get_users(null, null, null, $all);
+    } elseif ($classId) {
       $response = get_users($email, $classId);
     } elseif ($email) {
       $response = current(get_users($email));

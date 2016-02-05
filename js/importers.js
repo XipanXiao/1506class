@@ -1,4 +1,4 @@
-define(['services', 'utils'], function() {
+define(['permission', 'services', 'utils'], function() {
   var delimiter = '\t';
 
   var lineReader = function(text, skipHeader) {
@@ -16,6 +16,8 @@ define(['services', 'utils'], function() {
   function encode_utf8(s) {
     return unescape(encodeURIComponent(s));
   }
+  
+  var sqlFile, csvFile;
 
   var columnMap = {
     "table": "users",
@@ -85,8 +87,9 @@ define(['services', 'utils'], function() {
     }
   };
 
-  return angular.module('ImportersModule', ['ServicesModule', 'UtilsModule'])
-      .factory('importers', function(rpc, utils) {
+  return angular.module('ImportersModule', ['PermissionModule',
+      'ServicesModule', 'UtilsModule'])
+      .factory('importers', function(perm, rpc, utils) {
 
     var validate = function(user, classes) {
       var extractFromPatter = function(pattern, value) {
@@ -274,6 +277,74 @@ define(['services', 'utils'], function() {
           };
           
           next();
+        },
+        
+        exportAll: function() {
+          var int_fields = ['sex', 'mentor', 'permission', 'education',
+              'start_year', 'classId'];
+          var fields = ['internal_id', 'name', 'nickname', 'email',
+              'phone', 'street', 'street2', 'city', 'state', 'country', 'zip',
+              'im', 'occupation', 'birthday', 'notes'];
+          var allFields = fields.concat(int_fields);
+
+          var createDataUrl = function(data, file) {
+            data = new Blob([data], {type: 'text/plain'});
+            if (file) window.URL.revokeObjectURL(file);
+            return file = window.URL.createObjectURL(data);
+          };
+          
+          var exportUsers = function(users, classes) {
+            var sql = '';
+            var csv = fields.concat(int_fields).join(', ');
+
+            var convertIntValue = function(key, value) {
+              return {
+                'sex': ['女', '男'],
+                'classId': classes,
+                'permission': perm.permissions,
+                'education': ['', '高中以下', '大专或高中', '本科', '硕士', '博士'],
+                'mentor': [],
+                'start_year': []
+              }[key][value];
+            };
+
+            for (var id in users) {
+              var user = users[id];
+              var getValue = function(field) {
+                return '"' + (user[field] || '') + '"';
+              };
+              var getIntValue = function(field) {return parseInt(user[field]);};
+              var allValues = utils.map(fields, getValue)
+                  .concat(utils.map(int_fields, getIntValue));
+              sql += 'INSERT INTO users ({0}) VALUES ({1});\n'.format(
+                  allFields.join(', '), allValues.join(', '));
+
+              var displayValues = utils.map(fields, getValue);
+              for (var i = 0;i < int_fields.length; i++) {
+                var key = int_fields[i];
+                var value = getIntValue(key);
+                displayValues[i + fields.length] =
+                    '"{0}"'.format(convertIntValue(key, value) || value);
+              }
+              csv += '\n' + displayValues.join(', ');
+            }
+
+            return {
+              sql: createDataUrl(sql, sqlFile),
+              csv: createDataUrl(csv, csvFile)
+            };
+          };
+
+          return rpc.get_classes().then(function(response) {
+            var classes = {};
+            for (var id in response.data) {
+              classes[id] = response.data[id].name;
+            }
+
+            return rpc.get_users(null, null, true).then(function(response) {
+              return exportUsers(response.data, classes);
+            });
+          });
         }
       }
     };
