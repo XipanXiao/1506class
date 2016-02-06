@@ -31,13 +31,26 @@
         <class-editor class-id="classId"></class-editor>
         <users class-id="classId"></users>
       </div>
-      <schedule-editor class-id="classId"></schedule-editor>
-      <learning-records class-id="classId" attendence="true">
-      </learning-records>
-      <learning-records class-id="classId"></learning-records>
-      <task-stats class-id="{{classId}}" admining="true"></task-stats>
+      <div>
+        <schedule-editor ng-if="pageLoaded[1]" class-id="classId"></schedule-editor>
+      </div>
+      <div>
+        <learning-records ng-if="pageLoaded[2]" class-id="classId" attendence="true">
+        </learning-records>
+      </div>
+      <div>
+        <learning-records ng-if="pageLoaded[3]" class-id="classId"></learning-records>
+      </div>
+      <div>
+        <task-stats ng-if="pageLoaded[4]" class-id="{{classId}}" admining="true"></task-stats>
+      </div>
     </iron-pages>
   </div>
+</div>
+
+<div>
+  <course-editor-dialog></course-editor-dialog>
+  <task-editor-dialog></task-editor-dialog>
 </div>
 
 <script type="text/javascript" src="js/angular.js"></script>

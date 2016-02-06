@@ -10,6 +10,7 @@ require(['app_bar/app_bar', 'classes/classes', 'class_editor/class_editor',
       .directive('body', function(rpc, perm, utils) {
         return {
           link: function($scope) {
+            $scope.pageLoaded = [true];
             rpc.get_user().then(function(user) {
               perm.user = user;
               if (!perm.isAdmin()) {
@@ -25,7 +26,8 @@ require(['app_bar/app_bar', 'classes/classes', 'class_editor/class_editor',
             var tabs = document.querySelector('paper-tabs');
              
             tabs.addEventListener('iron-select', function() { 
-              pages.selected = tabs.selected;
+              $scope.pageLoaded[pages.selected = tabs.selected] = true;
+              $scope.$apply();
             });
 
             $scope.$on('editing-user-changed', function(event, editingUser) {
