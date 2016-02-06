@@ -20,6 +20,12 @@ define(['progress_bar/progress_bar', 'services',
           };
 
           scope.reload = function() {
+            if (!parseInt(scope.classId)) {
+              scope.tasks = {};
+              scope.task_stats = {};
+              return;
+            }
+
             rpc.get_classes(scope.classId).then(function(response) {
               var classInfo = response.data[scope.classId];
               rpc.get_tasks(classInfo.department_id).then(function(response) {

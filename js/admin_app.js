@@ -27,7 +27,9 @@ require(['app_bar/app_bar', 'classes/classes', 'class_editor/class_editor',
              
             tabs.addEventListener('iron-select', function() { 
               $scope.pageLoaded[pages.selected = tabs.selected] = true;
-              $scope.$apply();
+              setTimeout(function() {
+                $scope.$apply();
+              }, 0);
             });
 
             $scope.$on('editing-user-changed', function(event, editingUser) {
@@ -35,6 +37,10 @@ require(['app_bar/app_bar', 'classes/classes', 'class_editor/class_editor',
 
               tabs.selected = 0;
               pages.selected = 0;
+            });
+
+            $scope.$on('select-page', function(event, index) {
+              tabs.select(index);
             });
           }
         }

@@ -2,7 +2,7 @@ define(['importers', 'import_dialog/import_dialog', 'permission', 'services',
     'utils'], function() {
   return angular.module('ClassesModule', ['ImportDialogModule',
       'PermissionModule', 'ServicesModule', 'UtilsModule'])
-    .directive('classes', function(importers, perm, rpc, utils) {
+    .directive('classes', function($rootScope, importers, perm, rpc, utils) {
       return {
         scope: {
           classId: '=',
@@ -79,6 +79,7 @@ define(['importers', 'import_dialog/import_dialog', 'permission', 'services',
           $scope.createNewClass = function() {
             $scope.classes[0] = utils.classTemplate();
             $scope.select(0);
+            $rootScope.$broadcast('select-page', 0);
           };
           
           $scope.exportUsers = function() {
