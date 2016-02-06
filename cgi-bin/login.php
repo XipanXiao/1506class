@@ -6,10 +6,9 @@ include_once 'util.php';
 
 if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['password'] )) {
 	$password = md5 ( $_POST ['password'] );	
-	$users = get_users($_POST['email']);
+	$user = get_user($_POST['email']);
 	
-	if (sizeof($users) > 0) {
-		$user = current($users);
+	if ($user) {
 		
 		if ($password != $user->password) {
 			echo "<h1>Error</h1>";
@@ -17,6 +16,7 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['password'] )) {
 			exit();
 		}
 		
+		$user->password = null;
 		$_SESSION['user'] = serialize($user);
 		
 		$page = $user->classId > 1 ? 'index.html' : 'admin.html';

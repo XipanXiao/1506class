@@ -196,6 +196,20 @@ function get_courses($course_group_id) {
       ["group_id" => $course_group_id]));
 }
 
+function get_user($email) {
+  global $medoo;
+    
+  $result = $medoo->select("users", "*", ["email" => $email]);
+  if (empty($result)) return null;
+  
+  $classes = get_classes($result[0]["classId"]);
+
+  $user = new User($result[0]);
+  $user->classInfo = $classes[$user->classId];
+  
+  return $user;
+}
+
 function get_users($email, $classId = null, $user_id = null, $all = null) {
   global $medoo;
 
@@ -211,7 +225,7 @@ function get_users($email, $classId = null, $user_id = null, $all = null) {
   }
 
   if (empty($result)) {
-  	return [];
+    return [];
   }
 
   $classes = ($email || $user_id) ? get_classes($result[0]["classId"]) : null;
@@ -219,6 +233,7 @@ function get_users($email, $classId = null, $user_id = null, $all = null) {
 
   foreach ($result as $index => $row) {
     $user = new User($row);
+    $user->password = null;
     $user->classInfo = $classes ? $classes[$user->classId] : null;
 
     $users[$user->id] = $user;
@@ -253,9 +268,9 @@ function update_user($user) {
   $ignore_fields = ["id", "rid"];
   
   foreach ($user as $key => $value) {
-  	if ($key == "password") {
-  	  $datas[$key] = md5($value);
-  	} elseif (in_array($key, $int_fields)) {
+    if ($key == "password") {
+      $datas[$key] = md5($value);
+    } elseif (in_array($key, $int_fields)) {
       $datas[$key] = intval($value);
     } elseif (!in_array($key, $ignore_fields) && in_array($key, $fields)) {
       $datas[$key] = $value;
@@ -266,7 +281,7 @@ function update_user($user) {
     $datas["classId"] = 1;
   }
   if (empty($datas["permission"])) {
-  	$datas["permission"] = 7;
+    $datas["permission"] = 7;
   }
   
   if (!empty($user["id"]) && intval($user["id"]) > 0) {
@@ -310,7 +325,7 @@ function get_tasks($department_id) {
   global $medoo;
 
   return $medoo->select("tasks", "*",
-  		$department_id ? ["department_id" => $department_id] : null);
+      $department_id ? ["department_id" => $department_id] : null);
 }
 
 function get_class_task_stats($classId, $task_id) {
