@@ -1,7 +1,7 @@
 define(['services', 'utils', 'classes/classes', 'permission'], function() {
   return angular.module('UserEditorModule', ['ServicesModule', 'ClassesModule',
       'PermissionModule', 'UtilsModule']).directive('userEditor',
-          function(perm, rpc, utils) {
+          function($rootScope, perm, rpc, utils) {
     return {
       scope: {
         user: '='
@@ -41,7 +41,7 @@ define(['services', 'utils', 'classes/classes', 'permission'], function() {
           
           rpc.update_user(data).then(function(response) {
             if (response.data.updated && $scope.editing == 'classId') {
-              utils.refresh();
+              $rootScope.$broadcast('class-updated', user.classId);
             }
           });
         };
