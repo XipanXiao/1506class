@@ -17,7 +17,7 @@ define(['permission', 'services', 'utils'], function() {
     return unescape(encodeURIComponent(s));
   }
   
-  var sqlFile, csvFile;
+  var sqlFile, tsvFile;
 
   var columnMap = {
     "table": "users",
@@ -295,7 +295,7 @@ define(['permission', 'services', 'utils'], function() {
           
           var exportUsers = function(users, classes) {
             var sql = '';
-            var csv = fields.concat(int_fields).join(', ');
+            var tsv = fields.concat(int_fields).join('\t');
 
             var convertIntValue = function(key, value) {
               return {
@@ -326,12 +326,12 @@ define(['permission', 'services', 'utils'], function() {
                 displayValues[i + fields.length] =
                     '"{0}"'.format(convertIntValue(key, value) || value);
               }
-              csv += '\n' + displayValues.join(', ');
+              tsv += '\n' + displayValues.join('\t');
             }
 
             return {
               sql: createDataUrl(sql, sqlFile),
-              csv: createDataUrl(csv, csvFile)
+              tsv: createDataUrl(tsv, tsvFile)
             };
           };
 

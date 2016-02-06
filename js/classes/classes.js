@@ -84,7 +84,7 @@ define(['importers', 'import_dialog/import_dialog', 'permission', 'services',
           $scope.exportUsers = function() {
             importers['userImporter'].exportAll().then(function(result) {
               $scope.usersSqlUrl = result.sql;  
-              $scope.usersCsvUrl = result.csv;  
+              $scope.usersTsvUrl = result.tsv;  
             });
           };
         },
