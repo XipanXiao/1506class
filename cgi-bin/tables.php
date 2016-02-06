@@ -292,8 +292,8 @@ function get_db_error() {
 function get_last_task_record($user_id, $task_id) {
   global $medoo;
   
-  $sql = sprintf("SELECT count, ts, sum FROM task_records WHERE 
-    student_id=%d AND task_id=%d ORDER BY ts DESC LIMIT 1;",
+  $sql = sprintf("SELECT id, count, ts, sum FROM task_records WHERE 
+    student_id=%d AND task_id=%d ORDER BY id DESC LIMIT 1;",
     intval($user_id), intval($task_id));
   $result = $medoo->query($sql)->fetchAll();
   

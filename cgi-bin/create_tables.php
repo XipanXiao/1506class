@@ -434,6 +434,7 @@ INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 0, 0, 0);
 INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 92, 19, 1);
 
 CREATE TABLE task_records (
+                 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                  student_id INT not null,
 				      INDEX student_id_idx(student_id),
 				      FOREIGN KEY (student_id)
