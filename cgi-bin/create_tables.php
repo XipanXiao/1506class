@@ -16,6 +16,9 @@ INSERT INTO departments(name) VALUES ("基础班");
 INSERT INTO departments(name) VALUES ("入行论班");
 INSERT INTO departments(name) VALUES ("加行班");
 INSERT INTO departments(name) VALUES ("净土班");
+INSERT INTO departments(name) VALUES ("密法班");
+INSERT INTO departments(name) VALUES ("五论班");
+INSERT INTO departments(name) VALUES ("念佛堂");
 
 CREATE TABLE tasks (
                     id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
