@@ -87,7 +87,8 @@ define(function() {
       keys: function(map) {
         var result = [];
         for (var key in map) {
-          result.push(key);
+          var intKey = parseInt(key);
+          result.push(isNaN(intKey) ? key : intKey);
         }
         
         return result;

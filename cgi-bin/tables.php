@@ -128,6 +128,7 @@ function get_classes($classId) {
     $classInfo["id"] = intval($classInfo["id"]);
     $classInfo["department_id"] = intval($classInfo["department_id"]);
     $classInfo["start_year"] = intval($classInfo["start_year"]);
+    $classInfo["perm_level"] = intval($classInfo["perm_level"]);
     return $classInfo;
   }
   
