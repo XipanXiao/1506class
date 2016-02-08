@@ -43,6 +43,8 @@ define(['services', 'utils', 'classes/classes', 'permission'], function() {
             if (response.data.updated && $scope.editing == 'classId') {
               $rootScope.$broadcast('class-updated', user.classId);
             }
+            
+            if (response.data.updated) $scope.editing = null;
           });
         };
         
