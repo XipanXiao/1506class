@@ -24,12 +24,18 @@ define(function() {
         return this.user.permission > this.ROLES.STUDENT;
       },
       canRead: function(classInfo) {
-        if (classInfo.teacher_id == this.user.id) return true;
-        return this.user.permission >> (classInfo.perm_level*2);
+        if (classInfo.teacher_id == this.user.id || !classInfo.perm_level) {
+          return true;
+        }
+
+        return this.user.permission >> ((classInfo.perm_level - 1) * 2);
       },
       canWrite: function(classInfo) {
-        if (classInfo.teacher_id == this.user.id) return true;
-        return (this.user.permission >> (classInfo.perm_level*2)) & 0x2;
+        if (classInfo.teacher_id == this.user.id || !classInfo.perm_level) {
+          return true;
+        }
+
+        return (this.user.permission >> ((classInfo.perm_level - 1) * 2)) & 2;
       },
       level: function(permission) {
         var result = 0;

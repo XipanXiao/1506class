@@ -52,7 +52,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     } elseif (isset($_GET["department_id"])) {
       $response = get_tasks($_GET["department_id"]);
     } else {
-    	$response = get_tasks(null);
+      $response = get_tasks(null);
     }
   } elseif ($resource_id == "courses") {
     $response = get_courses($_GET["group_id"]);
@@ -62,7 +62,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $all = empty($_GET["all"]) ? null : $_GET["all"];
     
     if ($all) {
-    	$response = get_users(null, null, null, $all);
+      $response = get_users(null, null, null, $all);
     } elseif ($classId) {
       $response = get_users($email, $classId);
     } elseif ($email) {
@@ -75,7 +75,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "search") {
     $response = search($_GET["prefix"]);
   } elseif ($resource_id == "task_stats") {
-  	$response = get_class_task_stats($classId, $_GET["task_id"]);
+    $response = get_class_task_stats($classId, $_GET["task_id"]);
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];
@@ -94,11 +94,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } 
   
   if ($resource_id == "tasks") {
-  	$task_id = $_POST["task_id"];
+    $task_id = $_POST["task_id"];
     report_task($task_user_id, $task_id, $_POST["count"], $_POST["sum"]);
     $response = get_last_task_record($task_user_id, $task_id);
   } elseif ($resource_id == "task") {
-  	$response = ["updated" => update_task($_POST)];
+    $response = ["updated" => update_task($_POST)];
   } elseif ($resource_id == "schedule_tasks") {
     $response = ["updated" => report_schedule_task($task_user_id, $_POST)];
   } elseif ($resource_id == "schedule") {
@@ -106,11 +106,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   }  elseif ($resource_id == "schedule_group") {
     $response = ["updated" => update_schedule_group($_POST)];
   } elseif ($resource_id == "class") {
-  	$response = ["updated" => update_class($_POST)]; 
+    $response = ["updated" => update_class($_POST)]; 
   } elseif ($resource_id == "course_group") {
     $response = ["group" => update_course_group($_POST)];
   }  elseif ($resource_id == "course") {
-  	$response = update_course($_POST); 
+    $response = update_course($_POST); 
   } elseif ($resource_id == "user") {
     if (isset($_POST["classId"]) && intval($_POST["classId"]) == 0) {
       if(!empty($_POST["classId_label"]) &&
@@ -151,23 +151,28 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 
   $resource_id = $_REQUEST["rid"];
   if ($resource_id == "course_group") {
-  	$response = ["deleted" => remove_course_group($_REQUEST["id"])];
+    $response = ["deleted" => remove_course_group($_REQUEST["id"])];
   } elseif ($resource_id == "schedule_group") {
-  	$response = ["deleted" => remove_schedule_group($_REQUEST["id"])];
+    $response = ["deleted" => remove_schedule_group($_REQUEST["id"])];
   } elseif ($resource_id == "course") {
-  	$response = ["deleted" => remove_course($_REQUEST["id"])];
+    $response = ["deleted" => remove_course($_REQUEST["id"])];
   } elseif ($resource_id == "schedule") {
-  	$response = ["deleted" => remove_schedule($_REQUEST["id"])];
+    $response = ["deleted" => remove_schedule($_REQUEST["id"])];
   } elseif ($resource_id == "class") {
-  	$response = ["deleted" => remove_class($_REQUEST["id"])];
+    $response = ["deleted" => remove_class($_REQUEST["id"])];
   } elseif ($resource_id == "task") {
-  	$response = ["deleted" => remove_task($_REQUEST["id"])];
+    $response = ["deleted" => remove_task($_REQUEST["id"])];
   } elseif ($resource_id == "user") {
-  	$response = ["deleted" => remove_user($_REQUEST["id"])];
-  }  	 
+    $response = ["deleted" => remove_user($_REQUEST["id"])];
+  }     
 }
 
 if ($response) {
+  if (is_array($response) && isset($response["updated"]) &&
+      intval($response["updated"]) == 0) {
+    $response["error"] = get_db_error();
+  }
+
   echo json_encode($response);
 }
 ?>

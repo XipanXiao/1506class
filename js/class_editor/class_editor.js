@@ -27,6 +27,9 @@ define(['departments/departments', 'editable_label/editable_label',
                   if (response.data.updated) {
                     var id = scope.classInfo.id || response.data.updated;
                     $rootScope.$broadcast('class-updated', id);
+                    scope.reload(id);
+                  } else {
+                    scope.error = response.data.error;
                   }
                 });
               };
