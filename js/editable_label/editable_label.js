@@ -14,7 +14,7 @@ define(function() {
 					      if (toLocal) {
 					        if (scope.type == 'datetime') {
 					          scope.localValue =
-					            new Date(scope.value + ' UTC').toLocaleString();
+					            new Date(scope.value * 1000).toLocaleString();
 					        } else {
 					          scope.localValue = scope.value;
 					        }
@@ -26,8 +26,7 @@ define(function() {
 					            scope.editing = true;
 					            return;
 					          }
-					          scope.value = new Date(scope.localValue).toUTCString()
-					              .replace(' GMT', '');
+					          scope.value = new Date(scope.localValue).getTime() / 1000;
 					        } else {
 					          scope.value = scope.localValue;
 					        }

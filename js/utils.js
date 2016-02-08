@@ -189,7 +189,7 @@ define(function() {
         window.location.reload();
       },
       getWeeklyTime: function(time, week) {
-        var date = time ? new Date(time + ' UTC') : this.getDefaultStartTime();
+        var date = time ? new Date(time*1000) : this.getDefaultStartTime();
         date.setDate(date.getDate() + 7 * week);
         return date.toLocaleString();
       },

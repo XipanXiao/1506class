@@ -404,12 +404,15 @@ function keyed_by_id($rows, $id_key = "id") {
 function get_schedules($classId, $records, $user_id) {
   global $medoo;
   
+  date_default_timezone_set("UTC");
+
   $schedule_groups =
       keyed_by_id($medoo->select("schedule_groups",
           ["id", "name", "course_group", "classId", "start_time"],
           ["classId" => $classId]));
 
   foreach ($schedule_groups as $group_id => $group) {
+  	$group["start_time"] = (new DateTime($group["start_time"]))->getTimestamp();
     $group["schedules"] = keyed_by_id($medoo->select("schedules", "*",
         ["group_id" => $group_id]));
     
@@ -459,11 +462,19 @@ function update_schedule_group($group) {
   global $medoo;
 
   $datas = [];
-  $fields = ["classId", "course_group", "name", "start_time", "end_time"];
+  $fields = ["classId", "course_group", "name"];
   foreach ($fields as $field) {
     if (!empty($group[$field])) {
       $datas[$field] = $group[$field];
     }
+  }
+  
+  if (!empty($group["start_time"])) {
+    date_default_timezone_set("UTC");
+
+  	$dt = new DateTime();
+  	$dt->setTimestamp(intval($group["start_time"]));
+  	$datas["start_time"] = $dt->format("Y-m-d H:i:s");
   }
 
   $id = $group["id"];
