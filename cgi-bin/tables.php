@@ -266,30 +266,29 @@ function update_user($user) {
   $fields = ["internal_id", "name", "nickname", "email",
       "phone", "street", "street2", "city", "state", "country", "zip",
       "im", "occupation", "birthday", "notes"];
-  $ignore_fields = ["id", "rid"];
   
   foreach ($user as $key => $value) {
     if ($key == "password") {
       $datas[$key] = md5($value);
     } elseif (in_array($key, $int_fields)) {
       $datas[$key] = intval($value);
-    } elseif (!in_array($key, $ignore_fields) && in_array($key, $fields)) {
+    } elseif (in_array($key, $fields)) {
       $datas[$key] = $value;
     }
   }
 
-  if (empty($datas["classId"]) || intval($datas["classId"]) == 0) {
-    $datas["classId"] = 1;
-  }
-  if (empty($datas["permission"])) {
-    $datas["permission"] = 7;
-  }
-  
   if (!empty($user["id"]) && intval($user["id"]) > 0) {
     if ($medoo->update("users", $datas, ["id" => intval($user["id"])])) {
       return current(get_users(null, null, intval($user["id"])));
     }
   } else {
+    if (empty($datas["classId"]) || intval($datas["classId"]) == 0) {
+      $datas["classId"] = 1;
+    }
+    if (empty($datas["permission"])) {
+      $datas["permission"] = 7;
+    }
+    
     if ($id = $medoo->insert("users", $datas)) {
       return current(get_users(null, null, intval($id)));
     }
