@@ -29,8 +29,9 @@ define(['permission', 'services', 'user_editor/user_editor', 'utils'],
           $scope.isAdmin = function(user) {
             return user.permission > perm.ROLES.STUDENT;
           };
-          $scope.showInfo = function(user) {
+          $scope.showInfo = function(user, index) {
             $scope.editingUser = user;
+            $scope.selectedTop = index * 32;
           };
           $scope.$on('editing-user-changed', function(event, editingUser) {
             $scope.editingUser = editingUser;
@@ -41,6 +42,9 @@ define(['permission', 'services', 'user_editor/user_editor', 'utils'],
                 $scope.reload($scope.classId);
               });
             }
+          };
+          $scope.selected = function(user) {
+            return $scope.editingUser && $scope.editingUser.id == user.id;
           };
         },
         templateUrl : 'js/users/users.html'

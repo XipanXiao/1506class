@@ -388,3 +388,7 @@ div.compact-url {
 .error {
   color: red;
 }
+
+.users {
+  position: relative;	
+}
