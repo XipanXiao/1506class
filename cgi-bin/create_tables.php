@@ -47,7 +47,7 @@ CREATE TABLE classes (
                       class_room VARCHAR(16),
 					  teacher_id INT,
 					  start_year MEDIUMINT,
-					  perm_level INT DEFAULT 0
+					  perm_level INT DEFAULT 3
                       );
 
 -- id: 1. unassigned students are put temporarily here.
