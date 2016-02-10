@@ -5,7 +5,6 @@ define(['utils'], function() {
     return {
       user: null,
       ROLES: {
-        ANONYMOUS: 0,
         STUDENT: 0x7,
         LEADER: 0xF,
         TEACHER: 0x3F,
@@ -17,8 +16,7 @@ define(['utils'], function() {
         0x55: '学院督查', //4: 01010101
         0x3F: '辅导员', //3: 111111    rw class year data
         0xF: '组长',    //2: 1111     rw class data
-        0x7: '学员',    //2: 0111       rw own data, r class data
-        0x0: '游客'   //0: 
+        0x7: '学员'    //2: 0111       rw own data, r class data
       },
       isAdmin: function() {
         return this.user.permission > this.ROLES.STUDENT;
