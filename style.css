@@ -55,7 +55,7 @@ tasks {
   border-radius: 4px;
   margin: 16px;
   max-height: 980px;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .css-table {
