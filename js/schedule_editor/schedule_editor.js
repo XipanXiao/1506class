@@ -34,9 +34,9 @@ define(['course_editor_dialog/course_editor_dialog', 'editable_label/editable_la
                   $scope.schedule_groups[0] = {
                     id: 0,
                     classId: $scope.classId,
+                    course_group: 0,
                     name: '新的学修安排模板',
-                    start_time: utils.getDefaultStartTime(),
-                    course_group: 0
+                    start_time: utils.unixTimestamp(utils.getDefaultStartTime())
                   };
 
                   return $scope.schedule_groups;

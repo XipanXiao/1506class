@@ -240,6 +240,9 @@ define(function() {
         }
         
         return result;
+      },
+      unixTimestamp: function(date) {
+        return date.getTime() / 1000;
       }
     };
   });

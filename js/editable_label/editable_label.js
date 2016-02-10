@@ -26,7 +26,7 @@ define(function() {
 					            scope.editing = true;
 					            return;
 					          }
-					          scope.value = new Date(scope.localValue).getTime() / 1000;
+					          scope.value = timestamp / 1000;
 					        } else {
 					          scope.value = scope.localValue;
 					        }
