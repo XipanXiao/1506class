@@ -30,8 +30,8 @@
         <div class="css-table-cell">权限</div>
         <div class="css-table-cell">{{permissionLabel[user.permission]}}</div>
         <div class="css-table-cell">
-          <iron-icon ng-show="admining" class="selectable" icon="chevron-right"
-              ng-click="editing = 'permission'">
+          <iron-icon ng-show="admining && canGrant(user.permission)"
+              class="selectable" icon="chevron-right" ng-click="editing = 'permission'">
           </iron-icon>
         </div>          
       </div>

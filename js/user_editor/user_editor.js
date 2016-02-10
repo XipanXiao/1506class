@@ -9,9 +9,13 @@ define(['services', 'utils', 'classes/classes', 'permission'], function() {
       link: function($scope) {
         $scope.sexLabel = ['女', '男'];
         $scope.permissionLabel = perm.permissions;
-        $scope.permissions = utils.keys(perm.permissions);
+        $scope.permissions = perm.lowerPermissions();
+        $scope.canGrant = function(permission) {
+          return perm.canGrant(permission);
+        };
 
         $scope.$watch('user', function() {
+          $scope.editing = null;
           if (!$scope.user || $scope.user.classInfo) return;
 
           var classId = $scope.user.classId;

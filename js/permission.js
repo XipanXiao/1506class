@@ -1,7 +1,7 @@
-define(function() {
+define(['utils'], function() {
 
-  return angular.module('PermissionModule', []).factory('perm',
-      function() {
+  return angular.module('PermissionModule', ['UtilsModule']).factory('perm',
+      function(utils) {
     return {
       user: null,
       ROLES: {
@@ -44,6 +44,15 @@ define(function() {
         }
         
         return result;
+      },
+      lowerPermissions: function() {
+        var that = this;
+        return utils.where(utils.keys(this.permissions), function(perm) {
+          return that.canGrant(perm);
+        });
+      },
+      canGrant: function(perm) {
+        return perm <= this.user.permission;
       }
     };
   });
