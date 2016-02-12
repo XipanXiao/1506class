@@ -24,7 +24,7 @@ define(function() {
       $httpParamSerializerJQLike) {
     return {
       get_departments: function() {
-        return $http.get(serviceUrl + '?rid=departments', {cache: true});
+        return $http.get(serviceUrl + '?rid=departments');
       },
     
       get_classes: function(classId) {
@@ -186,9 +186,19 @@ define(function() {
         return $http.delete(url);
       },
 
+      remove_department: function(department_id) {
+        var url = '{0}?rid=department&id={1}'.format(serviceUrl, department_id);
+        return $http.delete(url);
+      },
+
       update_course: function(course) {
         course.rid = 'course';
         return http_form_post($http, $httpParamSerializerJQLike(course));
+      },
+
+      update_department: function(department) {
+        department.rid = 'department';
+        return http_form_post($http, $httpParamSerializerJQLike(department));
       }
     };
   });

@@ -1,8 +1,11 @@
-define(['departments/departments', 'editable_label/editable_label',
+define(['departments/departments',
+    'department_editor_dialog/department_editor_dialog', 
+    'editable_label/editable_label',
     'permission', 'services', 'user_picker/user_picker', 'utils'], function() {
 
   return angular.module('ClassEditorModule',
-      ['DepartmentsModule', 'EditableLabelModule', 'ServicesModule',
+      ['DepartmentEditorDialogModule',
+       'DepartmentsModule', 'EditableLabelModule', 'ServicesModule',
        'UserPickerModule', 'UtilsModule']).directive('classEditor',
         function($rootScope, perm, rpc, utils) {
           return {
@@ -79,6 +82,10 @@ define(['departments/departments', 'editable_label/editable_label',
               
               scope.isDirty = function() {
                 return !angular.equals(scope.classInfo, scope.oldInfo);
+              };
+              
+              scope.openDepartmentEditor = function() {
+                document.querySelector('#department-editor-dlg').open();
               };
             },
             templateUrl : 'js/class_editor/class_editor.html'

@@ -42,6 +42,9 @@ INSERT INTO tasks(department_id, name) VALUES (4, "阿弥陀佛圣号（藏文�
 CREATE TABLE classes (
                     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                     department_id TINYINT,
+				      INDEX department_id_idx(department_id),
+				      FOREIGN KEY (department_id)
+				      	REFERENCES departments(id),
                       name VARCHAR(32),
                       email VARCHAR(32),
                       class_room VARCHAR(16),
@@ -80,6 +83,9 @@ INSERT INTO classes(department_id, name, class_room, email, start_year, perm_lev
 CREATE TABLE course_groups(
       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
       department_id TINYINT,
+				      INDEX department_id_idx(department_id),
+				      FOREIGN KEY (department_id)
+				      	REFERENCES departments(id),
       name VARCHAR(64),
       url VARCHAR(512)
 );

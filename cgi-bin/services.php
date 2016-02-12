@@ -109,7 +109,9 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = ["updated" => update_class($_POST)]; 
   } elseif ($resource_id == "course_group") {
     $response = ["group" => update_course_group($_POST)];
-  }  elseif ($resource_id == "course") {
+  } elseif ($resource_id == "department") {
+    $response = ["updated" => update_department($_POST)];
+  } elseif ($resource_id == "course") {
     $response = update_course($_POST); 
   } elseif ($resource_id == "user") {
     if (isset($_POST["classId"]) && intval($_POST["classId"]) == 0) {
@@ -164,6 +166,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = ["deleted" => remove_task($_REQUEST["id"])];
   } elseif ($resource_id == "user") {
     $response = ["deleted" => remove_user($_REQUEST["id"])];
+  } elseif ($resource_id == "department") {
+    $response = ["deleted" => remove_department($_REQUEST["id"])];
   }     
 }
 

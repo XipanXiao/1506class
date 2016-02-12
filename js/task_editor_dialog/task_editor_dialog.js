@@ -4,6 +4,7 @@ define(['editable_label/editable_label', 'services', 'utils'], function() {
     .directive('taskEditorDialog',
         function(rpc, utils) {
           return {
+            scope: {},
             link: function(scope) {
               scope.reload = function() {
                 rpc.get_tasks().then(function(response) {

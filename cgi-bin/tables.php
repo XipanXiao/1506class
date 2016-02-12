@@ -11,6 +11,25 @@ function get_departments() {
   return keyed_by_id($medoo->select("departments", "*"));
 }
 
+function update_department($department) {
+	global $medoo;
+
+	$datas = ["name" => $department["name"]];
+
+	$id = intval($department["id"]);
+	if ($id == 0) {
+		return $medoo->insert("departments", $datas);
+	}
+	
+	return $medoo->update("departments", $datas, ["id" => $id]);
+}
+
+function remove_department($id) {
+	global $medoo;
+
+	return $medoo->delete("departments", ["id" => $id]);
+}
+
 function get_course_groups($detailed) {
   global $medoo;
   

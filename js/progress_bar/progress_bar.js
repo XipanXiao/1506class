@@ -4,7 +4,7 @@ define(function() {
       return {
         scope: {
           max: '@',
-          value: '@',
+          value: '@'
         },
         templateUrl: 'js/progress_bar/progress_bar.html'
       };
