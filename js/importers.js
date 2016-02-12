@@ -280,7 +280,7 @@ define(['permission', 'services', 'utils'], function() {
         },
         
         exportAll: function() {
-          var int_fields = ['sex', 'mentor', 'permission', 'education',
+          var int_fields = ['sex', 'mentor_id', 'permission', 'education',
               'start_year', 'classId'];
           var fields = ['internal_id', 'name', 'nickname', 'email',
               'phone', 'street', 'street2', 'city', 'state', 'country', 'zip',
@@ -303,7 +303,7 @@ define(['permission', 'services', 'utils'], function() {
                 'classId': classes,
                 'permission': perm.permissions,
                 'education': ['', '高中以下', '大专或高中', '本科', '硕士', '博士'],
-                'mentor': [],
+                'mentor_id': [],
                 'start_year': []
               }[key][value];
             };

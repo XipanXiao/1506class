@@ -15,7 +15,7 @@ class User {
 	public $classId;
 	public $education;
 	public $occupation;
-	public $mentor;
+	public $mentor_id;
 	public $permission;
 	public $notes;
 	
@@ -42,7 +42,7 @@ class User {
 		$this->classId = intval($row['classId']); 
 		$this->education = intval($row['education']); 
 		$this->occupation = $row['occupation']; 
-		$this->mentor = intval($row['mentor_id']); 
+		$this->mentor_id = intval($row['mentor_id']); 
 		$this->permission = intval($row['permission']); 
 		$this->notes = $row['notes']; 
 	}
@@ -71,7 +71,7 @@ class User {
 		$row['classId'] = $this->classId;
 		$row['education'] = $this->education; 
 		$row['occupation'] = $this->occupation; 
-		$row['mentor_id'] = $this->mentor;
+		$row['mentor_id'] = $this->mentor_id;
 		$row['response'] = $this->response;
 		$row['permission'] = $this->permission;
 		$row['notes'] = $this->notes;

@@ -4,6 +4,7 @@ define(['services', 'utils', 'classes/classes', 'permission'], function() {
           function($rootScope, perm, rpc, utils) {
     return {
       scope: {
+        classMates: '=',
         user: '='
       },
       link: function($scope) {

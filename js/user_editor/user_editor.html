@@ -36,6 +36,22 @@
         </div>          
       </div>
       <div class="css-table-row padded-element">
+        <div class="css-table-cell">电话</div>
+        <div class="css-table-cell">{{user.phone}}</div>
+        <div class="css-table-cell">
+          <iron-icon class="selectable" icon="chevron-right" ng-click="editing = 'phone'">
+          </iron-icon>
+        </div>          
+      </div>
+      <div class="css-table-row padded-element">
+        <div class="css-table-cell">微信</div>
+        <div class="css-table-cell">{{user.im}}</div>
+        <div class="css-table-cell">
+          <iron-icon class="selectable" icon="chevron-right" ng-click="editing = 'im'">
+          </iron-icon>
+        </div>          
+      </div>
+      <div class="css-table-row padded-element">
         <div class="css-table-cell">密码</div>
         <div class="css-table-cell">******</div>
         <div class="css-table-cell">
@@ -53,6 +69,15 @@
         </div>
         <div class="css-table-cell">
           <iron-icon class="selectable" icon="chevron-right" ng-click="editing = 'address'">
+          </iron-icon>
+        </div>          
+      </div>
+      <div class="css-table-row padded-element" ng-show="admining">
+        <div class="css-table-cell">负责跟进</div>
+        <div class="css-table-cell">{{classMates[user.mentor_id]}}</div>
+        <div class="css-table-cell">
+          <iron-icon class="selectable" icon="chevron-right"
+              ng-click="editing = 'mentor_id'">
           </iron-icon>
         </div>          
       </div>
@@ -80,6 +105,8 @@
         <select ng-switch-when="permission" ng-model="user.permission" autofocus
             ng-options="permissionLabel[value] for value in permissions">
         </select>
+        <input ng-switch-when="phone" ng-model="user.phone" type="tel" autofocus>
+        <input ng-switch-when="im" ng-model="user.im" type="text" autofocus>
         <div ng-switch-when="password">
           <input type="password" ng-model="user.password" autofocus>
           <input type="password" ng-model="user.confirm" autofocus>
@@ -117,6 +144,8 @@
             <input type="button" value="Save" ng-click="save()" class="css-table-cell">
           </div>
         </div>
+        <user-picker ng-switch-when="mentor_id" user-id="user.mentor_id" user-list="classMates">
+        </user-picker>
         <input ng-switch-when="notes" ng-model="user.notes" type="text" autofocus>
       </div>
       <input ng-if="editing != 'address'" type="submit" value="Save" ng-click="save()"

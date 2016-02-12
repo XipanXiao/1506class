@@ -17,6 +17,12 @@ define(['permission', 'services', 'user_editor/user_editor', 'utils'],
             } else {
               rpc.get_users(null, classId).then(function(response) {
                 $scope.users = response.data;
+                $scope.userNames = {};
+                for (var id in $scope.users) {
+                  var user = $scope.users[id];
+                  $scope.userNames[user.id] = user.name;
+                }
+
                 $scope.isNotEmpty = !utils.isEmpty($scope.users);
                 $scope.editingUser = $scope.editingUser &&
                     utils.firstElement($scope.users, 'id', $scope.editingUser.id);
