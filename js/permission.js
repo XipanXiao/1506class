@@ -19,9 +19,12 @@ define(['utils'], function() {
         0x7: '学员'    //2: 0111       rw own data, r class data
       },
       isAdmin: function() {
+        if (!this.user) return false;
         return this.user.permission > this.ROLES.STUDENT;
       },
       canRead: function(classInfo) {
+        if (!this.user) return false;
+
         if (classInfo.teacher_id == this.user.id || !classInfo.perm_level) {
           return true;
         }
@@ -29,6 +32,8 @@ define(['utils'], function() {
         return this.user.permission >> ((classInfo.perm_level - 1) * 2);
       },
       canWrite: function(classInfo) {
+        if (!this.user) return false;
+
         if (classInfo.teacher_id == this.user.id || !classInfo.perm_level) {
           return true;
         }
@@ -50,6 +55,7 @@ define(['utils'], function() {
         });
       },
       canGrant: function(perm) {
+        if (!this.user) return false;
         return perm <= this.user.permission;
       }
     };
