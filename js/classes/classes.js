@@ -88,6 +88,10 @@ define(['importers', 'import_dialog/import_dialog', 'permission', 'services',
               $scope.usersTsvUrl = result.tsv;  
             });
           };
+          
+          $scope.isSysAdmin = function() {
+            return perm.isSysAdmin();
+          }
         },
         templateUrl : 'js/classes/classes.html'
       };
