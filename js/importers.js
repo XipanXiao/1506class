@@ -23,31 +23,40 @@ define(['permission', 'services', 'utils'], function() {
     "table": "users",
     "columns": {
       "年別": "start_year",
+      "start_year": "start_year",
       "序号": "internal_id",
+      "internal_id": "internal_id",
       "姓名": "name",
+      "name": "name",
       "性别": "sex",
+      "sex": "sex",
       "出生年月": "birthday",
+      "birthday": "birthday",
       "文化程度": "education",
+      "education": "education",
       "职业": "occupation",
+      "occupation": "occupation",
       "预选班级": "classId",
+      "classId": "classId",
       "联系电话": "phone",
+      "phone": "phone",
       "电子邮箱或QQ号": "email",
+      "email": "email",
       "居住省份/直辖市": "state",
+      "state": "state",
       "市/县/区": "city",
+      "city": "city",
       "街道": "street",
+      "street": "street",
       "Status": "notes",
-      "zip": "zip"
-    },
-    "start_year": {
-      "1206": 2012,
-      "1212": 2012,
-      "1306": 2013,
-      "1312": 2013,
-      "1403": 2014,
-      "1406": 2014,
-      "1503": 2015,
-      "1506": 2015,
-      "default": 2015
+      "notes": "notes",
+      "zip": "zip",
+      "nickname": "nickname",
+      "street2": "street2",
+      "country": "country",
+      "im": "im",
+      "mentro_id": "mentor_id",
+      "permission": "permission"
     },
     "sex": {
       "男": 1,
@@ -120,16 +129,27 @@ define(['permission', 'services', 'utils'], function() {
       if (!user.classId_label) {
         user.classId = 1;
       } else {
+        var classLabel = parseInt(user.classId_label.substring(0, 4)) ?
+            user.classId_label : user.start_year + user.classId_label; 
+
         var classInfo = utils.firstElement(classes,
-            'name', user.start_year + user.classId_label);
+            'name', classLabel);
         user.classId = (classInfo && classInfo.id) || 0;
       }
       
-      ['start_year', 'sex', 'education'].forEach(function(key) {
+      ['sex', 'education'].forEach(function(key) {
         var label = user[key] && user[key].trim() || 'default';
         user[key + '_label'] = label;
         user[key] = columnMap[key][label];
       });
+      
+      var start_year_label = user['start_year'] && user['start_year'].trim();
+      user['start_year_label'] = start_year_label;
+      if (start_year_label.startsWith('1')) {
+        user['start_year'] = 2000 + parseInt(start_year_label.substring(0,2));
+      } else if (start_year_label.startsWith('2')) {
+        user['start_year'] = parseInt(start_year_label.substring(0,4));
+      }
       
       user.phone = cutOff(user.phone, 16);
       user.state = cutOff(user.state, 8);
@@ -137,9 +157,11 @@ define(['permission', 'services', 'utils'], function() {
       if (encode_utf8(user.city).length > 32) {
         user.city = cutOff(user.city, 8);
       }
-      
-      var zip = user.street && user.street.substring(user.street.length-5);
-      user.zip = /[0-9]{5}/.test(zip) ? zip : '';
+
+      if (!user.zip) {
+        var zip = user.street && user.street.substring(user.street.length-5);
+        user.zip = /[0-9]{5}/.test(zip) ? zip : '';
+      }
       
       user.street = cutOff(user.street && user.street.split(/[,，]/)[0] || '',
           32);
@@ -166,6 +188,10 @@ define(['permission', 'services', 'utils'], function() {
               skipped: []
             };
   
+            var removeQuations = function(value) {
+              return value.replace(/"(.*)"/, '$1');
+            };
+            
             var index = 1;
             var recordsMap = {};
             var next = function() {
@@ -181,7 +207,7 @@ define(['permission', 'services', 'utils'], function() {
               var user = {};
               var columnValues = line.split(delimiter);
               for (var c = 0; c < reader.columns.length; c++) {
-                user[result.columns[c]] = columnValues[c];
+                user[result.columns[c]] = removeQuations(columnValues[c]);
               }
               
               if (validate(user, response.data) && !recordsMap[user.email]) {

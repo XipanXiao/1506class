@@ -146,11 +146,22 @@ define(function() {
         
         return null;
       },
+      isString: function(obj) {
+        return obj instanceof String || typeof obj == 'string';
+      },
+      equalsIgnoreCase: function(str1, str2) {
+        if (!str1 && !str2) return true;
+        if (!str1 || !str2) return false;
+        if (this.isString(str1) && this.isString(str2))
+          return str1.toLowerCase() == str2.toLowerCase();
+        return str1 == str2;
+      },
       diff: function(orig, updated) {
         var changed = false;
         var result = {};
         for (var key in orig) {
-          if ((orig[key] || updated[key]) && orig[key] != updated[key]) {
+          if ((orig[key] || updated[key]) &&
+              !this.equalsIgnoreCase(orig[key], updated[key])) {
             result[key] = orig[key];
             changed = true;
           }
