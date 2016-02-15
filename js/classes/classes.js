@@ -1,5 +1,5 @@
-define(['importers', 'import_dialog/import_dialog', 'permission', 'services',
-    'utils'], function() {
+define('classes/classes', ['importers', 'import_dialog/import_dialog',
+    'permission', 'services', 'utils'], function() {
   return angular.module('ClassesModule', ['ImportDialogModule',
       'PermissionModule', 'ServicesModule', 'UtilsModule'])
     .directive('classes', function($rootScope, importers, perm, rpc, utils) {

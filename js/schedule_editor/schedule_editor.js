@@ -1,4 +1,6 @@
-define(['course_editor_dialog/course_editor_dialog', 'editable_label/editable_label',
+define('schedule_editor/schedule_editor',
+    ['course_editor_dialog/course_editor_dialog',
+     'editable_label/editable_label',
     'schedule_group_editor/schedule_group_editor', 'services',
     'user_picker/user_picker', 'utils'], function() {
 

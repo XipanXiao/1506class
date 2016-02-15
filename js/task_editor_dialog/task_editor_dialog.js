@@ -1,4 +1,5 @@
-define(['editable_label/editable_label', 'services', 'utils'], function() {
+define('task_editor_dialog/task_editor_dialog',
+    ['editable_label/editable_label', 'services', 'utils'], function() {
   return angular.module('TaskEditorDialogModule', ['EditableLabelModule',
       'ServicesModule', 'UtilsModule'])
     .directive('taskEditorDialog',

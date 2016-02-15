@@ -1,4 +1,4 @@
-define(['services'], function() {
+define('search_bar/search_bar', ['services'], function() {
 
   var extractEmail = function(value) {
     var match = /.+ <(.+)>/.exec(value);

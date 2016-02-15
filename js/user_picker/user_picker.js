@@ -1,4 +1,4 @@
-define(['services'], function() {
+define('user_picker/user_picker', ['services'], function() {
 	return angular.module('UserPickerModule', ['ServicesModule'])
 		.directive('userPicker', function(rpc) {
 		  var indexOf = function(map, obj) {

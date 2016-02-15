@@ -1,4 +1,4 @@
-define(['importers', 'utils'], function() {
+define('import_dialog/import_dialog', ['importers', 'utils'], function() {
   return angular.module('ImportDialogModule',
       ['ImportersModule', 'UtilsModule'])
       .directive('importDialog', function(importers, utils) {

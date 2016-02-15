@@ -1,4 +1,4 @@
-define(['services', 'utils'], function() {
+define('schedule_tasks/schedule_tasks', ['services', 'utils'], function() {
   return angular.module('ScheduleTasksModule', ['ServicesModule',
     'UtilsModule']).directive('scheduleTasks', function(rpc, utils) {
           return {

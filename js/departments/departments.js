@@ -1,4 +1,4 @@
-define(['services', 'utils'], function() {
+define('departments/departments', ['services', 'utils'], function() {
 	return angular.module('DepartmentsModule', ['ServicesModule', 'UtilsModule'])
 		.directive('departments', function(rpc, utils) {
 			return {

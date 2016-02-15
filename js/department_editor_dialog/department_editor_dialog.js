@@ -1,4 +1,5 @@
-define(['editable_label/editable_label', 'services', 'utils'], function() {
+define('department_editor_dialog/department_editor_dialog',
+    ['editable_label/editable_label', 'services', 'utils'], function() {
   return angular.module('DepartmentEditorDialogModule', ['EditableLabelModule',
       'ServicesModule', 'UtilsModule']).directive('departmentEditorDialog',
         function(rpc, utils) {

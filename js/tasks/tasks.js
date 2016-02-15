@@ -1,4 +1,5 @@
-define(['progress_bar/progress_bar', 'services', 'utils'], function() {
+define('tasks/tasks',
+    ['progress_bar/progress_bar', 'services', 'utils'], function() {
   return angular.module('TasksModule', ['ProgressBarModule', 'ServicesModule',
       'UtilsModule']).directive('tasks', function(rpc, utils) {
       return {

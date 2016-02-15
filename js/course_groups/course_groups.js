@@ -1,4 +1,4 @@
-define(['services', 'utils'], function() {
+define('course_groups/course_groups', ['services', 'utils'], function() {
 	return angular.module('CourseGroupsModule', ['ServicesModule', 'UtilsModule'])
 		.directive('courseGroups',
 				function(rpc, utils) {

@@ -1,4 +1,4 @@
-define(['progress_bar/progress_bar', 'services',
+define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
     'task_editor_dialog/task_editor_dialog'], function() {
   return angular.module('TaskStatsModule', ['ProgressBarModule',
       'ServicesModule', 'TaskEditorDialogModule'])

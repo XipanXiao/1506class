@@ -1,4 +1,4 @@
-define(['utils'], function() {
+define('permission', ['utils'], function() {
 
   return angular.module('PermissionModule', ['UtilsModule']).factory('perm',
       function(utils) {

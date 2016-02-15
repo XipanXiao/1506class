@@ -1,4 +1,5 @@
-define(['course_groups/course_groups', 'editable_label/editable_label',
+define('schedule_group_editor/schedule_group_editor',
+    ['course_groups/course_groups', 'editable_label/editable_label',
     'services', 'utils'], function() {
 
   return angular.module('ScheduleGroupEditorModule',

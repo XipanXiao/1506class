@@ -1,4 +1,4 @@
-define(['departments/departments',
+define('class_editor/class_editor', ['departments/departments',
     'department_editor_dialog/department_editor_dialog', 
     'editable_label/editable_label',
     'permission', 'services', 'user_picker/user_picker', 'utils'], function() {

@@ -1,4 +1,4 @@
-define(['services'], function() {
+define('learning_records/learning_records', ['services'], function() {
   return angular.module('LearningRecordsModule', ['ServicesModule'])
     .directive('learningRecords',
         function(rpc) {

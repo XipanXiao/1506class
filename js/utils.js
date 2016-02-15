@@ -1,4 +1,4 @@
-define(function() {
+define('utils', [], function() {
   if (!String.prototype.format) {
     String.prototype.format = function() {
       var args = arguments;

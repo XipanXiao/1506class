@@ -1,4 +1,5 @@
-define(['permission', 'services', 'user_editor/user_editor', 'utils'],
+define('users/users',
+    ['permission', 'services', 'user_editor/user_editor', 'utils'],
     function() {
 
   return angular.module('UsersModule', ['PermissionModule', 'ServicesModule',

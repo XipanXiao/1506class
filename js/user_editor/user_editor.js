@@ -1,4 +1,5 @@
-define(['services', 'utils', 'classes/classes', 'permission'], function() {
+define('user_editor/user_editor',
+    ['services', 'utils', 'classes/classes', 'permission'], function() {
   return angular.module('UserEditorModule', ['ServicesModule', 'ClassesModule',
       'PermissionModule', 'UtilsModule']).directive('userEditor',
           function($rootScope, perm, rpc, utils) {

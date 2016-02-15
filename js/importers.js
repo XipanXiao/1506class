@@ -1,4 +1,4 @@
-define(['permission', 'services', 'utils'], function() {
+define('importers', ['permission', 'services', 'utils'], function() {
   var delimiter = '\t';
 
   var lineReader = function(text, skipHeader) {

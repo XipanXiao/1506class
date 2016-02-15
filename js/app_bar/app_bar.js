@@ -1,4 +1,4 @@
-define(['permission', 'search_bar/search_bar'], function() {
+define('app_bar/app_bar', ['permission', 'search_bar/search_bar'], function() {
   return angular.module('AppBarModule', ['PermissionModule', 'SearchBarModule'])
     .directive('appBar', function(perm) {
       return {

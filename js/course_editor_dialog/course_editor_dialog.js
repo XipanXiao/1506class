@@ -1,4 +1,5 @@
-define(['editable_label/editable_label', 'services', 'utils'], function() {
+define('course_editor_dialog/course_editor_dialog', 
+    ['editable_label/editable_label', 'services', 'utils'], function() {
 	return angular.module('CourseEditorDialogModule', ['EditableLabelModule',
       'ServicesModule', 'UtilsModule'])
 		.directive('courseEditorDialog',
