@@ -1,4 +1,5 @@
-require(['app_bar/app_bar', 'classes/classes', 'class_editor/class_editor',
+define('admin_app',
+    ['app_bar/app_bar', 'classes/classes', 'class_editor/class_editor',
     'task_stats/task_stats', 'users/users', 'learning_records/learning_records',
     'schedule_editor/schedule_editor', 'services', 'permission', 'utils'],
     function() {
@@ -52,3 +53,5 @@ require(['app_bar/app_bar', 'classes/classes', 'class_editor/class_editor',
     angular.bootstrap(document.body, ['AppModule']);
   });
 });
+
+require(['admin_app']);

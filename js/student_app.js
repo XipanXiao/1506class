@@ -1,4 +1,5 @@
-require(['app_bar/app_bar', 'tasks/tasks', 'schedule_tasks/schedule_tasks',
+define('student_app',
+    ['app_bar/app_bar', 'tasks/tasks', 'schedule_tasks/schedule_tasks',
     'task_stats/task_stats', 'user_editor/user_editor', 'permission',
     'services'],
     function() {
@@ -22,3 +23,5 @@ require(['app_bar/app_bar', 'tasks/tasks', 'schedule_tasks/schedule_tasks',
     angular.bootstrap(document, ['AppModule']);
   });
 });
+
+require(['student_app']);
