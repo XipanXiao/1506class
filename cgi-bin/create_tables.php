@@ -229,7 +229,7 @@ CREATE TABLE users(
 			      education TINYINT,
             start_year MEDIUMINT,
             birthday DATETIME,
-			      notes VARCHAR(16));
+			      notes VARCHAR(128));
 
 CREATE TABLE schedule_groups (
                       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
