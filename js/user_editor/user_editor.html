@@ -81,6 +81,33 @@
           </iron-icon>
         </div>          
       </div>
+      <div class="css-table-row padded-element">
+        <div class="css-table-cell">文化程度</div>
+        <div class="css-table-cell">{{educationLabels[user.education]}}</div>
+        <div class="css-table-cell">
+          <iron-icon class="selectable" icon="chevron-right"
+              ng-click="editing = 'education'">
+          </iron-icon>
+        </div>          
+      </div>
+      <div class="css-table-row padded-element">
+        <div class="css-table-cell">职业</div>
+        <div class="css-table-cell">{{user.occupation}}</div>
+        <div class="css-table-cell">
+          <iron-icon class="selectable" icon="chevron-right"
+              ng-click="editing = 'occupation'">
+          </iron-icon>
+        </div>          
+      </div>
+      <div class="css-table-row padded-element">
+        <div class="css-table-cell">生日</div>
+        <div class="css-table-cell">{{user.birthday}}</div>
+        <div class="css-table-cell">
+          <iron-icon class="selectable" icon="chevron-right"
+              ng-click="editing = 'birthday'">
+          </iron-icon>
+        </div>          
+      </div>
       <div class="css-table-row padded-element" ng-show="admining">
         <div class="css-table-cell">备注</div>
         <div class="css-table-cell">{{user.notes}}</div>
@@ -146,6 +173,10 @@
         </div>
         <user-picker ng-switch-when="mentor_id" user-id="user.mentor_id" user-list="classMates">
         </user-picker>
+        <select ng-switch-when="education" ng-model="user.education"
+            ng-options="educationLabels[value] for value in [0, 1, 2, 3, 4, 5]"></select>
+        <input ng-switch-when="occupation" ng-model="user.occupation" type="text" autofocus>
+        <input ng-switch-when="birthday" ng-model="user.birthday" type="text" autofocus>
         <input ng-switch-when="notes" ng-model="user.notes" type="text" autofocus>
       </div>
       <input ng-if="editing != 'address'" type="submit" value="Save" ng-click="save()"

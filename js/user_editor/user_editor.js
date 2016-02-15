@@ -9,6 +9,7 @@ define(['services', 'utils', 'classes/classes', 'permission'], function() {
       },
       link: function($scope) {
         $scope.sexLabel = ['女', '男'];
+        $scope.educationLabels = ['', '高中及一下', '大专', '本科', '硕士', '博士'];
         $scope.permissionLabel = perm.permissions;
         $scope.permissions = perm.lowerPermissions();
         $scope.canGrant = function(permission) {
