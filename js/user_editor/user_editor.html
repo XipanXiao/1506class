@@ -110,6 +110,15 @@
       </div>
       <div class="css-table-row padded-element" ng-show="admining">
         <div class="css-table-cell">备注</div>
+        <div class="css-table-cell">{{user.comments}}</div>
+        <div class="css-table-cell">
+          <iron-icon class="selectable" icon="chevron-right"
+              ng-click="editing = 'comments'">
+          </iron-icon>
+        </div>          
+      </div>
+      <div class="css-table-row padded-element" ng-show="admining">
+        <div class="css-table-cell">其它信息</div>
         <div class="css-table-cell">{{user.notes}}</div>
         <div class="css-table-cell">
           <iron-icon class="selectable" icon="chevron-right"
@@ -177,6 +186,7 @@
             ng-options="educationLabels[value] for value in [0, 1, 2, 3, 4, 5]"></select>
         <input ng-switch-when="occupation" ng-model="user.occupation" type="text" autofocus>
         <input ng-switch-when="birthday" ng-model="user.birthday" type="text" autofocus>
+        <input ng-switch-when="comments" ng-model="user.comments" type="text" autofocus>
         <input ng-switch-when="notes" ng-model="user.notes" type="text" autofocus>
       </div>
       <input ng-if="editing != 'address'" type="submit" value="Save" ng-click="save()"

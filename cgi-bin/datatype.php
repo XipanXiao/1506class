@@ -17,6 +17,7 @@ class User {
 	public $occupation;
 	public $mentor_id;
 	public $permission;
+	public $comments;
 	public $notes;
 	
 	// Redundant fields.
@@ -44,6 +45,7 @@ class User {
 		$this->occupation = $row['occupation']; 
 		$this->mentor_id = intval($row['mentor_id']); 
 		$this->permission = intval($row['permission']); 
+		$this->comments = $row['comments']; 
 		$this->notes = $row['notes']; 
 	}
 	
@@ -74,6 +76,7 @@ class User {
 		$row['mentor_id'] = $this->mentor_id;
 		$row['response'] = $this->response;
 		$row['permission'] = $this->permission;
+		$row['comments'] = $this->comments;
 		$row['notes'] = $this->notes;
 		
 		return $row;

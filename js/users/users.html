@@ -5,6 +5,7 @@
 			<div class="css-table-cell"><strong>性别</strong></div>
 			<div class="css-table-cell"><strong>电子邮件</strong></div>
       <div class="css-table-cell"><strong>电话</strong></div>
+      <div class="css-table-cell"><strong>备注</strong></div>
       <div class="css-table-cell"></div>
 		</div>
 		<div ng-repeat="user in users" class="css-table-row selectable users"
@@ -13,7 +14,8 @@
 			<div class="css-table-cell">{{user.name}}</div>
 			<div class="css-table-cell">{{user.sex == '1' ? '男' : '女'}}</div>
 			<div class="css-table-cell">{{user.email}}</div>
-			<div class="css-table-cell"><strong>{{user.phone}}</strong></div>
+      <div class="css-table-cell"><strong>{{user.phone}}</strong></div>
+      <div class="css-table-cell comments"><strong>{{user.comments}}</strong></div>
       <div class="css-table-cell">
 		    <iron-icon icon="icons:delete" title="删除" ng-click="remove(user)" class="selectable">
 		    </iron-icon>

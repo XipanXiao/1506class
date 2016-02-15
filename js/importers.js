@@ -50,6 +50,7 @@ define(['permission', 'services', 'utils'], function() {
       "street": "street",
       "Status": "notes",
       "notes": "notes",
+      "comments": "comments",
       "zip": "zip",
       "nickname": "nickname",
       "street2": "street2",

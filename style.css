@@ -392,3 +392,7 @@ div.compact-url {
 .users {
   position: relative;	
 }
+
+.comments {
+  max-width: 100px;
+}

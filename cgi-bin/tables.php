@@ -284,7 +284,7 @@ function update_user($user) {
       "classId"];
   $fields = ["internal_id", "name", "nickname", "email",
       "phone", "street", "street2", "city", "state", "country", "zip",
-      "im", "occupation", "birthday", "notes"];
+      "im", "occupation", "birthday", "comments", "notes"];
   
   foreach ($user as $key => $value) {
     if ($key == "password") {
