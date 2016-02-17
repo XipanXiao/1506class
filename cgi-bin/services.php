@@ -4,7 +4,7 @@ include_once 'tables.php';
 
 $response = null;
 
-if (empty($_SESSION["user"])) {
+if (empty($_SESSION["user"]) && empty($_COOKIE["email"])) {
   if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $resource_id = $_GET["rid"];
   
@@ -22,7 +22,19 @@ if (empty($_SESSION["user"])) {
   exit();
 }
 
-$user = unserialize($_SESSION["user"]);
+if (empty($_SESSION["user"])) {
+	$user = get_user($_COOKIE["email"]);
+	if (!$user) {
+	  echo '{"error": "login needed"}';
+	  exit();
+  }
+	
+  $user->password = null;
+  $_SESSION["user"] = serialize($user);
+} else {
+	$user = unserialize($_SESSION["user"]);
+}
+
 $student_id = $user->id;
 
 if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
