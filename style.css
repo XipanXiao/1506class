@@ -396,3 +396,13 @@ div.compact-url {
 .comments {
   max-width: 100px;
 }
+
+.email {
+  max-width: 180px;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+}
+
+.compact-user {
+  max-width: 400px;	
+}

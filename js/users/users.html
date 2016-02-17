@@ -1,28 +1,32 @@
 <div class="users flex" ng-if="isNotEmpty">
-	<div class="css-table section odd-even">
-		<div class="css-table-row header">
-			<div class="css-table-cell"><strong>姓名</strong></div>
-			<div class="css-table-cell"><strong>性别</strong></div>
-			<div class="css-table-cell"><strong>电子邮件</strong></div>
+  <div class="css-table section odd-even">
+    <div class="css-table-row header">
+      <div class="css-table-cell"><strong>姓名</strong></div>
+      <div class="css-table-cell"><strong>性别</strong></div>
+      <div class="css-table-cell"><strong>电子邮件</strong></div>
       <div class="css-table-cell"><strong>电话</strong></div>
+      <div class="css-table-cell"><strong>州</strong></div>
+      <div class="css-table-cell"><strong>跟进</strong></div>
       <div class="css-table-cell"><strong>备注</strong></div>
       <div class="css-table-cell"></div>
-		</div>
-		<div ng-repeat="user in users" class="css-table-row selectable users"
-		    ng-click="showInfo(user, $index)"
-		    ng-class="{'selected': selected(user), 'admin': isAdmin(user)}">
-			<div class="css-table-cell">{{user.name}}</div>
-			<div class="css-table-cell">{{user.sex == '1' ? '男' : '女'}}</div>
-			<div class="css-table-cell">{{user.email}}</div>
-      <div class="css-table-cell"><strong>{{user.phone}}</strong></div>
-      <div class="css-table-cell comments"><strong>{{user.comments}}</strong></div>
+    </div>
+    <div ng-repeat="user in users" class="css-table-row selectable users"
+        ng-click="showInfo(user, $index)"
+        ng-class="{'selected': selected(user), 'admin': isAdmin(user)}">
+      <div class="css-table-cell">{{user.name}}</div>
+      <div class="css-table-cell">{{user.sex == '1' ? '男' : '女'}}</div>
+      <div class="css-table-cell email">{{user.email}}</div>
+      <div class="css-table-cell">{{user.phone}}</div>
+      <div class="css-table-cell">{{user.state}}</div>
+      <div class="css-table-cell">{{userNames[user.mentor_id]}}</div>
+      <div class="css-table-cell comments">{{user.comments}}</div>
       <div class="css-table-cell">
-		    <iron-icon icon="icons:delete" title="删除" ng-click="remove(user)" class="selectable">
-		    </iron-icon>
+        <iron-icon icon="icons:delete" title="删除" ng-click="remove(user)" class="selectable">
+        </iron-icon>
       </div>
-		</div>
-	</div>
-	<user-editor ng-if="editingUser" user="editingUser" class="padded-element"
-	  style="position: absolute;top: {{selectedTop}}px;" class-mates="userNames">
-	</user-editor>
+    </div>
+  </div>
+  <user-editor ng-if="editingUser" user="editingUser" class="padded-element compact-user"
+    style="position: absolute;top: {{selectedTop}}px;" class-mates="userNames">
+  </user-editor>
 </div>
