@@ -1,2 +1,4 @@
-$OPENSHIFT_REPO_DIR/aggregate.sh
+cd $OPENSHIFT_REPO_DIR;
+./aggregate.sh
+
 
