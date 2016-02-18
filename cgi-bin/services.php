@@ -128,7 +128,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "user") {
     if (isset($_POST["classId"]) && intval($_POST["classId"]) == 0) {
       if(!empty($_POST["classId_label"]) &&
-          !empty($_POST["start_year_label"] && !empty($_POST["start_year"]))) {
+          !empty($_POST["start_year_label"]) && !empty($_POST["start_year"])) {
             $class_name = $_POST["start_year_label"]. $_POST["classId_label"];
             $classId = get_class_id($class_name);
       
