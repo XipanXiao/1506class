@@ -1,12 +1,12 @@
 -- <?php /* This SQL file is named as PHP to avoid accidental web access.
 
-INSERT INTO users(internal_id, name, password, sex, nickname, email, phone, street, im, start_year, classId, mentor_id, permission) VALUES ("A4", “空见”, MD5("1506"), 1, "", “1234@qq.com", “999-999-9999“, “1234 Gamboree Road”, "", 2015, 4, 0, 1);
-INSERT INTO users(internal_id, name, password, sex, nickname, email, phone, street, im, start_year, classId, mentor_id, permission) VALUES ("A15", “空闻”, MD5("hello"), 1, "", “asdfa@hotmail.com", “999-999-9999”, “5678 Depot Street”, "", 2015, 3, 0, 65535);
-INSERT INTO users(internal_id, name, password, sex, nickname, email, phone, street, im, start_year, classId, mentor_id, permission) VALUES ("A28", “空智”, MD5("1506"), 0, "", “adafa@gmail.com", “999-999-9999”, "24089 Alton”, "", 2015, 2, 0, 1);
-INSERT INTO users(internal_id, name, password, sex, nickname, email, phone, street, im, start_year, classId, mentor_id, permission) VALUES ("A35", “空性”, MD5("1506"), 0, "", “ddadfa@gmail.com", "", "1603  West Road”, "", 2015, 4, 0, 1);
-INSERT INTO users(internal_id, name, password, sex, nickname, email, phone, street, im, start_year, classId, mentor_id, permission) VALUES ("A36", “度难”, MD5("1506"), 0, "", "133316@qq.com", “999-999-9999”, "2616 MARAVL", "", 2015, 1, 0, 1);
-INSERT INTO users(internal_id, name, password, sex, nickname, email, phone, street, im, start_year, classId, mentor_id, permission) VALUES ("A37", “度厄”, MD5("1506"), 0, "", “twhwhw@gmail.com", “999-999-9999”, "1242 Avalon Dr”, "", 2015, 5, 0, 1);
-INSERT INTO users(internal_id, name, password, sex, nickname, email, phone, street, im, start_year, classId, mentor_id, permission) VALUES ("A41", “度劫”, MD5("1506"), 1, "", “42626@qq.com", "", "147 pensham dr", "", 2015, 6, 0, 1);
-INSERT INTO users(internal_id, name, password, sex, nickname, email, phone, street, im, start_year, classId, mentor_id, permission) VALUES ("A42", “澄观”, MD5("1506"), 0, "", “yhehe@hotmail.com ", "", "505 brokaw ct", "", 2015, 7, 0, 1);
-INSERT INTO users(internal_id, name, password, sex, nickname, email, phone, street, im, start_year, classId, mentor_id, permission) VALUES ("C6", “澄心”, MD5("1506"), 0, "", “262266@qq.com", "", "144 Virginia St", "", 2015, 4, 0, 1);
+INSERT INTO users(internal_id, name, password, sex, email, phone, street, im, start_year, classId, mentor_id, permission) VALUES ("A4", "空见", MD5("1506"), 1, "1234@qq.com", "999-999-9999", "1234 Gamboree Road", "", 2015, 4, 0, 1);
+INSERT INTO users(internal_id, name, password, sex, email, phone, street, im, start_year, classId, mentor_id, permission) VALUES ("A15", "空闻", MD5("hello"), 1, "asdfa@hotmail.com", "999-999-9999", "5678 Depot Street", "", 2015, 3, 0, 65535);
+INSERT INTO users(internal_id, name, password, sex, email, phone, street, im, start_year, classId, mentor_id, permission) VALUES ("A28", "空智", MD5("1506"), 0, "adafa@gmail.com", "999-999-9999", "24089 Alton", "", 2015, 2, 0, 1);
+INSERT INTO users(internal_id, name, password, sex, email, phone, street, im, start_year, classId, mentor_id, permission) VALUES ("A35", "空性", MD5("1506"), 0, "ddadfa@gmail.com", "", "1603  West Road", "", 2015, 4, 0, 1);
+INSERT INTO users(internal_id, name, password, sex, email, phone, street, im, start_year, classId, mentor_id, permission) VALUES ("A36", "度难", MD5("1506"), 0, "133316@qq.com", "999-999-9999", "2616 MARAVL", "", 2015, 1, 0, 1);
+INSERT INTO users(internal_id, name, password, sex, email, phone, street, im, start_year, classId, mentor_id, permission) VALUES ("A37", "度厄", MD5("1506"), 0, "twhwhw@gmail.com", "999-999-9999", "1242 Avalon Dr", "", 2015, 5, 0, 1);
+INSERT INTO users(internal_id, name, password, sex, email, phone, street, im, start_year, classId, mentor_id, permission) VALUES ("A41", "度劫", MD5("1506"), 1, "42626@qq.com", "", "147 pensham dr", "", 2015, 6, 0, 1);
+INSERT INTO users(internal_id, name, password, sex, email, phone, street, im, start_year, classId, mentor_id, permission) VALUES ("A42", "澄观", MD5("1506"), 0, "yhehe@hotmail.com ", "", "505 brokaw ct", "", 2015, 7, 0, 1);
+INSERT INTO users(internal_id, name, password, sex, email, phone, street, im, start_year, classId, mentor_id, permission) VALUES ("C6", "澄心", MD5("1506"), 0, "262266@qq.com", "", "144 Virginia St", "", 2015, 4, 0, 1);
 -- */ ?>

@@ -48,8 +48,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
       "city": "city",
       "街道": "street",
       "street": "street",
-      "Status": "notes",
-      "notes": "notes",
+      "Status": "comments",
       "comments": "comments",
       "zip": "zip",
       "nickname": "nickname",
@@ -311,7 +310,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
               'start_year', 'classId'];
           var fields = ['internal_id', 'name', 'nickname', 'email',
               'phone', 'street', 'street2', 'city', 'state', 'country', 'zip',
-              'im', 'occupation', 'birthday', 'notes'];
+              'im', 'occupation', 'birthday'];
           var allFields = fields.concat(int_fields);
 
           var createDataUrl = function(data, file) {

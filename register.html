@@ -84,6 +84,7 @@
           <div class="css-table-cell"><label for="state">State</label></div>
           <div class="css-table-cell">
             <select id="state" name="state">
+              <option value=""></option>
               <option value="AL">Alabama</option>
               <option value="AK">Alaska</option>
               <option value="AS">American Samoa</option>
@@ -156,6 +157,7 @@
           <div class="css-table-cell"><label for="education">文化程度</label></div>
           <div class="css-table-cell">
             <select name="education">
+              <option value=""></option>
               <option value="1">高中及以下</option>
               <option value="2">大专</option>
               <option value="3">本科</option>
@@ -171,30 +173,25 @@
           </div>
         </div>
         <div class="css-table-row">
-          <div class="css-table-cell"><label for="conversion">皈依时间(若已皈依)</label></div>
-          <div class="css-table-cell">
-            <input type="text" name="conversion" pattern="\d{4}-\d{2}-\d{2}" placeholder="1970-01-01">
-          </div>
-        </div>
-        <div class="css-table-row">
-          <div class="css-table-cell"><label for="dojo">能否提供小组共修场所</label></div>
-          <div class="css-table-cell"><input type="checkbox" name="dojo"></div>
-        </div>
-        <div class="css-table-row">
-          <div class="css-table-cell"><label for="reason">参加本地共修的困难(若有困难)</label></div>
-          <div class="css-table-cell"><input type="text" name="reason"></div>
-        </div>
-        <div class="css-table-row">
           <div class="css-table-cell"><label for="skills">个人特长</label></div>
           <div class="css-table-cell"><input type="text" name="skills"></div>
         </div>
         <div class="css-table-row">
-          <div class="css-table-cell"><label for="goal">参加学会的目标</label></div>
-          <div class="css-table-cell"><input type="text" name="goal"></div>
+          <div class="css-table-cell"><label for="volunteer">是否愿意参加学会发心工作</label></div>
+          <div class="css-table-cell"><input type="checkbox" name="volunteer"></div>
         </div>
         <div class="css-table-row">
-          <div class="css-table-cell"><label for="experience">闻思经历简述(若有)</label></div>
-          <div class="css-table-cell"><input type="text" name="experience"></div>
+          <div class="css-table-cell"><label for="channel">您是通过什么渠道知道学会的？</label></div>
+          <div class="css-table-cell">
+            <select id="channel" name="channel" onchange="channelSelected()">
+              <option value="0"></option>
+              <option value="1">搜索引擎</option>
+              <option value="2">www.bicw.com</option>
+              <option value="3">朋友推荐</option>
+              <option value="4">微信宣传</option>
+              <option value="5">传单</option>
+            </select>
+          </div>
         </div>
         <div class="css-table-row">
           <div class="css-table-cell">

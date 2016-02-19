@@ -281,10 +281,10 @@ function update_user($user) {
   $datas = [];
   
   $int_fields = ["sex", "mentor_id", "permission", "education", "start_year",
-      "classId"];
+      "classId", "volunteer", "channel"];
   $fields = ["internal_id", "name", "nickname", "email",
       "phone", "street", "street2", "city", "state", "country", "zip",
-      "im", "occupation", "birthday", "comments", "notes"];
+      "im", "occupation", "birthday", "comments", "skills"];
   
   foreach ($user as $key => $value) {
     if ($key == "password") {

@@ -11,6 +11,8 @@ define('user_editor/user_editor',
       link: function($scope) {
         $scope.sexLabel = ['女', '男'];
         $scope.educationLabels = ['', '高中及以下', '大专', '本科', '硕士', '博士'];
+        $scope.channelLabels = ['', '搜索引擎', 'www.bicw.com', '朋友推荐',
+            '微信宣传', '传单'];
         $scope.permissionLabel = perm.permissions;
         $scope.permissions = perm.lowerPermissions();
         $scope.canGrant = function(permission) {

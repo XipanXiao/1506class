@@ -23,9 +23,9 @@ INSERT INTO departments(name) VALUES ("念佛堂");
 CREATE TABLE tasks (
                     id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                     department_id TINYINT,
-				      INDEX department_id_idx(department_id),
-				      FOREIGN KEY (department_id)
-				      	REFERENCES departments(id),
+              INDEX department_id_idx(department_id),
+              FOREIGN KEY (department_id)
+                REFERENCES departments(id),
                     name VARCHAR(32),
                     max INT
                       );
@@ -42,15 +42,15 @@ INSERT INTO tasks(department_id, name) VALUES (4, "阿弥陀佛圣号（藏文�
 CREATE TABLE classes (
                     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                     department_id TINYINT,
-				      INDEX department_id_idx(department_id),
-				      FOREIGN KEY (department_id)
-				      	REFERENCES departments(id),
+              INDEX department_id_idx(department_id),
+              FOREIGN KEY (department_id)
+                REFERENCES departments(id),
                       name VARCHAR(32),
                       email VARCHAR(32),
                       class_room VARCHAR(16),
-					  teacher_id INT,
-					  start_year MEDIUMINT,
-					  perm_level INT DEFAULT 3
+            teacher_id INT,
+            start_year MEDIUMINT,
+            perm_level INT DEFAULT 3
                       );
 
 -- id: 1. unassigned students are put temporarily here.
@@ -83,9 +83,9 @@ INSERT INTO classes(department_id, name, class_room, email, start_year, perm_lev
 CREATE TABLE course_groups(
       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
       department_id TINYINT,
-				      INDEX department_id_idx(department_id),
-				      FOREIGN KEY (department_id)
-				      	REFERENCES departments(id),
+              INDEX department_id_idx(department_id),
+              FOREIGN KEY (department_id)
+                REFERENCES departments(id),
       name VARCHAR(64),
       url VARCHAR(512)
 );
@@ -198,46 +198,48 @@ INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "再谈放生
 INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "为临终者献爱心", "", "");
 INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "以佛法利益亡者", "", "");
 INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "观音心咒之功德", "", "");
-INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "什么是密宗	", "", "");
+INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "什么是密宗  ", "", "");
 INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "胜利道歌讲记第1课", "", "");
 INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "胜利道歌讲记第2课", "", "");
 
 CREATE TABLE users(
-			      id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-			      internal_id VARCHAR(16),
-			      name VARCHAR(32),
-			      password VARCHAR(32),
-			      sex BOOLEAN,
-			      nickname VARCHAR(32),
-			      email VARCHAR(64) NOT NULL,
-			      UNIQUE KEY email_idx(email),
-			      phone VARCHAR(32),
-			      street VARCHAR(64),
-			      street2 VARCHAR(16),
-			      city VARCHAR(32),
-			      state VARCHAR(16),
-			      country VARCHAR(32),
-			      zip VARCHAR(10),
-			      im VARCHAR(32),
-			      classId INT NOT NULL,
-				      INDEX classId_idx(classId),
-				      FOREIGN KEY (classId)
-				      	REFERENCES classes(id),
-			      mentor_id INT,
-			      permission INT,
-			      occupation VARCHAR(32),
-			      education TINYINT,
+            id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            internal_id VARCHAR(8),
+            name VARCHAR(20),
+            password VARCHAR(32),
+            sex BOOLEAN,
+            volunteer BOOLEAN,
+            nickname VARCHAR(8),
+            email VARCHAR(40) NOT NULL,
+            UNIQUE KEY email_idx(email),
+            phone VARCHAR(16),
+            street VARCHAR(40),
+            street2 VARCHAR(16),
+            city VARCHAR(32),
+            state VARCHAR(8),
+            country VARCHAR(16),
+            zip VARCHAR(8),
+            im VARCHAR(16),
+            classId INT NOT NULL,
+              INDEX classId_idx(classId),
+              FOREIGN KEY (classId)
+                REFERENCES classes(id),
+            mentor_id INT,
+            permission INT,
+            education TINYINT,
+            occupation VARCHAR(20),
+            skills VARCHAR(16),
             start_year MEDIUMINT,
             birthday DATETIME,
-			      notes VARCHAR(128),
-			      comments VARCHAR(16));
+            channel TINYINT,
+            comments VARCHAR(16));
 
 CREATE TABLE schedule_groups (
                       id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                       classId INT,
-					      INDEX classId_idx(classId),
-					      FOREIGN KEY (classId)
-					      	REFERENCES classes(id),
+                INDEX classId_idx(classId),
+                FOREIGN KEY (classId)
+                  REFERENCES classes(id),
                       course_group INT,
                       name VARCHAR(64),
                       start_time DATETIME,
@@ -254,12 +256,12 @@ INSERT INTO schedule_groups(classId, course_group, name) VALUES (1, 4, "基础�
 CREATE TABLE schedules (
              id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
              group_id INT,
-					      INDEX group_id_idx(group_id),
-					      FOREIGN KEY (group_id)
-					      	REFERENCES schedule_groups(id),
-					   course_id INT,
-					   open INT,
-					   review INT
+                INDEX group_id_idx(group_id),
+                FOREIGN KEY (group_id)
+                  REFERENCES schedule_groups(id),
+             course_id INT,
+             open INT,
+             review INT
                       );
 INSERT INTO schedules(group_id, course_id, open, review) VALUES (1, 1, 2, 0);
 INSERT INTO schedules(group_id, course_id, open, review) VALUES (1, 2, 9, 5);
@@ -446,13 +448,13 @@ INSERT INTO schedules(group_id, course_id, open, review) VALUES (7, 92, 19, 1);
 CREATE TABLE task_records (
                  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                  student_id INT not null,
-				      INDEX student_id_idx(student_id),
-				      FOREIGN KEY (student_id)
-				      	REFERENCES users(id),
+              INDEX student_id_idx(student_id),
+              FOREIGN KEY (student_id)
+                REFERENCES users(id),
                  task_id MEDIUMINT,
-				      INDEX task_id_idx(task_id),
-				      FOREIGN KEY (task_id)
-				      	REFERENCES tasks(id),
+              INDEX task_id_idx(task_id),
+              FOREIGN KEY (task_id)
+                REFERENCES tasks(id),
                  count MEDIUMINT,
                  sum INT,
                  ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -461,11 +463,11 @@ CREATE TABLE task_records (
 -- attended: 0 absent, 1 present, 2 vacation
 CREATE TABLE schedule_records (
                  student_id INT not null,
-				      INDEX student_id_idx(student_id),
-				      FOREIGN KEY (student_id)
-				      	REFERENCES users(id),
+              INDEX student_id_idx(student_id),
+              FOREIGN KEY (student_id)
+                REFERENCES users(id),
                  course_id INT,
-				      INDEX course_id_idx(course_id),
+              INDEX course_id_idx(course_id),
                  attended TINYINT,
                  video BOOLEAN, 
                  text BOOLEAN, 
