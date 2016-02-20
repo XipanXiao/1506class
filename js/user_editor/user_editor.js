@@ -11,8 +11,11 @@ define('user_editor/user_editor',
       link: function($scope) {
         $scope.sexLabel = ['女', '男'];
         $scope.educationLabels = ['', '高中及以下', '大专', '本科', '硕士', '博士'];
-        $scope.channelLabels = ['', '搜索引擎', 'www.bicw.com', '朋友推荐',
-            '微信宣传', '传单'];
+        $scope.volunteerLabels =
+            ['', '不愿发心', '小组管理', '资料收发', '统计报数', '其他工作'];
+        $scope.channelLabels = ['', '其他方式', '智悲佛网', '国际佛学网',
+            '美国智悲菩提讲修', '本地招生材料', '微信', '微博或论坛', '朋友介绍'];
+
         $scope.permissionLabel = perm.permissions;
         $scope.permissions = perm.lowerPermissions();
         $scope.canGrant = function(permission) {

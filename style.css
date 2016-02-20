@@ -406,3 +406,20 @@ div.compact-url {
 .compact-user {
   max-width: 400px;	
 }
+
+.required-asterisk {
+  color: red;
+}
+
+.register-back {
+  background-image: url("images/body_bg.jpg");
+}
+
+.register-form {
+  background: white;	
+  width: 500px;
+}
+
+.register-banner {
+  width: 500px;
+}

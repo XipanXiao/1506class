@@ -15,7 +15,7 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
   }
 
   date_default_timezone_set("UTC");
-  $_POST["start_year"] = date("Y");
+
   $user = update_user($_POST);
   if (!$user) {
     echo "<h1>Error</h1>";

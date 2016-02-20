@@ -204,14 +204,29 @@ INSERT INTO courses(group_id, name, video_url, text_url) VALUES(4, "胜利道歌
 
 CREATE TABLE users(
             id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            internal_id VARCHAR(8),
-            name VARCHAR(20),
-            password VARCHAR(32),
             sex BOOLEAN,
-            volunteer BOOLEAN,
-            nickname VARCHAR(8),
+            education TINYINT,
+            volunteer TINYINT,
+            channel TINYINT,
+            conversion SMALLINT,
+
+            classId INT NOT NULL,
+              INDEX classId_idx(classId),
+              FOREIGN KEY (classId)
+                REFERENCES classes(id),
+            mentor_id INT,
+            permission INT,
+            birthday DATETIME,
+
             email VARCHAR(40) NOT NULL,
             UNIQUE KEY email_idx(email),
+            password VARCHAR(32),
+
+            internal_id VARCHAR(8),
+            name VARCHAR(20),
+            nickname VARCHAR(8),
+
+            im VARCHAR(16),
             phone VARCHAR(16),
             street VARCHAR(40),
             street2 VARCHAR(16),
@@ -219,19 +234,10 @@ CREATE TABLE users(
             state VARCHAR(8),
             country VARCHAR(16),
             zip VARCHAR(8),
-            im VARCHAR(16),
-            classId INT NOT NULL,
-              INDEX classId_idx(classId),
-              FOREIGN KEY (classId)
-                REFERENCES classes(id),
-            mentor_id INT,
-            permission INT,
-            education TINYINT,
+
             occupation VARCHAR(20),
             skills VARCHAR(16),
-            start_year MEDIUMINT,
-            birthday DATETIME,
-            channel TINYINT,
+
             comments VARCHAR(16));
 
 CREATE TABLE schedule_groups (

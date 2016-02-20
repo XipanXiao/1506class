@@ -115,7 +115,7 @@
       </div>
       <div class="css-table-row padded-element">
         <div class="css-table-cell">是否愿意发心工作</div>
-        <div class="css-table-cell">{{['否', '是'][user.volunteer]}}</div>
+        <div class="css-table-cell">{{volunteerLabels[user.volunteer]}}</div>
         <div class="css-table-cell">
           <iron-icon class="selectable" icon="chevron-right"
               ng-click="editing = 'volunteer'">
@@ -128,6 +128,15 @@
         <div class="css-table-cell">
           <iron-icon class="selectable" icon="chevron-right"
               ng-click="editing = 'birthday'">
+          </iron-icon>
+        </div>          
+      </div>
+      <div class="css-table-row padded-element">
+        <div class="css-table-cell">皈依年份</div>
+        <div class="css-table-cell"><span ng-if="user.conversion">{{user.conversion}}</span></div>
+        <div class="css-table-cell">
+          <iron-icon class="selectable" icon="chevron-right"
+              ng-click="editing = 'conversion'">
           </iron-icon>
         </div>          
       </div>
@@ -210,10 +219,12 @@
         <input ng-switch-when="occupation" ng-model="user.occupation" type="text" autofocus>
         <input ng-switch-when="skills" ng-model="user.skills" type="text" autofocus>
         <select ng-switch-when="volunteer" ng-model="user.volunteer"
-            ng-options="['否', '是'][value] for value in [0, 1]"></select>
+            ng-options="volunteerLabels[value] for value in [1, 2, 3, 4, 5]"></select>
         <input ng-switch-when="birthday" ng-model="user.birthday" type="text" autofocus>
+        <input ng-switch-when="conversion" ng-model="user.conversion" type="text" pattern="\d{4}"
+                placeholder="2015" autofocus>
         <select ng-switch-when="channel" ng-model="user.channel"
-            ng-options="channelLabels[value] for value in [1, 2, 3, 4, 5]"></select>
+            ng-options="channelLabels[value] for value in [1, 2, 3, 4, 5, 6, 7]"></select>
         <input ng-switch-when="comments" ng-model="user.comments" type="text" autofocus>
       </div>
       <input ng-if="editing != 'address'" type="submit" value="Save" ng-click="save()"
