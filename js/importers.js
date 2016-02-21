@@ -23,7 +23,9 @@ define('importers', ['permission', 'services', 'utils'], function() {
     "table": "users",
     "columns": {
       "年別": "start_year",
+      "届别": "start_year",
       "start_year": "start_year",
+      "学号": "internal_id",
       "序号": "internal_id",
       "internal_id": "internal_id",
       "姓名": "name",
@@ -36,6 +38,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
       "education": "education",
       "职业": "occupation",
       "occupation": "occupation",
+      "班级": "classId",
       "预选班级": "classId",
       "classId": "classId",
       "联系电话": "phone",
@@ -143,13 +146,9 @@ define('importers', ['permission', 'services', 'utils'], function() {
         user[key] = columnMap[key][label];
       });
       
-      var start_year_label = user['start_year'] && user['start_year'].trim();
+      var start_year_label =
+          user['start_year'] && user['start_year'].trim() || '';
       user['start_year_label'] = start_year_label;
-      if (start_year_label.startsWith('1')) {
-        user['start_year'] = 2000 + parseInt(start_year_label.substring(0,2));
-      } else if (start_year_label.startsWith('2')) {
-        user['start_year'] = parseInt(start_year_label.substring(0,4));
-      }
       
       user.phone = cutOff(user.phone, 16);
       user.state = cutOff(user.state, 8);
