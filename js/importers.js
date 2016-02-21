@@ -93,8 +93,11 @@ define('importers', ['permission', 'services', 'utils'], function() {
       "大學畢業": 3,
       "初中及以下": 1,
       "硕士及以上": 4,
+      "硕研": 4,
+      "硕士毕业": 4,
       "本科（在读）": 3,
       "博士（经济学）": 5,
+      "学士": 3,
       "default": 1
     }
   };
@@ -106,18 +109,18 @@ define('importers', ['permission', 'services', 'utils'], function() {
     var validate = function(user, classes) {
       var extractFromPatter = function(pattern, value) {
         var match = pattern.exec(value);
-        return match && match[1];
+        return match && match[1] || '';
       };
       
       var cutOff = function(value, len) {
-        return value && value.substring(0, len);
+        return value; // && value.substring(0, len);
       };
 
       user.name = cutOff(user.name, 16);
       if (!user.name) return false;
       
       user.email = extractFromPatter(
-          /(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+)/, user.email);
+          /(\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+)/, user.email).trim();
       if (!user.email) return false;
       
       user.email = user.email.toLowerCase();
@@ -149,6 +152,11 @@ define('importers', ['permission', 'services', 'utils'], function() {
       var start_year_label =
           user['start_year'] && user['start_year'].trim() || '';
       user['start_year_label'] = start_year_label;
+      if (start_year_label.startsWith('1')) {
+        user['start_year'] = 2000 + parseInt(start_year_label.substring(0,2));
+      } else if (start_year_label.startsWith('2')) {
+        user['start_year'] = parseInt(start_year_label.substring(0,4));
+      }
       
       user.phone = cutOff(user.phone, 16);
       user.state = cutOff(user.state, 8);
@@ -186,7 +194,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
               records: [],
               skipped: []
             };
-  
+            
             var removeQuations = function(value) {
               return value.replace(/"(.*)"/, '$1');
             };
@@ -206,10 +214,11 @@ define('importers', ['permission', 'services', 'utils'], function() {
               var user = {};
               var columnValues = line.split(delimiter);
               for (var c = 0; c < reader.columns.length; c++) {
-                user[result.columns[c]] = removeQuations(columnValues[c]);
+                user[result.columns[c]] =
+                    removeQuations(columnValues[c]).trim();
               }
               
-              if (validate(user, response.data) && !recordsMap[user.email]) {
+              if (!recordsMap[user.email] && validate(user, response.data)) {
                 result.records.push(user);
                 recordsMap[user.email] = true;
               } else if (user.name) {
@@ -239,11 +248,14 @@ define('importers', ['permission', 'services', 'utils'], function() {
             rpc.get_user(user.email).then(function(existingUser) {
               if (!existingUser || !existingUser.email) existingUser = null;
               if (existingUser) {
-                var ignored = ['classInfo', 'password', 'permission'];
+                var ignored = ['classInfo', 'password', 'permission',
+                    'internal_id', 'occupation', 'phone', 'state', 'street',
+                    'city', 'name', 'education'];
                 ignored.forEach(function(key) {delete existingUser[key]});
 
                 user.id = existingUser.id;
                 user.birthday = user.birthday || existingUser.birthday;
+                user.classId = user.classId || existingUser.classId;
                 utils.diff(existingUser, user);
               } else {
                 user.id = 0;
@@ -304,12 +316,12 @@ define('importers', ['permission', 'services', 'utils'], function() {
           next();
         },
         
-        exportAll: function() {
+        exportAll: function(users) {
           var int_fields = ['sex', 'mentor_id', 'permission', 'education',
-              'start_year', 'classId'];
+              'conversion', 'classId', 'volunteer', 'channel'];
           var fields = ['internal_id', 'name', 'nickname', 'email',
               'phone', 'street', 'street2', 'city', 'state', 'country', 'zip',
-              'im', 'occupation', 'birthday'];
+              'im', 'occupation', 'skills', 'birthday', 'comments'];
           var allFields = fields.concat(int_fields);
 
           var createDataUrl = function(data, file) {
@@ -317,7 +329,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
             if (file) window.URL.revokeObjectURL(file);
             return file = window.URL.createObjectURL(data);
           };
-          
+
           var exportUsers = function(users, classes) {
             var sql = '';
             var tsv = fields.concat(int_fields).join('\t');
@@ -329,7 +341,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
                 'permission': perm.permissions,
                 'education': ['', '高中以下', '大专或高中', '本科', '硕士', '博士'],
                 'mentor_id': [],
-                'start_year': []
+                'conversion': []
               }[key][value];
             };
 
@@ -366,7 +378,8 @@ define('importers', ['permission', 'services', 'utils'], function() {
               classes[id] = response.data[id].name;
             }
 
-            return rpc.get_users(null, null, true).then(function(response) {
+            return users ? exportUsers(users, classes) :
+                rpc.get_users(null, null, true).then(function(response) {
               return exportUsers(response.data, classes);
             });
           });

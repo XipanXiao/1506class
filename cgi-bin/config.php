@@ -38,7 +38,7 @@
     
     $config = replace_config_variables($config);
 
-    if ($config->session_path) {
+    if (isset($config->session_path)) {
       session_save_path($config->session_path);
     }
      

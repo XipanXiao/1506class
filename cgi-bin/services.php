@@ -72,7 +72,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $email = empty($_GET["email"]) ? null : $_GET["email"];
     $classId = empty($_GET["classId"]) ? null : $_GET["classId"];
     $all = empty($_GET["all"]) ? null : $_GET["all"];
-    
+
     if ($all) {
       $response = get_users(null, null, null, $all);
     } elseif ($classId) {
@@ -94,7 +94,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   
   $task_user_id = $student_id;
   if (!empty($_POST["student_id"])) {
-    if ($user->permission <= 1) {
+    if ($user->permission <= 7) {
       $response =
           ["error" => "permission denied, you can't report tasks for others"];
       echo json_encode($response);
@@ -126,15 +126,14 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "course") {
     $response = update_course($_POST); 
   } elseif ($resource_id == "user") {
-    if (isset($_POST["classId"]) && intval($_POST["classId"]) == 0) {
+    if (!empty($_POST["classId"]) && intval($_POST["classId"]) == 0) {
       if(!empty($_POST["classId_label"]) &&
-          !empty($_POST["start_year_label"]) && !empty($_POST["start_year"])) {
+          !empty($_POST["start_year_label"])) {
             $class_name = $_POST["start_year_label"]. $_POST["classId_label"];
             $classId = get_class_id($class_name);
       
             if (!$classId) {
-              $classId = create_class($class_name,
-                  intval($_POST["start_year"]));
+              $classId = create_class($class_name, date("Y"));
             }
       
             if (!$classId) {
@@ -143,7 +142,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
               $_POST["classId"] = $classId;
             }
           } else {
-            $response = ["error" => "check your class_label and start_year"];
+            $response = ["error" => "check class_label and start_year_label"];
           }
     }
     
