@@ -45,6 +45,10 @@ define('new_user_dialog/new_user_dialog',
                   }
                 });
               };
+
+              scope.reset = function() {
+                scope.user = null;
+              };
             },
             templateUrl : 'js/new_user_dialog/new_user_dialog.html'
           };
