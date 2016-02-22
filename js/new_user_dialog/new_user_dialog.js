@@ -27,6 +27,9 @@ define('new_user_dialog/new_user_dialog',
                 var tsvText = headers.join('\t') + '\n' + values.join('\t');
                 var callback = function(index, m, record, result) {
                   scope.user = result.records && result.records[0] || null;
+                  if (!scope.user) {
+                    scope.error = 'Invalid input, check fields like email address.';
+                  }
                 };
 
                 importers.userImporter.analyze(tsvText, callback, scope);

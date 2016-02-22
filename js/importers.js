@@ -218,7 +218,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
                     removeQuations(columnValues[c]).trim();
               }
               
-              if (!recordsMap[user.email] && validate(user, response.data)) {
+              if (validate(user, response.data) && !recordsMap[user.email]) {
                 result.records.push(user);
                 recordsMap[user.email] = true;
               } else if (user.name) {
