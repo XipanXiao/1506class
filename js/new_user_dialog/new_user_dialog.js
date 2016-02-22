@@ -3,7 +3,7 @@ define('new_user_dialog/new_user_dialog',
   return angular.module('NewUserDialogModule', ['ImportersModule', 'ServicesModule',
       'UserEditorModule'])
     .directive('newUserDialog',
-        function(importers, rpc) {
+        function($rootScope, importers, rpc) {
           return {
             scope: {},
             link: function(scope) {
@@ -40,6 +40,7 @@ define('new_user_dialog/new_user_dialog',
                   var submitted = (1 == response.data.updated);
                   if (submitted) {
                     document.getElementById('new-user-dlg').close();
+                    $rootScope.$broadcast('class-updated', response.data.classId);
                   } else {
                     scope.error = response.data.error;
                   }

@@ -16,9 +16,15 @@
   <div ng-if="error" class="error">{{error}}</div>
   <div class="buttons">
     <paper-button dialog-dismiss>关闭</paper-button>
-    <paper-button ng-click="preview()">预览</paper-button>
-    <paper-button ng-if="user" ng-click="reset()">重新粘贴</paper-button>
-    <paper-button ng-if="user" ng-click="save()">保存</paper-button>
+    <div ng-switch="user">
+      <div ng-switch-when="null">
+        <paper-button ng-click="preview()">预览</paper-button>
+      </div>
+      <div ng-switch-default>
+        <paper-button ng-click="reset()">重新粘贴</paper-button>
+        <paper-button ng-click="save()">保存</paper-button>
+      </div>
+    </div>
   </div>
 </paper-dialog>
 
