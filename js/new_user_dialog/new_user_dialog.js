@@ -26,7 +26,7 @@ define('new_user_dialog/new_user_dialog',
 
                 var tsvText = headers.join('\t') + '\n' + values.join('\t');
                 var callback = function(index, m, record, result) {
-                  scope.user = result.records && result.records[0];
+                  scope.user = result.records && result.records[0] || null;
                 };
 
                 importers.userImporter.analyze(tsvText, callback, scope);
