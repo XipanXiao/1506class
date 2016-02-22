@@ -7,12 +7,13 @@ define('new_user_dialog/new_user_dialog',
           return {
             scope: {},
             link: function(scope) {
+              scope.input = {};
               scope.user = null;
 
               scope.preview = function() {
-                if (!scope.emailBody) return;
+                if (!scope.input.emailBody) return;
 
-                var lines = scope.emailBody.split(/[\r\n]+/g);
+                var lines = scope.input.emailBody.split(/[\r\n]+/g);
                 var headers = [], values = [];
                 for (var row in lines) {
                   var line = lines[row];
