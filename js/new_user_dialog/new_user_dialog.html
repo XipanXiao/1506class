@@ -17,6 +17,7 @@
   <div class="buttons">
     <paper-button dialog-dismiss>关闭</paper-button>
     <paper-button ng-click="preview()">预览</paper-button>
+    <paper-button ng-if="user" ng-click="user = null">重新粘贴</paper-button>
     <paper-button ng-if="user" ng-click="save()">保存</paper-button>
   </div>
 </paper-dialog>

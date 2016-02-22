@@ -33,7 +33,7 @@ define('new_user_dialog/new_user_dialog',
               };
               
               scope.save = function() {
-                rpc.update_user(user).then(function(response) {
+                rpc.update_user(scope.user).then(function(response) {
                   var submitted = (1 == response.data.updated);
                   if (submitted) {
                     document.getElementById('new-user-dlg').close();
