@@ -16,6 +16,7 @@ js/class_editor/class_editor.js
 js/progress_bar/progress_bar.js
 js/task_editor_dialog/task_editor_dialog.js
 js/task_stats/task_stats.js
+js/new_user_dialog/new_user_dialog.js
 js/user_editor/user_editor.js
 js/users/users.js
 js/learning_records/learning_records.js

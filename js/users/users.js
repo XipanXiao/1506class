@@ -1,8 +1,7 @@
-define('users/users',
-    ['permission', 'services', 'user_editor/user_editor', 'utils'],
-    function() {
+define('users/users', ['new_user_dialog/new_user_dialog', 'permission', 'services',
+    'user_editor/user_editor', 'utils'], function() {
 
-  return angular.module('UsersModule', ['PermissionModule', 'ServicesModule',
+  return angular.module('UsersModule', ['NewUserDialogModule', 'PermissionModule', 'ServicesModule',
     'UserEditorModule', 'UtilsModule'])
         .directive('users', function($rootScope, perm, rpc, utils) {
       return {
@@ -53,8 +52,12 @@ define('users/users',
           $scope.selected = function(user) {
             return $scope.editingUser && $scope.editingUser.id == user.id;
           };
+          $scope.showNewUserDialog = function() {
+            document.getElementById('new-user-dlg').open();
+          };
         },
         templateUrl : 'js/users/users.html'
       };
     });
 });
+
