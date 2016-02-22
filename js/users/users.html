@@ -1,4 +1,5 @@
-<input type="button" value="根据报名邮件新建用户..." ng-click="showNewUserDialog()">
+<input ng-if="classId == 1" type="button" value="根据报名邮件新建用户..."
+    ng-click="showNewUserDialog()">
 <new-user-dialog></new-user-dialog>
 <div class="users flex" ng-if="isNotEmpty">
   <div class="css-table section odd-even">
