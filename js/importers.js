@@ -335,14 +335,14 @@ define('importers', ['permission', 'services', 'utils'], function() {
             var tsv = fields.concat(int_fields).join('\t');
 
             var convertIntValue = function(key, value) {
-              return {
+              var map = {
                 'sex': ['女', '男'],
                 'classId': classes,
                 'permission': perm.permissions,
                 'education': ['', '高中以下', '大专或高中', '本科', '硕士', '博士'],
-                'mentor_id': [],
-                'conversion': []
-              }[key][value];
+              };
+
+              return map.hasOwnProperty(key) && map[key][value] || value;
             };
 
             for (var id in users) {
