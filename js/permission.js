@@ -16,7 +16,8 @@ define('permission', ['utils'], function() {
         0x55: '学院督查', //4: 01010101 r
         0x17: '辅导员', //3: 010111    r class year data
         0xF: '组长',    //2: 1111     rw class data
-        0x7: '学员'    //2: 0111       rw own data, r class data
+        0x7: '学员',    //2: 0111       rw own data, r class data
+        0: '所有人'
       },
       isAdmin: function() {
         if (!this.user) return false;

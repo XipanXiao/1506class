@@ -176,8 +176,9 @@ function update_class($classInfo) {
   $datas = [];
   $fields = ["department_id", "name", "class_room", "email", "start_year", 
       "perm_level"];
+
   foreach ($fields as $field) {
-    if (!empty($classInfo[$field])) {
+    if (isset($classInfo[$field])) {
       $datas[$field] = $classInfo[$field];
     }
   }
@@ -258,7 +259,7 @@ function get_users($email, $classId = null, $user_id = null, $all = null) {
 
     $users[$user->id] = $user;
   }
-  
+
   return $users;
 }
 
