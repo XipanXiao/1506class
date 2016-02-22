@@ -7,13 +7,13 @@
       <label for="new-user-input">按Ctrl+V粘贴报名邮件的内容<label>
       <div>
         <textarea id="new-user-input" ng-model="input.emailBody"
-            rows="30" cols="40" autofocus>
+            rows="30" cols="40" ng-change="reset()" autofocus>
         </textarea>
       </div>
     </div>
     <user-editor ng-switch-default user="user"></user-editor>
   </div>
-  <div ng-if="error" class="error">{{error}}</div>
+  <div ng-if="error && !user" class="error">{{error}}</div>
   <div class="buttons">
     <paper-button dialog-dismiss>关闭</paper-button>
     <div ng-switch="user">

@@ -40,7 +40,7 @@ define('new_user_dialog/new_user_dialog',
                   var submitted = (1 == response.data.updated);
                   if (submitted) {
                     document.getElementById('new-user-dlg').close();
-                    $rootScope.$broadcast('class-updated', response.data.classId);
+                    $rootScope.$broadcast('class-updated', 1);
                   } else {
                     scope.error = response.data.error;
                   }
@@ -49,6 +49,7 @@ define('new_user_dialog/new_user_dialog',
 
               scope.reset = function() {
                 scope.user = null;
+                scope.error = null;
               };
             },
             templateUrl : 'js/new_user_dialog/new_user_dialog.html'
