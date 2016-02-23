@@ -5,5 +5,7 @@ $_SESSION ['user'] = '';
 
 session_destroy();
 
+setcookie("email", "", time()-3600);
+
 header('Location: ../login.html');
 ?>
