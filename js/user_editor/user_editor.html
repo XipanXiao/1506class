@@ -21,7 +21,7 @@
         <div class="css-table-cell">email</div>
         <div class="css-table-cell">{{user.email}}</div>
         <div class="css-table-cell">
-          <iron-icon ng-if="isAdmin()" class="selectable" icon="chevron-right"
+          <iron-icon ng-show="isAdmin()" class="selectable" icon="chevron-right"
               ng-click="editing = 'email'">
           </iron-icon>
         </div> 
