@@ -215,7 +215,7 @@ define('utils', [], function() {
         return date;
       },
       isHolidayWeek: function(startTime, week) {
-        var firstHalf = startTime.getMonth() == 5;
+        var firstHalf = new Date(startTime*1000).getMonth() == 5;
         if (firstHalf) {
           return week == 17 || week == 24;
         } else {

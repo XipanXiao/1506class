@@ -3,16 +3,16 @@ define('schedule_group_editor/schedule_group_editor',
     'services', 'utils'], function() {
 
   return angular.module('ScheduleGroupEditorModule',
-	    ['CourseGroupsModule', 'EditableLabelModule', 'ServicesModule',
-	     'UtilsModule']).directive('scheduleGroupEditor',
-				function(rpc, utils) {
-					return {
-					  scope: {
-					    group: '=',
-					    onCancel: '&',
-					    onSave: '&'
-					  },
-					  link: function(scope) {
+      ['CourseGroupsModule', 'EditableLabelModule', 'ServicesModule',
+       'UtilsModule']).directive('scheduleGroupEditor',
+        function(rpc, utils) {
+          return {
+            scope: {
+              group: '=',
+              onCancel: '&',
+              onSave: '&'
+            },
+            link: function(scope) {
               scope.saveGroup = function(group) {
                 rpc.update_schedule_group(group).then(function(response) {
                   if (parseInt(response.data.updated)) {
@@ -43,7 +43,7 @@ define('schedule_group_editor/schedule_group_editor',
                   for (index = 0; index < weeks; index++) {
                     var courseId = 0;
                     var holiday = utils.isHolidayWeek(group.start_time, index);
-                    if (!utils.isHolidayWeek(group.start_time, index)) {
+                    if (!holiday) {
                       courseId = course_ids[courseIndex++] || 0; 
                     }
 
@@ -59,8 +59,8 @@ define('schedule_group_editor/schedule_group_editor',
                   scope.$apply();
                 }, 0);
               };
-					  },
-						templateUrl : 'js/schedule_group_editor/schedule_group_editor.html'
-					};
-				});
+            },
+            templateUrl : 'js/schedule_group_editor/schedule_group_editor.html'
+          };
+        });
 });

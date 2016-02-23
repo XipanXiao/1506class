@@ -19,7 +19,6 @@
       <div class="css-table-cell"><strong>上课内容</strong></div>
       <div class="css-table-cell"><strong>总结</strong></div>
       <div class="css-table-cell"><strong>串讲</strong></div>
-      <div class="css-table-cell"></div>
     </div>
   
     <div ng-repeat="schedule in group.schedules" class="css-table-row"
@@ -38,11 +37,6 @@
         <user-picker ng-if="schedule.id && !vacation(schedule)" user-id="schedule.open"
             user-list="users" user-picked="update(schedule, 'open', userId)">
         </user-picker>
-      </div>
-      <div class="css-table-cell">
-        <iron-icon icon="icons:delete" title="删除" ng-click="remove(schedule)"
-            class="selectable" ng-if="schedule.id">
-        </iron-icon>
       </div>
     </div>
   </div>

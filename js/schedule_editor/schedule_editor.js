@@ -5,20 +5,20 @@ define('schedule_editor/schedule_editor',
     'user_picker/user_picker', 'utils'], function() {
 
   return angular.module('ScheduleEditorModule',
-	    ['CourseEditorDialogModule', 'EditableLabelModule',
-	     'ScheduleGroupEditorModule', 'ServicesModule', 'UserPickerModule',
-	     'UtilsModule']).directive('scheduleEditor', function(rpc, utils) {
-					return {
-					  scope: {
-					    classId: '='
-					  },
-					  link: function($scope) {
-					    $scope.week = 1000*3600*24*7;
-					    
-					    $scope.getWeeklyTime = function(group, index) {
-					      return utils.getWeeklyTime(group.start_time, index);
-					    };
-					    
+      ['CourseEditorDialogModule', 'EditableLabelModule',
+       'ScheduleGroupEditorModule', 'ServicesModule', 'UserPickerModule',
+       'UtilsModule']).directive('scheduleEditor', function(rpc, utils) {
+          return {
+            scope: {
+              classId: '='
+            },
+            link: function($scope) {
+              $scope.week = 1000*3600*24*7;
+              
+              $scope.getWeeklyTime = function(group, index) {
+                return utils.getWeeklyTime(group.start_time, index);
+              };
+              
               $scope.$watch('classId', function() {
                 if (!$scope.classId) return;
                 $scope.loadSchedules();
@@ -71,8 +71,8 @@ define('schedule_editor/schedule_editor',
               $scope.vacation = function(schedule) {
                 return !schedule.course_id || !parseInt(schedule.course_id);
               };
-					  },
-						templateUrl : 'js/schedule_editor/schedule_editor.html'
-					};
-				});
+            },
+            templateUrl : 'js/schedule_editor/schedule_editor.html'
+          };
+        });
 });
