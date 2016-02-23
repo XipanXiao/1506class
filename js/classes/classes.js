@@ -21,9 +21,9 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
                   utils.map(utils.positiveKeys($scope.alumnis), parseInt);
   
               $scope.currentClass = {
-                  year: $scope.classId ?
+                  year: classes[$scope.classId] ?
                       parseInt(classes[$scope.classId].start_year) :
-                          (new Date()).getFullYear(),
+                      (new Date()).getFullYear(),
                   id: $scope.classId
               };
               

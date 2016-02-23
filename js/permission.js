@@ -7,7 +7,7 @@ define('permission', ['utils'], function() {
       ROLES: {
         STUDENT: 0x7,
         LEADER: 0xF,
-        TEACHER: 0x3F,
+        TEACHER: 0x17,
         INSPECTION: 0x55,
         ADMIN: 0xFF
       },
@@ -23,6 +23,14 @@ define('permission', ['utils'], function() {
         if (!this.user) return false;
         return this.user.permission > this.ROLES.STUDENT;
       },
+      /// Class leaders (and below) should see only classes of the same year.
+      checkClassYear: function(user, classInfo) {
+        if (!classInfo.start_year || user.permission > this.ROLES.LEADER) {
+          return true;
+        }
+
+        return user.classInfo.start_year == classInfo.start_year;
+      },
       canRead: function(classInfo) {
         if (!this.user) return false;
 
@@ -30,7 +38,8 @@ define('permission', ['utils'], function() {
           return true;
         }
 
-        return this.user.permission >> ((classInfo.perm_level - 1) * 2);
+        return (this.user.permission >> ((classInfo.perm_level - 1) * 2)) &&
+            this.checkClassYear(this.user, classInfo);
       },
       canWrite: function(classInfo) {
         if (!this.user) return false;
@@ -39,7 +48,8 @@ define('permission', ['utils'], function() {
           return true;
         }
 
-        return (this.user.permission >> ((classInfo.perm_level - 1) * 2)) & 2;
+        return ((this.user.permission >> ((classInfo.perm_level - 1) * 2)) & 2)
+            && this.checkClassYear(this.user, classInfo);
       },
       level: function(permission) {
         var result = 0;
