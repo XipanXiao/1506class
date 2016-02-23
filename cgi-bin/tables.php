@@ -492,17 +492,19 @@ function update_schedule_group($group) {
   if (!empty($group["start_time"])) {
     date_default_timezone_set("UTC");
 
-  	$dt = new DateTime();
-  	$dt->setTimestamp(intval($group["start_time"]));
-  	$datas["start_time"] = $dt->format("Y-m-d H:i:s");
+    $dt = new DateTime();
+    $dt->setTimestamp(intval($group["start_time"]));
+    $datas["start_time"] = $dt->format("Y-m-d H:i:s");
   }
 
   $id = $group["id"];
   if ($id == 0) {
     $id = $medoo->insert("schedule_groups", $datas);
     if (!$id) return false;
-    
-    foreach ($group["schedules"] as $schedule) {
+
+    $schedules = $group["schedules"];
+    for ($index = 0; $index < count($schedules); $index++) {
+      $schedule = $schedules[$index];
       $schedule["group_id"] = $id;
       update_schedule($schedule);
     }
