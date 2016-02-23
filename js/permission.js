@@ -24,12 +24,9 @@ define('permission', ['utils'], function() {
         return this.user.permission > this.ROLES.STUDENT;
       },
       /// Class leaders (and below) should see only classes of the same year.
-      checkClassYear: function(user, classInfo) {
-        if (!classInfo.start_year || user.permission > this.ROLES.LEADER) {
-          return true;
-        }
-
-        return user.classInfo.start_year == classInfo.start_year;
+      checkClass: function(user, classInfo) {
+        return user.permission > this.ROLES.LEADER ||
+            user.classInfo.id == classInfo.id;
       },
       canRead: function(classInfo) {
         if (!this.user) return false;
@@ -39,7 +36,7 @@ define('permission', ['utils'], function() {
         }
 
         return (this.user.permission >> ((classInfo.perm_level - 1) * 2)) &&
-            this.checkClassYear(this.user, classInfo);
+            this.checkClass(this.user, classInfo);
       },
       canWrite: function(classInfo) {
         if (!this.user) return false;
@@ -49,7 +46,7 @@ define('permission', ['utils'], function() {
         }
 
         return ((this.user.permission >> ((classInfo.perm_level - 1) * 2)) & 2)
-            && this.checkClassYear(this.user, classInfo);
+            && this.checkClass(this.user, classInfo);
       },
       level: function(permission) {
         var result = 0;
