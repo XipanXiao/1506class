@@ -21,6 +21,9 @@ define('user_editor/user_editor',
         $scope.canGrant = function(permission) {
           return perm.canGrant(permission);
         };
+        $scope.isAdmin = function() {
+          return perm.isAdmin();
+        };
 
         $scope.$watch('user', function() {
           $scope.editing = null;

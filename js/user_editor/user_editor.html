@@ -20,7 +20,11 @@
       <div class="css-table-row padded-element">
         <div class="css-table-cell">email</div>
         <div class="css-table-cell">{{user.email}}</div>
-        <div class="css-table-cell"></div>          
+        <div class="css-table-cell">
+          <iron-icon ng-if="isAdmin()" class="selectable" icon="chevron-right"
+              ng-click="editing = 'email'">
+          </iron-icon>
+        </div> 
       </div>
       <div class="css-table-row padded-element">
         <div class="css-table-cell">班级</div>
@@ -168,6 +172,7 @@
         <select ng-switch-when="sex" ng-model="user.sex" autofocus
             ng-options="sexLabel[value] for value in [0, 1]">
         </select>
+        <input ng-switch-when="email" ng-model="user.email" type="email" autofocus>
         <classes ng-switch-when="classId" class-id="user.classId" permission="{{user.permission}}">
         </classes>
         <select ng-switch-when="permission" ng-model="user.permission" autofocus

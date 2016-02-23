@@ -8,8 +8,6 @@ define('app_bar/app_bar', ['permission', 'search_bar/search_bar'], function() {
         },
         link: function(scope) {
           scope.isAdmin = function() {
-            if (!scope.user) return;
-            perm.user = scope.user;
             return perm.isAdmin();
           };
         },
