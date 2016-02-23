@@ -14,9 +14,9 @@
 	      <div ng-switch-default>暂时没有学修记录。</div>
 	    </div>
 	  
-	    <input class="count-input" type="number" name="count" id="count_{{task.id}}" required>
-	    <input type="button" value="报数" ng-click="reportTask(task)">
-	    <div ng-if="error != null">{{error}}</div>
+	    <input class="count-input" type="number" ng-model="task.record.count" required>
+	    <input type="submit" value="报数" ng-click="reportTask(task)" ng-disabled="reporting">
+	    <div ng-if="error">{{error}}</div>
 	  </div>
 	</div>
 </div>

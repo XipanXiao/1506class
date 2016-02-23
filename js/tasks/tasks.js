@@ -23,19 +23,23 @@ define('tasks/tasks',
                 });
                 
                 task.lastRecord = null;
+                task.record = {count: 0};
                 
                 $scope.tasks.push(task);
               });
               
               $scope.reportTask = function(task) {
+                $scope.reporting = true;
+
                 var task_id = task.id;
-                var count =
-                    parseInt(document.getElementById("count_" + task_id).value);
+                var count = task.record.count;
                 var lastSum = task.lastRecord && task.lastRecord.sum || 0;
                 var sum = parseInt(lastSum) + count;
                 rpc.report_task(task_id, count, sum).then(function (response) {
                   task.lastRecord = response.data;
                   $rootScope.$broadcast('task-reported');
+                }).finally(function() {
+                  $scope.reporting = false;
                 });
               };
             });
