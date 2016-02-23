@@ -19,6 +19,10 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
                 });
           };
 
+          scope.$on('task-reported', function() {
+            scope.refreshStats();
+          });
+
           scope.reload = function() {
             if (!parseInt(scope.classId)) {
               scope.tasks = {};
@@ -36,7 +40,6 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
               });
             });
           };
-          
           
           scope.$watch('classId', function() {
             scope.reload();

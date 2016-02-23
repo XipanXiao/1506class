@@ -1,7 +1,7 @@
 define('tasks/tasks',
     ['progress_bar/progress_bar', 'services', 'utils'], function() {
   return angular.module('TasksModule', ['ProgressBarModule', 'ServicesModule',
-      'UtilsModule']).directive('tasks', function(rpc, utils) {
+      'UtilsModule']).directive('tasks', function($rootScope, rpc, utils) {
       return {
         scope: {
           departmentId: '@'
@@ -31,10 +31,11 @@ define('tasks/tasks',
                 var task_id = task.id;
                 var count =
                     parseInt(document.getElementById("count_" + task_id).value);
-                var sum = parseInt(task.lastRecord && task.lastRecord.sum || 0) +
-                    count;
+                var lastSum = task.lastRecord && task.lastRecord.sum || 0;
+                var sum = parseInt(lastSum) + count;
                 rpc.report_task(task_id, count, sum).then(function (response) {
                   task.lastRecord = response.data;
+                  $rootScope.$broadcast('task-reported');
                 });
               };
             });
