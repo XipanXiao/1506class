@@ -9,6 +9,9 @@ define('learning_records/learning_records', ['services'], function() {
             },
             link: function($scope) {
               $scope.attendOptions = ['缺席', '出席', '请假'];
+              $scope.vacation = function(schedule) {
+                return !parseInt(schedule.course_id); 
+              };
 
               $scope.$watch('classId', function() {
                 rpc.get_schedules($scope.classId, 'class')
