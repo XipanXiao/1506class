@@ -28,7 +28,7 @@ define('schedule_group_editor/schedule_group_editor',
                 var index = 0;
                 var course_ids = utils.keys(courses);
                 
-                if (group.schedules) {
+                if (group.schedules && utils.keys(group.schedules).length) {
                   // modifying existing schedules.
                   for (var id in group.schedules) {
                     var schedule = group.schedules[id];

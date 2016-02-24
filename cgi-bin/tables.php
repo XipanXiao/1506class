@@ -12,22 +12,22 @@ function get_departments() {
 }
 
 function update_department($department) {
-	global $medoo;
+  global $medoo;
 
-	$datas = ["name" => $department["name"]];
+  $datas = ["name" => $department["name"]];
 
-	$id = intval($department["id"]);
-	if ($id == 0) {
-		return $medoo->insert("departments", $datas);
-	}
-	
-	return $medoo->update("departments", $datas, ["id" => $id]);
+  $id = intval($department["id"]);
+  if ($id == 0) {
+    return $medoo->insert("departments", $datas);
+  }
+  
+  return $medoo->update("departments", $datas, ["id" => $id]);
 }
 
 function remove_department($id) {
-	global $medoo;
+  global $medoo;
 
-	return $medoo->delete("departments", ["id" => $id]);
+  return $medoo->delete("departments", ["id" => $id]);
 }
 
 function get_course_groups($detailed) {
@@ -140,16 +140,16 @@ function remove_schedule($id) {
   return $medoo->delete("schedules", ["id" => $id]);
 }
 
+function convert_class_record($classInfo) {
+  $classInfo["id"] = intval($classInfo["id"]);
+  $classInfo["department_id"] = intval($classInfo["department_id"]);
+  $classInfo["start_year"] = intval($classInfo["start_year"]);
+  $classInfo["perm_level"] = intval($classInfo["perm_level"]);
+  return $classInfo;
+}
+
 function get_classes($classId) {
   global $medoo;
-  
-  function convert_class_record($classInfo) {
-    $classInfo["id"] = intval($classInfo["id"]);
-    $classInfo["department_id"] = intval($classInfo["department_id"]);
-    $classInfo["start_year"] = intval($classInfo["start_year"]);
-    $classInfo["perm_level"] = intval($classInfo["perm_level"]);
-    return $classInfo;
-  }
   
   return keyed_by_id(array_map("convert_class_record",
       $medoo->select("classes", "*", $classId ? ["id" => $classId] : null)));
@@ -432,7 +432,7 @@ function get_schedules($classId, $records, $user_id) {
           ["classId" => $classId]));
 
   foreach ($schedule_groups as $group_id => $group) {
-  	$group["start_time"] = (new DateTime($group["start_time"]))->getTimestamp();
+    $group["start_time"] = (new DateTime($group["start_time"]))->getTimestamp();
     $group["schedules"] = keyed_by_id($medoo->select("schedules", "*",
         ["group_id" => $group_id]));
     
@@ -498,21 +498,31 @@ function update_schedule_group($group) {
   }
 
   $id = $group["id"];
+  $schedules = $group["schedules"];
+
   if ($id == 0) {
     $id = $medoo->insert("schedule_groups", $datas);
     if (!$id) return false;
 
-    $schedules = $group["schedules"];
-    for ($index = 0; $index < count($schedules); $index++) {
-      $schedule = $schedules[$index];
-      $schedule["group_id"] = $id;
-      update_schedule($schedule);
+    if (!empty($schedules)) {
+      for ($index = 0; $index < count($schedules); $index++) {
+        $schedule = $schedules[$index];
+        $schedule["group_id"] = $id;
+        update_schedule($schedule);
+      }
     }
+  } else {
+    $medoo->update("schedule_groups", $datas, ["id" => $id]);
 
-    return $id;
+    if (!empty($schedules)) {
+      foreach ($schedules as $schedule) {
+        $schedule["group_id"] = $id;
+        update_schedule($schedule);
+      }
+    }
   }
 
-  return $medoo->update("schedule_groups", $datas, ["id" => $id]);
+  return $id;
 }
 
 function search($prefix) {
