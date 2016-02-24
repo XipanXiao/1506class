@@ -24,7 +24,7 @@ if (empty($_SESSION["user"]) && empty($_COOKIE["email"])) {
 
 if (empty($_SESSION["user"])) {
 	$user = get_user($_COOKIE["email"]);
-	if (!$user) {
+	if (!$user || $user->permission > 7) {
 	  echo '{"error": "login needed"}';
 	  exit();
   }
