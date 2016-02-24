@@ -18,7 +18,9 @@ if(! empty ( $_POST ["email"] ) && ! empty ( $_POST ["password"] )) {
     
     $user->password = null;
     $_SESSION["user"] = serialize($user);
-    setcookie("email", $user->email, time() + 3600 * 24 * 14);
+    if ($user->permission <= 7) {
+      setcookie("email", $user->email, time() + 3600 * 24 * 14);
+    }
     
     $page = $user->permission < 8 ? "index.html" : "admin.html";
     client_redirect("../".$page, 1,
