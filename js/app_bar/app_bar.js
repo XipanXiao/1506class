@@ -10,6 +10,9 @@ define('app_bar/app_bar', ['permission', 'search_bar/search_bar'], function() {
           scope.isAdmin = function() {
             return perm.isAdmin();
           };
+          scope.isSysAdmin = function() {
+            return perm.isSysAdmin();
+          };
         },
         templateUrl : 'js/app_bar/app_bar.html'
       };

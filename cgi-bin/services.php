@@ -1,36 +1,13 @@
 <?php
 include_once 'config.php';
 include_once 'tables.php';
+include_once 'permission.php';
 
 $response = null;
 
-if (empty($_SESSION["user"]) && empty($_COOKIE["email"])) {
-  if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
-    $resource_id = $_GET["rid"];
-  
-    if ($resource_id == "departments") {
-      $response = get_departments();
-    } elseif ($resource_id == "classes") {
-      $response = get_classes(null);
-    }
-  }
-  
-  if (!$response) {
-    echo '{"error": "login needed"}';
-  }
-
-  exit();
-}
-
 if (empty($_SESSION["user"])) {
-	$user = get_user($_COOKIE["email"]);
-	if (!$user || $user->permission > 7) {
-	  echo '{"error": "login needed"}';
-	  exit();
-  }
-	
-  $user->password = null;
-  $_SESSION["user"] = serialize($user);
+  echo '{"error": "login needed"}';
+  exit();
 } else {
 	$user = unserialize($_SESSION["user"]);
 }
@@ -74,18 +51,28 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $all = empty($_GET["all"]) ? null : $_GET["all"];
 
     if ($all) {
-      $response = get_users(null, null, null, $all);
+      if (isSysAdmin($user)) {
+        $response = get_users(null, null, null, $all);
+      }
     } elseif ($classId) {
-      $response = get_users($email, $classId);
+      if (isSysAdmin($user) || isClassLeader($user, $classId)) {
+    	  $response = get_users($email, $classId);
+      }
     } elseif ($email) {
       $response = current(get_users($email));
+      if ($response && !isSysAdmin($user) &&
+          !isClassLeader($user, $response->$classId)) {
+        $response = null;
+      }
     } else {
       $response = $user;
     }
   } elseif ($resource_id == "learning_records" && !empty($_GET["classId"])) {
     $response = get_schedules($_GET["classId"], $_GET["records"], $user->id);
   } elseif ($resource_id == "search") {
-    $response = search($_GET["prefix"]);
+  	if (isSysAdmin($user)) {
+      $response = search($_GET["prefix"]);
+    }
   } elseif ($resource_id == "task_stats") {
     $response = get_class_task_stats($classId, $_GET["task_id"]);
   }
@@ -94,7 +81,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   
   $task_user_id = $student_id;
   if (!empty($_POST["student_id"])) {
-    if ($user->permission <= 7) {
+    if (!isAdmin($user)) {
       $response =
           ["error" => "permission denied, you can't report tasks for others"];
       echo json_encode($response);
@@ -161,6 +148,12 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   }
 } elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE" &&
     isset ( $_REQUEST["rid"] )) {
+
+  if (!isSysAdmin($user)) {
+  	$response = ["error" => "permission denied"];
+    echo json_encode($response);
+    exit();
+  }
 
   $resource_id = $_REQUEST["rid"];
   if ($resource_id == "course_group") {

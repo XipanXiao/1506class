@@ -7,7 +7,7 @@
       </a>
     </span>
   </div>
-  <search-bar class="left" ng-if="admining"></search-bar>
+  <search-bar class="left" ng-if="admining && isSysAdmin()"></search-bar>
   <div class="right">
     <a ng-if="admining" class="app-bar-link" href="index.html">学员页面</a>
     <a ng-if="isAdmin() && !admining" class="app-bar-link" href="admin.html">管理页面</a>
