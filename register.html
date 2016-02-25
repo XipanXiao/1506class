@@ -55,15 +55,21 @@
           </div>
         </div>
         <div class="css-table-row">
-          <label class="css-table-cell" for="birthday">生日:</label>
+          <label class="css-table-cell" for="birthday">生日:
+            <span class="required-asterisk">*</span>
+          </label>
           <div class="css-table-cell">
-            <input type="text" name="birthday" pattern="\d{4}-\d{2}-\d{2}" placeholder="1970-01-01">
+            <input type="text" name="birthday" pattern="\d{4}-\d{2}-\d{2}" placeholder="1970-01-01"
+                required>
           </div>
         </div>
         <div class="css-table-row">
-          <label class="css-table-cell" for="phone">联系电话:</label>
+          <label class="css-table-cell" for="phone">联系电话:
+            <span class="required-asterisk">*</span>
+          </label>
           <div class="css-table-cell">
-            <input type="tel" name="phone" pattern="\d{3}-\d{3}-\d{4}" placeholder="000-000-0000">
+            <input type="tel" name="phone" pattern="\d{3}-\d{3}-\d{4}" placeholder="000-000-0000"
+                required>
           </div>
         </div>
         <div class="css-table-row">
