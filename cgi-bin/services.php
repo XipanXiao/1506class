@@ -105,7 +105,10 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   }  elseif ($resource_id == "schedule_group") {
     $response = ["updated" => update_schedule_group($_POST)];
   } elseif ($resource_id == "class") {
-    $response = ["updated" => update_class($_POST)]; 
+  	if (isSysAdmin($user) ||
+  	    !empty($_POST["id"]) && isClassLeader($user, $_POST["id"])) {
+      $response = ["updated" => update_class($_POST)];
+  	}
   } elseif ($resource_id == "course_group") {
     $response = ["group" => update_course_group($_POST)];
   } elseif ($resource_id == "department") {
@@ -113,6 +116,21 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "course") {
     $response = update_course($_POST); 
   } elseif ($resource_id == "user") {
+  	if (!isAdmin($user)) {
+  		if (empty($_POST["id"]) || $user->id != $_POST["id"]) exit();
+  	} elseif (!isSysAdmin($user)) {
+  		if (empty($_POST["id"])) exit();
+
+  	  $userToUpdate = current(get_users(null, null, $_POST["id"]));
+  	  if (!$userToUpdate ||
+  	      !isClassLeader($user, $userToUpdate->classId)) exit();
+  	}
+  	
+  	if (!empty($_POST["permission"]) &&
+  	    intval($_POST["permission"]) > intval($user->permission)) {
+  	  exit();  	
+  	}
+  	
     if (!empty($_POST["classId"]) && intval($_POST["classId"]) == 0) {
       if(!empty($_POST["classId_label"]) &&
           !empty($_POST["start_year_label"])) {
