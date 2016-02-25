@@ -305,10 +305,8 @@ function update_user($user) {
     if (empty($datas["classId"]) || intval($datas["classId"]) == 0) {
       $datas["classId"] = 1;
     }
-    if (empty($datas["permission"])) {
-      $datas["permission"] = 7;
-    }
-    
+
+    $datas["permission"] = 7;
     if ($id = $medoo->insert("users", $datas)) {
       return current(get_users(null, null, intval($id)));
     }
