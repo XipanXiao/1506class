@@ -18,9 +18,6 @@ define('user_editor/user_editor',
 
         $scope.permissionLabel = perm.permissions;
         $scope.permissions = perm.lowerPermissions();
-        $scope.canGrant = function(permission) {
-          return perm.canGrant(permission);
-        };
         $scope.isSysAdmin = function() {
           return perm.isSysAdmin();
         };
