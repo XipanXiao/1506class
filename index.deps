@@ -8,9 +8,6 @@ js/app_bar/app_bar.js
 js/progress_bar/progress_bar.js
 js/tasks/tasks.js
 js/schedule_tasks/schedule_tasks.js
-js/editable_label/editable_label.js
-js/task_editor_dialog/task_editor_dialog.js
-js/task_stats/task_stats.js
 js/importers.js
 js/import_dialog/import_dialog.js
 js/classes/classes.js
