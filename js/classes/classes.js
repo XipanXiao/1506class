@@ -88,13 +88,6 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
             $rootScope.$broadcast('select-page', 0);
           };
           
-          $scope.exportUsers = function() {
-            importers['userImporter'].exportAll().then(function(result) {
-              $scope.usersSqlUrl = result.sql;  
-              $scope.usersTsvUrl = result.tsv;  
-            });
-          };
-          
           $scope.isSysAdmin = function() {
             return perm.isSysAdmin();
           }
