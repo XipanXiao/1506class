@@ -1,5 +1,3 @@
 cd $OPENSHIFT_REPO_DIR;
 ./aggregate.sh
-cd cgi-bin
-echo "<?php exit(); ?>" | cat - reset.php > reset.tmp && mv reset.tmp reset.php
 
