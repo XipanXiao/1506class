@@ -103,9 +103,9 @@ define('services', [], function() {
             });
       },
       
-      get_users: function(email, classId, all) {
-        return $http.get('{0}?rid=users&email={1}&classId={2}&all={3}'.
-            format(serviceUrl, email || '', classId || '', all || ''));
+      get_users: function(email, classId) {
+        return $http.get('{0}?rid=users&email={1}&classId={2}'.
+            format(serviceUrl, email || '', classId || ''));
       },
       
       get_user: function(email) {

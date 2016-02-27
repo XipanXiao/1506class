@@ -231,13 +231,11 @@ function get_user($email) {
   return $user;
 }
 
-function get_users($email, $classId = null, $user_id = null, $all = null) {
+function get_users($email, $classId = null, $user_id = null) {
   global $medoo;
 
   $result = null;
-  if ($all) {
-    $result = $medoo->select("users", "*");
-  } elseif ($classId) {
+  if ($classId) {
     $result = $medoo->select("users", "*", ["classId" => $classId]);
   } elseif ($email){
     $result = $medoo->select("users", "*", ["email" => $email]);
