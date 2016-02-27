@@ -168,7 +168,8 @@ define('utils', [], function() {
         }
         
         updated.oldData = result;
-        return updated.changed = changed;
+        updated.changed = changed;
+        return changed;
       },
       removeWhere: function(list, test) {
         for (var key in list) {

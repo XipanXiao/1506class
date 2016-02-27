@@ -85,7 +85,7 @@ define('import_dialog/import_dialog', ['importers', 'utils'], function() {
             $scope.toggleAll = function() {
               $scope.result.records.forEach(function(record) {
                 if (record.changed) record.checked = !record.checked;
-              })
+              });
             };
             
             $scope.refresh = utils.refresh;

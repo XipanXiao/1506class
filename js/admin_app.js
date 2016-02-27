@@ -44,8 +44,8 @@ define('admin_app',
               tabs.select(index);
             });
           }
-        }
-      }).config( ['$compileProvider', function( $compileProvider ) {   
+        };
+      }).config( ['$compileProvider', function( $compileProvider ) {
         $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|blob):/);
       }]);
 

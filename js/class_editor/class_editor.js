@@ -44,7 +44,7 @@ define('class_editor/class_editor', ['departments/departments',
                     $rootScope.$broadcast('class-deleted', id);
                   }
                 });
-              }
+              };
               
               scope.$watch('classId', function(classId) {
                 scope.reload(classId);

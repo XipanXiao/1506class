@@ -22,7 +22,7 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
   
               $scope.currentClass = {
                   year: classes[$scope.classId] ?
-                      parseInt(classes[$scope.classId].start_year) :
+                      parseInt(classes[$scope.classId].start_year, 10) :
                       (new Date()).getFullYear(),
                   id: $scope.classId
               };
@@ -33,7 +33,7 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
                 // Classes without a 'start_year' field are pinned for all years.
                 for (var id in response.data) {
                   var info = response.data[id];
-                  if (!info.start_year) $scope.classes[id] = info;
+                  if (!info.start_year) { $scope.classes[id] = info; }
                 }
 
                 $scope.classIds = utils.map(utils.keys($scope.classes), parseInt);
@@ -64,8 +64,10 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
           };
           
           $scope.$on('editing-user-changed', function(event, editingUser) {
-            if (!editingUser) return;
-            if (editingUser.classId != $scope.classId ) {
+            if (!editingUser) {
+              return;
+            }
+            if (editingUser.classId !== $scope.classId ) {
               $scope.locateClass(editingUser.classInfo);
             }
           });
@@ -76,7 +78,7 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
           });
 
           $scope.$on('class-deleted', function(event, classId) {
-            if ($scope.classId == classId) {
+            if ($scope.classId === classId) {
               $scope.classId = $scope.lastClassId;
             }
             $scope.reload();
@@ -90,7 +92,7 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
           
           $scope.isSysAdmin = function() {
             return perm.isSysAdmin();
-          }
+          };
         },
         templateUrl : 'js/classes/classes.html'
       };

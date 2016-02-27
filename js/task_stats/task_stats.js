@@ -51,7 +51,7 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
             if (scope.admining) {
               document.querySelector('#task-editor-dlg').open();
             }
-          }
+          };
         },
         templateUrl: 'js/task_stats/task_stats.html'
       };

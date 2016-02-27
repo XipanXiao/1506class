@@ -148,12 +148,12 @@ define('importers', ['permission', 'services', 'utils'], function() {
       });
       
       var start_year_label =
-          user['start_year'] && user['start_year'].trim() || '';
-      user['start_year_label'] = start_year_label;
+          user.start_year && user.start_year.trim() || '';
+      user.start_year_label = start_year_label;
       if (start_year_label.startsWith('1')) {
-        user['start_year'] = 2000 + parseInt(start_year_label.substring(0,2));
+        user.start_year = 2000 + parseInt(start_year_label.substring(0,2));
       } else if (start_year_label.startsWith('2')) {
-        user['start_year'] = parseInt(start_year_label.substring(0,4));
+        user.start_year = parseInt(start_year_label.substring(0,4));
       }
       
       user.phone = cutOff(user.phone, 16);
@@ -249,7 +249,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
                 var ignored = ['classInfo', 'password', 'permission',
                     'internal_id', 'occupation', 'phone', 'state', 'street',
                     'city', 'name', 'education'];
-                ignored.forEach(function(key) {delete existingUser[key]});
+                ignored.forEach(function(key) {delete existingUser[key];});
 
                 user.id = existingUser.id;
                 user.birthday = user.birthday || existingUser.birthday;

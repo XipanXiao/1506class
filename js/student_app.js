@@ -12,7 +12,7 @@ define('student_app',
               perm.user = user;
             });
           }
-        }
+        };
       });
 
   angular.element(document).ready(function() {
