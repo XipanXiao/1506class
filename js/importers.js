@@ -27,12 +27,14 @@ define('importers', ['permission', 'services', 'utils'], function() {
       "序号": "internal_id",
       "internal_id": "internal_id",
       "姓名": "name",
+      "您的姓名": "name",
       "name": "name",
       "性别": "sex",
       "sex": "sex",
       "出生年月": "birthday",
       "birthday": "birthday",
       "文化程度": "education",
+      "您的学历": "education",
       "education": "education",
       "职业": "occupation",
       "occupation": "occupation",
@@ -40,12 +42,16 @@ define('importers', ['permission', 'services', 'utils'], function() {
       "预选班级": "classId",
       "classId": "classId",
       "联系电话": "phone",
+      "您的电话": "phone",
       "phone": "phone",
       "电子邮箱或QQ号": "email",
       "email": "email",
+      "您的邮箱": "email",
       "居住省份/直辖市": "state",
+      "您所在省": "state",
       "state": "state",
       "市/县/区": "city",
+      "您所在市": "city",
       "city": "city",
       "街道": "street",
       "street": "street",
@@ -123,7 +129,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
       
       user.email = user.email.toLowerCase();
       user.birthday = extractFromPatter(/([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})/,
-          user.birthday);
+          user.birthday.replace('年', '-').replace('月', '-01'));
       user.birthday_label = user.birthday;
       user.birthday = user.birthday ? (user.birthday + ' 00:00:00') : ''; 
       
@@ -184,7 +190,17 @@ define('importers', ['permission', 'services', 'utils'], function() {
           return rpc.get_classes().then(function(response) {
             var reader = lineReader(text, true);
             var headerToColumn = function(header) {
-              return columnMap.columns[header];
+              var column = columnMap.columns[header];
+              if (column) {
+                return column;
+              }
+              for (var key in columnMap.columns) {
+                if (header.indexOf(key) >= 0) {
+                  return columnMap.columns[key];
+                }
+              }
+              
+              return header;
             };
             var result = {
               headers: reader.columns,
@@ -214,6 +230,11 @@ define('importers', ['permission', 'services', 'utils'], function() {
               for (var c = 0; c < reader.columns.length; c++) {
                 user[result.columns[c]] =
                     removeQuations(columnValues[c]).trim();
+                if (result.headers[c].indexOf('年龄') >= 0) {
+                  var year = (new Date()).getFullYear() -
+                      parseInt(columnValues[c], 10);
+                  user.birthday = '{0}-01-01 00:00:00'.format(year);
+                }
               }
               
               if (validate(user, response.data) && !recordsMap[user.email]) {

@@ -424,3 +424,7 @@ div.compact-url {
 .register-banner {
   width: 500px;
 }
+
+paper-dialog#new-user-dlg {
+  max-height: 650px;
+}
