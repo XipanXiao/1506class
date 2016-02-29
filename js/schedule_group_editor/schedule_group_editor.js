@@ -44,7 +44,10 @@ define('schedule_group_editor/schedule_group_editor',
                     var courseId = 0;
                     var holiday = utils.isHolidayWeek(group.start_time, index);
                     if (!holiday) {
-                      courseId = course_ids[courseIndex++] || 0; 
+                      courseId = course_ids[courseIndex++];
+                      if (!courseId) {
+                        break;
+                      }
                     }
 
                     group.schedules[index] = {
