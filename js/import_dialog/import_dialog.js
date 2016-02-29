@@ -61,6 +61,7 @@ define('import_dialog/import_dialog', ['importers', 'utils'], function() {
               }
 
               if (result) $scope.result = result;
+              return true;
             };
             
             $scope.diffType = function(record, key) {

@@ -244,7 +244,9 @@ define('importers', ['permission', 'services', 'utils'], function() {
                 result.skipped.push(line);
               }
 
-              progress && progress(++index, reader.lines, null, result);
+              if (progress && !progress(++index, reader.lines, null, result)) {
+                return;
+              }
               
               /// Yield every 10 records to update UI.
               index % 10 == 0 ? setTimeout(function() {

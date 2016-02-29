@@ -280,7 +280,7 @@ function update_user($user) {
   $datas = [];
   
   $int_fields = ["sex", "mentor_id", "permission", "education", "conversion",
-      "classId", "volunteer", "channel"];
+      "classId", "volunteer", "channel", "entrance"];
   $fields = ["internal_id", "name", "nickname", "email",
       "phone", "street", "street2", "city", "state", "country", "zip",
       "im", "occupation", "birthday", "comments", "skills"];

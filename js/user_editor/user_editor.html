@@ -153,6 +153,15 @@
           </iron-icon>
         </div>          
       </div>
+      <div class="css-table-row padded-element">
+        <div class="css-table-cell">注册入口</div>
+        <div class="css-table-cell">{{entrances[user.entrance]}}</div>
+        <div class="css-table-cell">
+          <iron-icon class="selectable" icon="chevron-right"
+              ng-click="editing = 'entrance'">
+          </iron-icon>
+        </div>          
+      </div>
       <div class="css-table-row padded-element" ng-show="admining">
         <div class="css-table-cell">备注</div>
         <div class="css-table-cell">{{user.comments}}</div>
@@ -230,6 +239,8 @@
                 placeholder="2015" autofocus>
         <select ng-switch-when="channel" ng-model="user.channel"
             ng-options="channelLabels[value] for value in [1, 2, 3, 4, 5, 6, 7]"></select>
+        <select ng-switch-when="entrance" ng-model="user.entrance"
+            ng-options="entrances[value] for value in [0, 1, 2]"></select>
         <input ng-switch-when="comments" ng-model="user.comments" type="text" autofocus>
       </div>
       <input ng-if="editing != 'address'" type="submit" value="Save" ng-click="save()"

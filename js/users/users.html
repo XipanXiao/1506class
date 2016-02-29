@@ -10,6 +10,7 @@
       <div class="css-table-cell"><strong>电话</strong></div>
       <div class="css-table-cell"><strong>州</strong></div>
       <div class="css-table-cell"><strong>跟进</strong></div>
+      <div class="css-table-cell" ng-if="isNewClass()"><strong>入口</strong></div>
       <div class="css-table-cell"><strong>备注</strong></div>
       <div class="css-table-cell"></div>
     </div>
@@ -22,6 +23,7 @@
       <div class="css-table-cell">{{user.phone}}</div>
       <div class="css-table-cell">{{user.state}}</div>
       <div class="css-table-cell">{{userNames[user.mentor_id]}}</div>
+      <div class="css-table-cell" ng-if="isNewClass()">{{entrances[user.entrance]}}</div>
       <div class="css-table-cell comments">{{user.comments}}</div>
       <div class="css-table-cell">
         <iron-icon icon="icons:delete" title="删除" ng-click="remove(user)" class="selectable">

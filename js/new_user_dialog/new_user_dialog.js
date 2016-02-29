@@ -43,7 +43,11 @@ define('new_user_dialog/new_user_dialog',
                     } else {
                       scope.error = 'Invalid input, check fields like emails.';
                     }
+                  } else {
+                    scope.user.entrance = (text === scope.input.emailBody
+                        ? 1 : 2);
                   }
+                  return false;
                 };
 
                 importers.userImporter.analyze(text, callback, scope);
