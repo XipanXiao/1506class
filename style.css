@@ -2,13 +2,18 @@ body {
   background: rgb(241, 241, 241);
   font-family: arial,sans-serif;
   font-size: 14px;
-  width: 1280px;
+  max-width: 1280px;
   overflow-x: scroll;
 }
 
 .center {
   margin-left: auto;
   margin-right: auto;
+}
+
+body.admin {
+  max-width: 1440px;
+  overflow-x: auto;	
 }
 
 .padded-element {
