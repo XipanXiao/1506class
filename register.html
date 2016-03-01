@@ -155,10 +155,11 @@
           </div>
         </div>
         <div class="css-table-row">
-          <div class="css-table-cell"><label for="education">文化程度</label></div>
+          <div class="css-table-cell">
+            <label for="education">文化程度<span class="required-asterisk">*</span></label>
+          </div>
           <div class="css-table-cell">
             <select name="education">
-              <option value=""></option>
               <option value="1">高中及以下</option>
               <option value="2">大专</option>
               <option value="3">本科</option>
@@ -168,9 +169,11 @@
           </div>
         </div>
         <div class="css-table-row">
-          <div class="css-table-cell"><label for="occupation">职业</label></div>
           <div class="css-table-cell">
-            <input type="text" id="occupation" name="occupation">
+            <label for="occupation">职业<span class="required-asterisk">*</span></label>
+          </div>
+          <div class="css-table-cell">
+            <input type="text" id="occupation" name="occupation" required>
           </div>
         </div>
         <div class="css-table-row">

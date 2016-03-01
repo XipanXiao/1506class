@@ -1,6 +1,7 @@
 <?php
-include_once 'datatype.php';
-include_once 'connection.php';
+include_once "datatype.php";
+include_once "connection.php";
+include_once "util.php";
 
 $medoo = get_medoo();
 
@@ -284,6 +285,8 @@ function update_user($user) {
   $fields = ["internal_id", "name", "nickname", "email",
       "phone", "street", "street2", "city", "state", "country", "zip",
       "im", "occupation", "birthday", "comments", "skills"];
+
+  $user["birthday"] = format_birthday($user["birthday"]);
   
   foreach ($user as $key => $value) {
     if ($key == "password") {
