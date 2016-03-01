@@ -20,6 +20,10 @@ define('tasks/tasks',
                 var task = angular.copy(value);
                 rpc.get_last_task_record(task.id).then(function(response) {
                   task.lastRecord = response.data;
+                  if (task.lastRecord && task.lastRecord.ts) {
+                    task.lastRecord.ts = new Date(task.lastRecord.ts).
+                        toLocaleString();
+                  }
                 });
                 
                 task.lastRecord = null;

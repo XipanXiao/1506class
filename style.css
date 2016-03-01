@@ -44,6 +44,7 @@ div.login-page {
 
 tasks {
   padding-top: 40px;
+  width: 220px;  
 }
 
 .white {
@@ -129,10 +130,6 @@ input[type="submit"]:enabled {
 
 .hidden {
   display: none;
-}
-
-tasks {
-  width: 200px;  
 }
 
 schedule-tasks {
