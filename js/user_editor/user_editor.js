@@ -12,7 +12,7 @@ define('user_editor/user_editor',
         $scope.sexLabel = ['女', '男'];
         $scope.educationLabels = ['', '高中及以下', '大专', '本科', '硕士', '博士'];
         $scope.volunteerLabels =
-            ['', '暂时先不', '小组管理', '资料收发', '统计报数', '其他工作'];
+            ['', '暂时先不', '小组管理', '资料收发', '统计报数', '其他工作', '英文翻译'];
         $scope.channelLabels = ['', '其他方式', '智悲佛网', '国际佛学网',
             '美国智悲菩提讲修', '本地招生材料', '微信', '微博或论坛', '朋友介绍'];
         $scope.entrances = ['本站', '微信', 'zbfw'];
