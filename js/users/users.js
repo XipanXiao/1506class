@@ -9,7 +9,7 @@ define('users/users', ['new_user_dialog/new_user_dialog', 'permission', 'service
           classId: '=',
         },
         link: function($scope) {
-          $scope.entrances = ['本站', '微信', 'bicw'];
+          $scope.entrances = ['本站', '微信', 'zbfw'];
           $scope.isNewClass = function() {
             return $scope.classId == 1;
           };
