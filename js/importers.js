@@ -53,13 +53,9 @@ define('importers', ['permission', 'services', 'utils'], function() {
       "市/县/区": "city",
       "您所在市": "city",
       "city": "city",
-      "街道": "street",
-      "street": "street",
       "Status": "comments",
       "comments": "comments",
-      "zip": "zip",
       "nickname": "nickname",
-      "street2": "street2",
       "country": "country",
       "im": "im",
       "mentro_id": "mentor_id",
@@ -169,17 +165,6 @@ define('importers', ['permission', 'services', 'utils'], function() {
         user.city = cutOff(user.city, 8);
       }
 
-      if (!user.zip) {
-        var zip = user.street && user.street.substring(user.street.length-5);
-        user.zip = /[0-9]{5}/.test(zip) ? zip : '';
-      }
-      
-      user.street = cutOff(user.street && user.street.split(/[,，]/)[0] || '',
-          32);
-      if (encode_utf8(user.street).length > 64) {
-        user.street = cutOff(user.street, 16);
-      }
-
       return true;
     };
 
@@ -270,7 +255,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
               if (!existingUser || !existingUser.email) existingUser = null;
               if (existingUser) {
                 var ignored = ['classInfo', 'password', 'permission',
-                    'internal_id', 'occupation', 'phone', 'state', 'street',
+                    'internal_id', 'occupation', 'phone', 'state',
                     'city', 'name', 'education'];
                 ignored.forEach(function(key) {delete existingUser[key];});
 

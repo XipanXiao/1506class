@@ -228,12 +228,9 @@ CREATE TABLE users(
 
             im VARCHAR(16),
             phone VARCHAR(16),
-            street VARCHAR(40),
-            street2 VARCHAR(16),
             city VARCHAR(32),
             state VARCHAR(8),
             country VARCHAR(16),
-            zip VARCHAR(8),
 
             occupation VARCHAR(20),
             skills VARCHAR(16),

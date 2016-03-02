@@ -283,7 +283,7 @@ function update_user($user) {
   $int_fields = ["sex", "mentor_id", "permission", "education", "conversion",
       "classId", "volunteer", "channel", "entrance"];
   $fields = ["internal_id", "name", "nickname", "email",
-      "phone", "street", "street2", "city", "state", "country", "zip",
+      "phone", "city", "state", "country",
       "im", "occupation", "birthday", "comments", "skills"];
 
   $user["birthday"] = format_birthday($user["birthday"]);

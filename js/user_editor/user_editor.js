@@ -39,11 +39,8 @@ define('user_editor/user_editor',
           var data = {id: user.id};
           switch ($scope.editing) {
           case 'address':
-            data.street = user.street;
-            data.street2 = user.street2;
             data.city = user.city;
             data.state = user.state;
-            data.zip = user.zip;
             break;
           case 'password':
             if (user.password != user.confirm) return;
