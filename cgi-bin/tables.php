@@ -286,7 +286,9 @@ function update_user($user) {
       "phone", "city", "state", "country",
       "im", "occupation", "birthday", "comments", "skills"];
 
-  $user["birthday"] = format_birthday($user["birthday"]);
+  if (!empty($user["birthday"])) {
+    $user["birthday"] = format_birthday($user["birthday"]);
+  }
   
   foreach ($user as $key => $value) {
     if ($key == "password") {
