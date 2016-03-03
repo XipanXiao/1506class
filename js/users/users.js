@@ -6,12 +6,12 @@ define('users/users', ['new_user_dialog/new_user_dialog', 'permission', 'service
         .directive('users', function($rootScope, perm, rpc, utils) {
       return {
         scope: {
-          classId: '=',
+          classId: '='
         },
         link: function($scope) {
           $scope.entrances = ['本站', '微信', 'zbfw'];
           $scope.isNewClass = function() {
-            return $scope.classId == 1;
+            return $scope.classId === 1;
           };
           $scope.reload = function(classId) {
             if (!classId) {
@@ -25,6 +25,7 @@ define('users/users', ['new_user_dialog/new_user_dialog', 'permission', 'service
                 for (var id in $scope.users) {
                   var user = $scope.users[id];
                   $scope.userNames[user.id] = user.name;
+                  $scope.updateEnroll(user, true);
                 }
 
                 $scope.isNotEmpty = !utils.isEmpty($scope.users);
@@ -54,10 +55,22 @@ define('users/users', ['new_user_dialog/new_user_dialog', 'permission', 'service
             }
           };
           $scope.selected = function(user) {
-            return $scope.editingUser && $scope.editingUser.id == user.id;
+            return $scope.editingUser && $scope.editingUser.id === user.id;
           };
           $scope.showNewUserDialog = function() {
             document.getElementById('new-user-dlg').open();
+          };
+          $scope.updateEnroll = function(user, decode) {
+            if (decode) {
+              user.welcomed = (user.enroll_tasks & 1) != 0;
+              user.wechated = (user.enroll_tasks & 2) != 0;
+              user.yyed = (user.enroll_tasks & 4) != 0;
+              user.tested = (user.enroll_tasks & 8) != 0;
+            } else {
+              user.enroll_tasks = utils.makeBits([user.welcomed, user.wechated,
+                  user.yyed, user.tested]);
+              rpc.update_user({id: user.id, enroll_tasks: user.enroll_tasks});
+            }
           };
         },
         templateUrl : 'js/users/users.html'

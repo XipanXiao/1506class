@@ -255,6 +255,13 @@ define('utils', [], function() {
       },
       unixTimestamp: function(date) {
         return date.getTime() / 1000;
+      },
+      makeBits: function(bits) {
+        var value = 0;
+        for (var index = 0;index < bits.length; index++) {
+          value |= (bits[index] ? (1<<index) : 0);
+        }
+        return value;
       }
     };
   });

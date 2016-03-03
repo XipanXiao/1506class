@@ -208,7 +208,8 @@ CREATE TABLE users(
             education TINYINT,
             volunteer TINYINT,
             channel TINYINT,
-            conversion SMALLINT,
+            enroll_tasks TINYINT,
+            conversion YEAR,
 
             classId INT NOT NULL,
               INDEX classId_idx(classId),

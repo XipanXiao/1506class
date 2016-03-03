@@ -11,19 +11,27 @@
       <div class="css-table-cell"><strong>州</strong></div>
       <div class="css-table-cell"><strong>跟进</strong></div>
       <div class="css-table-cell" ng-if="isNewClass()"><strong>入口</strong></div>
+      <div class="css-table-cell" ng-if="isNewClass()"><strong>已信,入微,YY,试麦</strong></div>
       <div class="css-table-cell"><strong>备注</strong></div>
       <div class="css-table-cell"></div>
     </div>
     <div ng-repeat="user in users" class="css-table-row selectable users"
         ng-click="showInfo(user, $index)"
         ng-class="{'selected': selected(user), 'admin': isAdmin(user)}">
-      <div class="css-table-cell">{{user.name}}</div>
+      <div class="css-table-cell compact-name-field">{{user.name}}</div>
       <div class="css-table-cell">{{user.sex == '1' ? '男' : '女'}}</div>
       <div class="css-table-cell email">{{user.email}}</div>
       <div class="css-table-cell">{{user.phone}}</div>
       <div class="css-table-cell">{{user.state}}</div>
       <div class="css-table-cell">{{userNames[user.mentor_id]}}</div>
       <div class="css-table-cell" ng-if="isNewClass()">{{entrances[user.entrance]}}</div>
+      <div class="css-table-cell" ng-if="isNewClass()">
+        <input type="checkbox" ng-model="user.welcomed" title="欢迎信已发" ng-click="updateEnroll(user)">
+        <input type="checkbox" ng-model="user.wechated" title="已加入微信群"
+            ng-click="updateEnroll(user)">
+        <input type="checkbox" ng-model="user.yyed" title="YY已经安装" ng-click="updateEnroll(user)">
+        <input type="checkbox" ng-model="user.tested" title="YY试麦完成" ng-click="updateEnroll(user)">
+      </div>
       <div class="css-table-cell comments">{{user.comments}}</div>
       <div class="css-table-cell">
         <iron-icon icon="icons:delete" title="删除" ng-click="remove(user)" class="selectable">

@@ -209,8 +209,16 @@ select#state {
 }
 
 .name-field {
-  width: 60px;
   display: block;
+	width: 60px;
+}
+
+.compact-name-field {
+  display: block;
+  max-width: 50px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .learning-groups {
@@ -401,7 +409,7 @@ div.compact-url {
 }
 
 .email {
-  max-width: 180px;
+  max-width: 160px;
   text-overflow: ellipsis;
   overflow-x: hidden;
 }
