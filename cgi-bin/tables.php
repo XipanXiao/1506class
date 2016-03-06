@@ -294,7 +294,9 @@ function update_user($user) {
     if ($key == "password") {
       $datas[$key] = md5($value);
     } elseif (in_array($key, $int_fields)) {
-      $datas[$key] = intval($value);
+      if (is_numeric($value) || is_string($value) && strlen($value)) {
+        $datas[$key] = intval($value);
+      }
     } elseif (in_array($key, $fields)) {
       $datas[$key] = $value;
     }
