@@ -34,6 +34,11 @@ define('user_editor/user_editor',
           });
         });
 
+        $scope.$watch('editing', function() {
+          if (!$scope.editing) return;
+          document.querySelector('div.user-info-editor').scrollIntoView();
+        });
+
         $scope.save = function() {
           var user = $scope.user;
           var data = {id: user.id};
