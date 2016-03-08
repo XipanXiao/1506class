@@ -7,13 +7,13 @@ include_once 'permission.php';
 
 if(!empty($_POST["email"])) {
   $password = 
-      empty($_POST["password"]) ? NULL : md5 ($_POST["password"]);  
+      empty($_POST["password"]) ? NULL : md5($_POST["password"]);  
   $user = get_user($_POST["email"]);
   
   if ($user) {
     $authenticated = (empty($password) && empty($user->password)) ||
         $password == $user->password;
-    if (!authenticated) {
+    if (!$authenticated) {
       echo "<h1>Error</h1>";
       echo "<p>Password does not match.</p>";
       exit();
