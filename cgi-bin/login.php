@@ -5,12 +5,15 @@ include_once "tables.php";
 include_once "util.php";
 include_once 'permission.php';
 
-if(! empty ( $_POST ["email"] ) && ! empty ( $_POST ["password"] )) {
-  $password = md5 ( $_POST ["password"] );  
+if(!empty($_POST["email"])) {
+  $password = 
+      empty($_POST["password"]) ? NULL : md5 ($_POST["password"]);  
   $user = get_user($_POST["email"]);
   
   if ($user) {
-    if ($password != $user->password) {
+    $authenticated = (empty($password) && empty($user->password)) ||
+        $password == $user->password;
+    if (!authenticated) {
       echo "<h1>Error</h1>";
       echo "<p>Password does not match.</p>";
       exit();
