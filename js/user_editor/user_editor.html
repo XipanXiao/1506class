@@ -10,6 +10,14 @@
         </div>          
       </div>
       <div class="css-table-row padded-element">
+        <div class="css-table-cell">法名</div>
+        <div class="css-table-cell">{{user.nickname}}</div>
+        <div class="css-table-cell">
+          <iron-icon class="selectable" icon="chevron-right" ng-click="editing = 'nickname'">
+          </iron-icon>
+        </div>
+      </div>
+      <div class="css-table-row padded-element">
         <div class="css-table-cell">性别</div>
         <div class="css-table-cell">{{sexLabel[user.sex]}}</div>
         <div class="css-table-cell">
@@ -176,6 +184,7 @@
    <div class="css-table-row">
       <div ng-switch="editing" class="css-table-cell">
         <input ng-switch-when="name" ng-model="user.name" type="text" autofocus>
+        <input ng-switch-when="nickname" ng-model="user.nickname" type="text" autofocus>
         <select ng-switch-when="sex" ng-model="user.sex" autofocus
             ng-options="sexLabel[value] for value in [0, 1]">
         </select>
