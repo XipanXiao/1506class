@@ -5,6 +5,7 @@
   <div class="css-table section odd-even">
     <div class="css-table-row header">
       <div class="css-table-cell"><strong>姓名</strong></div>
+      <div class="css-table-cell" ng-if="!isNewClass()"><strong>法名</strong></div>
       <div class="css-table-cell"><strong>电子邮件</strong></div>
       <div class="css-table-cell"><strong>电话</strong></div>
       <div class="css-table-cell" ng-if="!isNewClass()"><strong>州</strong></div>
@@ -18,6 +19,7 @@
         ng-click="showInfo(user, $index)"
         ng-class="{'selected': selected(user), 'admin': isAdmin(user)}">
       <div class="css-table-cell compact-name-field">{{user.name}}</div>
+      <div class="css-table-cell compact-name-field" ng-if="!isNewClass()">{{user.nickname}}</div>
       <div class="css-table-cell email">{{user.email}}</div>
       <div class="css-table-cell">{{user.phone}}</div>
       <div class="css-table-cell" ng-if="!isNewClass()">{{user.state}}</div>
