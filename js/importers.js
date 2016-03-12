@@ -29,6 +29,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
       "姓名": "name",
       "您的姓名": "name",
       "name": "name",
+      "法名": "nickname",
       "性别": "sex",
       "sex": "sex",
       "出生年月": "birthday",
@@ -125,7 +126,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
       
       user.email = user.email.toLowerCase();
       user.birthday = extractFromPatter(/([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})/,
-          user.birthday.replace('年', '-').replace('月', '-01'));
+          (user.birthday||'').replace('年', '-').replace('月', '-01'));
       user.birthday_label = user.birthday;
       user.birthday = user.birthday ? (user.birthday + ' 00:00:00') : ''; 
       
