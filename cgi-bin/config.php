@@ -41,7 +41,8 @@
     if (isset($config->session_path)) {
       session_save_path($config->session_path);
     }
-     
+
+    ini_set('session.gc_maxlifetime', 3600*24*7);
     session_start();
     return $config;
   }
