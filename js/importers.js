@@ -126,7 +126,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
       
       user.email = user.email.toLowerCase();
       user.birthday = extractFromPatter(/([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})/,
-          (user.birthday||'').replace('年', '-').replace('月', '-01'));
+          (user.birthday||'').replace('年', '-').replace('月', '-'));
       user.birthday_label = user.birthday;
       user.birthday = user.birthday ? (user.birthday + ' 00:00:00') : ''; 
       

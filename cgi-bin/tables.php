@@ -286,10 +286,6 @@ function update_user($user) {
       "phone", "city", "state", "country",
       "im", "occupation", "birthday", "comments", "skills"];
 
-  if (!empty($user["birthday"])) {
-    $user["birthday"] = format_birthday($user["birthday"]);
-  }
-  
   foreach ($user as $key => $value) {
     if ($key == "password") {
       $datas[$key] = md5($value);

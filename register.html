@@ -55,12 +55,12 @@
           </div>
         </div>
         <div class="css-table-row">
-          <label class="css-table-cell" for="birthday">出生年月:
+          <label class="css-table-cell" for="birthday">生日:
             <span class="required-asterisk">*</span>
           </label>
           <div class="css-table-cell">
-            <input type="text" name="birthday" pattern="\d{4}-\d{2}" placeholder="1970-01"
-                required oninvalid="setCustomValidity('请按照类似1970-01这样的格式填写')"
+            <input type="text" name="birthday" pattern="\d{4}-\d{2}-\d{2}" placeholder="1970-01-01"
+                required oninvalid="setCustomValidity('请按照类似1970-01-01这样的格式填写')"
                 onchange="try{setCustomValidity('')}catch(e){}">
           </div>
         </div>

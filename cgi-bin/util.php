@@ -10,15 +10,3 @@ function client_redirect($url, $delay, $message = "") {
       </body>
     </html>", $delay, $url, $message);
 }
-
-// Remove the 'day' part from a birthday string.
-function format_birthday($birthday) {
-  if (empty($birthday)) return $birthday;
-
-  $parts = explode("-", $birthday);
-  $len = count($parts);
-  if ($len == 0) return null;
-  
-  return $len == 1 ? $parts[0] . "-01-00" : $parts[0] . "-" . $parts[1] . "-00";
-}
-?>
