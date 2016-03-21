@@ -71,6 +71,74 @@ define('schedule_editor/schedule_editor',
               $scope.vacation = function(schedule) {
                 return !schedule.course_id || !parseInt(schedule.course_id);
               };
+              window.dragSchedule = function(event) {
+                event.dataTransfer.setData("text", event.target.id);
+              };
+              window.dropSchedule = function(event) {
+                event.preventDefault();
+                var idToDrop = event.dataTransfer.getData("text");
+                var element = event.target;
+                var isAcceptingRow = function(element) {
+                  return element.id &&
+                    element.className.indexOf('css-table-row') >= 0;
+                };
+                while (element && !isAcceptingRow(element)) {
+                  element = element.parentElement;
+                }
+                if (!element) return;
+                
+                $scope.insertSchedule(parseInt(idToDrop), parseInt(element.id));
+                $scope.$apply();
+              };
+              window.allowDrop = function(event) {
+                event.preventDefault();
+              };
+              
+              /// Moves a schedule identified by [scheduleId] to the position
+              /// after the schedule indentified by [insertAfter].
+              $scope.insertSchedule = function(scheduleId, insertAfter) {
+                if (scheduleId == insertAfter ||
+                    scheduleId == insertAfter + 1) return;
+
+                var group = $scope.findGroup(scheduleId);
+                if (!group || group != $scope.findGroup(insertAfter)) return;
+                
+                var schedules = group.schedules;
+                var schedule = angular.copy(schedules[scheduleId]);
+                
+                var id;
+                if (scheduleId < insertAfter) {
+                  for (id = scheduleId; id < insertAfter; id++) {
+                    schedules[id] = schedules[id+1];
+                    schedules[id].id = id;
+                  }
+                } else {
+                  for (id = scheduleId; id > insertAfter+1; id--) {
+                    schedules[id] = schedules[id-1];
+                    schedules[id].id = id;
+                  }
+                } 
+                schedule.id = id;
+                schedules[id] = schedule;
+                $scope.editGroup(group);
+              };
+              
+              $scope.copySchedule = function(scheduleTo, scheduleFrom) {
+                scheduleTo.course_id = scheduleFrom.course_id;
+                scheduleTo.open = scheduleFrom.open;
+                scheduleTo.review = scheduleFrom.review;
+              };
+              
+              /// Returns the containing schedule group for a schedule.
+              $scope.findGroup = function(scheduleId) {
+                for (var id in $scope.schedule_groups) {
+                  var group = $scope.schedule_groups[id];
+                  
+                  for (var sId in group.schedules) {
+                    if (sId == scheduleId) return group;
+                  }
+                }
+              };
             },
             templateUrl : 'js/schedule_editor/schedule_editor.html'
           };
