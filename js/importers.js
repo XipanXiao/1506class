@@ -160,7 +160,13 @@ define('importers', ['permission', 'services', 'utils'], function() {
       }
       
       user.phone = cutOff(user.phone, 16);
-      user.state = cutOff(user.state, 8);
+      var countryIndex = window.countryData.countries.indexOf(user.country);
+      if (countryIndex > 0) {
+        user.country = window.countryData.getCountryCode(countryIndex);
+        var states = window.countryData.getStates(countryIndex);
+        user.state = window.countryData.states.indexOf(user.state);
+      }
+       
       user.city = cutOff(user.city, 16);
       if (encode_utf8(user.city).length > 32) {
         user.city = cutOff(user.city, 8);
