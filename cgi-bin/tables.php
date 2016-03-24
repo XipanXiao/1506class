@@ -331,10 +331,13 @@ function get_last_task_record($user_id, $task_id) {
   
   if (empty($result)) return null;
   
+  $sum = $medoo->sum("task_records", "count",
+      ["AND" => ["student_id" => $user_id, "task_id" => $task_id]]);
   $record = current($result);
-  return ["count" => intval($record["count"]),
+  return [
+      "count" => intval($record["count"]),
       "ts" => $record["ts"],
-      "sum" => intval($record["sum"])
+      "sum" => $sum
   ];
 }
 
@@ -363,8 +366,7 @@ function report_task($user_id, $task_id, $count, $sum) {
   return $medoo->insert("task_records", [
     "student_id" => intval($user_id), 
     "task_id" => intval($task_id), 
-    "count" => intval($count),
-    "sum" => intval($sum)
+    "count" => intval($count)
   ]);
 }
 
