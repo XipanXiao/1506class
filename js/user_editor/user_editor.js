@@ -25,6 +25,7 @@ define('user_editor/user_editor',
 
         $scope.$watch('user', function() {
           $scope.editing = null;
+          if ($scope.user) $scope.setupAddressLists($scope.user);
           if (!$scope.user || $scope.user.classInfo) return;
 
           var classId = $scope.user.classId;
@@ -46,6 +47,7 @@ define('user_editor/user_editor',
           case 'address':
             data.city = user.city;
             data.state = user.state;
+            data.country = user.country;
             break;
           case 'password':
             if (user.password != user.confirm) return;
@@ -64,8 +66,28 @@ define('user_editor/user_editor',
         };
         
         $scope.admining = window.location.href.indexOf('admin.html') > 0;
-        $scope.stateMap = utils.stateMap;
-        $scope.states = utils.keys($scope.stateMap);
+        
+        $scope.setupAddressLists = function(user) {
+          $scope.countryMap = utils.countryMap;
+          $scope.countries = utils.keys($scope.countryMap);
+          
+          $scope.onCountryChange();
+        };
+        
+        $scope.onCountryChange = function() {
+          var index = window.countryData.getCountryIndex($scope.user.country);
+          $scope.stateMap = window.countryData.getStates(index);
+          $scope.states = utils.keys($scope.stateMap);
+
+          utils.setCountryLabels($scope.user);
+        };
+        
+        $scope.$watch('user.country', function() {
+          $scope.onCountryChange();
+        });
+        $scope.$watch('user.state', function() {
+          utils.setCountryLabels($scope.user);
+        });
       },
 
       templateUrl : 'js/user_editor/user_editor.html'

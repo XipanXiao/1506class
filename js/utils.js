@@ -22,7 +22,8 @@ define('utils', [], function() {
   
   return angular.module('UtilsModule', []).factory('utils', function() {
     return {
-      stateMap: {
+      countryMap: window.countryData.getCountryMap(),
+      us_states: {
         "AL": "Alabama",
         "AK": "Alaska",
         "AS": "American Samoa",
@@ -32,7 +33,7 @@ define('utils', [], function() {
         "CO": "Colorado",
         "CT": "Connecticut",
         "DE": "Delaware",
-        "DC": "District Of Columbia",
+        "DC": "District of Columbia",
         "FM": "Federated States Of Micronesia",
         "FL": "Florida",
         "GA": "Georgia",
@@ -262,6 +263,21 @@ define('utils', [], function() {
           value |= (bits[index] ? (1<<index) : 0);
         }
         return value;
+      },
+      getUSStateCode: function(state) {
+        for (var code in this.us_states) {
+          if (this.us_states[code] == state) return code;
+        }
+      },
+      setCountryLabels: function(user) {
+        var index = window.countryData.getCountryIndex(user.country);
+        user.countryLabel = window.countryData.countries[index];
+        user.state = parseInt(user.state);
+        user.stateLabel =
+          window.countryData.getState(index, user.state);
+        if (user.country == 'US') {
+          user.stateLabel = this.getUSStateCode(user.stateLabel);
+        }
       }
     };
   });

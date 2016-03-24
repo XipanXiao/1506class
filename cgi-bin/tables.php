@@ -280,16 +280,14 @@ function update_user($user) {
 
   $datas = [];
   
-  $int_fields = ["sex", "mentor_id", "permission", "education", "conversion",
-      "classId", "volunteer", "channel", "enroll_tasks", "entrance"];
   $fields = ["internal_id", "name", "nickname", "email",
-      "phone", "city", "state", "country",
+      "phone", "city", "country",
       "im", "occupation", "birthday", "comments", "skills"];
 
   foreach ($user as $key => $value) {
     if ($key == "password") {
       $datas[$key] = md5($value);
-    } elseif (in_array($key, $int_fields)) {
+    } elseif (in_array($key, User::$int_fields)) {
       if (is_numeric($value) || is_string($value) && strlen($value)) {
         $datas[$key] = intval($value);
       }

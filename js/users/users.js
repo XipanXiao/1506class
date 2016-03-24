@@ -26,6 +26,7 @@ define('users/users', ['new_user_dialog/new_user_dialog', 'permission', 'service
                   var user = $scope.users[id];
                   $scope.userNames[user.id] = user.name;
                   $scope.updateEnroll(user, true);
+                  utils.setCountryLabels(user);
                 }
 
                 $scope.isNotEmpty = !utils.isEmpty($scope.users);
