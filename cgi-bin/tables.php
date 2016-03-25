@@ -349,8 +349,8 @@ function get_tasks($department_id) {
   global $medoo;
 
   $int_fields = ["duration"];
-  $tasks = $medoo->select("tasks", "*",
-      $department_id ? ["department_id" => $department_id] : null);
+  $tasks = keyed_by_id($medoo->select("tasks", "*",
+      $department_id ? ["department_id" => $department_id] : null));
   foreach ($tasks as $id => $task) {
   	foreach ($int_fields as $field) {
   	  $task[$field] = intval($task[$field]);

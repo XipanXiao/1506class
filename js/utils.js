@@ -147,6 +147,9 @@ define('utils', [], function() {
         
         return null;
       },
+      first: function(map) {
+        for (var id in map) return map[id];
+      },
       isString: function(obj) {
         return obj instanceof String || typeof obj == 'string';
       },

@@ -1,8 +1,8 @@
 define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
-    'task_editor_dialog/task_editor_dialog'], function() {
+    'task_editor_dialog/task_editor_dialog', 'utils'], function() {
   return angular.module('TaskStatsModule', ['ProgressBarModule',
-      'ServicesModule', 'TaskEditorDialogModule'])
-      .directive('taskStats', function(rpc) {
+      'ServicesModule', 'TaskEditorDialogModule', 'UtilsModule'])
+      .directive('taskStats', function(rpc, utils) {
 
       return {
         scope: {
@@ -34,7 +34,7 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
               var classInfo = response.data[scope.classId];
               rpc.get_tasks(classInfo.department_id).then(function(response) {
                 scope.tasks = response.data;
-                scope.selectedTask = scope.tasks[0];
+                scope.selectedTask = utils.first(scope.tasks);
                 
                 scope.refreshStats();
               });
