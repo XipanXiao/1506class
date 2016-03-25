@@ -196,7 +196,7 @@ function update_task($task) {
   global $medoo;
   
   $datas = [];
-  $fields = ["department_id", "name", "max"];
+  $fields = ["department_id", "name", "max", "duration"];
   foreach ($fields as $field) {
     if (!empty($task[$field])) {
       $datas[$field] = $task[$field];
@@ -331,21 +331,33 @@ function get_last_task_record($user_id, $task_id) {
   
   if (empty($result)) return null;
   
-  $sum = $medoo->sum("task_records", "count",
-      ["AND" => ["student_id" => $user_id, "task_id" => $task_id]]);
   $record = current($result);
+
+  $sql = sprintf("SELECT SUM(count), SUM(duration) FROM task_records
+  		WHERE student_id=%d AND task_id=%d;", intval($user_id), intval($task_id));
+  $sums = current($medoo->query($sql)->fetchAll());
+
   return [
       "count" => intval($record["count"]),
       "ts" => $record["ts"],
-      "sum" => $sum
+      "sum" => $sums[0],
+  		"totalDuration" => $sums[1]
   ];
 }
 
 function get_tasks($department_id) {
   global $medoo;
 
-  return $medoo->select("tasks", "*",
+  $int_fields = ["duration"];
+  $tasks = $medoo->select("tasks", "*",
       $department_id ? ["department_id" => $department_id] : null);
+  foreach ($tasks as $id => $task) {
+  	foreach ($int_fields as $field) {
+  	  $task[$field] = intval($task[$field]);
+  	}
+  	$tasks[$id] = $task;
+  }
+  return $tasks;
 }
 
 function get_class_task_stats($classId, $task_id) {
@@ -360,13 +372,14 @@ function get_class_task_stats($classId, $task_id) {
   return $users;
 }
 
-function report_task($user_id, $task_id, $count, $sum) {
+function report_task($user_id, $task_id, $count, $duration) {
   global $medoo;
   
   return $medoo->insert("task_records", [
     "student_id" => intval($user_id), 
     "task_id" => intval($task_id), 
-    "count" => intval($count)
+    "count" => intval($count),
+  	"duration" => $duration
   ]);
 }
 

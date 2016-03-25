@@ -43,12 +43,9 @@ define('services', [], function() {
         return http_form_post($http, $httpParamSerializerJQLike(task));
       },
     
-      report_task: function(task_id, count, sum) {
-        var data = {'rid': 'tasks', 
-            'task_id': task_id, 
-            'count': count, 
-            'sum': sum};
-        return http_form_post($http, $httpParamSerializerJQLike(data));
+      report_task: function(task) {
+        task.rid = 'tasks';
+        return http_form_post($http, $httpParamSerializerJQLike(task));
       },
     
       report_schedule_task: function(schedule) {

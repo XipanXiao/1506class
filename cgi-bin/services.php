@@ -89,7 +89,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   
   if ($resource_id == "tasks") {
     $task_id = $_POST["task_id"];
-    report_task($task_user_id, $task_id, $_POST["count"], $_POST["sum"]);
+    $duration = empty($_POST["duration"]) ? null : intval($_POST["duration"]);
+    report_task($task_user_id, $task_id, $_POST["count"], $duration);
     $response = get_last_task_record($task_user_id, $task_id);
   } elseif ($resource_id == "task") {
     $response = ["updated" => update_task($_POST)];

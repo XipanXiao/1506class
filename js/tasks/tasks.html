@@ -5,7 +5,8 @@
 	    <div class="header section-header">{{task.name}}</div>
 	    <div ng-switch="task.lastRecord.sum > 0">
 	      <div ng-switch-when="true">
-	        <div>累计报数：{{task.lastRecord.sum}}</div>
+          <div>累计报数：{{task.lastRecord.sum}}</div>
+          <div ng-if="task.duration">累计时间：{{task.lastRecord.totalDuration}}</div>
 	        <div>上次报数：{{task.lastRecord.count}}</div>
 	        <div>（{{task.lastRecord.ts}}）</div>
 	        <progress-bar value="{{task.lastRecord.sum}}" max="{{task.max}}" class="task-progress">
@@ -14,7 +15,16 @@
 	      <div ng-switch-default>暂时没有学修记录。</div>
 	    </div>
 	  
-	    <input class="count-input" type="number" ng-model="task.record.count" required>
+	    <label>
+	      本次数量:
+        <input class="count-input" type="number" ng-model="task.record.count" required>
+      </label>
+      <div>
+	      <label ng-if="task.duration">
+	        本次用时(分钟):
+	        <input class="count-input" type="number" ng-model="task.record.duration" required>
+	      </label>
+      </div>
 	    <input type="submit" value="报数" ng-click="reportTask(task)" ng-disabled="reporting">
 	    <div ng-if="error">{{error}}</div>
 	  </div>

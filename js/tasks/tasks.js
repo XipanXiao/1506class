@@ -35,11 +35,12 @@ define('tasks/tasks',
               $scope.reportTask = function(task) {
                 $scope.reporting = true;
 
-                var task_id = task.id;
-                var count = task.record.count;
-                var lastSum = task.lastRecord && task.lastRecord.sum || 0;
-                var sum = parseInt(lastSum) + count;
-                rpc.report_task(task_id, count, sum).then(function (response) {
+                var data = {
+                  task_id: task.id,
+                  count: task.record.count,
+                  duration: task.record.duration || 0
+                };
+                rpc.report_task(data).then(function (response) {
                   task.lastRecord = response.data;
                   $rootScope.$broadcast('task-reported');
                 }).finally(function() {

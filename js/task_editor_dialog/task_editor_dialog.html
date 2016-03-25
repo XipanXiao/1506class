@@ -7,7 +7,8 @@
       <div class="css-table-row">
         <div class="css-table-cell">类别</div>
         <div class="css-table-cell">任务名称</div>
-        <div class="css-table-cell">任务数目</div>
+        <div class="css-table-cell">任务总数</div>
+        <div class="css-table-cell">是否计时</div>
         <div class="css-table-cell"></div>
       </div>
       <div ng-repeat="task in tasks" class="css-table-row">
@@ -20,9 +21,14 @@
 	        </editable-label>
 	      </div>
         <div class="css-table-cell">
-	        <editable-label value="task.max" on-change="update(task)" class="padded-element">
-	        </editable-label>
-	      </div>
+          <editable-label value="task.max" on-change="update(task)" class="padded-element">
+          </editable-label>
+        </div>
+        <div class="css-table-cell">
+          <select ng-options="['否', '是'][value] for value in [0, 1]" ng-model="task.duration"
+              on-change="update(task)" class="padded-element">
+          </select>
+        </div>
         <div class="css-table-cell">
 				  <iron-icon icon="icons:delete" title="删除" ng-click="remove(task)"
 				      class="selectable padded-element" ng-if="task.id">
