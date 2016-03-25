@@ -26,7 +26,7 @@
         </div>
         <div class="css-table-cell">
           <select ng-options="['否', '是'][value] for value in [0, 1]" ng-model="task.duration"
-              on-change="update(task)" class="padded-element">
+              ng-change="update(task)" class="padded-element">
           </select>
         </div>
         <div class="css-table-cell">
