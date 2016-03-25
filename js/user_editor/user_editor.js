@@ -71,22 +71,22 @@ define('user_editor/user_editor',
           $scope.countryMap = utils.countryMap;
           $scope.countries = utils.keys($scope.countryMap);
           
-          $scope.onCountryChange();
+          $scope.onCountryChange(user);
         };
         
-        $scope.onCountryChange = function() {
-          var index = window.countryData.getCountryIndex($scope.user.country);
+        $scope.onCountryChange = function(user) {
+          var index = window.countryData.getCountryIndex(user.country);
           $scope.stateMap = window.countryData.getStates(index);
           $scope.states = utils.keys($scope.stateMap);
 
-          utils.setCountryLabels($scope.user);
+          utils.setCountryLabels(user);
         };
         
         $scope.$watch('user.country', function() {
-          $scope.onCountryChange();
+          if ($scope.user) $scope.onCountryChange($scope.user);
         });
         $scope.$watch('user.state', function() {
-          utils.setCountryLabels($scope.user);
+          if ($scope.user) utils.setCountryLabels($scope.user);
         });
       },
 
