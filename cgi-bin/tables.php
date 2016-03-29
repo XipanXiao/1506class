@@ -5,6 +5,13 @@ include_once "util.php";
 
 $medoo = get_medoo();
 
+function convert_int_fields($record, $int_fields) {
+  foreach ($int_fields as $field) {
+    $record[$field] = intval($record[$field]);
+  }
+
+  return $record;
+}
 
 function get_departments() {
   global $medoo;
@@ -141,19 +148,17 @@ function remove_schedule($id) {
   return $medoo->delete("schedules", ["id" => $id]);
 }
 
-function convert_class_record($classInfo) {
-  $classInfo["id"] = intval($classInfo["id"]);
-  $classInfo["department_id"] = intval($classInfo["department_id"]);
-  $classInfo["start_year"] = intval($classInfo["start_year"]);
-  $classInfo["perm_level"] = intval($classInfo["perm_level"]);
-  return $classInfo;
-}
-
 function get_classes($classId) {
   global $medoo;
   
-  return keyed_by_id(array_map("convert_class_record",
-      $medoo->select("classes", "*", $classId ? ["id" => $classId] : null)));
+  $int_fields = ["id", "department_id", "teacher_id", "start_year",
+      "perm_level", "weekday"];
+  $classes = keyed_by_id($medoo->select("classes", "*",
+      $classId ? ["id" => $classId] : null));
+  foreach ($classes as $id => $classInfo) {
+  	$classes[$id] = convert_int_fields($classInfo, $int_fields);
+  }
+  return $classes;
 }
 
 function get_class_id($class_name) {
@@ -176,7 +181,7 @@ function update_class($classInfo) {
   
   $datas = [];
   $fields = ["department_id", "name", "class_room", "email", "start_year", 
-      "perm_level"];
+      "perm_level", "weekday"];
 
   foreach ($fields as $field) {
     if (isset($classInfo[$field])) {
@@ -334,14 +339,14 @@ function get_last_task_record($user_id, $task_id) {
   $record = current($result);
 
   $sql = sprintf("SELECT SUM(count), SUM(duration) FROM task_records
-  		WHERE student_id=%d AND task_id=%d;", intval($user_id), intval($task_id));
+      WHERE student_id=%d AND task_id=%d;", intval($user_id), intval($task_id));
   $sums = current($medoo->query($sql)->fetchAll());
 
   return [
       "count" => intval($record["count"]),
       "ts" => $record["ts"],
       "sum" => $sums[0],
-  		"totalDuration" => $sums[1]
+      "totalDuration" => $sums[1]
   ];
 }
 
@@ -352,10 +357,10 @@ function get_tasks($department_id) {
   $tasks = keyed_by_id($medoo->select("tasks", "*",
       $department_id ? ["department_id" => $department_id] : null));
   foreach ($tasks as $id => $task) {
-  	foreach ($int_fields as $field) {
-  	  $task[$field] = intval($task[$field]);
-  	}
-  	$tasks[$id] = $task;
+    foreach ($int_fields as $field) {
+      $task[$field] = intval($task[$field]);
+    }
+    $tasks[$id] = $task;
   }
   return $tasks;
 }
@@ -379,7 +384,7 @@ function report_task($user_id, $task_id, $count, $duration) {
     "student_id" => intval($user_id), 
     "task_id" => intval($task_id), 
     "count" => intval($count),
-  	"duration" => $duration
+    "duration" => $duration
   ]);
 }
 

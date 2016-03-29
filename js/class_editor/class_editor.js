@@ -13,6 +13,8 @@ define('class_editor/class_editor', ['departments/departments',
               classId: '='
             },
             link: function(scope) {
+              scope.dayLabels = ['星期日', '星期一', '星期二', '星期三', '星期四',
+                  '星期五', '星期六'];
               scope.setupPermissionEditor = function(classInfo) {
                 scope.permissionLabel = {};
                 for (var permission in perm.permissions) {

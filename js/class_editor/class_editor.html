@@ -14,6 +14,12 @@
     <select ng-options="year for year in years" ng-model="classInfo.start_year">
     </select> 
   </label>
+  <label class="padded-element">
+    固定上课时间：
+    <select ng-options="dayLabels[day] for day in [0, 1, 2, 3, 4, 5, 6]"
+        ng-model="classInfo.weekday">
+    </select> 
+  </label>
   <div class="padded-element">
     YY房间：
     <editable-label value="classInfo.class_room"></editable-label>

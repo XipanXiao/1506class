@@ -1,5 +1,11 @@
-<input ng-if="classId == 1" type="button" value="根据报名邮件新建用户..."
-    ng-click="showNewUserDialog()">
+<div ng-switch="isNewClass()">
+  <div ng-switch-when="true">
+		<input type="button" value="根据报名邮件新建用户..." ng-click="showNewUserDialog()">
+  </div>
+  <div ng-switch-default>
+    <!-- input type="button" value="分配学号..." ng-click="allocateIDs()"-->
+  </div>
+</div>
 <new-user-dialog refresh="reload(classId)"></new-user-dialog>
 <div class="users flex" ng-if="isNotEmpty">
   <div class="css-table section odd-even">
