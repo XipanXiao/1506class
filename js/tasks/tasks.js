@@ -19,15 +19,16 @@ define('tasks/tasks',
               angular.forEach(response.data, function(value) {
                 var task = angular.copy(value);
                 rpc.get_last_task_record(task.id).then(function(response) {
-                  task.lastRecord = response.data;
-                  if (task.lastRecord && task.lastRecord.ts) {
-                    task.lastRecord.ts = new Date(task.lastRecord.ts).
-                        toLocaleString();
-                  }
+                  var lastRecord = response.data;
+                  task.lastRecord = lastRecord.ts ? lastRecord : {
+                    sub_index: 0
+                  };
                 });
                 
                 task.lastRecord = null;
                 task.record = {count: 0};
+                task.sub_indexes = Array.apply(null, {length: task.sub_tasks})
+                    .map(Number.call, Number);
                 
                 $scope.tasks.push(task);
               });
@@ -38,6 +39,7 @@ define('tasks/tasks',
                 var data = {
                   task_id: task.id,
                   count: task.record.count,
+                  sub_index: task.lastRecord.sub_index,
                   duration: task.record.duration || 0
                 };
                 rpc.report_task(data).then(function (response) {
@@ -45,6 +47,17 @@ define('tasks/tasks',
                   $rootScope.$broadcast('task-reported');
                 }).finally(function() {
                   $scope.reporting = false;
+                });
+              };
+              
+              $scope.subTaskSelected = function(task) {
+                var sub_index = task.lastRecord.sub_index;
+
+                rpc.get_last_task_record(task.id, sub_index)
+                    .then(function(response) {
+                  var lastRecord = response.data;
+                  task.lastRecord =
+                      lastRecord.ts ? lastRecord : {sub_index: sub_index};
                 });
               };
             });

@@ -35,8 +35,6 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
               rpc.get_tasks(classInfo.department_id).then(function(response) {
                 scope.tasks = response.data;
                 scope.selectedTask = utils.first(scope.tasks);
-                
-                scope.refreshStats();
               });
             });
           };

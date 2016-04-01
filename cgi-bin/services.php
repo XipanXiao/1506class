@@ -9,7 +9,7 @@ if (empty($_SESSION["user"])) {
   echo '{"error": "login needed"}';
   exit();
 } else {
-	$user = unserialize($_SESSION["user"]);
+  $user = unserialize($_SESSION["user"]);
 }
 
 $student_id = $user->id;
@@ -31,18 +31,14 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "admins") {
     $response = get_admins(intval($_GET["permission"]));
   } elseif ($resource_id == "tasks") {
-    if (isset($_GET["task_id"]) && isset($_GET["pos"])) {
-      $task_id = $_GET["task_id"];
-      $pos = $_GET["pos"];
-      
-      if ($pos == "last") {
-        $response = get_last_task_record($student_id, $task_id);
-      }
-    } elseif (isset($_GET["department_id"])) {
+    if (isset($_GET["department_id"])) {
       $response = get_tasks($_GET["department_id"]);
     } else {
       $response = get_tasks(null);
     }
+  } elseif ($resource_id == "task_records") {
+    $response = get_last_task_record($student_id, $_GET["task_id"],
+        isset($_GET["sub_index"]) ? $_GET["sub_index"] : null);
   } elseif ($resource_id == "courses") {
     $response = get_courses($_GET["group_id"]);
   } elseif ($resource_id == "users") {
@@ -51,7 +47,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 
     if ($classId) {
       if (isSysAdmin($user) || isClassLeader($user, $classId)) {
-    	  $response = get_users(null, $classId);
+        $response = get_users(null, $classId);
       }
     } elseif ($email) {
       $response = current(get_users($email));
@@ -65,7 +61,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "learning_records" && !empty($_GET["classId"])) {
     $response = get_schedules($_GET["classId"], $_GET["records"], $user->id);
   } elseif ($resource_id == "search") {
-  	if (isSysAdmin($user)) {
+    if (isSysAdmin($user)) {
       $response = search($_GET["prefix"]);
     }
   } elseif ($resource_id == "task_stats") {
@@ -90,7 +86,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   if ($resource_id == "tasks") {
     $task_id = $_POST["task_id"];
     $duration = empty($_POST["duration"]) ? null : intval($_POST["duration"]);
-    report_task($task_user_id, $task_id, $_POST["count"], $duration);
+    report_task($task_user_id, $task_id, $_POST["sub_index"], $_POST["count"],
+        $duration);
     $response = get_last_task_record($task_user_id, $task_id);
   } elseif ($resource_id == "task") {
     $response = ["updated" => update_task($_POST)];
@@ -101,10 +98,10 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   }  elseif ($resource_id == "schedule_group") {
     $response = ["updated" => update_schedule_group($_POST)];
   } elseif ($resource_id == "class") {
-  	if (isSysAdmin($user) ||
-  	    !empty($_POST["id"]) && isClassLeader($user, $_POST["id"])) {
+    if (isSysAdmin($user) ||
+        !empty($_POST["id"]) && isClassLeader($user, $_POST["id"])) {
       $response = ["updated" => update_class($_POST)];
-  	}
+    }
   } elseif ($resource_id == "course_group") {
     $response = ["group" => update_course_group($_POST)];
   } elseif ($resource_id == "department") {
@@ -112,21 +109,21 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "course") {
     $response = update_course($_POST); 
   } elseif ($resource_id == "user") {
-  	if (!isAdmin($user)) {
-  		if (empty($_POST["id"]) || $user->id != $_POST["id"]) exit();
-  	} elseif (!isSysAdmin($user)) {
-  		if (empty($_POST["id"])) exit();
+    if (!isAdmin($user)) {
+      if (empty($_POST["id"]) || $user->id != $_POST["id"]) exit();
+    } elseif (!isSysAdmin($user)) {
+      if (empty($_POST["id"])) exit();
 
-  	  $userToUpdate = current(get_users(null, null, $_POST["id"]));
-  	  if (!$userToUpdate ||
-  	      !isClassLeader($user, $userToUpdate->classId)) exit();
-  	}
-  	
-  	if (!empty($_POST["permission"]) &&
-  	    intval($_POST["permission"]) > intval($user->permission)) {
-  	  exit();  	
-  	}
-  	
+      $userToUpdate = current(get_users(null, null, $_POST["id"]));
+      if (!$userToUpdate ||
+          !isClassLeader($user, $userToUpdate->classId)) exit();
+    }
+    
+    if (!empty($_POST["permission"]) &&
+        intval($_POST["permission"]) > intval($user->permission)) {
+      exit();    
+    }
+    
     if (isset($_POST["classId"]) && intval($_POST["classId"]) == 0) {
       if(!empty($_POST["classId_label"]) &&
           !empty($_POST["start_year_label"])) {
@@ -164,7 +161,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     isset ( $_REQUEST["rid"] )) {
 
   if (!isSysAdmin($user)) {
-  	$response = ["error" => "permission denied"];
+    $response = ["error" => "permission denied"];
     echo json_encode($response);
     exit();
   }

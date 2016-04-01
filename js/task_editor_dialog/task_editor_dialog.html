@@ -9,6 +9,7 @@
         <div class="css-table-cell">任务名称</div>
         <div class="css-table-cell">任务总数</div>
         <div class="css-table-cell">是否计时</div>
+        <div class="css-table-cell">子任务数</div>
         <div class="css-table-cell"></div>
       </div>
       <div ng-repeat="task in tasks" class="css-table-row">
@@ -28,6 +29,9 @@
           <select ng-options="['否', '是'][value] for value in [0, 1]" ng-model="task.duration"
               ng-change="update(task)" class="padded-element">
           </select>
+        </div>
+        <div class="css-table-cell">
+          <input type="number" ng-model="task.sub_tasks" ng-blur="update(task)">
         </div>
         <div class="css-table-cell">
 				  <iron-icon icon="icons:delete" title="删除" ng-click="remove(task)"

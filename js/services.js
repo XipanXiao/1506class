@@ -77,8 +77,11 @@ define('services', [], function() {
         return $http.get(url);
       },
     
-      get_last_task_record: function(task_id) {
-        return $http.get(serviceUrl + '?rid=tasks&pos=last&task_id=' + task_id);
+      get_last_task_record: function(task_id, sub_index) {
+        if (!sub_index && sub_index != 0) sub_index = '';
+        var url = '{0}?rid=task_records&task_id={1}&sub_index={2}'.format(
+            serviceUrl, task_id, sub_index);
+        return $http.get(url);
       },
       
       get_class_task_stats: function(classId, task_id) {
