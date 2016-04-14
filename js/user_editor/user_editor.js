@@ -9,13 +9,14 @@ define('user_editor/user_editor',
         user: '='
       },
       link: function($scope) {
-        $scope.sexLabel = ['女', '男'];
-        $scope.educationLabels = ['', '高中及以下', '大专', '本科', '硕士', '博士'];
-        $scope.volunteerLabels =
-            ['', '暂时先不', '小组管理', '资料收发', '统计报数', '其他工作', '英文翻译'];
-        $scope.channelLabels = ['', '其他方式', '智悲佛网', '国际佛学网',
-            '美国智悲菩提讲修', '本地招生材料', '微信', '微博或论坛', '朋友介绍'];
-        $scope.entrances = ['本站', '微信', 'zbfw'];
+        for (var key in utils) {
+          if (key.endsWith('Labels')) {
+            $scope[key] = utils[key];
+          }
+        }
+        $scope.getDisplayLabel = function(key) {
+          return $scope.user && utils.getDisplayLabel($scope.user, key);
+        };
 
         $scope.permissionLabel = perm.permissions;
         $scope.permissions = perm.lowerPermissions();
@@ -68,8 +69,7 @@ define('user_editor/user_editor',
         $scope.admining = window.location.href.indexOf('admin.html') > 0;
         
         $scope.setupAddressLists = function(user) {
-          $scope.countryMap = utils.countryMap;
-          $scope.countries = utils.keys($scope.countryMap);
+          $scope.countries = utils.keys($scope.countryLabels);
           
           $scope.onCountryChange(user);
         };

@@ -327,6 +327,69 @@ define('importers', ['permission', 'services', 'utils'], function() {
           };
           
           next();
+        },
+        
+        /// Returns a Promise that is resolved when all users are exported.
+        exportUsers: function(classId, dataUrl) {
+          var labels = [
+            '姓名',
+            '学号',
+            '法名',
+            '性别',
+            'email',
+            '班级',
+            '电话',
+            '微信',
+            '城市',
+            '州',
+            '国家',
+            '文化程度',
+            '职业',
+            '特长',
+            '是否愿意发心工作',
+            '生日',
+            '皈依年份',
+            '知道学会的渠道',
+            '备注'
+          ];
+          var exportUser = function(user, className) {
+            utils.setCountryLabels(user);
+            return user.name + delimiter +
+              (user.internal_id || '') + delimiter +
+              (user.nickname || '') + delimiter +
+              utils.getDisplayLabel(user, 'sex') + delimiter +
+              user.email + delimiter +
+              className + delimiter +
+              (user.phone || '') + delimiter +
+              (user.im || '') + delimiter +
+              (user.city || '') + delimiter +
+              (user.stateLabel || '') + delimiter +
+              (user.countryLabel || '') + delimiter +
+              utils.getDisplayLabel(user, 'education') + delimiter +
+              (user.occupation || '') + delimiter +
+              (user.skills || '') + delimiter +
+              utils.getDisplayLabel(user, 'volunteer') + delimiter +
+              (user.birthday || '') + delimiter +
+              (user.conversion || '') + delimiter +
+              utils.getDisplayLabel(user, 'channel') + delimiter +
+              (user.comments || '');
+          };
+          var createDataUrl = function(data, file) {
+            data = new Blob([data], {type: 'text/plain'});
+            if (file) window.URL.revokeObjectURL(file);
+            return file = window.URL.createObjectURL(data);
+          };
+          return rpc.get_users(null, classId).then(function(response) {
+            var users = response.data;
+            return rpc.get_classes(classId).then(function(response) {
+              var className = response.data[classId].name;
+              var result = labels.join(delimiter) + '\n';
+              for (var id in users) {
+                result += exportUser(users[id], className) + '\n';
+              }
+              return createDataUrl(result, dataUrl);
+            });
+          });
         }
       }
     };

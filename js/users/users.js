@@ -1,9 +1,10 @@
-define('users/users', ['new_user_dialog/new_user_dialog', 'permission', 'services',
-    'user_editor/user_editor', 'utils'], function() {
+define('users/users', ['importers', 'new_user_dialog/new_user_dialog',
+    'permission', 'services', 'user_editor/user_editor', 'utils'], function() {
 
-  return angular.module('UsersModule', ['NewUserDialogModule', 'PermissionModule', 'ServicesModule',
+  return angular.module('UsersModule', ['ImportersModule',
+    'NewUserDialogModule', 'PermissionModule', 'ServicesModule',
     'UserEditorModule', 'UtilsModule'])
-        .directive('users', function($rootScope, perm, rpc, utils) {
+        .directive('users', function($rootScope, importers, perm, rpc, utils) {
       return {
         scope: {
           classId: '='
@@ -72,6 +73,12 @@ define('users/users', ['new_user_dialog/new_user_dialog', 'permission', 'service
                   user.yyed, user.tested]);
               rpc.update_user({id: user.id, enroll_tasks: user.enroll_tasks});
             }
+          };
+          $scope.exportUsers = function() {
+            importers.userImporter.exportUsers($scope.classId,
+                $scope.exportedUrl).then(function(url) {
+                  $scope.exportedUrl = url;
+                });
           };
         },
         templateUrl : 'js/users/users.html'

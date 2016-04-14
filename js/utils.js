@@ -22,7 +22,7 @@ define('utils', [], function() {
   
   return angular.module('UtilsModule', []).factory('utils', function() {
     return {
-      countryMap: window.countryData.getCountryMap(),
+      countryLabels: window.countryData.getCountryMap(),
       us_states: {
         "AL": "Alabama",
         "AK": "Alaska",
@@ -281,6 +281,17 @@ define('utils', [], function() {
         if (user.country == 'US') {
           user.stateLabel = this.getUSStateCode(user.stateLabel);
         }
+      },
+      sexLabels: ['女', '男'],
+      educationLabels: ['', '高中及以下', '大专', '本科', '硕士', '博士'],
+      volunteerLabels: 
+          ['', '暂时先不', '小组管理', '资料收发', '统计报数', '其他工作', '英文翻译'],
+      channelLabels: ['', '其他方式', '智悲佛网', '国际佛学网',
+          '美国智悲菩提讲修', '本地招生材料', '微信', '微博或论坛', '朋友介绍'],
+      entranceLabels: ['本站', '微信', 'zbfw'], 
+
+      getDisplayLabel: function(user, key) {
+        return this[key+'Labels'][user[key]] || '';
       }
     };
   });
