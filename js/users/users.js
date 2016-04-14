@@ -42,6 +42,9 @@ define('users/users', ['importers', 'new_user_dialog/new_user_dialog',
           $scope.isAdmin = function(user) {
             return user.permission > perm.ROLES.STUDENT;
           };
+          $scope.isSysAdmin = function() {
+            return perm.isSysAdmin();
+          };
           $scope.showInfo = function(user, index) {
             $scope.editingUser = user;
             $scope.selectedTop = index * 32;
