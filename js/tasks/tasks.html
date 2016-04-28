@@ -17,7 +17,7 @@
           <div>累计报数：{{task.lastRecord.sum}}</div>
           <div ng-if="task.duration">累计时间：{{task.lastRecord.totalDuration}}</div>
 	        <div>上次报数：{{task.lastRecord.count}}</div>
-	        <div>（{{task.lastRecord.ts}}）</div>
+	        <div>({{toLocalTime(task.lastRecord.ts)}})</div>
 	        <progress-bar value="{{task.lastRecord.sum}}" max="{{task.max}}" class="task-progress">
 	        <progress-bar>
 	      </div>

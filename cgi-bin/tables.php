@@ -331,13 +331,15 @@ function get_last_task_record($user_id, $task_id, $sub_index) {
   
   $sql = '';
   if ($sub_index == null) {
-    $sql = sprintf("SELECT id, count, sub_index, ts FROM task_records WHERE 
-        student_id=%d AND task_id=%d ORDER BY id DESC LIMIT 1;",
+    $sql = sprintf("SELECT id, count, sub_index, UNIX_TIMESTAMP(ts) uts FROM 
+    		task_records WHERE student_id=%d AND task_id=%d ORDER BY id DESC 
+    		LIMIT 1;",
         intval($user_id), intval($task_id));
   } else {
-  	$sql = sprintf("SELECT id, count, sub_index, ts FROM task_records WHERE
-        student_id=%d AND task_id=%d AND sub_index=%d ORDER BY id DESC 
-  			LIMIT 1;", intval($user_id), intval($task_id), intval($sub_index));
+  	$sql = sprintf("SELECT id, count, sub_index, UNIX_TIMESTAMP(ts) uts FROM
+  			task_records WHERE student_id=%d AND task_id=%d AND sub_index=%d 
+  			ORDER BY id DESC LIMIT 1;",
+  			intval($user_id), intval($task_id), intval($sub_index));
   }
 
   $result = $medoo->query($sql)->fetchAll();
@@ -354,7 +356,7 @@ function get_last_task_record($user_id, $task_id, $sub_index) {
   return [
       "count" => intval($record["count"]),
   		"sub_index" => intval($record["sub_index"]),
-      "ts" => $record["ts"],
+      "ts" => $record["uts"],
       "sum" => $sums[0],
       "totalDuration" => $sums[1]
   ];

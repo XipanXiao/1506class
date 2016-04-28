@@ -1,5 +1,5 @@
-define('tasks/tasks',
-    ['progress_bar/progress_bar', 'services', 'utils'], function() {
+define('tasks/tasks', ['progress_bar/progress_bar', 'services', 'utils'],
+    function() {
   return angular.module('TasksModule', ['ProgressBarModule', 'ServicesModule',
       'UtilsModule']).directive('tasks', function($rootScope, rpc, utils) {
       return {
@@ -59,6 +59,10 @@ define('tasks/tasks',
                   task.lastRecord =
                       lastRecord.ts ? lastRecord : {sub_index: sub_index};
                 });
+              };
+              
+              $scope.toLocalTime = function(uts) {
+                return utils.toDateTime(uts).toLocaleString();
               };
             });
           });

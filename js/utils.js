@@ -205,9 +205,12 @@ define('utils', [], function() {
         window.location.reload();
       },
       getWeeklyTime: function(time, week) {
-        var date = time ? new Date(time*1000) : this.getDefaultStartTime();
+        var date = time ? this.toDateTime(time) : this.getDefaultStartTime();
         date.setDate(date.getDate() + 7 * week);
         return date.toLocaleString();
+      },
+      toDateTime: function(unixtimestamp) {
+        return new Date(unixtimestamp * 1000);
       },
       getDefaultStartTime: function() {
         var date = new Date();
