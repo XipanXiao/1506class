@@ -383,7 +383,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
             var users = response.data;
             return rpc.get_classes(classId).then(function(response) {
               var className = response.data[classId].name;
-              var result = labels.join(delimiter) + '\n';
+              var result = '\uFEFF' + labels.join(delimiter) + '\n';
               for (var id in users) {
                 result += exportUser(users[id], className) + '\n';
               }
