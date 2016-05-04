@@ -105,7 +105,8 @@ define('utils', [], function() {
       maxKey: function(map) {
         var result = 0;
         for (var key in map) {
-          if (key > result) result = key;
+          var intKey = parseInt(key);
+          if (intKey > result) result = intKey;
         }
         
         return result;
@@ -295,6 +296,12 @@ define('utils', [], function() {
 
       getDisplayLabel: function(user, key) {
         return this[key+'Labels'][user[key]] || '';
+      },
+      getNextName: function(name) {
+        var match = /([^0-9]*)([0-9]+)(.*)/.exec(name);
+        if (!match) return name;
+        
+        return match[1] + (parseInt(match[2])+1) + match[3];
       }
     };
   });

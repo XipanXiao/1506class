@@ -69,10 +69,16 @@ define('course_editor_dialog/course_editor_dialog',
               $scope.appendCourse = function(group) {
                 var id = utils.maxKey(group.courses) + 1;
                 var length = utils.keys(group.courses).length;
+                var name;
+                if (length > 0) {
+                  name = utils.getNextName(group.courses[id-1].name);
+                } else {
+                  '{0}第{1}节'.format(group.name, length + 1);
+                }
                 group.courses[id] = {
                   id: 0,
                   group_id: group.id,
-                  name: '{0}第{1}节'.format(group.name, length + 1)
+                  name: name
                 };
               };
               
