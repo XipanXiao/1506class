@@ -1,0 +1,82 @@
+<div>
+  <div class="padded-element">
+	  <div class="task" ng-class="{'completed-task': user.welcomed}">
+	    <div class="header section-header">欢迎</div>
+	    <p>师兄，您好！</p>
+      <p>
+        随喜您成功注册为美国智悲讲修菩提学会（BICW）的新成员！学会将会在5月安排共修时间和分班。
+        第一学期基础班课程《离幸福很近》将于6月1日至11月30日，每周1节课的进度完成。
+        <a href="https://docs.google.com/document/d/17rND3hyVwQEoU4itTf5rv7u9hnoTIP_OUk7J5jNHAXA/edit?usp=sharing"
+            target="_blank">
+          更多信息
+        </a>
+        &nbsp;
+        <a href="https://docs.google.com/document/d/1arAtj3PybuTu52yLYp7Bf1QA7TXasEz28T5k21zzCXA/edit?usp=sharing"
+            target="_blank">
+          FAQ
+        </a>
+	    </p>
+      <hr>
+      <div class="check-complete">
+        <label>
+          <input type="checkbox" ng-model="user.welcomed" ng-change="updateEnroll()">
+          我知道了
+        </label>
+      </div>
+	  </div>
+  </div>
+  <div class="padded-element">
+    <div class="task" ng-class="{'completed-task': user.yyed}">
+      <div class="header section-header">安装YY</div>
+      网络共修必须安装YY客户端，网页版本功能不全。
+      <div>Windows:
+        <a href="https://docs.google.com/document/d/1iobDYtupHpYZ4j5PuaLOfKCKbXw6SQo7yyIFWz8ivfM/edit"
+            target="_blank">YY平台使用.</a>
+      </div>
+      <div>Mac:<a href="http://mac.yy.com/" target="_blank">YY Mac版.</a></div>
+      <div>手机和Pad请用相应的App Store搜索"YY"或者"YY语音".</div>
+      <hr>
+      <div class="check-complete">
+        <label>
+          <input type="checkbox" ng-model="user.yyed" ng-change="updateEnroll()">
+          我装好了
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="padded-element">
+    <div class="task" ng-class="{'completed-task': user.tested}">
+      <div class="header section-header">YY麦克测试</div>
+      请找一位发心师兄或者朋友测试您用YY能正常收听和发言.
+      <hr>
+      <div class="check-complete">
+        <label>
+          <input type="checkbox" ng-model="user.tested" ng-change="updateEnroll()">
+          我试过了
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="padded-element">
+    <div class="task" ng-class="{'completed-task': user.bookordered}">
+      <div class="header section-header">订书</div>
+      <form action="http://www.izhenduan.com/bk/WF_SelectPerson.aspx" method="POST" target="_blank">
+	      您可以选择使用
+	      <a href="http://www.zhibeifw.com/cmsc/list.php?fid=812" target="_blank">
+	      在线教材</a>，也可以
+	      <input type="hidden" name="ctl00$ContentPlaceHolder1$TB_Email" value="{{user.email}}">
+	      <input type="hidden" name="ctl00$ContentPlaceHolder1$BT_Search" value="查找">
+	      <input type="submit" value="订书">（收取成本费）。参考
+	      <a href="https://docs.google.com/document/d/187kluwWeuTgSkPezRJOO_kHptBKatkO8cuj0z2XrIM8/edit?usp=sharing"
+	        target="_blank">订书流程</a>。
+      </form>
+      <hr>
+      <div class="check-complete">
+        <label>
+          <input type="checkbox" ng-model="user.bookordered" ng-change="updateEnroll()">
+          我订好了(或者不需要)
+        </label>
+      </div>
+    </div>
+  </div>
+</div>

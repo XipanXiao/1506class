@@ -67,13 +67,9 @@ define('users/users', ['importers', 'new_user_dialog/new_user_dialog',
           };
           $scope.updateEnroll = function(user, decode) {
             if (decode) {
-              user.welcomed = (user.enroll_tasks & 1) != 0;
-              user.wechated = (user.enroll_tasks & 2) != 0;
-              user.yyed = (user.enroll_tasks & 4) != 0;
-              user.tested = (user.enroll_tasks & 8) != 0;
+              utils.decodeTaskBits(user);
             } else {
-              user.enroll_tasks = utils.makeBits([user.welcomed, user.wechated,
-                  user.yyed, user.tested]);
+              utils.encodeTaskBits(user);
               rpc.update_user({id: user.id, enroll_tasks: user.enroll_tasks});
             }
           };

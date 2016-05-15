@@ -19,7 +19,9 @@ define('utils', [], function() {
       return result;
     };
   }
-  
+
+  var enroll_tasks = ['welcomed', 'wechated', 'yyed', 'tested', 'bookordered'];
+
   return angular.module('UtilsModule', []).factory('utils', function() {
     return {
       countryLabels: window.countryData.getCountryMap(),
@@ -271,6 +273,9 @@ define('utils', [], function() {
         }
         return value;
       },
+      isBitSet: function(bits, index) {
+        return (bits & (1<<index)) != 0;
+      },
       getUSStateCode: function(state) {
         for (var code in this.us_states) {
           if (this.us_states[code] == state) return code;
@@ -302,6 +307,17 @@ define('utils', [], function() {
         if (!match) return name;
         
         return match[1] + (parseInt(match[2])+1) + match[3];
+      },
+      decodeTaskBits: function(user) {
+        var that = this;
+        var setValue = function(key, index) {
+          user[key] = that.isBitSet(user.enroll_tasks, index);
+        };
+        enroll_tasks.forEach(setValue);
+      },
+      encodeTaskBits: function(user) {
+        user.enroll_tasks =
+          this.makeBits(enroll_tasks.map(function(key) { return user[key]}));
       }
     };
   });

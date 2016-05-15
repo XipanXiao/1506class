@@ -1,15 +1,20 @@
-define('student_app',
-    ['app_bar/app_bar', 'tasks/tasks', 'schedule_tasks/schedule_tasks',
-    'user_editor/user_editor', 'permission', 'services'], function() {
+define('student_app', ['app_bar/app_bar', 'setup_tasks/setup_tasks',
+    'tasks/tasks', 'schedule_tasks/schedule_tasks', 'user_editor/user_editor',
+    'permission', 'services'], function() {
 
-  angular.module('AppModule', ['AppBarModule', 'TasksModule',
-      'ScheduleTasksModule', 'UserEditorModule', 'PermissionModule',
-      'ServicesModule']).directive('body', function(perm, rpc) {
+  angular.module('AppModule', ['AppBarModule', 'SetupTasksModule',
+      'TasksModule', 'ScheduleTasksModule', 'UserEditorModule',
+      'PermissionModule', 'ServicesModule'])
+      .directive('body', function(perm, rpc) {
         return {
           link: function($scope) {
             rpc.get_user().then(function(user) {
               $scope.user = user;
               perm.user = user;
+
+              $scope.isNewUser = function() {
+                return user.classId == 1;
+              };
             });
           }
         };
