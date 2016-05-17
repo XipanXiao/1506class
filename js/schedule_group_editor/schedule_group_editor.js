@@ -25,37 +25,42 @@ define('schedule_group_editor/schedule_group_editor',
                 var group = scope.group;
                 group.courses = courses;
 
-                var index = 0;
+                var week = 0;
+                var courseIndex = 0;
+                var schedule_id = 0;
                 var course_ids = utils.keys(courses);
+                var weeks = Math.max(course_ids.length, 25);  
                 
                 if (group.schedules && utils.keys(group.schedules).length) {
-                  // modifying existing schedules.
+                  // Modifying existing schedules.
                   for (var id in group.schedules) {
+                    week++;
                     var schedule = group.schedules[id];
                     if (!parseInt(schedule.course_id)) continue;
-                    schedule.course_id = course_ids[index++];
+                    schedule.course_id = course_ids[courseIndex++];
                   }
+                  schedule_id = utils.maxKey(group.schedules) + 1;
                 } else {
-                  // creating new schedules.
-                  var courseIndex = 0;
                   group.schedules = {};
-                  var weeks = Math.max(course_ids.length, 25);  
-                  for (index = 0; index < weeks; index++) {
-                    var courseId = 0;
-                    var holiday = utils.isHolidayWeek(group.start_time, index);
-                    if (!holiday) {
-                      courseId = course_ids[courseIndex++];
-                      if (!courseId) {
-                        break;
-                      }
-                    }
+                }
 
-                    group.schedules[index] = {
-                      id: 0,
-                      course_id: courseId, 
-                      group_id: group.id
-                    };
+                // Appending new schedules.
+                for (; week < weeks; week++) {
+                  var courseId = 0;
+                  var holiday = utils.isHolidayWeek(group.start_time, week);
+                  if (!holiday) {
+                    courseId = course_ids[courseIndex++];
+                    if (!courseId) {
+                      break;
+                    }
                   }
+
+                  group.schedules[schedule_id] = {
+                    id: schedule_id,
+                    course_id: courseId, 
+                    group_id: group.id
+                  };
+                  schedule_id++;
                 }
                 
                 setTimeout(function() {
