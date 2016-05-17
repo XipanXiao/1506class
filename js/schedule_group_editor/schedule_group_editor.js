@@ -48,15 +48,16 @@ define('schedule_group_editor/schedule_group_editor',
                 for (; week < weeks; week++) {
                   var courseId = 0;
                   var holiday = utils.isHolidayWeek(group.start_time, week);
-                  if (!holiday) {
+                  if (holiday) {
+                    // Don't append a holiday at the end.
+                    if (week == weeks - 1) break;
+                  } else {
                     courseId = course_ids[courseIndex++];
-                    if (!courseId) {
-                      break;
-                    }
+                    if (!courseId) break;
                   }
 
                   group.schedules[schedule_id] = {
-                    id: schedule_id,
+                    id: 0,
                     course_id: courseId, 
                     group_id: group.id
                   };
