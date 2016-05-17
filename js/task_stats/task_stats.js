@@ -10,6 +10,7 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
           classId: '@'
         },
         link: function(scope) {
+          var pageSize = 8;
           scope.refreshStats = function() {
             if (!scope.selectedTask) return;
             
@@ -50,6 +51,19 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
               document.querySelector('#task-editor-dlg').open();
             }
           };
+          scope.range = function() {
+            var arr = [];
+            var start = scope.currentPage, end = start + pageSize;
+            for (var i = start; i < end; i++) arr[i-start] = i;
+            return arr;
+          };
+          scope.page = function(delta) {
+            scope.currentPage += delta * pageSize;
+            var max = scope.selectedTask.sub_tasks - pageSize;
+            if (scope.currentPage > max) scope.currentPage = max;
+            else if (scope.currentPage < 0) scope.currentPage = 0;
+          };
+          scope.currentPage = 0;
         },
         templateUrl: 'js/task_stats/task_stats.html'
       };

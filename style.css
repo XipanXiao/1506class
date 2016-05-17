@@ -441,3 +441,23 @@ paper-dialog#new-user-dlg {
 .completed-task {
   background: lightgray;
 }
+
+.task-bar-container {
+  height: 40px;
+  position: relative;
+  width: 60px;
+}
+
+.task-bar {
+  background: green;
+  border-radius: 3px 3px 0 0;
+  bottom: 0;
+  max-height: 36px;
+  position: absolute;
+  width: 80%;
+}
+
+.task-bar-title {
+  bottom: 0;
+  position: absolute;
+}

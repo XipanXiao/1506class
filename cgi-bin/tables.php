@@ -374,12 +374,25 @@ function get_tasks($department_id) {
   return $tasks;
 }
 
+function convert_stat_result($result) {
+  return ["sub_index" => intval($result["sub_index"]),
+  		"sum" => intval($result["sum"]),
+  		"duration" => intval($result["duration"])
+  ];
+}
+
 function get_class_task_stats($classId, $task_id) {
   global $medoo;
 
   $users = $medoo->select("users", ["id", "name"], ["classId" => $classId]);
   foreach ($users as $key => $user) {
-    $user["lastRecord"] = get_last_task_record($user["id"], $task_id, null);
+  	$sql = sprintf("select sub_index, SUM(count) as sum, SUM(duration)".
+        " as duration from task_records where task_id=%d and ".
+  			" student_id=%d group by sub_index", $task_id, $user["id"]);
+
+  	$result = $medoo->query($sql)->fetchAll();
+  	
+    $user["stats"] = array_map("convert_stat_result", $result);
     $users[$key] = $user;
   }
   
