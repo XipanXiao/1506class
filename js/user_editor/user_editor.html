@@ -119,14 +119,14 @@
         <div class="css-table-cell">
           <label>
             <input type="checkbox" ng-model="user.enroll_tasks" bit-index="5"
-                ng-change="save('enroll_tasks')">
+                ng-change="save('enroll_tasks')" ng-disabled="!admining">
             是否研讨班成员
           </label>
         </div>
         <div class="css-table-cell">
           <label>
             <input type="checkbox" ng-model="user.enroll_tasks" bit-index="6"
-                ng-change="save('enroll_tasks')">
+                ng-change="save('enroll_tasks')" ng-disabled="!admining">
             是否终身学员
           </label>
         </div>
