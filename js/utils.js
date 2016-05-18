@@ -314,17 +314,21 @@ define('utils', [], function() {
         
         return match[1] + (parseInt(match[2])+1) + match[3];
       },
-      decodeTaskBits: function(user) {
-        var that = this;
-        var setValue = function(key, index) {
-          user[key] = that.isBitSet(user.enroll_tasks, index);
-        };
-        enroll_tasks.forEach(setValue);
-      },
-      encodeTaskBits: function(user) {
-        user.enroll_tasks =
-          this.makeBits(enroll_tasks.map(function(key) { return user[key]}));
-      }
+      // Index of bit in the user.enroll_tasks bits.
+      // Indicating whether welcome letter is sent.
+      welcomeIndex: 0,
+      // Indicating whether the user joined wechat group.
+      wechatIndex: 1,
+      // Indicating whether yy client is installed.
+      yyIndex: 2,
+      // Indicating whether yy client is tested.
+      yyTestIndex: 3,
+      // Indicating whether book order is placed (or omitted).
+      bookOrderIndex: 4,
+      // Indicating whether the student is in the workshop class.
+      workshopIndex: 5,
+      // Indicating whether the student is permanent or not.
+      permanentIndex: 6
     };
   });
 });

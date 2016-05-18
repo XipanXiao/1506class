@@ -1,7 +1,8 @@
-define('users/users', ['importers', 'new_user_dialog/new_user_dialog',
-    'permission', 'services', 'user_editor/user_editor', 'utils'], function() {
+define('users/users', ['bit_editor/bit_editor', 'importers',
+    'new_user_dialog/new_user_dialog', 'permission', 'services',
+    'user_editor/user_editor', 'utils'], function() {
 
-  return angular.module('UsersModule', ['ImportersModule',
+  return angular.module('UsersModule', ['BitEditorModule', 'ImportersModule',
     'NewUserDialogModule', 'PermissionModule', 'ServicesModule',
     'UserEditorModule', 'UtilsModule'])
         .directive('users', function($rootScope, importers, perm, rpc, utils) {
@@ -26,7 +27,6 @@ define('users/users', ['importers', 'new_user_dialog/new_user_dialog',
                 for (var id in $scope.users) {
                   var user = $scope.users[id];
                   $scope.userNames[user.id] = user.name;
-                  $scope.updateEnroll(user, true);
                   utils.setCountryLabels(user);
                 }
 
@@ -65,13 +65,8 @@ define('users/users', ['importers', 'new_user_dialog/new_user_dialog',
           $scope.showNewUserDialog = function() {
             document.getElementById('new-user-dlg').open();
           };
-          $scope.updateEnroll = function(user, decode) {
-            if (decode) {
-              utils.decodeTaskBits(user);
-            } else {
-              utils.encodeTaskBits(user);
-              rpc.update_user({id: user.id, enroll_tasks: user.enroll_tasks});
-            }
+          $scope.updateEnroll = function(user) {
+            rpc.update_user({id: user.id, enroll_tasks: user.enroll_tasks});
           };
           $scope.exportUsers = function() {
             importers.userImporter.exportUsers($scope.classId,

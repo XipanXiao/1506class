@@ -34,11 +34,14 @@
       <div class="css-table-cell">{{userNames[user.mentor_id]}}</div>
       <div class="css-table-cell" ng-if="isNewClass()">{{entrances[user.entrance]}}</div>
       <div class="css-table-cell" ng-if="isNewClass()">
-        <input type="checkbox" ng-model="user.welcomed" title="欢迎信已发" ng-click="updateEnroll(user)">
-        <input type="checkbox" ng-model="user.wechated" title="已加入微信群"
-            ng-click="updateEnroll(user)">
-        <input type="checkbox" ng-model="user.yyed" title="YY已经安装" ng-click="updateEnroll(user)">
-        <input type="checkbox" ng-model="user.tested" title="YY试麦完成" ng-click="updateEnroll(user)">
+        <input type="checkbox" ng-model="user.enroll_tasks" title="欢迎信已发"
+            ng-click="updateEnroll(user)" bit-index="0">
+        <input type="checkbox" ng-model="user.enroll_tasks" title="已加入微信群"
+            ng-click="updateEnroll(user)" bit-index="1">
+        <input type="checkbox" ng-model="user.enroll_tasks" title="YY已经安装"
+            ng-click="updateEnroll(user)" bit-index="2">
+        <input type="checkbox" ng-model="user.enroll_tasks" title="YY试麦完成"
+            ng-click="updateEnroll(user)" bit-index="3">
       </div>
       <div class="css-table-cell comments">{{user.comments}}</div>
       <div class="css-table-cell">
