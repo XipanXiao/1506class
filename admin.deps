@@ -10,6 +10,7 @@ js/app_bar/app_bar.js
 js/import_dialog/import_dialog.js
 js/classes/classes.js
 js/departments/departments.js
+js/bit_editor/bit_editor.js
 js/editable_label/editable_label.js
 js/department_editor_dialog/department_editor_dialog.js
 js/user_picker/user_picker.js

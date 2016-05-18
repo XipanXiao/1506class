@@ -1,6 +1,8 @@
 define('user_editor/user_editor',
-    ['services', 'utils', 'classes/classes', 'permission'], function() {
-  return angular.module('UserEditorModule', ['ServicesModule', 'ClassesModule',
+    ['services', 'utils', 'bit_editor/bit_editor', 'classes/classes',
+     'permission'], function() {
+  return angular.module('UserEditorModule', ['ServicesModule',
+      'BitEditorModule', 'ClassesModule',
       'PermissionModule', 'UtilsModule']).directive('userEditor',
           function($rootScope, perm, rpc, utils) {
     return {
@@ -41,10 +43,11 @@ define('user_editor/user_editor',
           document.querySelector('div.user-info-editor').scrollIntoView();
         });
 
-        $scope.save = function() {
+        $scope.save = function(editing) {
           var user = $scope.user;
           var data = {id: user.id};
-          switch ($scope.editing) {
+          editing = editing || $scope.editing;
+          switch (editing) {
           case 'address':
             data.city = user.city;
             data.state = user.state;
@@ -53,12 +56,12 @@ define('user_editor/user_editor',
           case 'password':
             if (user.password != user.confirm) return;
           default:
-            data[$scope.editing] = user[$scope.editing];
+            data[editing] = user[editing];
             break;
           }
           
           rpc.update_user(data).then(function(response) {
-            if (response.data.updated && $scope.editing == 'classId') {
+            if (response.data.updated && editing == 'classId') {
               $rootScope.$broadcast('class-updated', user.classId);
             }
             

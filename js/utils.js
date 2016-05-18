@@ -276,6 +276,12 @@ define('utils', [], function() {
       isBitSet: function(bits, index) {
         return (bits & (1<<index)) != 0;
       },
+      setBit: function(bits, index) {
+        return bits | (1<<index);
+      },
+      clearBit: function(bits, index) {
+        return bits & ~(1<<index);
+      },
       getUSStateCode: function(state) {
         for (var code in this.us_states) {
           if (this.us_states[code] == state) return code;
