@@ -69,7 +69,7 @@ define('users/users', ['bit_editor/bit_editor', 'importers',
             rpc.update_user({id: user.id, enroll_tasks: user.enroll_tasks});
           };
           $scope.exportUsers = function() {
-            importers.userImporter.exportUsers($scope.classId,
+            importers.userImporter.exportUsers([$scope.classId],
                 $scope.exportedUrl).then(function(url) {
                   $scope.exportedUrl = url;
                 });

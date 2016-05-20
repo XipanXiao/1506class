@@ -105,7 +105,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
 
   return angular.module('ImportersModule', ['PermissionModule',
       'ServicesModule', 'UtilsModule'])
-      .factory('importers', function(perm, rpc, utils) {
+      .factory('importers', function(perm, rpc, utils, $q) {
 
     var validate = function(user, classes) {
       var extractFromPatter = function(pattern, value) {
@@ -330,7 +330,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
         },
         
         /// Returns a Promise that is resolved when all users are exported.
-        exportUsers: function(classId, dataUrl) {
+        exportUsers: function(classIds, dataUrl) {
           var labels = [
             '姓名',
             '学号',
@@ -379,16 +379,27 @@ define('importers', ['permission', 'services', 'utils'], function() {
             if (file) window.URL.revokeObjectURL(file);
             return file = window.URL.createObjectURL(data);
           };
-          return rpc.get_users(null, classId).then(function(response) {
-            var users = response.data;
-            return rpc.get_classes(classId).then(function(response) {
-              var className = response.data[classId].name;
-              var result = '\uFEFF' + labels.join(delimiter) + '\n';
+          
+          var classPromises = classIds.map(function(classId) {
+            return rpc.get_users(null, classId).then(function(response) {
+              var users = response.data;
+              return rpc.get_classes(classId).then(function(response) {
+                var className = response.data[classId].name;
+                return {name: className, users: users};
+              });
+            });
+          });
+          
+          var result = '\uFEFF' + labels.join(delimiter) + '\n';
+          return $q.all(classPromises).then(function(classes) {
+            classes.forEach(function(classInfo) {
+              var className = classInfo.name;
+              var users = classInfo.users;
               for (var id in users) {
                 result += exportUser(users[id], className) + '\n';
               }
-              return createDataUrl(result, dataUrl);
             });
+            return createDataUrl(result, dataUrl);
           });
         }
       }
