@@ -93,6 +93,13 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
           $scope.isSysAdmin = function() {
             return perm.isSysAdmin();
           };
+          
+          $scope.exportUsers = function() {
+            importers.userImporter.exportUsers($scope.classIds,
+                $scope.exportedUrl).then(function(url) {
+                  $scope.exportedUrl = url;
+                });
+          };
         },
         templateUrl : 'js/classes/classes.html'
       };
