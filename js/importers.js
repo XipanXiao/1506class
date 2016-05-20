@@ -331,45 +331,56 @@ define('importers', ['permission', 'services', 'utils'], function() {
         
         /// Returns a Promise that is resolved when all users are exported.
         exportUsers: function(classIds, dataUrl) {
+          var serialNumber = 0;
           var labels = [
+            '序号',
+            '省/直辖市',
+            '市/县/区',
             '姓名',
-            '学号',
-            '法名',
             '性别',
-            'email',
-            '班级',
-            '电话',
-            '微信',
-            '城市',
-            '州',
-            '国家',
+            '出生年月日',
             '文化程度',
             '职业',
+            '自学',
+            '只闻思',
+            '研讨班',
+            '终身学员',
+            '班级',
+            '学号',
+            '法名',
+            'email',
+            '电话',
+            '微信',
             '特长',
             '是否愿意发心工作',
-            '生日',
             '皈依年份',
             '知道学会的渠道',
             '备注'
           ];
           var exportUser = function(user, className) {
             utils.setCountryLabels(user);
-            return user.name + delimiter +
-              (user.internal_id || '') + delimiter +
-              (user.nickname || '') + delimiter +
-              utils.getDisplayLabel(user, 'sex') + delimiter +
-              user.email + delimiter +
-              className + delimiter +
-              (user.phone || '') + delimiter +
-              (user.im || '') + delimiter +
+            return '' + (++serialNumber) + delimiter + 
+              (user.countryLabel || '') + '/' + (user.stateLabel) + delimiter +
               (user.city || '') + delimiter +
-              (user.stateLabel || '') + delimiter +
-              (user.countryLabel || '') + delimiter +
+              user.name + delimiter +
+              utils.getDisplayLabel(user, 'sex') + delimiter +
+              utils.formatDate(user.birthday || '') + delimiter +
               utils.getDisplayLabel(user, 'education') + delimiter +
               (user.occupation || '') + delimiter +
+              delimiter +
+              delimiter +
+              (utils.isBitSet(user.enroll_tasks, 
+                  utils.workshopIndex) ? '是' : '') + delimiter + 
+              (utils.isBitSet(user.enroll_tasks, 
+                  utils.permanentIndex) ? '是' : '') + delimiter + 
+              className + delimiter +
+              (user.internal_id || '') + delimiter +
+              (user.nickname || '') + delimiter +
+              user.email + delimiter +
+              (user.phone || '') + delimiter +
+              (user.im || '') + delimiter +
               (user.skills || '') + delimiter +
               utils.getDisplayLabel(user, 'volunteer') + delimiter +
-              (user.birthday || '') + delimiter +
               (user.conversion || '') + delimiter +
               utils.getDisplayLabel(user, 'channel') + delimiter +
               (user.comments || '');

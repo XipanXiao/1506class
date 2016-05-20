@@ -314,6 +314,11 @@ define('utils', [], function() {
         
         return match[1] + (parseInt(match[2])+1) + match[3];
       },
+      formatDate: function(dateString) {
+        var parts = dateString.split('-');
+        return parts[0] + '年' + (parseInt(parts[1])||1) + '月' + 
+            (parseInt(parts[2])||1) + '日';
+      },
       // Index of bit in the user.enroll_tasks bits.
       // Indicating whether welcome letter is sent.
       welcomeIndex: 0,
