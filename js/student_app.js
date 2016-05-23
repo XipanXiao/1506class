@@ -12,8 +12,8 @@ define('student_app', ['app_bar/app_bar', 'setup_tasks/setup_tasks',
               $scope.user = user;
               perm.user = user;
 
-              $scope.isNewUser = function() {
-                return user.classId == 1;
+              $scope.isFirstClass = function() {
+                return user.classInfo && user.classInfo.department_id == 1;
               };
             });
           }

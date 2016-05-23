@@ -23,12 +23,11 @@
   
   <iron-pages selected="0">
     <div>
-      <div ng-switch="isNewUser()">
-        <setup-tasks ng-switch-when="true" user="user" class="left">
-        </setup-tasks>
-        <tasks ng-switch-default department-id="{{user.classInfo.department_id}}" class="left">
-        </tasks>
-      </div>
+      <!-- Don't use ng-switch here, it breaks the iron page for FireFox, Safari, etc. -->
+      <setup-tasks ng-show="isFirstClass()" user="user" class="left">
+      </setup-tasks>
+      <tasks ng-hide="isFirstClass()" department-id="{{user.classInfo.department_id}}" class="left">
+      </tasks>
       <schedule-tasks class="left" user="user"></schedule-tasks>
     </div>
     <div>
@@ -48,7 +47,7 @@
   </script>
 </div>
 
-<script type="text/javascript" src="index.js?tag=201605192222"></script>
+<script type="text/javascript" src="index.js?tag=201605222139"></script>
 
 </body>
 
