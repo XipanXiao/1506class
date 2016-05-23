@@ -65,7 +65,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
     "sex": {
       "男": 1,
       "女": 0,
-      "default": 0,
+      "default": 0
     },
     "education": {
       "初中或初中以下": 1,
@@ -110,7 +110,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
     var validate = function(user, classes) {
       var extractFromPatter = function(pattern, value) {
         var match = pattern.exec(value);
-        return match && match[1] || '';
+        return (match && match[1]) || '';
       };
       
       var cutOff = function(value, len) {
@@ -145,13 +145,13 @@ define('importers', ['permission', 'services', 'utils'], function() {
       }
       
       ['sex', 'education'].forEach(function(key) {
-        var label = user[key] && user[key].trim() || 'default';
+        var label = (user[key] && user[key].trim()) || 'default';
         user[key + '_label'] = label;
         user[key] = columnMap[key][label];
       });
       
       var start_year_label =
-          user.start_year && user.start_year.trim() || '';
+          (user.start_year && user.start_year.trim()) || '';
       user.start_year_label = start_year_label;
       if (start_year_label.startsWith('1')) {
         user.start_year = 2000 + parseInt(start_year_label.substring(0,2));
@@ -334,13 +334,24 @@ define('importers', ['permission', 'services', 'utils'], function() {
           var serialNumber = 0;
           var labels = [
             '序号',
-            '省/直辖市',
-            '市/县/区',
             '姓名',
             '性别',
             '出生年月日',
             '文化程度',
             '职业',
+            '预选专业',
+            '联系电话',
+            '电子邮箱',
+            '省/直辖市',
+            '市/县/区',
+            '街道',
+            '个人特长',
+            '是否看过招生简章',
+            '能否遵守管理规定',
+            '是否皈依',
+            '皈依年份',
+            '知道学会的渠道',
+            '备注',
             '自学',
             '只闻思',
             '研讨班',
@@ -348,25 +359,30 @@ define('importers', ['permission', 'services', 'utils'], function() {
             '班级',
             '学号',
             '法名',
-            'email',
-            '电话',
             '微信',
-            '特长',
-            '是否愿意发心工作',
-            '皈依年份',
-            '知道学会的渠道',
-            '备注'
+            '是否愿意发心工作'
           ];
           var exportUser = function(user, className) {
             utils.setCountryLabels(user);
             return '' + (++serialNumber) + delimiter + 
-              (user.countryLabel || '') + '/' + (user.stateLabel) + delimiter +
-              (user.city || '') + delimiter +
               user.name + delimiter +
               utils.getDisplayLabel(user, 'sex') + delimiter +
               utils.formatDate(user.birthday || '') + delimiter +
               utils.getDisplayLabel(user, 'education') + delimiter +
               (user.occupation || '') + delimiter +
+              delimiter +
+              (user.phone || '') + delimiter +
+              user.email + delimiter +
+              (user.countryLabel || '') + '/' + (user.stateLabel) + delimiter +
+              (user.city || '') + delimiter +
+              delimiter +
+              (user.skills || '') + delimiter +
+              '是' + delimiter +
+              '是' + delimiter +
+              (user.conversion ? '是' : '否') + delimiter +
+              (user.conversion || '') + delimiter +
+              utils.getDisplayLabel(user, 'channel') + delimiter +
+              (user.comments || '') + delimiter +
               delimiter +
               delimiter +
               (utils.isBitSet(user.enroll_tasks, 
@@ -376,14 +392,8 @@ define('importers', ['permission', 'services', 'utils'], function() {
               className + delimiter +
               (user.internal_id || '') + delimiter +
               (user.nickname || '') + delimiter +
-              user.email + delimiter +
-              (user.phone || '') + delimiter +
               (user.im || '') + delimiter +
-              (user.skills || '') + delimiter +
-              utils.getDisplayLabel(user, 'volunteer') + delimiter +
-              (user.conversion || '') + delimiter +
-              utils.getDisplayLabel(user, 'channel') + delimiter +
-              (user.comments || '');
+              utils.getDisplayLabel(user, 'volunteer');
           };
           var createDataUrl = function(data, file) {
             data = new Blob([data], {type: 'text/plain'});
