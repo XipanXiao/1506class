@@ -58,7 +58,7 @@ define('course_editor_dialog/course_editor_dialog',
               };
               
               $scope.updateCourse = function(course) {
-                rpc.update_course(course).then(function(response) {
+                return rpc.update_course(course).then(function(response) {
                   var updated = response.data;
                   if (updated.id && !course.id) {
                     course.id = updated.id;
@@ -106,12 +106,20 @@ define('course_editor_dialog/course_editor_dialog',
               };
               
               $scope.saveNewCourses = function() {
+                var newCourses = [];
                 for (var id in $scope.group.courses) {
                   var course = $scope.group.courses[id];
-                  if (course.id) continue;
-                  
-                  $scope.updateCourse(course);
+                  if (!course.id) newCourses.push(course);
                 }
+                
+                // Save courses one by one to keep their order.
+                var index = 0;
+                var updateNext = function() {
+                  var course = newCourses[index++];
+                  if (course) $scope.updateCourse(course).then(updateNext);
+                };
+
+                updateNext();
               };
               
               $scope.removeCourse = function(course) {
