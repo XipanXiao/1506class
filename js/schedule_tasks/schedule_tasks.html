@@ -1,38 +1,41 @@
+<navigate-bar class="right padded-element" navigate="navigate(direction)"></navigate-bar>
 <div ng-repeat="group in schedule_groups">
-  <div class="center"><h2>{{group.name}}</h2></div>
-  <div class="css-table odd-even schedule-tasks">
-    <div class="css-table-row header">
-      <div class="css-table-cell"><strong>周数</strong></div>
-      <div class="css-table-cell"><strong>时间</strong></div>
-      <div class="css-table-cell"><strong>上课内容</strong></div>
-      <div class="css-table-cell"><strong>总结</strong></div>
-      <div class="css-table-cell"><strong>串讲</strong></div>
-      <div class="css-table-cell"><strong>出席</strong></div>
-      <div class="css-table-cell"><strong>听传承</strong></div>
-      <div class="css-table-cell"><strong>读法本</strong></div>
-    </div>
-  
-    <div ng-repeat="schedule in group.schedules" class="css-table-row"
-        ng-class="{'vacation': vacation(schedule)}">
-      <div class="css-table-cell">{{$index + 1}}</div>
-      <div class="css-table-cell">{{getWeeklyTime(group, $index)}}</div>
-      <div class="css-table-cell">{{group.courses[schedule.course_id].name}}</div>
-      <div class="css-table-cell">{{users[schedule.review].name}}</div>
-      <div class="css-table-cell">{{users[schedule.open].name}}</div>
-      <div class="css-table-cell">
-        <select ng-options="attendOptions[value] for value in [0, 1, 2]"
-            ng-model="records[schedule.course_id].attended" ng-change="reportTask(schedule)"
-            ng-if="!vacation(schedule)">
-        </select>
-      </div>
-      <div class="css-table-cell">
-        <input type="checkbox" ng-model="records[schedule.course_id].video"
-            ng-click="reportTask(schedule)" ng-if="!vacation(schedule)">
-      </div>
-      <div class="css-table-cell">
-        <input type="checkbox" ng-model="records[schedule.course_id].text"
-            ng-click="reportTask(schedule)" ng-if="!vacation(schedule)">
-      </div>
-    </div>
+  <div ng-if="isCurrentGroup(group)">
+	  <div class="center"><h2>{{group.name}}</h2></div>
+	  <div class="css-table odd-even schedule-tasks">
+	    <div class="css-table-row header">
+	      <div class="css-table-cell"><strong>周数</strong></div>
+	      <div class="css-table-cell"><strong>时间</strong></div>
+	      <div class="css-table-cell"><strong>上课内容</strong></div>
+	      <div class="css-table-cell"><strong>总结</strong></div>
+	      <div class="css-table-cell"><strong>串讲</strong></div>
+	      <div class="css-table-cell"><strong>出席</strong></div>
+	      <div class="css-table-cell"><strong>听传承</strong></div>
+	      <div class="css-table-cell"><strong>读法本</strong></div>
+	    </div>
+	  
+	    <div ng-repeat="schedule in group.schedules" class="css-table-row"
+	        ng-class="{'vacation': vacation(schedule)}">
+	      <div class="css-table-cell">{{$index + 1}}</div>
+	      <div class="css-table-cell">{{getWeeklyTime(group, $index)}}</div>
+	      <div class="css-table-cell">{{group.courses[schedule.course_id].name}}</div>
+	      <div class="css-table-cell">{{users[schedule.review].name}}</div>
+	      <div class="css-table-cell">{{users[schedule.open].name}}</div>
+	      <div class="css-table-cell">
+	        <select ng-options="attendOptions[value] for value in [0, 1, 2]"
+	            ng-model="records[schedule.course_id].attended" ng-change="reportTask(schedule)"
+	            ng-if="!vacation(schedule)">
+	        </select>
+	      </div>
+	      <div class="css-table-cell">
+	        <input type="checkbox" ng-model="records[schedule.course_id].video"
+	            ng-click="reportTask(schedule)" ng-if="!vacation(schedule)">
+	      </div>
+	      <div class="css-table-cell">
+	        <input type="checkbox" ng-model="records[schedule.course_id].text"
+	            ng-click="reportTask(schedule)" ng-if="!vacation(schedule)">
+	      </div>
+	    </div>
+	  </div>
   </div>
 </div>

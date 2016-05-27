@@ -153,6 +153,11 @@ define('utils', [], function() {
       first: function(map) {
         for (var id in map) return map[id];
       },
+      last: function(map) {
+        var value;
+        for (var id in map) value = map[id];
+        return value;
+      },
       isString: function(obj) {
         return obj instanceof String || typeof obj == 'string';
       },
@@ -225,6 +230,10 @@ define('utils', [], function() {
         
         return date;
       },
+      nextTerm: function(date, direction) {
+        date.setUTCMonth(date.getUTCMonth() + direction * 6);
+        return date;
+      },
       isHolidayWeek: function(startTime, week) {
         var firstHalf = new Date(startTime*1000).getMonth() == 5;
         if (firstHalf) {
@@ -264,7 +273,7 @@ define('utils', [], function() {
         return result;
       },
       unixTimestamp: function(date) {
-        return date.getTime() / 1000;
+        return Math.floor(date.getTime() / 1000);
       },
       makeBits: function(bits) {
         var value = 0;

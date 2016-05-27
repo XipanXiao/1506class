@@ -10,6 +10,7 @@ js/bit_editor/bit_editor.js
 js/setup_tasks/setup_tasks.js
 js/progress_bar/progress_bar.js
 js/tasks/tasks.js
+js/navigate_bar/navigate_bar.js
 js/schedule_tasks/schedule_tasks.js
 js/importers.js
 js/import_dialog/import_dialog.js
