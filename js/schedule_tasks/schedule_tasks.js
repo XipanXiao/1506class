@@ -25,6 +25,7 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                   $scope.schedule_groups = response.data.groups;
                   $scope.users = response.data.users;
                   $scope.records = $scope.users[$scope.user.id].records;
+                  $scope.initCurrentTerm();
                 });
               });
               
@@ -37,6 +38,8 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
               /// Check whether the schedule group is in the time frame of the
               /// current selected term.
               $scope.isCurrentGroup = function(group) {
+                if (!$scope.currentTerm) return false;
+
                 var diff = utils.unixTimestamp($scope.currentTerm) -
                   group.start_time;
                 // A group is considered in the time frame if its start time
@@ -45,6 +48,8 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
               };
               
               $scope.navigate = function(direction) {
+                if (utils.isEmpty($scope.schedule_groups)) return;
+
                 var firstGroup, lastGroup;
                 switch (direction) {
                 case -2:
@@ -70,16 +75,21 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                       utils.nextTerm($scope.currentTerm, direction);
                   break;
                 default:
-                  $scope.currentTerm = $scope.getCurrentTerm();
+                  $scope.initCurrentTerm();
                 }
               };
               
-              $scope.getCurrentTerm = function() {
+              $scope.initCurrentTerm = function() {
                 var date = utils.getDefaultStartTime();
-                return utils.nextTerm(date, -1);
+                $scope.currentTerm = utils.nextTerm(date, -1);
+
+                var current = function(group) {
+                  return $scope.isCurrentGroup(group);
+                };
+                if (!utils.any($scope.schedule_groups, current)) {
+                  $scope.navigate(2);
+                }
               };
-              
-              $scope.currentTerm = $scope.getCurrentTerm();
             },
             templateUrl : 'js/schedule_tasks/schedule_tasks.html'
           };
