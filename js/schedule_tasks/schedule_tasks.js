@@ -70,11 +70,16 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                       utils.nextTerm($scope.currentTerm, direction);
                   break;
                 default:
-                  $scope.currentTerm = utils.getDefaultStartTime();
+                  $scope.currentTerm = $scope.getCurrentTerm();
                 }
               };
               
-              $scope.currentTerm = utils.getDefaultStartTime();
+              $scope.getCurrentTerm = function() {
+                var date = utils.getDefaultStartTime();
+                return utils.nextTerm(date, -1);
+              };
+              
+              $scope.currentTerm = $scope.getCurrentTerm();
             },
             templateUrl : 'js/schedule_tasks/schedule_tasks.html'
           };

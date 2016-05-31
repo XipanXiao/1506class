@@ -225,14 +225,16 @@ define('utils', [], function() {
         var month = date.getUTCMonth();
         
         month = month < 5 ? 5 : 11;
+        date.setUTCHours(0, 0, 0, 0);
+        date.setUTCDate(2);
         date.setUTCMonth(month);
-        date.setUTCDate(1);
         
         return date;
       },
       nextTerm: function(date, direction) {
-        date.setUTCMonth(date.getUTCMonth() + direction * 6);
-        return date;
+        var next = new Date(date.getTime());
+        next.setUTCMonth(date.getUTCMonth() + direction * 6);
+        return next;
       },
       isHolidayWeek: function(startTime, week) {
         var firstHalf = new Date(startTime*1000).getMonth() == 5;
