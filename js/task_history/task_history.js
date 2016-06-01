@@ -41,8 +41,13 @@ define('task_history/task_history', ['utils',
           });
         };
         
-        scope.remove = function(id) {
-          rpc.remove_task_record(scope.user.id, id).then(function(response) {
+        scope.remove = function(record) {
+          var message = scope.selectedTask.duration ? ',用时:{2}]' : ']';
+          message = ('您确认要删除这条记录吗？[时间:{0},数量:{1}' + message)
+              .format(record.ts, record.count, record.duration);
+          if (!confirm(message)) return;
+          rpc.remove_task_record(scope.user.id, record.id)
+              .then(function(response) {
             if (response.data.deleted) {
               scope.reloadTaskHistory();
             }
