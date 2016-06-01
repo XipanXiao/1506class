@@ -21,7 +21,10 @@
 	      <progress-bar value="{{user.stats[0].sum}}" max="{{selectedTask.max}}" class="task-stats">
 	      <progress-bar>
 	    </div>
-	    <div class="css-table-cell">{{user.stats[0].sum}}</div>
+	    <div class="css-table-cell">
+	      {{user.stats[0].sum}}
+	      <span ng-if="user.stats[0].duration">({{user.stats[0].duration}}分钟)</span>
+	    </div>
 	  </div>
 	</div>
 	<div ng-switch-default class="css-table task-stats odd-even">
