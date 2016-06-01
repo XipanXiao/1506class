@@ -32,9 +32,11 @@ define('task_history/task_history', ['utils',
             var totalDuration = 0;
             for (var index = 0; index < scope.task_history.length; index++) {
               var record = scope.task_history[index];
-              record.sum = (sum += parseInt(record.count));
-              record.totalDuration = 
-                  (totalDuration += parseInt(record.duration));
+              record.count = parseInt(record.count);
+              record.duration = parseInt(record.duration);
+              record.sub_index = parseInt(record.sub_index);
+              record.sum = (sum += record.count);
+              record.totalDuration = (totalDuration += record.duration);
             }
           });
         };
