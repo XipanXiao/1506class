@@ -20,6 +20,7 @@
   <paper-tabs noink selected="0">
     <paper-tab>考勤登记</paper-tab>
     <paper-tab>个人信息</paper-tab>
+    <paper-tab>历史报数</paper-tab>
   </paper-tabs>
   
   <iron-pages selected="0">
@@ -37,6 +38,9 @@
         <user-editor user="user"></user-editor>
       </div>
     </div>
+    <div>
+      <task-history user="user"></task-history>
+    </div>
   </iron-pages>
   <script>
        var pages = document.querySelector('iron-pages');
@@ -48,7 +52,7 @@
   </script>
 </div>
 
-<script type="text/javascript" src="index.js?tag=201605301943"></script>
+<script type="text/javascript" src="index.js?tag=201605311914"></script>
 
 </body>
 

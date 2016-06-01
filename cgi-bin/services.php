@@ -39,6 +39,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "task_records") {
     $response = get_last_task_record($student_id, $_GET["task_id"],
         isset($_GET["sub_index"]) ? $_GET["sub_index"] : null);
+  } elseif ($resource_id == "task_history") {
+    $response = get_task_history($student_id, $_GET["task_id"]);
   } elseif ($resource_id == "courses") {
     $response = get_courses($_GET["group_id"]);
   } elseif ($resource_id == "users") {
@@ -179,6 +181,16 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = ["deleted" => remove_class($_REQUEST["id"])];
   } elseif ($resource_id == "task") {
     $response = ["deleted" => remove_task($_REQUEST["id"])];
+  } elseif ($resource_id == "task_records") {
+  	if (!isSysAdmin($user)) {
+  	  $record = get_task_record($_REQUEST["id"]);
+  	  if (empty($record) || $record["student_id"] != $student_id) {
+  	  	$response = ["error" => "permission denied"];
+  	  	echo json_encode($response);
+  	  	exit();
+  	  }
+  	}
+    $response = ["deleted" => remove_task_record($_REQUEST["id"])];
   } elseif ($resource_id == "user") {
     $response = ["deleted" => remove_user($_REQUEST["id"])];
   } elseif ($resource_id == "department") {

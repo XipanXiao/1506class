@@ -1,9 +1,13 @@
 define('student_app', ['app_bar/app_bar', 'setup_tasks/setup_tasks',
-    'tasks/tasks', 'schedule_tasks/schedule_tasks', 'user_editor/user_editor',
+    'tasks/tasks', 'schedule_tasks/schedule_tasks',
+    'task_history/task_history',
+    'user_editor/user_editor',
     'permission', 'services'], function() {
 
   angular.module('AppModule', ['AppBarModule', 'SetupTasksModule',
-      'TasksModule', 'ScheduleTasksModule', 'UserEditorModule',
+      'TasksModule', 'ScheduleTasksModule',
+      'TaskHistoryModule',
+      'UserEditorModule',
       'PermissionModule', 'ServicesModule'])
       .directive('body', function(perm, rpc) {
         return {

@@ -16,4 +16,5 @@ js/importers.js
 js/import_dialog/import_dialog.js
 js/classes/classes.js
 js/user_editor/user_editor.js
+js/task_history/task_history.js
 js/student_app.js

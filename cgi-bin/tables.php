@@ -156,7 +156,7 @@ function get_classes($classId) {
   $classes = keyed_by_id($medoo->select("classes", "*",
       $classId ? ["id" => $classId] : null));
   foreach ($classes as $id => $classInfo) {
-  	$classes[$id] = convert_int_fields($classInfo, $int_fields);
+    $classes[$id] = convert_int_fields($classInfo, $int_fields);
   }
   return $classes;
 }
@@ -332,14 +332,14 @@ function get_last_task_record($user_id, $task_id, $sub_index) {
   $sql = '';
   if ($sub_index == null) {
     $sql = sprintf("SELECT id, count, sub_index, UNIX_TIMESTAMP(ts) uts FROM 
-    		task_records WHERE student_id=%d AND task_id=%d ORDER BY id DESC 
-    		LIMIT 1;",
+        task_records WHERE student_id=%d AND task_id=%d ORDER BY id DESC 
+        LIMIT 1;",
         intval($user_id), intval($task_id));
   } else {
-  	$sql = sprintf("SELECT id, count, sub_index, UNIX_TIMESTAMP(ts) uts FROM
-  			task_records WHERE student_id=%d AND task_id=%d AND sub_index=%d 
-  			ORDER BY id DESC LIMIT 1;",
-  			intval($user_id), intval($task_id), intval($sub_index));
+    $sql = sprintf("SELECT id, count, sub_index, UNIX_TIMESTAMP(ts) uts FROM
+        task_records WHERE student_id=%d AND task_id=%d AND sub_index=%d 
+        ORDER BY id DESC LIMIT 1;",
+        intval($user_id), intval($task_id), intval($sub_index));
   }
 
   $result = $medoo->query($sql)->fetchAll();
@@ -350,12 +350,12 @@ function get_last_task_record($user_id, $task_id, $sub_index) {
 
   $sql = sprintf("SELECT SUM(count), SUM(duration) FROM task_records
       WHERE student_id=%d AND task_id=%d AND sub_index=%d;",
-  		intval($user_id), intval($task_id), $record["sub_index"]);
+      intval($user_id), intval($task_id), $record["sub_index"]);
   $sums = current($medoo->query($sql)->fetchAll());
 
   return [
       "count" => intval($record["count"]),
-  		"sub_index" => intval($record["sub_index"]),
+      "sub_index" => intval($record["sub_index"]),
       "ts" => $record["uts"],
       "sum" => $sums[0],
       "totalDuration" => $sums[1]
@@ -376,8 +376,8 @@ function get_tasks($department_id) {
 
 function convert_stat_result($result) {
   return ["sub_index" => intval($result["sub_index"]),
-  		"sum" => intval($result["sum"]),
-  		"duration" => intval($result["duration"])
+      "sum" => intval($result["sum"]),
+      "duration" => intval($result["duration"])
   ];
 }
 
@@ -386,12 +386,12 @@ function get_class_task_stats($classId, $task_id) {
 
   $users = $medoo->select("users", ["id", "name"], ["classId" => $classId]);
   foreach ($users as $key => $user) {
-  	$sql = sprintf("select sub_index, SUM(count) as sum, SUM(duration)".
+    $sql = sprintf("select sub_index, SUM(count) as sum, SUM(duration)".
         " as duration from task_records where task_id=%d and ".
-  			" student_id=%d group by sub_index", $task_id, $user["id"]);
+        " student_id=%d group by sub_index", $task_id, $user["id"]);
 
-  	$result = $medoo->query($sql)->fetchAll();
-  	
+    $result = $medoo->query($sql)->fetchAll();
+    
     $user["stats"] = array_map("convert_stat_result", $result);
     $users[$key] = $user;
   }
@@ -405,7 +405,7 @@ function report_task($user_id, $task_id, $sub_index, $count, $duration) {
   return $medoo->insert("task_records", [
     "student_id" => intval($user_id), 
     "task_id" => intval($task_id),
-  	"sub_index" => intval($sub_index),
+    "sub_index" => intval($sub_index),
     "count" => intval($count),
     "duration" => $duration
   ]);
@@ -563,6 +563,30 @@ function update_schedule_group($group) {
   }
 
   return $id;
+}
+
+function get_task_history($userId, $task_id) {
+  global $medoo;
+  
+  return $medoo->select('task_records', '*', ["AND" => [
+      "student_id" => $userId,
+      "task_id" => $task_id
+  ]]);
+}
+
+function get_task_record($task_id) {
+  global $medoo;
+  
+  $result = $medoo->select('task_records', "*", ["id" => $task_id]);
+  if (empty($result)) return null;
+  
+  return current($result);
+}
+
+function remove_task_record($task_id) {
+  global $medoo;
+  
+  return $medoo->delete('task_records', ["id" => $task_id]);
 }
 
 function search($prefix) {

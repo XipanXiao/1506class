@@ -1,6 +1,6 @@
 define('bit_editor/bit_editor', ['utils'], function() {
-  return angular.module('BitEditorModule', []).directive('bitIndex',
-      function(utils) {
+  return angular.module('BitEditorModule', ['UtilsModule'])
+      .directive('bitIndex', function(utils) {
     return {
       require: 'ngModel',
       restrict: 'A',

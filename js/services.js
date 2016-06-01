@@ -131,6 +131,12 @@ define('services', [], function() {
         return $http.get(url);
       },
       
+      get_task_history: function(userId, taskId) {
+        var url = "{0}?rid=task_history&user_id={1}&task_id={2}".
+            format(serviceUrl, userId || '', taskId);
+        return $http.get(url);
+      },
+      
       update_user: function(user) {
         user.rid = 'user';
         return http_form_post($http, $httpParamSerializerJQLike(user));
@@ -188,6 +194,12 @@ define('services', [], function() {
 
       remove_department: function(department_id) {
         var url = '{0}?rid=department&id={1}'.format(serviceUrl, department_id);
+        return $http.delete(url);
+      },
+
+      remove_task_record: function(userId, record_id) {
+        var url = '{0}?rid=task_records&id={1}&user_id={2}'.format(serviceUrl,
+            record_id, userId);
         return $http.delete(url);
       },
 
