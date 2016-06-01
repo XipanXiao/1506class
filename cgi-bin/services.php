@@ -162,13 +162,13 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 } elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE" &&
     isset ( $_REQUEST["rid"] )) {
 
-  if (!isSysAdmin($user)) {
+  $resource_id = $_REQUEST["rid"];
+  if (!isSysAdmin($user) && $resource_id != "task_records") {
     $response = ["error" => "permission denied"];
     echo json_encode($response);
     exit();
   }
 
-  $resource_id = $_REQUEST["rid"];
   if ($resource_id == "course_group") {
     $response = ["deleted" => remove_course_group($_REQUEST["id"])];
   } elseif ($resource_id == "schedule_group") {
