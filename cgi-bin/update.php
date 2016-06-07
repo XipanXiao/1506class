@@ -28,3 +28,4 @@ if (empty($_SESSION["user"])) {
   
   $conn->close();
 }
+?>

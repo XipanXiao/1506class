@@ -10,3 +10,4 @@ function client_redirect($url, $delay, $message = "") {
       </body>
     </html>", $delay, $url, $message);
 }
+?>

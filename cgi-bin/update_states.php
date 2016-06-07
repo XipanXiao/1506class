@@ -97,3 +97,4 @@ if (empty($_SESSION["user"])) {
   	}
   }
 }
+?>

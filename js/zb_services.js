@@ -1,7 +1,8 @@
 // Service APIs to the zhibei system at http://db.zhibeifw.com:8888
 define('zb_services', ['utils'], function() {
   // All requests are proxied (crossing domain ajax).
-  var proxyUrl = 'cgi-bin/proxy.php'
+  var proxyUrl = 'cgi-bin/proxy.php';
+  var redirectUrl = 'cgi-bin/redirect.php';
   var serviceUrl = 'http://db.zhibeifw.com:8888/zb';
   
   function http_form_post($http, data) {
@@ -57,7 +58,7 @@ define('zb_services', ['utils'], function() {
     return {
       serviceUrl: serviceUrl,
       get_secure_url: function(url) {
-        return 'https://www.google.com/url?&q={0}'.format(url);
+        return '{0}?url={1}'.format(redirectUrl, url);
       },
       getClassUrl: function(pre_classID) {
         return this.get_secure_url('{0}/pre/classinfo?pre_classID={1}'
