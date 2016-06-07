@@ -1,0 +1,37 @@
+<div class="error" ng-if="error">{{error}}</div>
+<div class="section padded-element">
+  <h2>第一步：登录智悲系统</h2>
+	<label>用户名<input type="text" ng-model="username"></label>
+	<label>密码<input type="password" ng-model="password"></label>
+	<input type="button" value="login" ng-click="login()">
+  <iron-icon icon="icons:done" ng-show="logined"></iron-icon>
+</div>
+<div class="section padded-element">
+  <h2>第二步：推送本班所有用户信息</h2>
+  <label>选择本班学习方式
+    <select ng-options="['', '本地共修', '网络'][value] for value in [1, 2]"
+      ng-model="study_style"></select>
+  </label>
+  <input type="button" value="同步" ng-click="sync_class()">
+  <div>智悲id: 
+    <a href="{{serviceUrl}}/pre/classinfo?pre_classID={{classInfo.zb_id}}"
+        target="_blank">{{classInfo.zb_id}}</a>
+  </div>
+  <div class="css-table" ng-show="users">
+    <div class="css-table-row header">
+      <div class="css-table-cell">姓名</div>
+      <div class="css-table-cell">智悲id</div>
+      <div class="css-table-cell">Status</div>
+    </div>
+    <div ng-repeat="user in users" class="css-table-row">
+      <div class="css-table-cell">{{user.name}}</div>
+      <div class="css-table-cell">
+        <a href="{{serviceUrl}}/user/basic?userID={{user.zb_id}}"
+            target="_blank">{{user.zb_id}}</a>
+      </div>
+      <div class="css-table-cell">
+        <iron-icon icon="icons:done" ng-show="user.done"></iron-icon>
+      </div>
+    </div>
+  </div>
+</div>

@@ -461,3 +461,7 @@ paper-dialog#new-user-dlg {
   bottom: 0;
   position: absolute;
 }
+
+.logined {
+  background: lightgray;
+}

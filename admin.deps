@@ -5,6 +5,8 @@ js/utils.js
 js/services.js
 js/permission.js
 js/importers.js
+js/zb_services.js
+js/zb_api.js
 js/search_bar/search_bar.js
 js/app_bar/app_bar.js
 js/import_dialog/import_dialog.js
@@ -26,4 +28,5 @@ js/course_editor_dialog/course_editor_dialog.js
 js/course_groups/course_groups.js
 js/schedule_group_editor/schedule_group_editor.js
 js/schedule_editor/schedule_editor.js
+js/zb_sync/zb_sync.js
 js/admin_app.js

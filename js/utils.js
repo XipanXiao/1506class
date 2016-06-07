@@ -344,7 +344,11 @@ define('utils', [], function() {
       // Indicating whether the student is in the workshop class.
       workshopIndex: 5,
       // Indicating whether the student is permanent or not.
-      permanentIndex: 6
+      permanentIndex: 6,
+      // Indicating whether the student is self learning or not.
+      selfLearningIndex: 7,
+      // Indicating whether the student don't practice.
+      wensiIndex: 8
     };
   });
 });
