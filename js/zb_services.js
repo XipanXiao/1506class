@@ -56,6 +56,13 @@ define('zb_services', ['utils'], function() {
     
     return {
       serviceUrl: serviceUrl,
+      get_secure_url: function(url) {
+        return 'https://www.google.com/url?&q={0}'.format(url);
+      },
+      getClassUrl: function(pre_classID) {
+        return this.get_secure_url('{0}/pre/classinfo?pre_classID={1}'
+            .format(serviceUrl, pre_classID));
+      },
       login: function(username, password) {
         var data = {
           'username': username,
