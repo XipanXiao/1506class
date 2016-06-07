@@ -40,6 +40,7 @@ define('zb_api', ['services', 'zb_services'], function() {
         if (classInfo.zb_id) {
           return this.sync_users(classInfo.zb_id, users);
         }
+        var that = this;
         // courseId, startdate, district1, localID
         var courseId = this.get_zb_courseId(classInfo.department_id);
         var startdate = '' + classInfo.start_year + '-06-01';
@@ -48,13 +49,13 @@ define('zb_api', ['services', 'zb_services'], function() {
               var results = response.data.data;
               if (results && results[0]) {
                 classInfo.zb_id = results[0].pre_classID;
-                return this.sync_users(classInfo.zb_id, users);
+                return that.sync_users(classInfo.zb_id, users);
               }
               return zbrpc.create_class(courseId, startdate, '美国', localID,
                   study_style).then(function(response) {
                     classInfo.zb_id = response.data.pre_classID;
                     return classInfo.zb_id ? 
-                        this.sync_users(classInfo.zb_id, users) : null;
+                        that.sync_users(classInfo.zb_id, users) : null;
                   });
             });
       },
