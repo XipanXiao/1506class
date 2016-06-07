@@ -462,6 +462,6 @@ paper-dialog#new-user-dlg {
   position: absolute;
 }
 
-.logined {
-  background: lightgray;
+.in-progress {
+  cursor: wait;
 }

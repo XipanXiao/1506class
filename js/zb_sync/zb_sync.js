@@ -1,6 +1,7 @@
 define('zb_sync/zb_sync',
-    ['services', 'utils', 'zb_api', 'zb_services'], function() {
-  return angular.module('ZBSyncModule', [
+    ['progress_bar/progress_bar', 'services', 'utils', 'zb_api',
+     'zb_services'], function() {
+  return angular.module('ZBSyncModule', ['ProgressBarModule',
       'ServicesModule', 'UtilsModule', 'ZBAPIModule', 'ZBServicesModule'])
       .directive('zbSync', function(rpc, utils, zbapi, zbrpc) {
       return {
@@ -11,13 +12,19 @@ define('zb_sync/zb_sync',
           scope.username = 'zhibeihw1';
           scope.serviceUrl = zbrpc.serviceUrl;
           scope.study_style = 2;
+
+          scope.inprogress = 1;
+          scope.success = 2;
+          scope.failed = 3;
           
           scope.login = function() {
             scope.error = null;
+            scope.loginStatus = scope.inprogress;
             zbrpc.login(scope.username, scope.password)
                 .then(function(response) {
-              scope.logined =
-                (response.data || '').indexOf('<input type="password"') < 0;
+              var hasPassword =
+                (response.data || '').indexOf('<input type="password"') > 0;
+              scope.loginStatus = hasPassword ? scope.failed : scope.success;
               if ((response.data || '').indexOf('用户名或密码错误!') >= 0) {
                 scope.error = '用户名或密码错误!';
               }
@@ -52,6 +59,7 @@ define('zb_sync/zb_sync',
             getLocalId().then(function(localId) {
               rpc.get_users(null, scope.classId).then(function(response) {
                 var users = scope.users = response.data;
+                scope.totalUsers = utils.keys(users).length;
                 var oldId = scope.classInfo.zb_id;
                 zbapi.sync_class(scope.classInfo, localId, users,
                     scope.study_style).then(function(zb_users) {
@@ -62,6 +70,16 @@ define('zb_sync/zb_sync',
                     });
               });
             });
+          };
+          
+          scope.doneUsers = function() {
+            if (!scope.users) return 0;
+
+            var done = 0;
+            for (var id in scope.users) {
+              if (scope.users[id].done) done++;
+            }
+            return done;
           };
         },
         templateUrl: 'js/zb_sync/zb_sync.html'

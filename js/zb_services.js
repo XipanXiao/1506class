@@ -47,7 +47,10 @@ define('zb_services', ['utils'], function() {
         position: '',
         onlywensi: utils.isBitSet(user.enroll_tasks, utils.wensiIndex) ?
             1 : 0,
-        joinDate: fixJoinDate(user)
+        joinDate: fixJoinDate(user),
+        yy: '',
+        yy_No: user.yy || '',
+        level: 0
       };
     }
     

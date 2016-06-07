@@ -60,8 +60,11 @@ define('zb_api', ['services', 'zb_services'], function() {
             });
       },
       sync_user: function(classId, user) {
-        return user.zb_id ? zbrpc.update_user(user) :
-          zbrpc.create_user(classId, user);
+        return (user.zb_id ? zbrpc.update_user(user) :
+          zbrpc.create_user(classId, user)).then(function(response) {
+            user.done = true;
+            return response;
+          });
       },
       /// Store zb ids for corresponding users in database.
       update_zb_ids: function(users, zb_users) {
@@ -73,13 +76,13 @@ define('zb_api', ['services', 'zb_services'], function() {
         for (var id in users) {
           var user = users[id];
           var zb_user = zb_users_map[user.name];
-          var oldId = user.zb_id;
+          if (!zb_user) continue;
 
-          user.zb_id = zb_user && zb_user.userID;
+          var oldId = user.zb_id;
+          user.zb_id = zb_user.userID;
           if (parseInt(oldId) != parseInt(user.zb_id)) {
             rpc.update_user(user);
           }
-          user.done = user.zb_id;
         }
       }
     };
