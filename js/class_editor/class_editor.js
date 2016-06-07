@@ -1,13 +1,15 @@
 define('class_editor/class_editor', ['departments/departments',
     'department_editor_dialog/department_editor_dialog', 
     'editable_label/editable_label',
-    'permission', 'services', 'user_picker/user_picker', 'utils'], function() {
+    'permission', 'services', 'user_picker/user_picker', 'utils',
+    'zb_services'], function() {
 
   return angular.module('ClassEditorModule',
       ['DepartmentEditorDialogModule',
        'DepartmentsModule', 'EditableLabelModule', 'ServicesModule',
-       'UserPickerModule', 'UtilsModule']).directive('classEditor',
-        function($rootScope, perm, rpc, utils) {
+       'UserPickerModule', 'UtilsModule',
+       'ZBServicesModule']).directive('classEditor',
+        function($rootScope, perm, rpc, utils, zbrpc) {
           return {
             scope: {
               classId: '='
@@ -74,6 +76,7 @@ define('class_editor/class_editor', ['departments/departments',
                     scope.classInfo = response.data[classId];
                     scope.oldInfo = angular.copy(scope.classInfo);
                     scope.setupPermissionEditor(scope.classInfo);
+                    scope.zbUrl = zbrpc.getClassUrl(scope.classInfo.zb_id);
                   });
                 }
               };
