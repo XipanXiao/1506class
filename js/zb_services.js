@@ -29,12 +29,13 @@ define('zb_services', ['utils'], function() {
       function($http, $httpParamSerializerJQLike, utils) {
 
     function toZBUser(user) {
+      utils.setCountryLabels(user);
       return {
         name: user.name,
         sn: user.internal_id,
         gender: 1 - parseInt(user.sex),
         birth_year: parseInt((user.birthday || '-').split('-')[0]),
-        district1: '美国', //user.countryLabel,
+        district1: user.countryLabel,
         district2: user.stateLabel + '-' + user.city,
         education: user.education + 3,
         lifelong: utils.isBitSet(user.enroll_tasks, utils.permanentIndex) ?
@@ -100,7 +101,6 @@ define('zb_services', ['utils'], function() {
         return http_form_post($http, $httpParamSerializerJQLike(data));
       },
       create_user: function(pre_classID, user) {
-        utils.setCountryLabels(user);
         var data = toZBUser(user);
         data.url = '{0}/pre/classinfo_ajax'.format(serviceUrl); 
         data.type = 'add_user';
@@ -126,6 +126,19 @@ define('zb_services', ['utils'], function() {
             '{0}/pre/classinfo_ajax?type=pre_class_user_list&pre_classID={1}'
                 .format(serviceUrl, pre_classID);
         return $http.get(get_proxied_url(url));
+      },
+      report_schedule_task: function(pre_classID, userID, half_term, book,
+          audio) {
+        var data = {
+          url: '{0}/pre/report_ajax'.format(serviceUrl),
+          userID: userID,
+          pre_classID: pre_classID,
+          type: 'jx_grid',
+          half_term: half_term,
+          book: book,
+          audio: audio
+        };
+        return http_form_post($http, $httpParamSerializerJQLike(data));
       }
     };
   });
