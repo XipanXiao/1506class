@@ -10,6 +10,8 @@
         <div class="css-table-cell">任务总数</div>
         <div class="css-table-cell">是否计时</div>
         <div class="css-table-cell">子任务数</div>
+        <div class="css-table-cell">开始半学期</div>
+        <div class="css-table-cell">智悲id</div>
         <div class="css-table-cell"></div>
       </div>
       <div ng-repeat="task in tasks" class="css-table-row">
@@ -32,6 +34,13 @@
         </div>
         <div class="css-table-cell">
           <input type="number" ng-model="task.sub_tasks" ng-blur="update(task)">
+        </div>
+        <div class="css-table-cell">
+          <input type="number" min="0" max="20" ng-model="task.starting_half_term"
+              ng-blur="update(task)">
+        </div>
+        <div class="css-table-cell">
+          <input type="text" ng-model="task.zb_name" ng-blur="update(task)">
         </div>
         <div class="css-table-cell">
 				  <iron-icon icon="icons:delete" title="删除" ng-click="remove(task)"
