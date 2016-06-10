@@ -464,3 +464,7 @@ paper-dialog#new-user-dlg {
 .in-progress {
   cursor: wait;
 }
+
+.table-title {
+  padding: 0 32px;
+}

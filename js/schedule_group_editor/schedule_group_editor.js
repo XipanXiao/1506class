@@ -68,6 +68,12 @@ define('schedule_group_editor/schedule_group_editor',
                   scope.$apply();
                 }, 0);
               };
+              scope.terms = (function() {
+                var terms = [];
+                for (var index = 1;index <= utils.totalTerms; index++)
+                  terms.push(index);
+                return terms;
+              })();
             },
             templateUrl : 'js/schedule_group_editor/schedule_group_editor.html'
           };

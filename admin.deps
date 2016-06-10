@@ -29,4 +29,5 @@ js/course_groups/course_groups.js
 js/schedule_group_editor/schedule_group_editor.js
 js/schedule_editor/schedule_editor.js
 js/zb_sync/zb_sync.js
+js/zb_sync_button/zb_sync_button.js
 js/admin_app.js

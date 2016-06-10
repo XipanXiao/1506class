@@ -65,6 +65,21 @@ define('zb_services', ['utils'], function() {
         return this.get_secure_url('{0}/pre/classinfo?pre_classID={1}'
             .format(serviceUrl, pre_classID));
       },
+      is_showing_login_form: function(html) {
+        return (html || '').indexOf('<input type="password"') > 0;
+      },
+      is_authenticated: function() {
+        var that = this;
+        var url = '{0}/pre/dashboard'.format(serviceUrl);
+        return $http.get(get_proxied_url(url)).then(function(response) {
+          return !that.is_showing_login_form(response.data);
+        });
+      },
+      get_report_result_url: function(pre_classID, halfTerm) {
+        var url = '{0}/pre/report?pre_classID={1}&half_term={2}'.
+            format(serviceUrl, pre_classID, halfTerm);
+        return this.get_secure_url(url);
+      },
       login: function(username, password) {
         var data = {
           'username': username,
@@ -73,7 +88,13 @@ define('zb_services', ['utils'], function() {
         };
         return http_form_post($http, $httpParamSerializerJQLike(data));
       },
-    
+      edit: function(editPassword) {
+        var url = ('{0}/pre/check_edit_password_ajax?type=check_edit_password' + 
+            '&edit_password={1}').format(serviceUrl, editPassword);
+        return $http.get(get_proxied_url(url)).then(function(response) {
+          return response.data.returnValue == 'true';
+        });
+      },
       /// courseId: 加行：1，入行论：2，净土：3
       /// startdate: '2015-06-01'
       /// district1: '美国'

@@ -2,11 +2,11 @@
 <link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="bower_components/paper-progress/paper-progress.html">
 <paper-dialog id="selector">
-    <h2>选择文件</h2>
+  <h2>选择文件</h2>
   <label>选择需要导入的tsv文件
     <input type="file" accept=".tsv" file="file">
   </label>
-  <paper-button dialog-confirm raised autofocus>关闭</paper-button>
+  <paper-button dialog-dismiss raised autofocus>关闭</paper-button>
   <paper-button dialog-confirm raised autofocus ng-click="analyze()">分析</paper-button>
 </paper-dialog>
 

@@ -4,7 +4,10 @@
         on-change="courseGroupChanged(courses)">
     </course-groups>
   </div>
-  <div>名称：<editable-label value="group.name"></editable-label></div>
+  <div>
+    名称：<editable-label value="group.name"></editable-label>
+    总第<select ng-options="value for value in terms" ng-model="group.term"></select>学期
+  </div>
   <div>开始时间：<editable-label type="datetime" value="group.start_time"></editable-label></div>
   <input type="button" value="Cancel" ng-click="onCancel()">
   <input type="submit" value="Save" ng-click="saveGroup(group)">

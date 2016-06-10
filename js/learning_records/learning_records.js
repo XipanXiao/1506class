@@ -1,7 +1,10 @@
-define('learning_records/learning_records', ['services'], function() {
-  return angular.module('LearningRecordsModule', ['ServicesModule'])
+define('learning_records/learning_records', ['services', 'utils',
+    'zb_sync_button/zb_sync_button'], function() {
+  return angular.module('LearningRecordsModule', ['ServicesModule',
+      'UtilsModule',
+      'ZBSyncButtonModule'])
     .directive('learningRecords',
-        function(rpc) {
+        function(rpc, utils) {
           return {
             scope: {
               attendence: '@',
@@ -26,6 +29,10 @@ define('learning_records/learning_records', ['services'], function() {
                 record.student_id = user.id;
                 record.course_id = course_id;
                 rpc.report_schedule_task(record);
+              };
+              
+              $scope.isNormalSchedule = function(group) {
+                return utils.keys(group.schedules).length > 5;
               };
             },
             templateUrl : 'js/learning_records/learning_records.html'

@@ -348,7 +348,10 @@ define('utils', [], function() {
       // Indicating whether the student is self learning or not.
       selfLearningIndex: 7,
       // Indicating whether the student don't practice.
-      wensiIndex: 8
+      wensiIndex: 8,
+      
+      weeksOfTerm: 25,
+      totalTerms: 12
     };
   });
 });

@@ -1,5 +1,9 @@
 <div class="learning-groups">
 	<div ng-repeat="group in schedule_groups" class="section">
+	  <h3 class="inline table-title">第{{group.term}}学期</h3>
+	  <zb-sync-button ng-if="isNormalSchedule(group)" type="schedule_task" users="users"
+	      class-id="classId" schedule-group="group">
+	  </zb-sync-button>
 	  <div class="css-table odd-even">
 	    <div class="css-table-row header">
 	      <div ng-if="group.schedules" class="css-table-cell name-field"></div>

@@ -10,6 +10,7 @@ define('users/users', ['bit_editor/bit_editor', 'importers',
         scope: {
           classId: '='
         },
+        restrict: 'E',
         link: function($scope) {
           $scope.entrances = ['本站', '微信', 'zbfw'];
           $scope.isNewClass = function() {
