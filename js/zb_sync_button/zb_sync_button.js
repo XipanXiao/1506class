@@ -28,7 +28,7 @@ define('zb_sync_button/zb_sync_button',
             if (half_terms == 0) return;
 
             scope.finished = 0;
-            scope.statusText = '检查是否登录并具有编辑权限...';
+            scope.statusText = '正在检查是否登录并具有编辑权限...';
 
             var promise = scope.ensure_authenticated().then(function() {
               scope.finished++;
@@ -100,7 +100,7 @@ define('zb_sync_button/zb_sync_button',
 
             var users = scope.users;
 
-            scope.statusText = '提交听传承和读法本记录...';
+            scope.statusText = '正在提交听传承和读法本记录...';
             half_terms.forEach(function(half_term) {
               for (var id in users) {
                 var user = users[id];
@@ -155,7 +155,7 @@ define('zb_sync_button/zb_sync_button',
 
             return rpc.get_class_task_stats(scope.classId, task.id,
                 start_time, end_time).then(function(response) {
-                  scope.statusText = '提交"{0}"任务记录'.format(task.name);
+                  scope.statusText = '正在提交"{0}"任务记录...'.format(task.name);
 
                   (response.data || []).forEach(function(user) {
                     if (!user.stats || !user.stats[0] ||
