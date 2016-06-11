@@ -73,6 +73,8 @@ try {
 
   // Parse header to get cookies.
   $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+  curl_close($ch);
+  $ch = null;
 
   $header = substr($response, 0, $header_size);
   $body = substr($response, $header_size);
@@ -86,13 +88,11 @@ try {
   
   echo $body;
 } catch(Exception $e) {
-
-  echo sprintf(
-      'Curl failed with error #%d: %s',
-      $e->getCode(), $e->getMessage());
-} finally {
   if ($ch) {
     curl_close($ch);
   }
+
+  echo sprintf("Curl failed with error #%d: %s",
+      $e->getCode(), $e->getMessage());
 }
 ?>
