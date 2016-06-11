@@ -8,15 +8,13 @@ define('zb_sync_button/zb_sync_button',
         scope: {
           classId: '=',
           scheduleGroup: '=',
+          task: '=',
           type: '@',
           users: '=',
         },
         link: function(scope) {
-          scope.zbIconUrl = '{0}/../favicon.ico'.format(zbrpc.serviceUrl);
           scope.$watch('classId', function() {
             if (!scope.classId) return;
-            // http://db.zhibeifw.com:8888/zb/pre/report?pre_classID=6377&half_term=4
-            // http://db.zhibeifw.com:8888/favicon.ico
             rpc.get_classes(scope.classId).then(function(response) {
               scope.classInfo = response.data[scope.classId];
               scope.zbUrl = zbrpc.get_report_result_url(scope.classInfo.zb_id,
@@ -24,14 +22,21 @@ define('zb_sync_button/zb_sync_button',
             });
           });
           scope.sync = function() {
-            if (scope.inprogress) return;
+            if (scope.inprogress()) return;
 
-            switch (scope.type) {
-            case 'schedule_task':
-              return this.report_schedule_task();
-            default:
-              break;
-            }
+            var half_terms = scope.getHalfTerms().length;
+            if (half_terms == 0) return;
+
+            scope.finished = 0;
+            scope.statusText = '检查是否登录并具有编辑权限...';
+
+            var promise = scope.ensure_authenticated().then(function() {
+              scope.finished++;
+              scope.report_schedule_task().then(function() {
+                scope.report_jx_task();
+              });
+            });
+            scope.promises = [promise];
           };
           
           scope.getUserRecords = function(user) {
@@ -56,21 +61,32 @@ define('zb_sync_button/zb_sync_button',
             ];
           };
 
-          // Determine which half terms to report, based on current time.
-          scope.getHalfTerms = function() {
-            var now = (new Date()).getTime();
+          scope.getMidTerm = function() {
             var startDate = utils.toDateTime(scope.scheduleGroup.start_time);
             var midTerm = new Date(startDate.getTime());
             midTerm.setDate(startDate.getDate() + 7 * 12);
-
-            // Before middle of the current term, nothing to report yet.
-            if (now < midTerm.getTime()) return [];
-
+            return utils.unixTimestamp(midTerm);
+          };
+          
+          scope.getEndTerm = function() {
+            var startDate = utils.toDateTime(scope.scheduleGroup.start_time);
             var endTerm = new Date(startDate.getTime());
             endTerm.setDate(startDate.getDate() + 7 * 25);
+            return utils.unixTimestamp(endTerm);
+          };
+          
+          // Determine which half terms to report, based on current time.
+          scope.getHalfTerms = function() {
+            var now = utils.unixTimestamp(new Date());
+            var midTerm = scope.getMidTerm();
+
+            // Before middle of the current term, nothing to report yet.
+            if (now < midTerm) return [];
+
+            var endTerm = scope.getEndTerm();
             
             // Between mid-term and the end of the term, report the first half.
-            if (midTerm.getTime() <= now && now < endTerm.getTime()) {
+            if (midTerm <= now && now < endTerm) {
               return [0];
             }
             
@@ -78,35 +94,28 @@ define('zb_sync_button/zb_sync_button',
             return [0, 1];
           };
           scope.report_schedule_task = function() {
-            scope.inprogress = true;
-            scope.ensure_authenticated().then(function() {
-              var half_terms = scope.getHalfTerms();
-              var half_term_base = scope.scheduleGroup.term * 2;
+            var half_terms = scope.getHalfTerms();
 
-              var promises = [];
-              var users = scope.users;
-              scope.totalTasks = half_terms.length * utils.keys(users).length;
-              scope.doneTasks = 0;
-              scope.inprogress = true;
-              half_terms.forEach(function(half_term) {
-                for (var id in users) {
-                  var user = users[id];
-                  user.done = [];
-                  var records = scope.getUserRecords(user);
-                  var reportPromise = zbrpc.report_schedule_task(
-                      parseInt(scope.classInfo.zb_id), parseInt(user.zb_id),
-                      half_term_base + half_term, records[half_term].book,
-                      records[half_term].audio).then(function(response) {
-                        scope.doneTasks++;
-                        return response.data.returnValue == 'success';
-                      });
-                  promises.push(reportPromise);
-                }
-              });
-              $q.all(promises).then(function() {
-                scope.inprogress = false;
-              });
+            var half_term_base = scope.scheduleGroup.term * 2;
+
+            var users = scope.users;
+
+            scope.statusText = '提交听传承和读法本记录...';
+            half_terms.forEach(function(half_term) {
+              for (var id in users) {
+                var user = users[id];
+                var records = scope.getUserRecords(user);
+                var reportPromise = zbrpc.report_schedule_task(
+                    parseInt(scope.classInfo.zb_id), parseInt(user.zb_id),
+                    half_term_base + half_term, records[half_term].book,
+                    records[half_term].audio).then(function(response) {
+                      scope.finished++;
+                      return response.data.returnValue == 'success';
+                    });
+                scope.promises.push(reportPromise);
+              }
             });
+            return $q.all(scope.promises);
           };
           scope.ensure_authenticated = function() {
             return zbrpc.is_authenticated().then(function(authenticated) {
@@ -114,7 +123,6 @@ define('zb_sync_button/zb_sync_button',
             });
           };
           scope.showLoginDialog = function() {
-            scope.inprogress = false;
             scope.username = 'zhibeihw1';
             document.querySelector('#zb-login').open();
             scope.deferredLogin = $q.defer();
@@ -124,14 +132,12 @@ define('zb_sync_button/zb_sync_button',
             var username = document.querySelector('#zb-username').value;
             var password = document.querySelector('#zb-password').value;
             var editPassword = document.querySelector('#zb-editpassword').value;
-            scope.inprogress = true;
+
             zbrpc.login(username, password).then(function(response) {
               if (zbrpc.is_showing_login_form(response.data)) {
-                scope.inprogress = false;
                 alert('登录失败');
               } else {
                 zbrpc.edit(editPassword).then(function(approved) {
-                  scope.inprogress = false;
                   approved ? 
                       scope.deferredLogin.resolve() :
                       scope.deferredLogin.reject();
@@ -139,6 +145,71 @@ define('zb_sync_button/zb_sync_button',
               }
             });
           };
+
+          scope.report_class_task_stats = function(task, half_term) {
+            var midTerm = scope.getMidTerm();
+            var endTerm = scope.getEndTerm();
+            var start_time = (half_term % 2 == 0) ?
+                scope.scheduleGroup.start_time : midTerm;
+            var end_time = (half_term % 2 == 0) ? midTerm : endTerm;
+
+            return rpc.get_class_task_stats(scope.classId, task.id,
+                start_time, end_time).then(function(response) {
+                  scope.statusText = '提交"{0}"任务记录'.format(task.name);
+
+                  (response.data || []).forEach(function(user) {
+                    if (!user.stats || !user.stats[0] ||
+                        !user.stats[0].sum) {
+                      return;
+                    }
+
+                    var record = {};
+                    record[task.zb_name + '_count'] = user.stats[0].sum;
+                    var promise = zbrpc.report_preparation_task(
+                        scope.classInfo.zb_id, user.zb_id,
+                        half_term, record).then(function() {
+                          scope.finished++;
+                        });
+                    scope.promises.push(promise);
+                  });
+                });
+          };
+
+          scope.report_jx_task = function() {
+            var half_terms = scope.getHalfTerms();
+            var depId = scope.classInfo.department_id;
+
+            return rpc.get_tasks(depId).then(function(response) {
+              scope.tasks = response.data;
+              scope.promises = [];
+              scope.finished = 0;
+              
+              half_terms.forEach(function(half_term) {
+                half_term += scope.scheduleGroup.term * 2;
+
+                for (var id in scope.tasks) {
+                  var task = scope.tasks[id];
+                  // Skip 'guanxiu' tasks for now. Skip tasks that not started.
+                  if (task.duration || !task.zb_name ||
+                      task.starting_half_term > half_term) {
+                    continue;
+                  }
+
+                  scope.report_class_task_stats(task, half_term);
+                }
+              });
+            });
+          };
+          
+          scope.totalTasks = function() {
+            return scope.promises.length;
+          };
+          scope.inprogress = function() {
+            return scope.finished < scope.totalTasks(); 
+          };
+          
+          scope.promises = [];
+          scope.finished = 0;
         },
         templateUrl: 'js/zb_sync_button/zb_sync_button.html'
       };

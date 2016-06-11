@@ -70,9 +70,10 @@ define('zb_services', ['utils'], function() {
       },
       is_authenticated: function() {
         var that = this;
-        var url = '{0}/pre/dashboard'.format(serviceUrl);
+        var url = '{0}/pre/check_edit_password_ajax?type=get_edit_permission'.
+            format(serviceUrl);
         return $http.get(get_proxied_url(url)).then(function(response) {
-          return !that.is_showing_login_form(response.data);
+          return parseInt(response.data.edit_permission) == 1;
         });
       },
       get_report_result_url: function(pre_classID, halfTerm) {
@@ -158,6 +159,21 @@ define('zb_services', ['utils'], function() {
           half_term: half_term,
           book: book,
           audio: audio
+        };
+        return http_form_post($http, $httpParamSerializerJQLike(data));
+      },
+      report_preparation_task: function(pre_classID, userID, half_term,
+          records) {
+        var data = {
+          url: '{0}/pre/report_ajax'.format(serviceUrl),
+          userID: userID,
+          pre_classID: pre_classID,
+          type: 'jxWork_grid',
+          half_term: half_term,
+          dingli_type: 0,
+          dingli_count: records.dingli_count || 0,
+          guiyi_count: records.guiyi_count || 0,
+          lianshi_count: records.lianshi_count || 0
         };
         return http_form_post($http, $httpParamSerializerJQLike(data));
       }

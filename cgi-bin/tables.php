@@ -382,15 +382,24 @@ function convert_stat_result($result) {
   ];
 }
 
-function get_class_task_stats($classId, $task_id) {
+function get_class_task_stats($classId, $task_id, $startTime, $endTime) {
+
   global $medoo;
 
   $users = $medoo->select("users", ["id", "name", "zb_id"],
       ["classId" => $classId]);
+
+  $timeFilter = "";
+  if (!empty($startTime) && !empty($endTime)) {
+  	$timeFilter = sprintf(" AND ts BETWEEN FROM_UNIXTIME(%d) and " .
+  			"FROM_UNIXTIME(%d)", $startTime, $endTime);
+  }
+  
   foreach ($users as $key => $user) {
     $sql = sprintf("select sub_index, SUM(count) as sum, SUM(duration)".
         " as duration from task_records where task_id=%d and ".
-        " student_id=%d group by sub_index", $task_id, $user["id"]);
+        " student_id=%d %s group by sub_index", $task_id, $user["id"],
+    		$timeFilter);
 
     $result = $medoo->query($sql)->fetchAll();
     

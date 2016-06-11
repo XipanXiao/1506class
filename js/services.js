@@ -84,9 +84,10 @@ define('services', [], function() {
         return $http.get(url);
       },
       
-      get_class_task_stats: function(classId, task_id) {
-        var url = '{0}?rid=task_stats&classId={1}&task_id={2}'.format(
-            serviceUrl, classId, task_id);
+      get_class_task_stats: function(classId, task_id, start_time, end_time) {
+        var url =('{0}?rid=task_stats&classId={1}&task_id={2}' +
+            '&start_time={3}&end_time={4}').format(serviceUrl, classId, task_id,
+            start_time || '', end_time || '');
         return $http.get(url);
       },
       

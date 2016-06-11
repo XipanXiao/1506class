@@ -1,13 +1,15 @@
 <link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="bower_components/paper-input/paper-input.html">
 <iron-icon class="selectable small-icon" icon="notification:sync" title="上报学院"
-    ng-click="sync()" ng-class="{'in-progress': inprogress}">
+    ng-click="sync()" ng-class="{'in-progress': inprogress()}">
 </iron-icon>
 <a href="{{zbUrl}}" target="_blank" title="打开智悲系统页面">
   <iron-icon class="selectable small-icon" icon="open-in-new">
 	</iron-icon>
 </a>
-<progress-bar ng-show="inprogress" max="{{totalTasks}}" value="{{doneTasks}}"></progress-bar>
+<span ng-if="inprogress()">{{statusText}}</span>
+<progress-bar ng-show="inprogress()" max="{{totalTasks()}}" value="{{finished}}">
+</progress-bar>
 <paper-dialog id="zb-login">
   <h2>登录智悲系统</h2>
   <paper-input id="zb-username" label="用户名" type="text" value="zhibeihw1"></paper-input>

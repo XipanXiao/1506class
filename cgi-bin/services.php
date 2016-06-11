@@ -67,7 +67,12 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       $response = search($_GET["prefix"]);
     }
   } elseif ($resource_id == "task_stats") {
-    $response = get_class_task_stats($classId, $_GET["task_id"]);
+    $startTime =
+        empty($_GET["start_time"]) ? null : intval($_GET["start_time"]);
+    $endTime = empty($_GET["end_time"]) ? null : intval($_GET["end_time"]);
+  	 
+    $response = get_class_task_stats($classId, $_GET["task_id"], $startTime,
+        $endTime);
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];
