@@ -343,6 +343,20 @@ define('utils', [], function() {
         return parts[0] + '年' + (parseInt(parts[1])||1) + '月' + 
             (parseInt(parts[2])||1) + '日';
       },
+      /// Calls the first asynchronous function from the list of [requests], 
+      /// then calls the next one once it's done, and so on.
+      ///
+      /// Returns a promise that is resolved after the last request is done.
+      requestOneByOne: function(requests) {
+        var index = 0;
+        var results = [];
+        var next = function(previousResponse) {
+          if (previousResponse) results[index-1] = previousResponse;
+          var fn = requests[index++];
+          return fn ? fn().then(next) : results;
+        };
+        return next();
+      },
       // Index of bit in the user.enroll_tasks bits.
       // Indicating whether welcome letter is sent.
       welcomeIndex: 0,
