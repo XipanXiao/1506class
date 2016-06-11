@@ -95,9 +95,7 @@ define('zb_sync_button/zb_sync_button',
           };
           scope.report_schedule_task = function() {
             var half_terms = scope.getHalfTerms();
-
             var half_term_base = scope.scheduleGroup.term * 2;
-
             var users = scope.users;
 
             scope.statusText = '正在提交听传承和读法本记录...';
@@ -147,10 +145,11 @@ define('zb_sync_button/zb_sync_button',
           };
 
           scope.report_class_task_stats = function(task, half_term) {
+            var startTerm =
+                utils.roundToDefaultStartTime(scope.scheduleGroup.start_time);
             var midTerm = scope.getMidTerm();
-            var endTerm = scope.getEndTerm();
-            var start_time = (half_term % 2 == 0) ?
-                scope.scheduleGroup.start_time : midTerm;
+            var endTerm = utils.roundToDefaultStartTime(scope.getEndTerm());
+            var start_time = (half_term % 2 == 0) ? startTerm : midTerm;
             var end_time = (half_term % 2 == 0) ? midTerm : endTerm;
 
             return rpc.get_class_task_stats(scope.classId, task.id,

@@ -231,6 +231,19 @@ define('utils', [], function() {
         
         return date;
       },
+      /// Given a date like 2015-12-05 18:00:00, returns 2015-12-01 00:00:00,
+      /// a date like 05-28, returns 06-01.
+      roundToDefaultStartTime: function(unixtimestamp) {
+        var date = this.toDateTime(unixtimestamp);
+
+        var month = date.getUTCMonth();
+        month = Math.abs(month - 5) <= 2 ? 5 : 11;
+        date.setUTCHours(0, 0, 0, 0);
+        date.setUTCDate(2);
+        date.setUTCMonth(month);
+        
+        return this.unixTimestamp(date);
+      },
       nextTerm: function(date, direction) {
         var next = new Date(date.getTime());
         next.setUTCMonth(date.getUTCMonth() + direction * 6);
