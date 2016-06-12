@@ -202,7 +202,7 @@ function update_task($task) {
   
   $datas = [];
   $fields = ["department_id", "name", "max", "duration", "sub_tasks",
-      "starting_half_term", "zb_name"];
+      "starting_half_term", "zb_name", "zb_course_id"];
   foreach ($fields as $field) {
     if (!empty($task[$field])) {
       $datas[$field] = $task[$field];
@@ -366,7 +366,8 @@ function get_last_task_record($user_id, $task_id, $sub_index) {
 function get_tasks($department_id) {
   global $medoo;
 
-  $int_fields = ["duration", "max", "sub_tasks", "starting_half_term"];
+  $int_fields = ["duration", "max", "sub_tasks", "starting_half_term",
+      "zb_course_id"];
   $tasks = keyed_by_id($medoo->select("tasks", "*",
       $department_id ? ["department_id" => $department_id] : null));
   foreach ($tasks as $id => $task) {
@@ -382,7 +383,8 @@ function convert_stat_result($result) {
   ];
 }
 
-function get_class_task_stats($classId, $task_id, $startTime, $endTime) {
+function get_class_task_stats($classId, $task_id, $startTime, $endTime,
+    $isIndex = FALSE) {
 
   global $medoo;
 
@@ -391,19 +393,25 @@ function get_class_task_stats($classId, $task_id, $startTime, $endTime) {
 
   $timeFilter = "";
   if (!empty($startTime) && !empty($endTime)) {
-  	$timeFilter = sprintf(" AND ts BETWEEN FROM_UNIXTIME(%d) and " .
-  			"FROM_UNIXTIME(%d)", $startTime, $endTime);
+    if ($isIndex) {
+      $timeFilter = sprintf(" AND sub_index >= %d AND sub_index <= %d",
+          $startTime - 1, $endTime - 1);
+    } else {
+      $timeFilter = sprintf(" AND ts BETWEEN FROM_UNIXTIME(%d) and " .
+          "FROM_UNIXTIME(%d)", $startTime, $endTime);
+    }
   }
   
   foreach ($users as $key => $user) {
     $sql = sprintf("select sub_index, SUM(count) as sum, SUM(duration)".
         " as duration from task_records where task_id=%d and ".
         " student_id=%d %s group by sub_index", $task_id, $user["id"],
-    		$timeFilter);
+        $timeFilter);
 
     $result = $medoo->query($sql)->fetchAll();
     
-    $user["stats"] = array_map("convert_stat_result", $result);
+    $user["stats"] =
+        keyed_by_id(array_map("convert_stat_result", $result), "sub_index");
     $users[$key] = $user;
   }
   

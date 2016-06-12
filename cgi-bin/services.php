@@ -70,9 +70,10 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $startTime =
         empty($_GET["start_time"]) ? null : intval($_GET["start_time"]);
     $endTime = empty($_GET["end_time"]) ? null : intval($_GET["end_time"]);
-  	 
+    $isIndex = empty($_GET["is_index"]) ? null : intval($_GET["is_index"]);
+
     $response = get_class_task_stats($classId, $_GET["task_id"], $startTime,
-        $endTime);
+        $endTime, $isIndex);
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];

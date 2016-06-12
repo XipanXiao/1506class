@@ -176,6 +176,25 @@ define('zb_services', ['utils'], function() {
           lianshi_count: records.lianshi_count || 0
         };
         return http_form_post($http, $httpParamSerializerJQLike(data));
+      },
+      get_preclass_lessions: function(pre_classID, courseID, half_term) {
+        var url = ('{0}/pre/report_ajax?courseID={1}&half_term={2}' +
+            '&type=pre_class_lessons&pre_classID={3}').format(serviceUrl,
+                courseID, half_term, pre_classID);
+        return $http.get(get_proxied_url(url));
+      },
+      report_guanxiu_task: function(pre_classID, userID, half_term,
+          count, time) {
+        var data = {
+          url: '{0}/pre/report_ajax'.format(serviceUrl),
+          userID: userID,
+          pre_classID: pre_classID,
+          type: 'guanxiu_grid',
+          half_term: half_term,
+          count: count,
+          time: time
+        };
+        return http_form_post($http, $httpParamSerializerJQLike(data));
       }
     };
   });

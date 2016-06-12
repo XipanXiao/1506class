@@ -27,16 +27,11 @@ define('zb_sync_button/zb_sync_button',
             var half_terms = scope.getHalfTerms().length;
             if (half_terms == 0) return;
 
-            scope.finished = 0;
-            scope.totalTasks = 1;
-            scope.statusText = '正在检查是否登录并具有编辑权限...';
-
-            var promise = scope.ensure_authenticated().then(function() {
-              scope.finished++;
-              scope.report_schedule_task().then(function() {
-                scope.report_jx_task();
-              });
-            });
+            utils.requestOneByOne([
+                scope.ensure_authenticated,
+                scope.report_schedule_task,
+                scope.report_jx_task,
+                scope.report_guanxiu_task]);
           };
           
           scope.getUserRecords = function(user) {
@@ -121,7 +116,12 @@ define('zb_sync_button/zb_sync_button',
             return utils.requestOneByOne(requests);
           };
           scope.ensure_authenticated = function() {
+            scope.finished = 0;
+            scope.totalTasks = 1;
+
+            scope.statusText = '正在检查是否登录并具有编辑权限...';
             return zbrpc.is_authenticated().then(function(authenticated) {
+              scope.finished++;
               return authenticated || scope.showLoginDialog();
             });
           };
@@ -182,7 +182,107 @@ define('zb_sync_button/zb_sync_button',
                   });
 
                   scope.totalTasks += requests.length;
-                  utils.requestOneByOne(requests);
+                  return utils.requestOneByOne(requests);
+                });
+          };
+
+          scope.getTaskSubIndexes = function(task, half_term) {
+            return zbrpc.get_preclass_lessions(scope.classInfo.zb_id,
+                task.zb_course_id, half_term).then(function(response) {
+                  var data = response.data.data;
+                  return (data || []).map(function(lesson) {
+                    return parseInt(lesson.lesson_id);
+                  });
+                });
+          };
+
+          /// Converts Guanxiu records to the format that accepted by the zhibei
+          /// system.
+          /// Input:
+          ///  [
+          ///     {"sub_index":6,"sum":2,"duration":70},
+          ///     {"sub_index":7,"sum":1,"duration":30},
+          ///     {"sub_index":9,"sum":1,"duration":30}
+          ///  ]
+          /// Output:
+          /// {count: [2, 1, 0, 1], time: [1.2, 0.5, 0, 0.5]}
+          scope.getTimedTaskRecords = function(stats, indexes) {
+            var count = [], time = [];
+            indexes.forEach(function(index) {
+              var record = stats[index - 1];
+              count.push(record && record.sum || 0);
+              time.push((record && record.duration || 0) / 60.0);
+            });
+            
+            return {
+              count: count,
+              time: time
+            }
+          };
+          
+          scope.report_guanxiu_task = function() {
+            var half_terms = scope.getHalfTerms();
+
+            scope.totalTasks = 0;
+            scope.finished = 0;
+
+            var promises = [];
+            half_terms.forEach(function(half_term) {
+              half_term += scope.scheduleGroup.term * 2;
+
+              for (var id in scope.tasks) {
+                var task = scope.tasks[id];
+                // Skip tasks that not started.
+                if (!task.duration || !task.zb_course_id ||
+                    task.starting_half_term > half_term) {
+                  continue;
+                }
+
+                promises.push(scope.report_guanxiu_task_stats(task, half_term));
+              }
+            });
+            return $q.all(promises);
+          };
+
+          scope.report_guanxiu_task_stats = function(task, half_term) {
+            return scope.getTaskSubIndexes(task, half_term).then(
+                function(indexes) {
+                  if (indexes.length == 0) return;
+
+                  var start_time = indexes[0];
+                  var end_time = indexes[indexes.length - 1];
+
+                  return rpc.get_class_task_stats(scope.classId, task.id,
+                      start_time, end_time, 1).then(function(response) {
+                        scope.statusText =
+                            '正在提交"{0}"任务记录...'.format(task.name);
+
+                        var requests = [];
+                        (response.data || []).forEach(function(user) {
+                          if (!user.stats || !user.stats.length) {
+                            return;
+                          }
+
+                          var record = scope.getTimedTaskRecords(user.stats,
+                              indexes);
+                          var nonZero = function(value) {return value != 0;};
+                          if (!utils.any(record.count, nonZero)) return;
+
+                          var request = function() {
+                            var promise = zbrpc.report_guanxiu_task(
+                                scope.classInfo.zb_id, user.zb_id,
+                                half_term, record.count,
+                                record.time).then(function() {
+                                  scope.finished++;
+                                });
+                            return promise;
+                          };
+                          requests.push(request);
+                        });
+
+                        scope.totalTasks += requests.length;
+                        utils.requestOneByOne(requests);
+                      });
                 });
           };
 
@@ -194,21 +294,23 @@ define('zb_sync_button/zb_sync_button',
               scope.tasks = response.data;
               scope.totalTasks = 0;
               scope.finished = 0;
-              
+
+              var promises = [];
               half_terms.forEach(function(half_term) {
                 half_term += scope.scheduleGroup.term * 2;
 
                 for (var id in scope.tasks) {
                   var task = scope.tasks[id];
-                  // Skip 'guanxiu' tasks for now. Skip tasks that not started.
+                  // Skip tasks that not started.
                   if (task.duration || !task.zb_name ||
                       task.starting_half_term > half_term) {
                     continue;
                   }
 
-                  scope.report_class_task_stats(task, half_term);
+                  promises.push(scope.report_class_task_stats(task, half_term));
                 }
               });
+              return $q.all(promises);
             });
           };
           
