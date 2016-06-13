@@ -32,7 +32,7 @@ define('learning_records/learning_records', ['services', 'utils',
               };
               
               $scope.isNormalSchedule = function(group) {
-                return utils.keys(group.schedules).length > 5;
+                return !utils.isLimitedCourse(group);
               };
             },
             templateUrl : 'js/learning_records/learning_records.html'

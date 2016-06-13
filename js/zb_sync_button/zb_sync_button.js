@@ -29,17 +29,18 @@ define('zb_sync_button/zb_sync_button',
 
             utils.requestOneByOne([
                 scope.ensure_authenticated,
+                scope.report_attendance,
                 scope.report_schedule_task,
                 scope.report_jx_task,
-                scope.report_guanxiu_task]);
+                scope.report_guanxiu_task
+            ]);
           };
           
-          scope.getUserRecords = function(user) {
+          scope.getBookAudioRecords = function(user) {
             var index = 0;
             var group = scope.scheduleGroup;
             var audio = [];
             var book = [];
-            var half = 11;// 11 + 12 = 23 weeks.
 
             for (var id in group.schedules) {
               var schedule = group.schedules[id];
@@ -50,12 +51,35 @@ define('zb_sync_button/zb_sync_button',
               index++;
             }
             
+            var half = utils.isLimitedCourse(group) ? 2 : 11;
             return [
               {audio: audio.slice(0, half), book: book.slice(0, half)},
               {audio: audio.slice(half), book: book.slice(half)}
             ];
           };
 
+          scope.get_attendance = function(user) {
+            var index = 0;
+            var group = scope.scheduleGroup;
+            var half = utils.isLimitedCourse(group) ? 2 : 11;
+            var att = [0, 0];
+
+            for (var id in group.schedules) {
+              var schedule = group.schedules[id];
+              if (!parseInt(schedule.course_id)) continue;
+
+              var record = user.records[schedule.course_id];
+              if (record && (record.attended == 1)) {
+                if (index < half) att[0] ++;
+                else att[1]++;
+              }
+              
+              index++;
+            }
+            
+            return att;
+          };
+          
           scope.getMidTerm = function() {
             var startDate = utils.toDateTime(scope.scheduleGroup.start_time);
             var midTerm = new Date(startDate.getTime());
@@ -99,7 +123,7 @@ define('zb_sync_button/zb_sync_button',
               for (var id in users) {
                 var user = users[id];
                 var request = function() {
-                  var records = scope.getUserRecords(user);
+                  var records = scope.getBookAudioRecords(user);
                   var reportPromise = zbrpc.report_schedule_task(
                       parseInt(scope.classInfo.zb_id), parseInt(user.zb_id),
                       half_term_base + half_term, records[half_term].book,
@@ -313,7 +337,37 @@ define('zb_sync_button/zb_sync_button',
               return $q.all(promises);
             });
           };
-          
+
+          scope.report_attendance = function() {
+            scope.statusText = '正在提交出席记录...';
+            scope.totalTasks = 0;
+            scope.finished = 0;
+
+            var requests = [];
+            var half_terms = scope.getHalfTerms();
+
+            utils.forEach(scope.users, function(user) {
+              var atts = scope.get_attendance(user);
+              var userID = parseInt(user.zb_id);
+
+              half_terms.forEach(function(half_term) {
+                var request = function() {
+                  var promise = zbrpc.report_limited_schedule_task(
+                      scope.classInfo.zb_id, userID,
+                      half_term + scope.scheduleGroup.term * 2,
+                      null, null, atts[half_term]).then(function() {
+                        scope.finished++;
+                      });
+                  return promise;
+                };
+                requests.push(request);
+              });
+            });
+
+            scope.totalTasks += requests.length;
+            return utils.requestOneByOne(requests);
+          };
+
           scope.inprogress = function() {
             return scope.finished < scope.totalTasks; 
           };

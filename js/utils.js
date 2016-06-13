@@ -128,6 +128,11 @@ define('utils', [], function() {
         
         return result;
       },
+      forEach: function(map, callback) {
+        for (var key in map) {
+          callback(map[key]);
+        }
+      },
       groupBy: function(arr, key) {
         var groups = {};
         for (var idx in arr) {
@@ -356,6 +361,9 @@ define('utils', [], function() {
           return fn ? fn().then(next) : results;
         };
         return next();
+      },
+      isLimitedCourse: function(scheduleGroup) {
+        return this.keys(scheduleGroup.schedules).length < 6;
       },
       // Index of bit in the user.enroll_tasks bits.
       // Indicating whether welcome letter is sent.
