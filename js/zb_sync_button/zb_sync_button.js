@@ -178,7 +178,7 @@ define('zb_sync_button/zb_sync_button',
               } else {
                 zbrpc.edit(editPassword).then(function(approved) {
                   approved ? 
-                      scope.deferredLogin.resolve() :
+                      scope.deferredLogin.resolve(true) :
                       scope.deferredLogin.reject();
                 });
               }
@@ -209,8 +209,9 @@ define('zb_sync_button/zb_sync_button',
                       record[task.zb_name + '_count'] = user.stats[0].sum;
                       var promise = zbrpc.report_preparation_task(
                           scope.classInfo.zb_id, user.zb_id,
-                          half_term, record).then(function() {
+                          half_term, record).then(function(response) {
                             scope.finished++;
+                            return response.data.returnValue == 'success';
                           });
                       return promise;
                     };
@@ -308,8 +309,9 @@ define('zb_sync_button/zb_sync_button',
                             var promise = zbrpc.report_guanxiu_task(
                                 scope.classInfo.zb_id, user.zb_id,
                                 half_term, record.count,
-                                record.time).then(function() {
+                                record.time).then(function(response) {
                                   scope.finished++;
+                                  return response.data.returnValue == 'success';
                                 });
                             return promise;
                           };
@@ -346,7 +348,12 @@ define('zb_sync_button/zb_sync_button',
                   promises.push(scope.report_class_task_stats(task, half_term));
                 }
               });
-              return $q.all(promises);
+              return $q.all(promises).then(function(results) {
+                for (var index in results) {
+                  if (!results[index]) return false;
+                }
+                return true;
+              });
             });
           };
 
@@ -369,8 +376,9 @@ define('zb_sync_button/zb_sync_button',
                       scope.classInfo.zb_id, userID,
                       half_term + scope.scheduleGroup.term * 2,
                       records[half_term].book, records[half_term].audio,
-                      atts[half_term]).then(function() {
+                      atts[half_term]).then(function(response) {
                         scope.finished++;
+                        return response.data.returnValue == 'success';
                       });
                   return promise;
                 };

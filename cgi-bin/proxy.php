@@ -68,8 +68,11 @@ try {
   }
 
   curl_setopt($ch, CURLOPT_URL, $url);
-  
+  curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+
+  session_write_close();
   $response = curl_exec($ch);
+  session_start();
 
   // Parse header to get cookies.
   $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
