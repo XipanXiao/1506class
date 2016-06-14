@@ -356,10 +356,15 @@ define('utils', [], function() {
       /// Returns a promise that is resolved after the last request is done.
       requestOneByOne: function(requests) {
         var index = 0;
+        var truePromise = new Promise(function(resolve) {
+          resolve(true);
+        });
         var next = function(previousResponse) {
           if (!previousResponse) return false;
           var fn = requests[index++];
-          return fn ? fn().then(next) : true;
+          // Always return a promise so that 'then' is called even [requests]
+          // is empty.
+          return fn ? fn().then(next) : truePromise;
         };
         return next(true);
       },
