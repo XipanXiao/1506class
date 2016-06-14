@@ -30,10 +30,6 @@ define('learning_records/learning_records', ['services', 'utils',
                 record.course_id = course_id;
                 rpc.report_schedule_task(record);
               };
-              
-              $scope.isNormalSchedule = function(group) {
-                return !utils.isLimitedCourse(group);
-              };
             },
             templateUrl : 'js/learning_records/learning_records.html'
           };

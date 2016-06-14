@@ -36,22 +36,31 @@ define('zb_sync_button/zb_sync_button',
             ]);
           };
           
-          scope.getBookAudioRecords = function(user) {
+          scope.getBookAudioRecords = function(user, limited) {
             var index = 0;
             var group = scope.scheduleGroup;
             var audio = [];
             var book = [];
 
-            for (var id in group.schedules) {
-              var schedule = group.schedules[id];
-              if (!parseInt(schedule.course_id)) continue;
-              var record = user.records[schedule.course_id];
-              audio[index] = (record && record.video) ? 1 : 0;
-              book[index] = (record && record.text) ? 1 : 0;
-              index++;
+            if (limited) {
+              utils.forEach(group.limited_courses, function(course) {
+                var record = user.records[course.id];
+                audio[index] = (record && record.video) ? 1 : 0;
+                book[index] = (record && record.text) ? 1 : 0;
+                index++;
+              });
+            } else {
+              for (var id in group.schedules) {
+                var schedule = group.schedules[id];
+                if (!parseInt(schedule.course_id)) continue;
+                var record = user.records[schedule.course_id];
+                audio[index] = (record && record.video) ? 1 : 0;
+                book[index] = (record && record.text) ? 1 : 0;
+                index++;
+              }
             }
             
-            var half = utils.isLimitedCourse(group) ? 2 : 11;
+            var half = limited ? 2 : 11;
             return [
               {audio: audio.slice(0, half), book: book.slice(0, half)},
               {audio: audio.slice(half), book: book.slice(half)}
@@ -61,7 +70,7 @@ define('zb_sync_button/zb_sync_button',
           scope.get_attendance = function(user) {
             var index = 0;
             var group = scope.scheduleGroup;
-            var half = utils.isLimitedCourse(group) ? 2 : 11;
+            var half = 11;
             var att = [0, 0];
 
             for (var id in group.schedules) {
@@ -119,6 +128,9 @@ define('zb_sync_button/zb_sync_button',
 
             var requests = [];
             scope.statusText = '正在提交听传承和读法本记录...';
+            scope.totalTasks = 0;
+            scope.finished = 0;
+
             half_terms.forEach(function(half_term) {
               for (var id in users) {
                 var user = users[id];
@@ -136,7 +148,7 @@ define('zb_sync_button/zb_sync_button',
                 requests.push(request);
               }
             });
-            scope.totalTasks += requests.length;
+            scope.totalTasks = requests.length;
             return utils.requestOneByOne(requests);
           };
           scope.ensure_authenticated = function() {
@@ -348,6 +360,7 @@ define('zb_sync_button/zb_sync_button',
 
             utils.forEach(scope.users, function(user) {
               var atts = scope.get_attendance(user);
+              var records = scope.getBookAudioRecords(user, true);
               var userID = parseInt(user.zb_id);
 
               half_terms.forEach(function(half_term) {
@@ -355,7 +368,8 @@ define('zb_sync_button/zb_sync_button',
                   var promise = zbrpc.report_limited_schedule_task(
                       scope.classInfo.zb_id, userID,
                       half_term + scope.scheduleGroup.term * 2,
-                      null, null, atts[half_term]).then(function() {
+                      records[half_term].book, records[half_term].audio,
+                      atts[half_term]).then(function() {
                         scope.finished++;
                       });
                   return promise;

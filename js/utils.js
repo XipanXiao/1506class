@@ -362,9 +362,6 @@ define('utils', [], function() {
         };
         return next();
       },
-      isLimitedCourse: function(scheduleGroup) {
-        return this.keys(scheduleGroup.schedules).length < 6;
-      },
       // Index of bit in the user.enroll_tasks bits.
       // Indicating whether welcome letter is sent.
       welcomeIndex: 0,
