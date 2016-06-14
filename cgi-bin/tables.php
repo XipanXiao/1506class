@@ -92,9 +92,9 @@ function remove_course_group($id) {
 
 function remove_schedule_group($id) {
   global $medoo;
-  
-  $schedules = $medoo->select("schedules", "*", ["group_id" => $id]);
-  if (!empty($schedules) && count($schedules) > 0) return false;
+
+  // This line may return false if there is no schedules in the group.
+  $medoo->delete("schedules", ["group_id" => $id]);
 
   return $medoo->delete("schedule_groups", ["id" => $id]);
 }
@@ -486,8 +486,7 @@ function get_schedules($classId, $records, $user_id) {
   date_default_timezone_set("UTC");
 
   $schedule_groups =
-      keyed_by_id($medoo->select("schedule_groups",
-          ["id", "name", "course_group", "classId", "start_time", "term"],
+      keyed_by_id($medoo->select("schedule_groups", "*",
           ["classId" => $classId]));
 
   foreach ($schedule_groups as $group_id => $group) {
@@ -498,6 +497,9 @@ function get_schedules($classId, $records, $user_id) {
     $group["courses"] =
         keyed_by_id($medoo->select("courses", ["id", "name"],
             ["group_id" => $group["course_group"]]));
+    $group["limited_courses"] =
+        keyed_by_id($medoo->select("courses", ["id", "name"],
+            ["group_id" => $group["limited_course_group"]]));
     $group["term"] = intval($group["term"]);
     $schedule_groups[$group_id] = $group;
   }
@@ -541,7 +543,7 @@ function update_schedule_group($group) {
   global $medoo;
 
   $datas = [];
-  $fields = ["classId", "course_group", "name"];
+  $fields = ["classId", "course_group", "name", "term", "limited_course_group"];
   foreach ($fields as $field) {
     if (!empty($group[$field])) {
       $datas[$field] = $group[$field];

@@ -68,6 +68,9 @@ define('schedule_group_editor/schedule_group_editor',
                   scope.$apply();
                 }, 0);
               };
+              scope.limitedGroupChange = function(courses) {
+                scope.group.limited_courses = courses;
+              };
               scope.terms = (function() {
                 var terms = [];
                 for (var index = 1;index <= utils.totalTerms; index++)

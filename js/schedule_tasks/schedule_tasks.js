@@ -29,9 +29,9 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                 });
               });
               
-              $scope.reportTask = function (schedule) {
-                var record = $scope.records[schedule.course_id];
-                record.course_id = schedule.course_id;
+              $scope.reportTask = function (course_id) {
+                var record = $scope.records[course_id];
+                record.course_id = course_id;
                 rpc.report_schedule_task(record);
               };
               
@@ -89,6 +89,10 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                 if (!utils.any($scope.schedule_groups, current)) {
                   $scope.navigate(2);
                 }
+              };
+              
+              $scope.hasLimitedCourses = function(group) {
+                return utils.keys(group.limited_courses).length > 0;
               };
             },
             templateUrl : 'js/schedule_tasks/schedule_tasks.html'

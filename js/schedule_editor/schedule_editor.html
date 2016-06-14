@@ -42,4 +42,12 @@
       </div>
     </div>
   </div>
+  <div ng-if="hasLimitedCourses(group)">
+    <h2>限制性课程</h2>
+	  <div class="css-table odd-even schedule-tasks">
+	    <div ng-repeat="course in group.limited_courses" class="css-table-row">
+	      <div class="css-table-cell">{{course.name}}</div>
+	    </div>
+	  </div>
+  </div>
 </div>

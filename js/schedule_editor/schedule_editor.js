@@ -53,19 +53,12 @@ define('schedule_editor/schedule_editor',
                 group.editing = true;
               };
               $scope.removeGroup = function(group) {
-                if (group.schedules &&
-                    utils.positiveKeys(group.schedules).length > 0) {
-                  alert('要先删除每节安排，才能删除该组');
-                  return;
-                }
-                
+                var message = 'Are you sure to remove this group {0}?'.
+                    format(group.name);
+                if (!window.confirm(message)) return;
+
                 rpc.remove_schedule_group(group.id).then(function(response) {
-                  if (parseInt(response.data.deleted)) $scope.loadSchedules();
-                });
-              };
-              $scope.remove = function(schedule) {
-                rpc.remove_schedule(schedule.id).then(function(response) {
-                  if (parseInt(response.data.deleted)) $scope.loadSchedules();
+                  if (response.data.deleted) $scope.loadSchedules();
                 });
               };
               $scope.vacation = function(schedule) {
@@ -138,6 +131,10 @@ define('schedule_editor/schedule_editor',
                     if (sId == scheduleId) return group;
                   }
                 }
+              };
+              
+              $scope.hasLimitedCourses = function(group) {
+                return utils.keys(group.limited_courses).length > 0;
               };
             },
             templateUrl : 'js/schedule_editor/schedule_editor.html'
