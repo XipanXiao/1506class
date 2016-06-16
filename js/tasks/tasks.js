@@ -41,36 +41,15 @@ define('tasks/tasks', ['progress_bar/progress_bar', 'services', 'utils'],
                   duration: task.record.duration || 0
                 };
 
-                if (!$scope.validate(task, data)) return;
+                if (!utils.validateTaskInput(task, data)) return;
 
                 $scope.reporting = true;
-
                 rpc.report_task(data).then(function (response) {
                   task.lastRecord = response.data;
                   $rootScope.$broadcast('task-reported');
                 }).finally(function() {
                   $scope.reporting = false;
                 });
-              };
-              
-              $scope.validate = function(task, data) {
-                if (task.duration) {
-                  if (data.duration < data.count * 30) {
-                    alert('每次观修时间不少于30分钟，{0}次一共至少要{1}分钟'.format(
-                        data.count, data.count * 30));
-                    return false;
-                  } else if (data.duration > data.count * 180) {
-                    alert('观修{0}次一共{1}分钟，是不是太夸张了？'.format(
-                        data.count, data.duration));
-                    return false;
-                  }
-                }
-                if (data.count == task.lastRecord.count &&
-                    utils.unixTimestamp(new Date()) - task.lastRecord.ts < 10) {
-                  alert('刚提交过一模一样的报数，请勿重复提交');
-                  return false;
-                }
-                return true;
               };
               
               $scope.subTaskSelected = function(task) {

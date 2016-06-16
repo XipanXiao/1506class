@@ -4,30 +4,37 @@
     <select ng-options="value.name for value in tasks" ng-model="selectedTask">
     </select>
   </label>
-	<iron-icon icon="editor:border-color" class="small-icon selectable" ng-click="expand()"
-	    ng-if="admining">
-	</iron-icon>
+  <iron-icon icon="editor:border-color" class="small-icon selectable" ng-click="expand()"
+      ng-if="admining">
+  </iron-icon>
 </div>
 <div ng-switch="selectedTask.sub_tasks == 0">
-	<div ng-switch-when="true" class="css-table task-stats odd-even">
-	  <div class="css-table-row header">
-	    <div class="css-table-cell">姓名</div>
-	    <div class="css-table-cell">进度</div>
-	    <div class="css-table-cell">数目</div>
-	  </div>
-	  <div ng-repeat="user in task_stats" class="css-table-row">
-	    <div class="css-table-cell">{{user.name}}</div>
-	    <div class="css-table-cell">
-	      <progress-bar value="{{user.stats[0].sum}}" max="{{selectedTask.max}}" class="task-stats">
-	      <progress-bar>
-	    </div>
-	    <div class="css-table-cell">
-	      {{user.stats[0].sum}}
-	      <span ng-if="user.stats[0].duration">({{user.stats[0].duration}}分钟)</span>
-	    </div>
-	  </div>
-	</div>
-	<div ng-switch-default class="css-table task-stats odd-even">
+  <div ng-switch-when="true" class="css-table task-stats odd-even">
+    <div class="css-table-row header">
+      <div class="css-table-cell">姓名</div>
+      <div class="css-table-cell">进度</div>
+      <div class="css-table-cell">数目</div>
+      <div class="css-table-cell">添加报数</div>
+    </div>
+    <div ng-repeat="user in task_stats" class="css-table-row">
+      <div class="css-table-cell">{{user.name}}</div>
+      <div class="css-table-cell">
+        <progress-bar value="{{user.stats[0].sum}}" max="{{selectedTask.max}}" class="task-stats">
+        <progress-bar>
+      </div>
+      <div class="css-table-cell">
+        {{user.stats[0].sum}}
+        <span ng-if="user.stats[0].duration">({{user.stats[0].duration}}分钟)</span>
+      </div>
+      <div class="css-table-cell">
+        <input type="number" ng-model="user.count" class="count-input" placeholder="数量">
+        <input ng-if="selectedTask.duration" type="number" ng-model="user.duration"
+            class="count-input" placeholder="用时">
+        <input type="button" value="报数" ng-click="reportTask(user)">
+      </div>
+    </div>
+  </div>
+  <div ng-switch-default class="css-table task-stats odd-even">
     <div class="css-table-row header">
       <div class="css-table-cell">姓名</div>
       <div class="css-table-cell">
@@ -41,6 +48,7 @@
         <iron-icon class="selectable" icon="chevron-right" ng-click="page(+1)">
         </iron-icon>
       </div>
+      <div class="css-table-cell">添加报数</div>
     </div>
     <div ng-repeat="user in task_stats" class="css-table-row">
       <div class="css-table-cell">{{user.name}}</div>
@@ -55,6 +63,13 @@
         </div>
       </div>
       <div class="css-table-cell"></div>
+      <div class="css-table-cell">
+        <input type="number" ng-model="user.sub_index" class="count-input" placeholder="第几修法">
+        <input type="number" ng-model="user.count" class="count-input" placeholder="数量">
+        <input ng-if="selectedTask.duration" type="number" ng-model="user.duration"
+            class="count-input" placeholder="用时">
+        <input type="button" value="报数" ng-click="reportTask(user)">
+      </div>
     </div>
-	</div>
+  </div>
 </div>

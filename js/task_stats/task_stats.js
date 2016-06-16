@@ -63,6 +63,19 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
             if (scope.currentPage > max) scope.currentPage = max;
             else if (scope.currentPage < 0) scope.currentPage = 0;
           };
+          scope.reportTask = function(user) {
+            var data = {
+                student_id: user.id,
+                task_id: scope.selectedTask.id,
+                count: user.count,
+                sub_index: user.sub_index - 1,
+                duration: user.duration || 0
+              };
+
+            rpc.report_task(data).then(function (response) {
+              scope.refreshStats();
+            });
+          };
           scope.currentPage = 0;
         },
         templateUrl: 'js/task_stats/task_stats.html'
