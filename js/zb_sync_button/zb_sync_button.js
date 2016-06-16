@@ -17,10 +17,8 @@ define('zb_sync_button/zb_sync_button',
             if (!scope.classId) return;
             rpc.get_classes(scope.classId).then(function(response) {
               scope.classInfo = response.data[scope.classId];
-              if (scope.scheduleGroup) {
-                scope.zbUrl = zbrpc.get_report_result_url(scope.classInfo.zb_id,
-                    scope.scheduleGroup.term * 2);
-              }
+              scope.zbUrl = zbrpc.get_report_result_url(scope.classInfo.zb_id,
+                  scope.scheduleGroup ? scope.scheduleGroup.term * 2 : '');
             });
           });
           scope.sync = function() {
