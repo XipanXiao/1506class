@@ -128,10 +128,7 @@ define('zb_services', ['utils'], function() {
         data.type = 'add_user';
         data.pre_classID = pre_classID;
 
-        return http_form_post($http, $httpParamSerializerJQLike(data))
-            .then(function(response) {
-              return response.data.returnValue == 'success' ? user : null;
-            });
+        return http_form_post($http, $httpParamSerializerJQLike(data));
       },
       update_user: function(user) {
         var data = toZBUser(user);
@@ -140,7 +137,7 @@ define('zb_services', ['utils'], function() {
 
         return http_form_post($http, $httpParamSerializerJQLike(data))
             .then(function() {
-              return user;
+              return {data: {returnValue: 'success'}};
             });
       },
       list_users: function(pre_classID) {

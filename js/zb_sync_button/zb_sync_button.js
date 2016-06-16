@@ -25,6 +25,8 @@ define('zb_sync_button/zb_sync_button',
           });
           scope.sync = function() {
             if (scope.inprogress) return;
+            scope.inprogress = true;
+
             var done = function() {
               scope.inprogress = false;
             };
