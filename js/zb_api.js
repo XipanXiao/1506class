@@ -1,7 +1,8 @@
 // APIs to the zhibei system at http://db.zhibeifw.com:8888
-define('zb_api', ['services', 'zb_services'], function() {
-  return angular.module('ZBAPIModule', ['ServicesModule', 'ZBServicesModule'])
-      .factory('zbapi', function($q, rpc, zbrpc) {
+define('zb_api', ['services', 'zb_services', 'utils'], function() {
+  return angular.module('ZBAPIModule', ['ServicesModule', 'ZBServicesModule',
+      'UtilsModule'])
+      .factory('zbapi', function($q, rpc, utils, zbrpc) {
     return {
       // deparment 1: 基础班
       // deparment 2: 入行论班
@@ -73,17 +74,22 @@ define('zb_api', ['services', 'zb_services'], function() {
           zb_users_map[zb_user.name] = zb_user;
         });
 
-        for (var id in users) {
-          var user = users[id];
+        var requests = [];
+        utils.forEach(users, function(user) {
           var zb_user = zb_users_map[user.name];
-          if (!zb_user) continue;
+          if (!zb_user) return;
 
           var oldId = user.zb_id;
           user.zb_id = zb_user.userID;
           if (parseInt(oldId) != parseInt(user.zb_id)) {
-            rpc.update_user(user);
+            var request = function() {
+              rpc.update_user(user);
+            };
+            requests.push(request);
           }
-        }
+        });
+        
+        return utils.requestOneByOne(requests);
       }
     };
   });

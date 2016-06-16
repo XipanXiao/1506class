@@ -1,10 +1,11 @@
 define('users/users', ['bit_editor/bit_editor', 'importers',
     'new_user_dialog/new_user_dialog', 'permission', 'services',
-    'user_editor/user_editor', 'utils'], function() {
+    'user_editor/user_editor', 'utils',
+    'zb_sync_button/zb_sync_button'], function() {
 
   return angular.module('UsersModule', ['BitEditorModule', 'ImportersModule',
     'NewUserDialogModule', 'PermissionModule', 'ServicesModule',
-    'UserEditorModule', 'UtilsModule'])
+    'UserEditorModule', 'UtilsModule', 'ZBSyncButtonModule'])
         .directive('users', function($rootScope, importers, perm, rpc, utils) {
       return {
         scope: {

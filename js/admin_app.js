@@ -2,13 +2,15 @@ define('admin_app',
     ['app_bar/app_bar', 'classes/classes', 'class_editor/class_editor',
     'task_stats/task_stats', 'users/users', 'learning_records/learning_records',
     'schedule_editor/schedule_editor', 'services', 'permission', 'utils',
-    'zb_sync/zb_sync'],
+    'zb_sync/zb_sync', 'zb_login_dialog/zb_login_dialog',
+    'zb_choose_root_dialog/zb_choose_root_dialog'],
     function() {
 
   angular.module('AppModule', ['AppBarModule', 'ClassesModule',
       'ClassEditorModule', 'TaskStatsModule', 'UsersModule',
       'LearningRecordsModule', 'PermissionModule', 'ScheduleEditorModule',
-      'ServicesModule', 'UtilsModule', 'ZBSyncModule'])
+      'ServicesModule', 'UtilsModule', 'ZBSyncModule', 'ZBLoginDialogModule',
+      'ZBChooseRootDialogModule'])
       .directive('body', function(rpc, perm, utils) {
         return {
           link: function($scope) {

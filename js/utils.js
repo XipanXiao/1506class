@@ -22,7 +22,7 @@ define('utils', [], function() {
 
   var enroll_tasks = ['welcomed', 'wechated', 'yyed', 'tested', 'bookordered'];
 
-  return angular.module('UtilsModule', []).factory('utils', function() {
+  return angular.module('UtilsModule', []).factory('utils', function($q) {
     return {
       countryLabels: window.countryData.getCountryMap(),
       us_states: {
@@ -356,7 +356,7 @@ define('utils', [], function() {
       /// Returns a promise that is resolved after the last request is done.
       requestOneByOne: function(requests) {
         var index = 0;
-        var truePromise = new Promise(function(resolve) {
+        var truePromise = $q(function(resolve) {
           resolve(true);
         });
         var next = function(previousResponse) {

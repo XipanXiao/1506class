@@ -107,17 +107,17 @@ define('zb_services', ['utils'], function() {
         return $http.get(get_proxied_url(url));
       },
       /// study: 1 face 2 face, 2 network.
-      create_class: function(courseId, startdate, district1, localID, study) {
+      create_class: function(groupId, courseId, startdate, district1, localID) {
         var data = {
           url: '{0}/pre/classselect_ajax'.format(serviceUrl),
-          pre_groupID: 2451,
+          pre_groupID: groupId,
           type: 'add_pre_class',
           district1: district1,
           district2: '',
           courseID: courseId,
           startDate: startdate,
           localID: localID,
-          study_style: study || 2,
+          study_style: 2,
           note: ''
         };
         return http_form_post($http, $httpParamSerializerJQLike(data));
@@ -218,6 +218,11 @@ define('zb_services', ['utils'], function() {
         var url = ('{0}/pre/report_ajax?type=att_limit_grid' + 
             '&pre_classID={1}&half_term={2}').format(serviceUrl,
             pre_classID, half_term);
+        return $http.get(get_proxied_url(url));
+      },
+      get_root_groups: function() {
+        var url = '{0}/pre/classselect_ajax?type=init_root_tree'.
+            format(serviceUrl);
         return $http.get(get_proxied_url(url));
       }
     };

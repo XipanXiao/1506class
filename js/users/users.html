@@ -9,6 +9,8 @@
 <new-user-dialog refresh="reload(classId)"></new-user-dialog>
 <input ng-if="isSysAdmin()" type="button" value="导出为tsv文件" ng-click="exportUsers()">
 <a ng-if="exportedUrl" href="{{exportedUrl}}" download="user.txt">user.txt</a>
+<zb-sync-button type="class" users="users" class-id="classId">
+</zb-sync-button>
 <div class="users flex" ng-if="isNotEmpty">
   <div class="css-table section odd-even">
     <div class="css-table-row header">
