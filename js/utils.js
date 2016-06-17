@@ -381,7 +381,7 @@ define('utils', [], function() {
           }
         }
         if (data.count == task.lastRecord.count &&
-            utils.unixTimestamp(new Date()) - task.lastRecord.ts < 10) {
+            this.unixTimestamp(new Date()) - task.lastRecord.ts < 10) {
           alert('刚提交过一模一样的报数，请勿重复提交');
           return false;
         }
