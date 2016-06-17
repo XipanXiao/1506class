@@ -168,10 +168,10 @@ define('zb_services', ['utils'], function() {
           type: 'jxWork_grid',
           half_term: half_term,
           dingli_type: 0,
-          dingli_count: records.dingli_count || 0,
-          guiyi_count: records.guiyi_count || 0,
-          lianshi_count: records.lianshi_count || 0
         };
+        for (var key in records) {
+          data[key] = records[key];
+        }
         return http_form_post($http, $httpParamSerializerJQLike(data));
       },
       get_preclass_lessions: function(pre_classID, courseID, half_term) {

@@ -387,6 +387,14 @@ define('utils', [], function() {
         }
         return true;
       },
+      /// Given a schedule group, calculates the unix timestamp of the middle
+      /// of its term.
+      getMidTerm: function(scheduleGroup) {
+        var startDate = this.toDateTime(scheduleGroup.start_time);
+        var midTerm = new Date(startDate.getTime());
+        midTerm.setDate(startDate.getDate() + 7 * 12);
+        return this.unixTimestamp(midTerm);
+      },
 
       // Index of bit in the user.enroll_tasks bits.
       // Indicating whether welcome letter is sent.

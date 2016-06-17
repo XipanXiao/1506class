@@ -2,7 +2,7 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
     'services', 'utils'], function() {
   return angular.module('ScheduleTasksModule', ['NavigateBarModule',
     'ServicesModule', 'UtilsModule'])
-    .directive('scheduleTasks', function(rpc, utils) {
+    .directive('scheduleTasks', function($rootScope, rpc, utils) {
           return {
             scope: {
               user: '='
@@ -26,8 +26,21 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                   $scope.users = response.data.users;
                   $scope.records = $scope.users[$scope.user.id].records;
                   $scope.initCurrentTerm();
+                  $scope.setHalfTerm();
                 });
               });
+              
+              $scope.setHalfTerm = function() {
+                var lastSchedule = utils.last($scope.schedule_groups);
+                if (!lastSchedule) return;
+                var half_term = lastSchedule.term * 2;
+                var midTerm = utils.getMidTerm(lastSchedule);
+                var now = utils.unixTimestamp(new Date());
+                if (now > midTerm) {
+                  half_term++;
+                } 
+                $rootScope.$broadcast('set-half-term', half_term);
+              };
               
               $scope.reportTask = function (course_id) {
                 var record = $scope.records[course_id];

@@ -103,13 +103,6 @@ define('zb_sync_button/zb_sync_button',
             return att;
           };
           
-          scope.getMidTerm = function() {
-            var startDate = utils.toDateTime(scope.scheduleGroup.start_time);
-            var midTerm = new Date(startDate.getTime());
-            midTerm.setDate(startDate.getDate() + 7 * 12);
-            return utils.unixTimestamp(midTerm);
-          };
-          
           scope.getEndTerm = function() {
             var startDate = utils.toDateTime(scope.scheduleGroup.start_time);
             var endTerm = new Date(startDate.getTime());
@@ -120,7 +113,7 @@ define('zb_sync_button/zb_sync_button',
           // Determine which half terms to report, based on current time.
           scope.getHalfTerms = function() {
             var now = utils.unixTimestamp(new Date());
-            var midTerm = scope.getMidTerm();
+            var midTerm = utils.getMidTerm(scope.scheduleGroup);
 
             // Before middle of the current term, nothing to report yet.
             if (now < midTerm) return [];
@@ -231,7 +224,7 @@ define('zb_sync_button/zb_sync_button',
           scope.report_class_task_stats = function(task, half_term) {
             var startTerm =
                 utils.roundToDefaultStartTime(scope.scheduleGroup.start_time);
-            var midTerm = scope.getMidTerm();
+            var midTerm = utils.getMidTerm(scope.scheduleGroup);
             var endTerm = utils.roundToDefaultStartTime(scope.getEndTerm());
             var start_time = (half_term % 2 == 0) ? startTerm : midTerm;
             var end_time = (half_term % 2 == 0) ? midTerm : endTerm;
