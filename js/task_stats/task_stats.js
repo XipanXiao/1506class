@@ -1,7 +1,10 @@
 define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
-    'task_editor_dialog/task_editor_dialog', 'utils'], function() {
+    'task_editor_dialog/task_editor_dialog',
+    'task_history/task_history',
+    'utils'], function() {
   return angular.module('TaskStatsModule', ['ProgressBarModule',
-      'ServicesModule', 'TaskEditorDialogModule', 'UtilsModule'])
+      'ServicesModule', 'TaskEditorDialogModule',
+      'TaskHistoryModule', 'UtilsModule'])
       .directive('taskStats', function(rpc, utils) {
 
       return {
@@ -75,6 +78,12 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
             rpc.report_task(data).then(function (response) {
               scope.refreshStats();
             });
+          };
+          scope.select = function(user) {
+            scope.selectedUser = user;
+          };
+          scope.selected = function(user) {
+            return scope.selectedUser && scope.selectedUser.id == user.id;
           };
           scope.currentPage = 0;
         },

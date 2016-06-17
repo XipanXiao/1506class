@@ -5,17 +5,23 @@ define('task_history/task_history', ['utils',
       function(utils, rpc) {
     return {
       scope: {
+        hideTaskList: '@',
+        selectedTask: '=',
         user: '='
       },
       restrict: 'E',
       link: function(scope, element, attrs) {
         scope.$watch('user', function() {
           if (!scope.user) return;
-          var depId = scope.user.classInfo.department_id;
-          rpc.get_tasks(depId).then(function(response) {
-            scope.tasks = response.data;
-            scope.selectedTask = utils.first(scope.tasks);
-          });
+          if (scope.user.classInfo) {
+            var depId = scope.user.classInfo.department_id;
+            rpc.get_tasks(depId).then(function(response) {
+              scope.tasks = response.data;
+              scope.selectedTask = utils.first(scope.tasks);
+            });
+          } else {
+            scope.reloadTaskHistory();
+          }
         });
 
         scope.$watch('selectedTask', function() {

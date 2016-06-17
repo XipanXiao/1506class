@@ -16,7 +16,8 @@
       <div class="css-table-cell">数目</div>
       <div class="css-table-cell">添加报数</div>
     </div>
-    <div ng-repeat="user in task_stats" class="css-table-row">
+    <div ng-repeat="user in task_stats" class="css-table-row selectable"
+        ng-click="select(user)" ng-class="{'selected': selected(user)}">
       <div class="css-table-cell">{{user.name}}</div>
       <div class="css-table-cell">
         <progress-bar value="{{user.stats[0].sum}}" max="{{selectedTask.max}}" class="task-stats">
@@ -50,7 +51,8 @@
       </div>
       <div class="css-table-cell">添加报数</div>
     </div>
-    <div ng-repeat="user in task_stats" class="css-table-row">
+    <div ng-repeat="user in task_stats" class="css-table-row selectable"
+        ng-click="select(user)" ng-class="{'selected': selected(user)}">
       <div class="css-table-cell">{{user.name}}</div>
       <div class="css-table-cell"></div>
       <div class="css-table-cell task-bar-container"
@@ -73,3 +75,6 @@
     </div>
   </div>
 </div>
+<task-history ng-if="selectedUser" user="selectedUser" selected-task="selectedTask"
+    hide-task-list="true" class="padded-element">
+</task-history>
