@@ -26,7 +26,7 @@
         'server' => $config->servername,
         'username' => $config->username,
         'password' => $config->password,
-        // 'charset' => $charset == NULL ? 'utf8' : $charset,
+        'charset' => $charset == NULL ? 'utf8' : $charset,
         
         // driver_option for connection, read more from http://www.php.net/manual/en/pdo.setattribute.php
         'option' => [

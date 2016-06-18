@@ -45,7 +45,15 @@ if (empty($_SESSION["user"])) {
   	]
   ];
 
-  $medoo = get_medoo("");
+  $medoo = get_medoo("latin1");
+  foreach ($tables as $table => $fields) {
+  	$sql = sprintf("alter table %s convert to character set latin1 collate default;",
+  			$table);
+  	if (!$medoo->exec($sql)) {
+  		echo "failed to convert ". $table;
+  		exit();
+  	}
+  }
   $results = [];
   foreach ($tables as $table => $fields) {
   	$results[$table] = $medoo->select($table, array_merge($fields, ["id"]));
