@@ -1,4 +1,5 @@
 <?php
+/*
 include_once "config.php";
 include_once "connection.php";
 include_once "tables.php";
@@ -97,4 +98,5 @@ if (empty($_SESSION["user"])) {
   	}
   }
 }
+*/
 ?>
