@@ -146,13 +146,13 @@ define('zb_services', ['utils'], function() {
                 .format(serviceUrl, pre_classID);
         return $http.get(get_proxied_url(url));
       },
-      report_schedule_task: function(pre_classID, userID, half_term, book,
+      report_schedule_task: function(type, pre_classID, userID, half_term, book,
           audio) {
         var data = {
           url: '{0}/pre/report_ajax'.format(serviceUrl),
           userID: userID,
           pre_classID: pre_classID,
-          type: 'jx_grid',
+          type: type,
           half_term: half_term,
           book: book,
           audio: audio
@@ -174,7 +174,7 @@ define('zb_services', ['utils'], function() {
         }
         return http_form_post($http, $httpParamSerializerJQLike(data));
       },
-      get_preclass_lessions: function(pre_classID, courseID, half_term) {
+      get_preclass_lessons: function(pre_classID, courseID, half_term) {
         var url = ('{0}/pre/report_ajax?courseID={1}&half_term={2}' +
             '&type=pre_class_lessons&pre_classID={3}').format(serviceUrl,
                 courseID, half_term, pre_classID);

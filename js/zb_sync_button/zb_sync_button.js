@@ -50,11 +50,13 @@ define('zb_sync_button/zb_sync_button',
             }
           };
           
-          scope.getBookAudioRecords = function(user, limited) {
+          scope.getBookAudioRecords = function(lessons, user, half_term,
+              limited) {
             var index = 0;
             var group = scope.scheduleGroup;
             var audio = [];
             var book = [];
+            var firstHalf;
 
             if (limited) {
               utils.forEach(group.limited_courses, function(course) {
@@ -63,6 +65,7 @@ define('zb_sync_button/zb_sync_button',
                 book[index] = (record && record.text) ? 1 : 0;
                 index++;
               });
+              firstHalf = 2;
             } else {
               for (var id in group.schedules) {
                 var schedule = group.schedules[id];
@@ -72,13 +75,33 @@ define('zb_sync_button/zb_sync_button',
                 book[index] = (record && record.text) ? 1 : 0;
                 index++;
               }
+              firstHalf = 11;
             }
-            
-            var half = limited ? 2 : 11;
-            return [
-              {audio: audio.slice(0, half), book: book.slice(0, half)},
-              {audio: audio.slice(half), book: book.slice(half)}
-            ];
+
+            audio = half_term == 0 ?
+                audio.slice(0, firstHalf) : audio.slice(firstHalf);
+            book = half_term == 0 ?
+                book.slice(0, firstHalf) : book.slice(firstHalf);
+
+            if (audio.length * 2 == lessons.length) {
+
+              var duplicate = function(arr) {
+                for (var index = arr.length - 1; index >= 0; index--) {
+                  arr[index*2] = arr[index*2+1] = arr[index];
+                }
+                return arr;
+              };
+
+              return {
+                audio: duplicate(audio),
+                book: duplicate(book)
+              };
+            } else {
+              return {
+                audio: audio,
+                book: book
+              };
+            }
           };
 
           scope.get_attendance = function(user) {
@@ -132,6 +155,7 @@ define('zb_sync_button/zb_sync_button',
             var taskKey = '传承';
             var half_terms = scope.getHalfTerms();
             var half_term_base = scope.scheduleGroup.term * 2;
+            var pre_classID = parseInt(scope.classInfo.zb_id);
             var users = scope.users;
 
             var requests = [];
@@ -140,23 +164,35 @@ define('zb_sync_button/zb_sync_button',
             scope.finished = 0;
 
             half_terms.forEach(function(half_term) {
-              utils.forEach(users, function(user) {
-                if (scope.checkUserTask(user, taskKey, half_term)) return;
+              var request = function() {
+                return zbrpc.get_preclass_lessons(pre_classID,
+                  scope.get_zb_courseId(), half_term_base + half_term)
+                  .then(function(response) {
+                    var lessons = response.data.data;
+                    var reportRequests = [];
+                    utils.forEach(users, function(user) {
+                      if (scope.checkUserTask(user, taskKey, half_term)) return;
 
-                var request = function() {
-                  var records = scope.getBookAudioRecords(user);
-                  var reportPromise = zbrpc.report_schedule_task(
-                      parseInt(scope.classInfo.zb_id), parseInt(user.zb_id),
-                      half_term_base + half_term, records[half_term].book,
-                      records[half_term].audio).then(function(response) {
-                        scope.finished++;
-                        return scope.checkResponse(response, user, taskKey,
+                      var reportRequest = function() {
+                        var records = scope.getBookAudioRecords(lessons, user,
                             half_term);
-                      });
-                  return reportPromise;
-                };
-                requests.push(request);
-              });
+                        return zbrpc.report_schedule_task(
+                            scope.get_report_type() + '_grid',
+                            pre_classID, parseInt(user.zb_id),
+                            half_term_base + half_term, records.book,
+                            records.audio).then(function(response) {
+                              scope.finished++;
+                              return scope.checkResponse(response, user,
+                                  taskKey, half_term);
+                            });
+                      };
+                      reportRequests.push(reportRequest);
+                    });
+                    scope.totalTasks = reportRequests.length;
+                    return utils.requestOneByOne(reportRequests);
+                  });
+              };
+              requests.push(request);
             });
             scope.totalTasks = requests.length;
             return utils.requestOneByOne(requests);
@@ -264,7 +300,7 @@ define('zb_sync_button/zb_sync_button',
           };
 
           scope.getTaskSubIndexes = function(task, half_term) {
-            return zbrpc.get_preclass_lessions(scope.classInfo.zb_id,
+            return zbrpc.get_preclass_lessons(scope.classInfo.zb_id,
                 task.zb_course_id, half_term).then(function(response) {
                   var data = response.data.data;
                   return (data || []).map(function(lesson) {
@@ -406,32 +442,45 @@ define('zb_sync_button/zb_sync_button',
             scope.statusText = '正在提交出席记录...';
             scope.totalTasks = 0;
             scope.finished = 0;
+            var half_term_base = scope.scheduleGroup.term * 2;
 
             var requests = [];
             var half_terms = scope.getHalfTerms();
 
-            utils.forEach(scope.users, function(user) {
-              var atts = scope.get_attendance(user);
-              var records = scope.getBookAudioRecords(user, true);
-              var userID = parseInt(user.zb_id);
-
-              half_terms.forEach(function(half_term) {
-                if (scope.checkUserTask(user, taskKey, half_term)) return;
-
-                var request = function() {
-                  var promise = zbrpc.report_limited_schedule_task(
-                      scope.classInfo.zb_id, userID,
-                      half_term + scope.scheduleGroup.term * 2,
-                      records[half_term].book, records[half_term].audio,
-                      atts[half_term]).then(function(response) {
-                        scope.finished++;
-                        return scope.checkResponse(response, user, taskKey,
-                            half_term);
-                      });
-                  return promise;
-                };
-                requests.push(request);
-              });
+            half_terms.forEach(function(half_term) {
+              var request = function() {
+                return zbrpc.get_preclass_lessons(scope.classInfo.zb_id,
+                  scope.get_zb_courseId(), half_term_base + half_term)
+                  .then(function(response) {
+                    var lessons = response.data.data;
+                    var reportRequests = [];
+                    utils.forEach(scope.users, function(user) {
+                      var atts = scope.get_attendance(user);
+                      var records = scope.getBookAudioRecords(lessons, user,
+                          half_term, true);
+                      var userID = parseInt(user.zb_id);
+        
+                      if (scope.checkUserTask(user, taskKey, half_term)) return;
+        
+                      var reportRequest = function() {
+                        var promise = zbrpc.report_limited_schedule_task(
+                            scope.classInfo.zb_id, userID,
+                            half_term + half_term_base,
+                            records.book, records.audio,
+                            atts[half_term]).then(function(response) {
+                              scope.finished++;
+                              return scope.checkResponse(response, user,
+                                  taskKey, half_term);
+                            });
+                        return promise;
+                      };
+                      reportRequests.push(reportRequest);
+                    });
+                    scope.totalTasks += reportRequests.length;
+                    return utils.requestOneByOne(reportRequests);
+                  });
+              };
+              requests.push(request);
             });
 
             scope.totalTasks += requests.length;
@@ -457,12 +506,20 @@ define('zb_sync_button/zb_sync_button',
           // deparment 3: 加行班
           // deparment 4: 净土班
           // courseId: 加行：1，入行论：2，净土：3
-          scope.get_zb_courseId = function(departmentId) {
+          scope.get_zb_courseId = function() {
             return {
               2: 2,
               3: 1,
               4: 3
-            }[departmentId];
+            }[scope.classInfo.department_id];
+          };
+          
+          scope.get_report_type = function() {
+            return {
+              2: 'rxl',
+              3: 'jx',
+              4: 'jt'  
+            }[scope.classInfo.department_id];
           };
 
           scope.sync_users = function() {
@@ -518,7 +575,7 @@ define('zb_sync_button/zb_sync_button',
             scope.statusText = '正在查找班级信息';
 
             // courseId, startdate, district1, localID
-            var courseId = scope.get_zb_courseId(classInfo.department_id);
+            var courseId = scope.get_zb_courseId();
             var startdate = '' + classInfo.start_year + '-06-01';
             return scope.getLocalId().then(function(localID) {
               scope.finished++;
@@ -580,7 +637,7 @@ define('zb_sync_button/zb_sync_button',
           };
           scope.rootGroupSelected = function(selectedZbGroupId) {
             var classInfo = scope.classInfo;
-            var courseId = scope.get_zb_courseId(classInfo.department_id);
+            var courseId = scope.get_zb_courseId();
             var startdate = '' + classInfo.start_year + '-06-01';
             
             scope.statusText = '正在创建智悲班级';
