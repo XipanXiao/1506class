@@ -78,9 +78,9 @@ define('zb_sync_button/zb_sync_button',
               firstHalf = 11;
             }
 
-            audio = half_term == 0 ?
+            audio = (half_term % 2) == 0 ?
                 audio.slice(0, firstHalf) : audio.slice(firstHalf);
-            book = half_term == 0 ?
+            book = (half_term % 2) == 0 ?
                 book.slice(0, firstHalf) : book.slice(firstHalf);
 
             if (audio.length * 2 == lessons.length) {
@@ -143,18 +143,18 @@ define('zb_sync_button/zb_sync_button',
 
             var endTerm = scope.getEndTerm();
             
+            var half_term_base = scope.scheduleGroup.term * 2;
             // Between mid-term and the end of the term, report the first half.
             if (midTerm <= now && now < endTerm) {
-              return [0];
+              return [half_term_base];
             }
             
             // Report both the first and the second half terms.
-            return [0, 1];
+            return [half_term_base, half_term_base + 1];
           };
           scope.report_schedule_task = function() {
             var taskKey = '传承';
             var half_terms = scope.getHalfTerms();
-            var half_term_base = scope.scheduleGroup.term * 2;
             var pre_classID = parseInt(scope.classInfo.zb_id);
             var users = scope.users;
 
@@ -166,7 +166,7 @@ define('zb_sync_button/zb_sync_button',
             half_terms.forEach(function(half_term) {
               var request = function() {
                 return zbrpc.get_preclass_lessons(pre_classID,
-                  scope.get_zb_courseId(), half_term_base + half_term)
+                  scope.get_zb_courseId(), half_term)
                   .then(function(response) {
                     var lessons = response.data.data;
                     var reportRequests = [];
@@ -179,7 +179,7 @@ define('zb_sync_button/zb_sync_button',
                         return zbrpc.report_schedule_task(
                             scope.get_report_type() + '_grid',
                             pre_classID, parseInt(user.zb_id),
-                            half_term_base + half_term, records.book,
+                            half_term, records.book,
                             records.audio).then(function(response) {
                               scope.finished++;
                               return scope.checkResponse(response, user,
@@ -203,9 +203,9 @@ define('zb_sync_button/zb_sync_button',
             if (success) {
               var userResult = scope.results[user.id]; 
               if (!userResult) userResult = [];
-              var result = userResult[half_term] || {};
+              var result = userResult[half_term % 2] || {};
               result[task] = true;
-              userResult[half_term] = result;
+              userResult[half_term % 2] = result;
               scope.results[user.id] = userResult;
               return true; 
             }
@@ -214,8 +214,8 @@ define('zb_sync_button/zb_sync_button',
           };
           scope.checkUserTask = function(user, task, half_term) {
             return scope.results[user.id] &&
-                scope.results[user.id][half_term] &&
-                scope.results[user.id][half_term][task];
+                scope.results[user.id][half_term % 2] &&
+                scope.results[user.id][half_term % 2][task];
           };
           scope.ensure_authenticated = function() {
             scope.finished = 0;
@@ -246,6 +246,7 @@ define('zb_sync_button/zb_sync_button',
               if (zbrpc.is_showing_login_form(response.data)) {
                 scope.finished++;
                 alert('登录失败');
+                scope.deferredLogin.resolve(false);
               } else {
                 zbrpc.edit(editPassword).then(function(approved) {
                   scope.finished++;
@@ -276,7 +277,7 @@ define('zb_sync_button/zb_sync_button',
                       return;
                     }
 
-                    if (scope.checkUserTask(user, task.name, half_term % 2)) {
+                    if (scope.checkUserTask(user, task.name, half_term)) {
                       return;
                     }
                     var request = function() {
@@ -287,7 +288,7 @@ define('zb_sync_button/zb_sync_button',
                           half_term, record).then(function(response) {
                             scope.finished++;
                             return scope.checkResponse(response, user,
-                                task.name, half_term % 2);
+                                task.name, half_term);
                           });
                       return promise;
                     };
@@ -341,7 +342,6 @@ define('zb_sync_button/zb_sync_button',
 
             var promises = [];
             half_terms.forEach(function(half_term) {
-              half_term += scope.scheduleGroup.term * 2;
 
               for (var id in scope.tasks) {
                 var task = scope.tasks[id];
@@ -377,7 +377,7 @@ define('zb_sync_button/zb_sync_button',
                           }
 
                           if (scope.checkUserTask(user, task.name, 
-                              half_term % 2)) return;
+                              half_term)) return;
 
                           var record = scope.getTimedTaskRecords(user.stats,
                               indexes);
@@ -391,7 +391,7 @@ define('zb_sync_button/zb_sync_button',
                                 record.time).then(function(response) {
                                   scope.finished++;
                                   return scope.checkResponse(response, user,
-                                      task.name, half_term % 2);
+                                      task.name, half_term);
                                 });
                             return promise;
                           };
@@ -415,7 +415,6 @@ define('zb_sync_button/zb_sync_button',
 
               var promises = [];
               half_terms.forEach(function(half_term) {
-                half_term += scope.scheduleGroup.term * 2;
 
                 for (var id in scope.tasks) {
                   var task = scope.tasks[id];
@@ -442,7 +441,6 @@ define('zb_sync_button/zb_sync_button',
             scope.statusText = '正在提交出席记录...';
             scope.totalTasks = 0;
             scope.finished = 0;
-            var half_term_base = scope.scheduleGroup.term * 2;
 
             var requests = [];
             var half_terms = scope.getHalfTerms();
@@ -450,7 +448,7 @@ define('zb_sync_button/zb_sync_button',
             half_terms.forEach(function(half_term) {
               var request = function() {
                 return zbrpc.get_preclass_lessons(scope.classInfo.zb_id,
-                  scope.get_zb_courseId(), half_term_base + half_term)
+                  scope.get_zb_courseId(), half_term)
                   .then(function(response) {
                     var lessons = response.data.data;
                     var reportRequests = [];
@@ -465,9 +463,9 @@ define('zb_sync_button/zb_sync_button',
                       var reportRequest = function() {
                         var promise = zbrpc.report_limited_schedule_task(
                             scope.classInfo.zb_id, userID,
-                            half_term + half_term_base,
+                            half_term,
                             records.book, records.audio,
-                            atts[half_term]).then(function(response) {
+                            atts[half_term % 2]).then(function(response) {
                               scope.finished++;
                               return scope.checkResponse(response, user,
                                   taskKey, half_term);
