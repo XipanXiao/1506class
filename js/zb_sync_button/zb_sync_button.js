@@ -436,8 +436,38 @@ define('zb_sync_button/zb_sync_button',
             });
           };
 
-          scope.report_attendance = function() {
+          scope.get_preclass_lessons = function(half_term) {
+            return function() {
+              return zbrpc.get_preclass_lessons(scope.classInfo.zb_id,
+                  scope.get_zb_courseId(), half_term).then(function(response) {
+                    scope.finished++;
+                    scope.lessons = response.data.data;
+                    return scope.lessons;
+                  });
+            }
+          };
+          
+          scope.report_attendance_for_user = function(user, half_term) {
+            if (scope.checkUserTask(user, taskKey, half_term)) return null;
+
             var taskKey = '出席';
+            var atts = scope.get_attendance(user);
+
+            return function() {
+              var records = scope.getBookAudioRecords(scope.lessons, user,
+                  half_term, true);
+
+              return zbrpc.report_limited_schedule_task(scope.classInfo.zb_id,
+                  user.zb_id, half_term, records.book, records.audio,
+                  atts[half_term % 2]).then(function(response) {
+                    scope.finished++;
+                    return scope.checkResponse(response, user,
+                        taskKey, half_term);
+                  });
+            };
+          };
+
+          scope.report_attendance = function() {
             scope.statusText = '正在提交出席记录...';
             scope.totalTasks = 0;
             scope.finished = 0;
@@ -446,39 +476,11 @@ define('zb_sync_button/zb_sync_button',
             var half_terms = scope.getHalfTerms();
 
             half_terms.forEach(function(half_term) {
-              var request = function() {
-                return zbrpc.get_preclass_lessons(scope.classInfo.zb_id,
-                  scope.get_zb_courseId(), half_term)
-                  .then(function(response) {
-                    var lessons = response.data.data;
-                    var reportRequests = [];
-                    utils.forEach(scope.users, function(user) {
-                      var atts = scope.get_attendance(user);
-                      var records = scope.getBookAudioRecords(lessons, user,
-                          half_term, true);
-                      var userID = parseInt(user.zb_id);
-        
-                      if (scope.checkUserTask(user, taskKey, half_term)) return;
-        
-                      var reportRequest = function() {
-                        var promise = zbrpc.report_limited_schedule_task(
-                            scope.classInfo.zb_id, userID,
-                            half_term,
-                            records.book, records.audio,
-                            atts[half_term % 2]).then(function(response) {
-                              scope.finished++;
-                              return scope.checkResponse(response, user,
-                                  taskKey, half_term);
-                            });
-                        return promise;
-                      };
-                      reportRequests.push(reportRequest);
-                    });
-                    scope.totalTasks += reportRequests.length;
-                    return utils.requestOneByOne(reportRequests);
-                  });
-              };
-              requests.push(request);
+              requests.push(scope.get_preclass_lessons(half_term));
+              utils.forEach(scope.users, function(user) {
+                var request = scope.report_attendance_for_user(user, half_term);
+                if (request) requests.push(request);
+              });
             });
 
             scope.totalTasks += requests.length;
