@@ -3,12 +3,12 @@ define('zb_login_dialog/zb_login_dialog', [], function() {
     function() {
       return {
         link: function(scope) {
-          scope.ok = function() {
-            scope.$broadcast('zb-login-confirmed', {
+          scope.close = function(ok) {
+            scope.$broadcast('zb-login-confirmed', ok ? {
               username: document.querySelector('#zb-username').value,
               password: document.querySelector('#zb-password').value,
               editPassword: document.querySelector('#zb-editpassword').value
-            });
+            } : null);
           };
         },
         templateUrl : 'js/zb_login_dialog/zb_login_dialog.html'

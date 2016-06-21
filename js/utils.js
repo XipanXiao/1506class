@@ -203,6 +203,12 @@ define('utils', [], function() {
         
         return total;
       },
+      mix_in: function(dst, src) {
+        for (var key in src) {
+          dst[key] = src[key];
+        }
+        return dst;
+      },
       toList: function(map) {
         var list = [];
         for (var key in map) {
@@ -275,7 +281,9 @@ define('utils', [], function() {
         };
       },
       isEmpty: function(map) {
-        if (map instanceof String || typeof(map) == 'string') return true;
+        if (!map || map instanceof String || typeof(map) == 'string') {
+          return true;
+        }
 
         for (var key in map) {
           if (map[key]) return false;
@@ -348,6 +356,11 @@ define('utils', [], function() {
         return parts[0] + '年' + (parseInt(parts[1])||1) + '月' + 
             (parseInt(parts[2])||1) + '日';
       },
+      truePromise: function() {
+        return $q(function(resolve) {
+          resolve(true);
+        });
+      },
       /// Calls the first asynchronous function from the list of [requests], 
       /// then calls the next one once it's done, and so on. The chain
       /// terminates after all promises resolve with a true value, or any of
@@ -356,15 +369,18 @@ define('utils', [], function() {
       /// Returns a promise that is resolved after the last request is done.
       requestOneByOne: function(requests) {
         var index = 0;
-        var truePromise = $q(function(resolve) {
-          resolve(true);
-        });
+        var that = this;
+        var onError = function() {
+          return false;
+        };
         var next = function(previousResponse) {
-          if (!previousResponse) return false;
+          if (!previousResponse) {
+            return false;
+          }
           var fn = requests[index++];
           // Always return a promise so that 'then' is called even [requests]
           // is empty.
-          return fn ? fn().then(next) : truePromise;
+          return fn ? fn().then(next, onError) : that.truePromise();
         };
         return next(true);
       },

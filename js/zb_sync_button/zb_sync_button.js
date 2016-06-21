@@ -1,6 +1,7 @@
 define('zb_sync_button/zb_sync_button',
     ['progress_bar/progress_bar', 'services', 'utils',
      'zb_services'], function() {
+  var JIA_XING = 3;
   return angular.module('ZBSyncButtonModule', ['ProgressBarModule',
       'ServicesModule', 'UtilsModule', 'ZBServicesModule'])
       .directive('zbSyncButton', function($q, $rootScope, rpc, utils, zbrpc) {
@@ -28,18 +29,33 @@ define('zb_sync_button/zb_sync_button',
             var done = function() {
               scope.inprogress = false;
             };
+            
             switch (scope.type) {
             case 'schedule_task':
-              var half_terms = scope.getHalfTerms().length;
-              if (half_terms == 0) return;
-
-              utils.requestOneByOne([
-                  scope.ensure_authenticated,
-                  scope.report_attendance,
-                  scope.report_schedule_task,
-                  scope.report_jx_task,
-                  scope.report_guanxiu_task
-              ]).then(done);
+              var half_terms = scope.getHalfTerms();
+              var requests = [scope.ensure_authenticated];
+              requests = requests.concat(half_terms.map(function(half_term) {
+                return function() {
+                  scope.half_term = half_term;
+                  switch (scope.classInfo.department_id) {
+                  case JIA_XING: 
+                    return utils.requestOneByOne([
+                      scope.report_attendance,
+                      scope.report_schedule_task,
+                      scope.report_jx_task,
+                      scope.report_guanxiu_task
+                    ]);
+                    break;
+                  default:
+                    return utils.requestOneByOne([
+                      scope.report_attendance,
+                      scope.report_schedule_task,
+                    ]);
+                    break;
+                  };
+                };
+              }));
+              utils.requestOneByOne(requests).then(done);
               break;
             case 'class':
               utils.requestOneByOne([
@@ -50,8 +66,7 @@ define('zb_sync_button/zb_sync_button',
             }
           };
           
-          scope.getBookAudioRecords = function(lessons, user, half_term,
-              limited) {
+          scope.getBookAudioRecords = function(lessons, user, limited) {
             var index = 0;
             var group = scope.scheduleGroup;
             var audio = [];
@@ -78,9 +93,9 @@ define('zb_sync_button/zb_sync_button',
               firstHalf = 11;
             }
 
-            audio = (half_term % 2) == 0 ?
+            audio = (scope.half_term % 2) == 0 ?
                 audio.slice(0, firstHalf) : audio.slice(firstHalf);
-            book = (half_term % 2) == 0 ?
+            book = (scope.half_term % 2) == 0 ?
                 book.slice(0, firstHalf) : book.slice(firstHalf);
 
             if (audio.length * 2 == lessons.length) {
@@ -154,68 +169,54 @@ define('zb_sync_button/zb_sync_button',
           };
           scope.report_schedule_task = function() {
             var taskKey = '传承';
-            var half_terms = scope.getHalfTerms();
-            var pre_classID = parseInt(scope.classInfo.zb_id);
             var users = scope.users;
 
             var requests = [];
-            scope.statusText = '正在提交听传承和读法本记录...';
             scope.totalTasks = 0;
             scope.finished = 0;
 
-            half_terms.forEach(function(half_term) {
-              var request = function() {
-                return zbrpc.get_preclass_lessons(pre_classID,
-                  scope.get_zb_courseId(), half_term)
-                  .then(function(response) {
-                    var lessons = response.data.data;
-                    var reportRequests = [];
-                    utils.forEach(users, function(user) {
-                      if (scope.checkUserTask(user, taskKey, half_term)) return;
+            var lessons = scope.lessons;
+            utils.forEach(users, function(user) {
+              if (scope.checkUserTask(user, taskKey)) return;
 
-                      var reportRequest = function() {
-                        var records = scope.getBookAudioRecords(lessons, user,
-                            half_term);
-                        return zbrpc.report_schedule_task(
-                            scope.get_report_type() + '_grid',
-                            pre_classID, parseInt(user.zb_id),
-                            half_term, records.book,
-                            records.audio).then(function(response) {
-                              scope.finished++;
-                              return scope.checkResponse(response, user,
-                                  taskKey, half_term);
-                            });
-                      };
-                      reportRequests.push(reportRequest);
+              var records = scope.getBookAudioRecords(lessons, user);
+              var request = function() {
+                scope.statusText = '正在为"{0}"提交第{1}半学期听传承和读法本记录...'.
+                    format(user.name, scope.half_term);
+                return zbrpc.report_schedule_task(
+                    scope.get_report_type() + '_grid',
+                    scope.classInfo.zb_id, parseInt(user.zb_id),
+                    scope.half_term, records.book,
+                    records.audio).then(function(response) {
+                      scope.finished++;
+                      return scope.checkResponse(response, user, taskKey);
                     });
-                    scope.totalTasks = reportRequests.length;
-                    return utils.requestOneByOne(reportRequests);
-                  });
               };
               requests.push(request);
             });
             scope.totalTasks = requests.length;
             return utils.requestOneByOne(requests);
           };
-          scope.checkResponse = function(response, user, task, half_term) {
+
+          scope.checkResponse = function(response, user, task) {
             var success = response.data &&
                 (response.data.returnValue == 'success');
             if (success) {
               var userResult = scope.results[user.id]; 
               if (!userResult) userResult = [];
-              var result = userResult[half_term % 2] || {};
+              var result = userResult[scope.half_term % 2] || {};
               result[task] = true;
-              userResult[half_term % 2] = result;
+              userResult[scope.half_term % 2] = result;
               scope.results[user.id] = userResult;
               return true; 
             }
             alert('学员"{0}"的"{1}"记录未能成功提交，请重试'.format(user.name, task));
             return false;
           };
-          scope.checkUserTask = function(user, task, half_term) {
+          scope.checkUserTask = function(user, task) {
             return scope.results[user.id] &&
-                scope.results[user.id][half_term % 2] &&
-                scope.results[user.id][half_term % 2][task];
+                scope.results[user.id][scope.half_term % 2] &&
+                scope.results[user.id][scope.half_term % 2][task];
           };
           scope.ensure_authenticated = function() {
             scope.finished = 0;
@@ -234,79 +235,61 @@ define('zb_sync_button/zb_sync_button',
             return scope.deferredLogin.promise;
           };
           scope.$on('zb-login-confirmed', function(event, credential) {
-            var username = credential.username;
-            var password = credential.password;
-            var editPassword = credential.editPassword;
+            if (!scope.deferredLogin) return;
 
-            scope.finished = 0;
-            scope.totalTasks = 1;
-
-            scope.statusText = '正在登录...';
-            zbrpc.login(username, password).then(function(response) {
-              if (zbrpc.is_showing_login_form(response.data)) {
-                scope.finished++;
-                alert('登录失败');
-                scope.deferredLogin.resolve(false);
-              } else {
-                zbrpc.edit(editPassword).then(function(approved) {
+            if (credential) {
+              var username = credential.username;
+              var password = credential.password;
+              var editPassword = credential.editPassword;
+  
+              scope.finished = 0;
+              scope.totalTasks = 1;
+  
+              scope.statusText = '正在登录...';
+              zbrpc.login(username, password).then(function(response) {
+                if (zbrpc.is_showing_login_form(response.data)) {
                   scope.finished++;
-                  approved ? 
-                      scope.deferredLogin.resolve(true) :
-                      scope.deferredLogin.reject();
-                });
-              }
-            });
+                  alert('登录失败');
+                  scope.deferredLogin.resolve(false);
+                } else {
+                  zbrpc.edit(editPassword).then(function(approved) {
+                    scope.finished++;
+                    scope.deferredLogin.resolve(approved);
+                  });
+                }
+              });
+            } else {
+              scope.deferredLogin.resolve(false);
+            }
           });
 
-          scope.report_class_task_stats = function(task, half_term) {
-            var startTerm =
-                utils.roundToDefaultStartTime(scope.scheduleGroup.start_time);
-            var midTerm = utils.getMidTerm(scope.scheduleGroup);
-            var endTerm = utils.roundToDefaultStartTime(scope.getEndTerm());
-            var start_time = (half_term % 2 == 0) ? startTerm : midTerm;
-            var end_time = (half_term % 2 == 0) ? midTerm : endTerm;
+          scope.report_jx_task_for_user = function(user) {
+            var taskKey = '加行';
 
-            return rpc.get_class_task_stats(scope.classId, task.id,
-                start_time, end_time).then(function(response) {
-                  scope.statusText = '正在提交"{0}"任务记录...'.format(task.name);
+            if (scope.checkUserTask(user, taskKey) ||
+                utils.isEmpty(user.taskStats)) {
+              return utils.truePromise();
+            }
 
-                  var requests = [];
-                  (response.data || []).forEach(function(user) {
-                    if (!user.stats || !user.stats[0] ||
-                        !user.stats[0].sum) {
-                      return;
-                    }
-
-                    if (scope.checkUserTask(user, task.name, half_term)) {
-                      return;
-                    }
-                    var request = function() {
-                      var record = {};
-                      record[task.zb_name + '_count'] = user.stats[0].sum;
-                      var promise = zbrpc.report_preparation_task(
-                          scope.classInfo.zb_id, user.zb_id,
-                          half_term, record).then(function(response) {
-                            scope.finished++;
-                            return scope.checkResponse(response, user,
-                                task.name, half_term);
-                          });
-                      return promise;
-                    };
-                    requests.push(request);
-                  });
-
-                  scope.totalTasks += requests.length;
-                  return utils.requestOneByOne(requests);
+            scope.statusText = '正在为"{0}"提交第{1}半学期"{2}"任务记录...'.format(
+                user.name, scope.half_term, taskKey);
+            return zbrpc.report_preparation_task(scope.classInfo.zb_id,
+                user.zb_id, scope.half_term,
+                user.taskStats).then(function(response) {
+                  scope.finished++;
+                  return scope.checkResponse(response, user, taskKey);
                 });
           };
 
-          scope.getTaskSubIndexes = function(task, half_term) {
+          scope.getTaskSubIndexes = function() {
             return zbrpc.get_preclass_lessons(scope.classInfo.zb_id,
-                task.zb_course_id, half_term).then(function(response) {
+                scope.guanxiuTask.zb_course_id, scope.half_term)
+                .then(function(response) {
                   var data = response.data.data;
-                  return (data || []).map(function(lesson) {
+                  var indexes = (data || []).map(function(lesson) {
                     return parseInt(lesson.lesson_id);
                   });
+                  return scope.guanxiuIndexes = indexes;
                 });
           };
 
@@ -333,153 +316,187 @@ define('zb_sync_button/zb_sync_button',
               time: time
             }
           };
-          
+
+          scope.get_guanxiu_task = function() {
+            for (var id in scope.tasks) {
+              var task = scope.tasks[id];
+              if (task.duration) return task;
+            }
+          };
+
           scope.report_guanxiu_task = function() {
-            var half_terms = scope.getHalfTerms();
+            scope.guanxiuTask = scope.get_guanxiu_task();
+            
+            if (!scope.guanxiuTask) {
+              return utils.truePromise();
+            }
 
             scope.totalTasks = 0;
             scope.finished = 0;
 
-            var promises = [];
-            half_terms.forEach(function(half_term) {
-
-              for (var id in scope.tasks) {
-                var task = scope.tasks[id];
-                // Skip tasks that not started.
-                if (!task.duration || !task.zb_course_id ||
-                    task.starting_half_term > half_term) {
-                  continue;
-                }
-
-                promises.push(scope.report_guanxiu_task_stats(task, half_term));
-              }
-            });
-            return $q.all(promises);
+            var requests = [
+                scope.getTaskSubIndexes,
+                scope.get_guanxiu_stats,
+                scope.report_guanxiu_stats
+            ];
+            return utils.requestOneByOne(requests);
           };
 
-          scope.report_guanxiu_task_stats = function(task, half_term) {
-            return scope.getTaskSubIndexes(task, half_term).then(
-                function(indexes) {
-                  if (indexes.length == 0) return;
+          scope.get_guanxiu_stats = function() {
+            var indexes = scope.guanxiuIndexes;
+            if (indexes.length == 0) utils.truePromise();
 
-                  var start_time = indexes[0];
-                  var end_time = indexes[indexes.length - 1];
-
-                  return rpc.get_class_task_stats(scope.classId, task.id,
-                      start_time, end_time, 1).then(function(response) {
-                        scope.statusText =
-                            '正在提交"{0}"任务记录...'.format(task.name);
-
-                        var requests = [];
-                        (response.data || []).forEach(function(user) {
-                          if (!user.stats || !user.stats.length) {
-                            return;
-                          }
-
-                          if (scope.checkUserTask(user, task.name, 
-                              half_term)) return;
-
-                          var record = scope.getTimedTaskRecords(user.stats,
-                              indexes);
-                          var nonZero = function(value) {return value != 0;};
-                          if (!utils.any(record.count, nonZero)) return;
-
-                          var request = function() {
-                            var promise = zbrpc.report_guanxiu_task(
-                                scope.classInfo.zb_id, user.zb_id,
-                                half_term, record.count,
-                                record.time).then(function(response) {
-                                  scope.finished++;
-                                  return scope.checkResponse(response, user,
-                                      task.name, half_term);
-                                });
-                            return promise;
-                          };
-                          requests.push(request);
-                        });
-
-                        scope.totalTasks += requests.length;
-                        utils.requestOneByOne(requests);
-                      });
+            var start_time = indexes[0];
+            var end_time = indexes[indexes.length - 1];
+            
+            return rpc.get_class_task_stats(scope.classId, scope.guanxiuTask.id,
+                start_time, end_time, 1).then(function(response) {
+                  response.data.forEach(function(user) {
+                    scope.users[user.id].guanxiuStats = user.stats;
+                  });
+                  return true;
                 });
+          };
+          
+          scope.report_guanxiu_stats = function() {
+            var taskKey = '观修';
+
+            var requests = [];
+            utils.forEach(scope.users, function(user) {
+              var stats = user.guanxiuStats;
+              if (!stats || !stats.length) return;
+              if (scope.checkUserTask(user, taskKey)) return;
+
+              var record = scope.getTimedTaskRecords(stats,
+                  scope.guanxiuIndexes);
+              var nonZero = function(value) {return value != 0;};
+              if (!utils.any(record.count, nonZero)) return;
+
+              var request = function() {
+                scope.statusText = '正在为"{0}"提交第{1}半学期"{2}"任务记录...'.
+                    format(user.name, scope.half_term, taskKey);
+
+                return zbrpc.report_guanxiu_task(
+                    scope.classInfo.zb_id, user.zb_id,
+                    scope.half_term, record.count,
+                    record.time).then(function(response) {
+                      scope.finished++;
+                      return scope.checkResponse(response, user, taskKey);
+                    });
+              };
+              requests.push(request);
+            });
+
+            scope.totalTasks += requests.length;
+            return utils.requestOneByOne(requests);
           };
 
           scope.report_jx_task = function() {
-            var half_terms = scope.getHalfTerms();
-            var depId = scope.classInfo.department_id;
-
-            return rpc.get_tasks(depId).then(function(response) {
-              scope.tasks = response.data;
-              scope.totalTasks = 0;
-              scope.finished = 0;
-
-              var promises = [];
-              half_terms.forEach(function(half_term) {
-
-                for (var id in scope.tasks) {
-                  var task = scope.tasks[id];
-                  // Skip tasks that not started.
-                  if (task.duration || !task.zb_name ||
-                      task.starting_half_term > half_term) {
-                    continue;
-                  }
-
-                  promises.push(scope.report_class_task_stats(task, half_term));
-                }
-              });
-              return $q.all(promises).then(function(results) {
-                for (var index in results) {
-                  if (!results[index]) return false;
-                }
-                return true;
+            var requests = [];
+            utils.forEach(scope.users, function(user) {
+              requests.push(function() {
+                return scope.report_jx_task_for_user(user);
               });
             });
+
+            scope.finished = 0;
+            scope.totalTasks = requests.length;
+            return utils.requestOneByOne(requests);
           };
 
-          scope.get_preclass_lessons = function(half_term) {
-            return function() {
-              return zbrpc.get_preclass_lessons(scope.classInfo.zb_id,
-                  scope.get_zb_courseId(), half_term).then(function(response) {
-                    scope.finished++;
-                    scope.lessons = response.data.data;
-                    return scope.lessons;
-                  });
-            }
+          scope.get_preclass_lessons = function() {
+            var half_term = scope.half_term;
+            return zbrpc.get_preclass_lessons(scope.classInfo.zb_id,
+                scope.get_zb_courseId(), half_term).then(function(response) {
+                  scope.finished++;
+                  scope.lessons = response.data.data;
+                  return scope.lessons;
+                });
           };
           
-          scope.report_attendance_for_user = function(user, half_term) {
-            if (scope.checkUserTask(user, taskKey, half_term)) return null;
-
+          scope.report_attendance_for_user = function(user) {
             var taskKey = '出席';
+            if (scope.checkUserTask(user, taskKey)) {
+              return utils.truePromise();
+            }
+
             var atts = scope.get_attendance(user);
-
-            return function() {
-              var records = scope.getBookAudioRecords(scope.lessons, user,
-                  half_term, true);
-
-              return zbrpc.report_limited_schedule_task(scope.classInfo.zb_id,
-                  user.zb_id, half_term, records.book, records.audio,
-                  atts[half_term % 2]).then(function(response) {
-                    scope.finished++;
-                    return scope.checkResponse(response, user,
-                        taskKey, half_term);
-                  });
-            };
+            var records = scope.getBookAudioRecords(scope.lessons, user, true);
+            var otherTasks = {};
+            if (scope.classInfo.department_id != JIA_XING) {
+              otherTasks = scope.users[user.id].taskStats || {};
+              otherTasks.type = scope.get_report_type() + '_work_grid';
+            }
+            var half_term = scope.half_term;
+            scope.statusText = '正在为"{0}"提交第{1}半学期{2}记录...'.format(
+                user.name, scope.half_term, taskKey);
+            return zbrpc.report_limited_schedule_task(scope.classInfo.zb_id,
+                user.zb_id, half_term, records.book, records.audio,
+                atts[half_term % 2], otherTasks).then(function(response) {
+                  scope.finished++;
+                  return scope.checkResponse(response, user, taskKey);
+                });
           };
+          
+          scope.getTasks = function() {
+            return rpc.get_tasks(scope.classInfo.department_id)
+                .then(function(response) {
+                  return scope.tasks = utils.where(response.data,
+                      function(task) {
+                        return task.starting_half_term <= scope.half_term;
+                      });
+                });
+          };
+          
+          scope.getTaskStats = function(task, start_time, end_time) {
+            return rpc.get_class_task_stats(scope.classId, task.id,
+                start_time, end_time).then(function(response) {
+                  var users = response.data || [];
+                  users.forEach(function(user) {
+                    if (!user.stats[0] || !user.stats[0].sum) return;
 
+                    var taskStats = scope.users[user.id].taskStats || {};
+                    taskStats[task.zb_name + '_count'] = user.stats[0].sum;
+                    if (task.duration) {
+                      taskStats[task.zb_name + '_time'] =
+                        user.stats[0].duration;
+                    }
+                    scope.users[user.id].taskStats = taskStats;
+                  });
+                  return users.length; 
+                });
+          };
+          
+          scope.getAllTaskStats = function() {
+            var fistHalf = scope.half_term % 2 == 0;
+            var startTerm =
+              utils.roundToDefaultStartTime(scope.scheduleGroup.start_time);
+            var midTerm = utils.getMidTerm(scope.scheduleGroup);
+            var endTerm = utils.roundToDefaultStartTime(scope.getEndTerm());
+            var start_time = fistHalf ? startTerm : midTerm;
+            var end_time = fistHalf ? midTerm : endTerm;
+
+            var requests = [];
+            utils.forEach(scope.tasks, function(task) {
+              requests.push(function() {
+                return scope.getTaskStats(task, start_time, end_time);
+              });
+            });
+            return utils.requestOneByOne(requests);
+          };
+          
           scope.report_attendance = function() {
-            scope.statusText = '正在提交出席记录...';
             scope.totalTasks = 0;
             scope.finished = 0;
 
-            var requests = [];
-            var half_terms = scope.getHalfTerms();
-
-            half_terms.forEach(function(half_term) {
-              requests.push(scope.get_preclass_lessons(half_term));
-              utils.forEach(scope.users, function(user) {
-                var request = scope.report_attendance_for_user(user, half_term);
-                if (request) requests.push(request);
+            var requests = [
+                scope.getTasks,
+                scope.get_preclass_lessons,
+                scope.getAllTaskStats
+            ];
+            utils.forEach(scope.users, function(user) {
+              requests.push(function() {
+                return scope.report_attendance_for_user(user);
               });
             });
 
@@ -658,6 +675,9 @@ define('zb_sync_button/zb_sync_button',
                   alert('failed to create zhibei class.');
                   scope.deferredSyncClass.resolve(false);
                 });
+          };
+          scope.cancel = function() {
+            zbrpc.cancel();
           };
           scope.totalTasks = 0;
           scope.finished = 0;

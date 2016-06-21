@@ -5,15 +5,6 @@ define('zb_services', ['utils'], function() {
   var redirectUrl = 'cgi-bin/redirect.php';
   var serviceUrl = 'http://db.zhibeifw.com:8888/zb';
   
-  function http_form_post($http, data) {
-    return $http({
-        method: 'POST',
-        url: proxyUrl,
-        data: data,
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-    });
-  }
-  
   function get_proxied_url(url) {
     return proxyUrl + '?url=' + encodeURIComponent(url);
   }
@@ -26,7 +17,19 @@ define('zb_services', ['utils'], function() {
   }
 
   return angular.module('ZBServicesModule', ['UtilsModule']).factory('zbrpc',
-      function($http, $httpParamSerializerJQLike, utils) {
+      function($http, $httpParamSerializerJQLike, $q, utils) {
+
+    var canceller = $q.defer();
+    
+    function http_form_post($http, data) {
+      return $http({
+          method: 'POST',
+          url: proxyUrl,
+          data: data,
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          timeout: canceller.promise
+      });
+    }
 
     function toZBUser(user) {
       utils.setCountryLabels(user);
@@ -64,6 +67,10 @@ define('zb_services', ['utils'], function() {
       getClassUrl: function(pre_classID) {
         return this.get_secure_url('{0}/pre/classinfo?pre_classID={1}'
             .format(serviceUrl, pre_classID));
+      },
+      cancel: function() {
+        canceller.resolve(false);
+        canceller = $q.defer();
       },
       is_showing_login_form: function(html) {
         return (html || '').indexOf('<input type="password"') > 0;
@@ -194,18 +201,19 @@ define('zb_services', ['utils'], function() {
         return http_form_post($http, $httpParamSerializerJQLike(data));
       },
       report_limited_schedule_task: function(pre_classID, userID, half_term,
-          book, audio, att) {
+          book, audio, att, otherTasks) {
         var data = {
-            url: '{0}/pre/report_ajax'.format(serviceUrl),
-            userID: userID,
-            pre_classID: pre_classID,
-            type: 'att_limit_grid',
-            half_term: half_term,
-            book: book,
-            audio: audio,
-            att: att
-          };
-          return http_form_post($http, $httpParamSerializerJQLike(data));
+          url: '{0}/pre/report_ajax'.format(serviceUrl),
+          userID: userID,
+          pre_classID: pre_classID,
+          type: 'att_limit_grid',
+          half_term: half_term,
+          book: book,
+          audio: audio,
+          att: att
+        };
+        utils.mix_in(data, otherTasks);
+        return http_form_post($http, $httpParamSerializerJQLike(data));
       },
       /// Gets data of the 'limit' grid.
       ///

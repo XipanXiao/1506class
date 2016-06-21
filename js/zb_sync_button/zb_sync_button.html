@@ -6,5 +6,8 @@
 	</iron-icon>
 </a>
 <span ng-if="inprogress">{{statusText}}</span>
+<iron-icon class="selectable small-icon" icon="cancel" title="取消"
+    ng-click="cancel()" ng-show="inprogress">
+</iron-icon>
 <progress-bar ng-show="inprogress" max="{{totalTasks}}" value="{{finished}}">
 </progress-bar>
