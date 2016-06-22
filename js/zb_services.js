@@ -200,13 +200,13 @@ define('zb_services', ['utils'], function() {
         };
         return http_form_post($http, $httpParamSerializerJQLike(data));
       },
-      report_limited_schedule_task: function(pre_classID, userID, half_term,
-          book, audio, att, otherTasks) {
+      report_limited_schedule_task: function(type, pre_classID, userID,
+          half_term, book, audio, att, otherTasks) {
         var data = {
           url: '{0}/pre/report_ajax'.format(serviceUrl),
           userID: userID,
           pre_classID: pre_classID,
-          type: 'att_limit_grid',
+          type: type,
           half_term: half_term,
           book: book,
           audio: audio,
@@ -214,16 +214,6 @@ define('zb_services', ['utils'], function() {
         };
         utils.mix_in(data, otherTasks);
         return http_form_post($http, $httpParamSerializerJQLike(data));
-      },
-      /// Gets data of the 'limit' grid.
-      ///
-      /// The 'limit' grid contains data of the attendance record and the data
-      /// of the 'limited' courses (出席记录和限制性课程传承报数情况).
-      get_limit_grid_data: function() {
-        var url = ('{0}/pre/report_ajax?type=att_limit_grid' + 
-            '&pre_classID={1}&half_term={2}').format(serviceUrl,
-            pre_classID, half_term);
-        return $http.get(get_proxied_url(url));
       },
       get_root_groups: function() {
         var url = '{0}/pre/classselect_ajax?type=init_root_tree'.

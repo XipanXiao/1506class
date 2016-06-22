@@ -2,6 +2,11 @@ define('zb_sync_button/zb_sync_button',
     ['progress_bar/progress_bar', 'services', 'utils',
      'zb_services'], function() {
   var JIA_XING = 3;
+
+  var MAIN_GRID = 0;
+  var WORK_GRID = 1;
+  var ATT_LIMIT_GRID = 2;
+  var GUANXIU_GRID = 3;
   return angular.module('ZBSyncButtonModule', ['ProgressBarModule',
       'ServicesModule', 'UtilsModule', 'ZBServicesModule'])
       .directive('zbSyncButton', function($q, $rootScope, rpc, utils, zbrpc) {
@@ -184,7 +189,7 @@ define('zb_sync_button/zb_sync_button',
                 scope.statusText = '正在为"{0}"提交第{1}半学期听传承和读法本记录...'.
                     format(user.name, scope.half_term);
                 return zbrpc.report_schedule_task(
-                    scope.get_report_type() + '_grid',
+                    scope.get_report_type(MAIN_GRID),
                     scope.classInfo.zb_id, parseInt(user.zb_id),
                     scope.half_term, records.book,
                     records.audio).then(function(response) {
@@ -422,17 +427,16 @@ define('zb_sync_button/zb_sync_button',
 
             var atts = scope.get_attendance(user);
             var records = scope.getBookAudioRecords(scope.lessons, user, true);
-            var otherTasks = {};
-            if (scope.classInfo.department_id != JIA_XING) {
-              otherTasks = scope.users[user.id].taskStats || {};
-              otherTasks.type = scope.get_report_type() + '_work_grid';
-            }
+            var otherTasks = scope.classInfo.department_id == JIA_XING ?
+              {} : (scope.users[user.id].taskStats || {});
             var half_term = scope.half_term;
             scope.statusText = '正在为"{0}"提交第{1}半学期{2}记录...'.format(
                 user.name, scope.half_term, taskKey);
-            return zbrpc.report_limited_schedule_task(scope.classInfo.zb_id,
-                user.zb_id, half_term, records.book, records.audio,
-                atts[half_term % 2], otherTasks).then(function(response) {
+            return zbrpc.report_limited_schedule_task(
+                scope.get_report_type(ATT_LIMIT_GRID),
+                scope.classInfo.zb_id, user.zb_id, half_term, records.book,
+                records.audio, atts[half_term % 2],
+                otherTasks).then(function(response) {
                   scope.finished++;
                   return scope.checkResponse(response, user, taskKey);
                 });
@@ -443,7 +447,8 @@ define('zb_sync_button/zb_sync_button',
                 .then(function(response) {
                   return scope.tasks = utils.where(response.data,
                       function(task) {
-                        return task.starting_half_term <= scope.half_term;
+                        return task.zb_name &&
+                            task.starting_half_term <= scope.half_term;
                       });
                 });
           };
@@ -453,13 +458,17 @@ define('zb_sync_button/zb_sync_button',
                 start_time, end_time).then(function(response) {
                   var users = response.data || [];
                   users.forEach(function(user) {
-                    if (!user.stats[0] || !user.stats[0].sum) return;
-
                     var taskStats = scope.users[user.id].taskStats || {};
-                    taskStats[task.zb_name + '_count'] = user.stats[0].sum;
+                    var parts = (task.zb_name || '').split('_');
+                    var stat = user.stats[0] || {sum: 0, duration: 0};
+                    if (parts.length == 2) {
+                      taskStats[parts[0] + '_count'] = stat.sum;
+                      taskStats[parts[0] + '_type'] = parts[1];
+                    } else {
+                      taskStats[task.zb_name + '_count'] = stat.sum;
+                    }
                     if (task.duration) {
-                      taskStats[task.zb_name + '_time'] =
-                        user.stats[0].duration;
+                      taskStats[task.zb_name + '_time'] = stat.duration;
                     }
                     scope.users[user.id].taskStats = taskStats;
                   });
@@ -531,12 +540,24 @@ define('zb_sync_button/zb_sync_button',
             }[scope.classInfo.department_id];
           };
           
-          scope.get_report_type = function() {
-            return {
-              2: 'rxl',
-              3: 'jx',
-              4: 'jt'  
-            }[scope.classInfo.department_id];
+          /// Returns the 'type' field when reporting.
+          ///
+          /// grid 0: the main audio/book grid
+          /// grid 1: the task/work grid
+          /// grid 2: the limited class and attendance gird
+          /// grid 4: the guanxiu grid
+          scope.get_report_type = function(grid) {
+            switch (scope.classInfo.department_id) {
+            case 2:
+              return ['rxl_grid', '', 'rxl_work_grid'][grid];
+            case 3:
+              return ['jx_grid', 'jxWork_grid', 'att_limit_grid',
+                  'guanxiu_grid'][grid];
+            case 4:
+              return ['jt_grid', '', 'fohao_att_limit_grid'][grid];
+            default:
+              return null;
+            };
           };
 
           scope.sync_users = function() {
