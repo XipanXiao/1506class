@@ -294,7 +294,8 @@ define('zb_sync_button/zb_sync_button',
                   var indexes = (data || []).map(function(lesson) {
                     return parseInt(lesson.lesson_id);
                   });
-                  return scope.guanxiuIndexes = indexes;
+                  scope.guanxiuIndexes = indexes;
+                  return true;
                 });
           };
 
@@ -415,7 +416,7 @@ define('zb_sync_button/zb_sync_button',
                 scope.get_zb_courseId(), half_term).then(function(response) {
                   scope.finished++;
                   scope.lessons = response.data.data;
-                  return scope.lessons;
+                  return true;
                 });
           };
           
@@ -472,7 +473,7 @@ define('zb_sync_button/zb_sync_button',
                     }
                     scope.users[user.id].taskStats = taskStats;
                   });
-                  return users.length; 
+                  return true; 
                 });
           };
           
