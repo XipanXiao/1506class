@@ -75,6 +75,8 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
                 duration: user.duration || 0
               };
 
+            if (!utils.validateTaskInput(scope.selectedTask, data)) return;
+
             rpc.report_task(data).then(function (response) {
               scope.refreshStats();
             });

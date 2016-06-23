@@ -30,7 +30,7 @@
       <div class="css-table-cell">
         <input type="number" ng-model="user.count" class="count-input" placeholder="数量">
         <input ng-if="selectedTask.duration" type="number" ng-model="user.duration"
-            class="count-input" placeholder="用时">
+            class="count-input" placeholder="用时(分钟)">
         <input type="button" value="报数" ng-click="reportTask(user)">
       </div>
     </div>
@@ -69,7 +69,7 @@
         <input type="number" ng-model="user.sub_index" class="count-input" placeholder="第几修法">
         <input type="number" ng-model="user.count" class="count-input" placeholder="数量">
         <input ng-if="selectedTask.duration" type="number" ng-model="user.duration"
-            class="count-input" placeholder="用时">
+            class="count-input" placeholder="用时(分钟)">
         <input type="button" value="报数" ng-click="reportTask(user)">
       </div>
     </div>

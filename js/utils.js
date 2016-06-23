@@ -396,7 +396,7 @@ define('utils', [], function() {
             return false;
           }
         }
-        if (data.count == task.lastRecord.count &&
+        if (task.lastRecord && data.count == task.lastRecord.count &&
             this.unixTimestamp(new Date()) - task.lastRecord.ts < 10) {
           alert('刚提交过一模一样的报数，请勿重复提交');
           return false;
