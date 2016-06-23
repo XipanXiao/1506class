@@ -662,14 +662,14 @@ define('zb_sync_button/zb_sync_button',
           scope.update_zb_ids = function(users, zb_users) {
             var zb_users_map = {};
             zb_users.forEach(function(zb_user) {
+              if (parseInt(zb_user.status) == 11) return;
               zb_users_map[zb_user.name] = zb_user;
             });
 
             var requests = [];
             utils.forEach(users, function(user) {
               var zb_user = zb_users_map[user.name];
-              // Skip deleted users.
-              if (!zb_user || parseInt(zb_user.status) == 11) return;
+              if (!zb_user) return;
 
               var oldId = user.zb_id;
               user.zb_id = zb_user.userID;
