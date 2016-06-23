@@ -690,7 +690,7 @@ define('zb_sync_button/zb_sync_button',
                   classInfo.zb_id = response.data.pre_classID;
                   if (classInfo.zb_id) {
                     rpc.update_class(classInfo);
-                    scope.sync_users().then(function(result) {
+                    return scope.sync_users().then(function(result) {
                       scope.deferredSyncClass.resolve(result);
                     });
                   }
