@@ -463,8 +463,13 @@ define('zb_sync_button/zb_sync_button',
                     var parts = (task.zb_name || '').split('_');
                     var stat = user.stats[0] || {sum: 0, duration: 0};
                     if (parts.length == 2) {
-                      taskStats[parts[0] + '_count'] = stat.sum;
-                      taskStats[parts[0] + '_type'] = parts[1];
+                      if (stat.sum) {
+                        // Do not overwrite the existing value written with
+                        // a different type (e.g. if fohao_count has value with
+                        // fohao_type 0, do not reset it with fohao_type 1.
+                        taskStats[parts[0] + '_count'] = stat.sum;
+                        taskStats[parts[0] + '_type'] = parts[1];
+                      }
                     } else {
                       taskStats[task.zb_name + '_count'] = stat.sum;
                     }
@@ -479,6 +484,11 @@ define('zb_sync_button/zb_sync_button',
           
           scope.getAllTaskStats = function() {
             var fistHalf = scope.half_term % 2 == 0;
+            // A lot of people were not able to report their first Dingli
+            // task in time. Add this extra 25 days to avoid a zero number
+            // for the first report.
+            var extraReportTime = 3600 * 24 * 25;
+
             var startTerm =
               utils.roundToDefaultStartTime(scope.scheduleGroup.start_time);
             var midTerm = utils.getMidTerm(scope.scheduleGroup);
@@ -489,7 +499,8 @@ define('zb_sync_button/zb_sync_button',
             var requests = [];
             utils.forEach(scope.tasks, function(task) {
               requests.push(function() {
-                return scope.getTaskStats(task, start_time, end_time);
+                return scope.getTaskStats(task, start_time + extraReportTime,
+                    end_time + extraReportTime);
               });
             });
             return utils.requestOneByOne(requests);
