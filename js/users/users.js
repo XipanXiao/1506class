@@ -76,6 +76,9 @@ define('users/users', ['bit_editor/bit_editor', 'importers',
                   $scope.exportedUrl = url;
                 });
           };
+          $scope.userCount = function() {
+            return $scope.users && utils.keys($scope.users).length;
+          };
         },
         templateUrl : 'js/users/users.html'
       };

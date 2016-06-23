@@ -7,6 +7,7 @@
   </div>
 </div>
 <new-user-dialog refresh="reload(classId)"></new-user-dialog>
+<span class="padded-element">人数：{{userCount()}}</span>
 <input ng-if="isSysAdmin()" type="button" value="导出为tsv文件" ng-click="exportUsers()">
 <a ng-if="exportedUrl" href="{{exportedUrl}}" download="user.txt">user.txt</a>
 <zb-sync-button type="class" users="users" class-id="classId">
