@@ -385,7 +385,7 @@ define('utils', [], function() {
         return next(true);
       },
       validateTaskInput: function(task, data) {
-        if (task.duration) {
+        if (task.duration && task.sub_tasks) {
           if (data.duration < data.count * 30) {
             alert('每次观修时间不少于30分钟，{0}次一共至少要{1}分钟'.format(
                 data.count, data.count * 30));
