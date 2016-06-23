@@ -76,7 +76,6 @@ define('zb_sync_button/zb_sync_button',
             var group = scope.scheduleGroup;
             var audio = [];
             var book = [];
-            var firstHalf;
 
             if (limited) {
               utils.forEach(group.limited_courses, function(course) {
@@ -85,7 +84,6 @@ define('zb_sync_button/zb_sync_button',
                 book[index] = (record && record.text) ? 1 : 0;
                 index++;
               });
-              firstHalf = 2;
             } else {
               for (var id in group.schedules) {
                 var schedule = group.schedules[id];
@@ -95,13 +93,16 @@ define('zb_sync_button/zb_sync_button',
                 book[index] = (record && record.text) ? 1 : 0;
                 index++;
               }
-              firstHalf = 11;
             }
 
-            audio = (scope.half_term % 2) == 0 ?
-                audio.slice(0, firstHalf) : audio.slice(firstHalf);
-            book = (scope.half_term % 2) == 0 ?
-                book.slice(0, firstHalf) : book.slice(firstHalf);
+            // Some ruxinglun classes take 2 courses for a single schedule. 
+            var schedules = lessons.length > 15 && lessons.length % 2 == 0 ?
+                Math.floor(lessons.length / 2) : lessons.length;
+
+            audio = (scope.half_term % 2) == 0 ? audio.slice(0, schedules) :
+                audio.slice(audio.length - schedules);
+            book = (scope.half_term % 2) == 0 ? book.slice(0, schedules) :
+                book.slice(audio.length - schedules);
 
             if (audio.length * 2 == lessons.length) {
 
