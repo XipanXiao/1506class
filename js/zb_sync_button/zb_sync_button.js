@@ -95,10 +95,7 @@ define('zb_sync_button/zb_sync_button',
               }
             }
 
-            // Some ruxinglun classes take 2 courses for a single schedule. 
-            var schedules = lessons.length > 15 && lessons.length % 2 == 0 ?
-                Math.floor(lessons.length / 2) : lessons.length;
-
+            var schedules = scope.get_report_lessons_count();
             audio = (scope.half_term % 2) == 0 ? audio.slice(0, schedules) :
                 audio.slice(audio.length - schedules);
             book = (scope.half_term % 2) == 0 ? book.slice(0, schedules) :
@@ -124,27 +121,36 @@ define('zb_sync_button/zb_sync_button',
               };
             }
           };
+          
+          scope.get_report_lessons_count = function() {
+            var lessons = scope.lessons;
+            // Some ruxinglun classes take 2 courses for a single schedule. 
+            return lessons.length > 15 && lessons.length % 2 == 0 ?
+                Math.floor(lessons.length / 2) : lessons.length;
+          };
 
           scope.get_attendance = function(user) {
-            var index = 0;
             var group = scope.scheduleGroup;
-            var half = 11;
-            var att = [0, 0];
+            var atts = [];
 
             for (var id in group.schedules) {
               var schedule = group.schedules[id];
               if (!parseInt(schedule.course_id)) continue;
 
               var record = user.records[schedule.course_id];
-              if (record && (record.attended == 1)) {
-                if (index < half) att[0] ++;
-                else att[1]++;
-              }
-              
-              index++;
+              atts.push(record && record.attended == 1 ? 1 : 0);
             }
             
-            return att;
+            var schedules = scope.get_report_lessons_count();
+            var firstHalf = scope.half_term % 2 == 0 ?
+                schedules : atts.length - schedules;
+            var first = 0;
+            var second = 0;
+            for (var index = 0; index < atts.length; index++) {
+              if (index < firstHalf) first += atts[index];
+              else second += atts[index];
+            }
+            return [first, second];
           };
           
           scope.getEndTerm = function() {
