@@ -193,8 +193,8 @@ define('zb_sync_button/zb_sync_button',
 
               var records = scope.getBookAudioRecords(lessons, user);
               var request = function() {
-                scope.statusText = '正在为"{0}"提交第{1}半学期听传承和读法本记录...'.
-                    format(user.name, scope.half_term);
+                scope.statusText = '正在为"{0}"提交{1}半学期听传承和读法本记录...'.
+                    format(user.name, ['上', '下'][scope.half_term % 2]);
                 return zbrpc.report_schedule_task(
                     scope.get_report_type(MAIN_GRID),
                     scope.classInfo.zb_id, parseInt(user.zb_id),
@@ -283,8 +283,8 @@ define('zb_sync_button/zb_sync_button',
               return utils.truePromise();
             }
 
-            scope.statusText = '正在为"{0}"提交第{1}半学期"{2}"任务记录...'.format(
-                user.name, scope.half_term, taskKey);
+            scope.statusText = '正在为"{0}"提交{1}半学期"{2}"任务记录...'.format(
+                user.name, ['上', '下'][scope.half_term % 2], taskKey);
             return zbrpc.report_preparation_task(scope.classInfo.zb_id,
                 user.zb_id, scope.half_term,
                 user.taskStats).then(function(response) {
@@ -386,8 +386,9 @@ define('zb_sync_button/zb_sync_button',
               if (!utils.any(record.count, nonZero)) return;
 
               var request = function() {
-                scope.statusText = '正在为"{0}"提交第{1}半学期"{2}"任务记录...'.
-                    format(user.name, scope.half_term, taskKey);
+                scope.statusText = '正在为"{0}"提交{1}半学期"{2}"任务记录...'.
+                    format(user.name, ['上', '下'][scope.half_term % 2],
+                        taskKey);
 
                 return zbrpc.report_guanxiu_task(
                     scope.classInfo.zb_id, user.zb_id,
@@ -438,8 +439,8 @@ define('zb_sync_button/zb_sync_button',
             var otherTasks = scope.classInfo.department_id == JIA_XING ?
               {} : (scope.users[user.id].taskStats || {});
             var half_term = scope.half_term;
-            scope.statusText = '正在为"{0}"提交第{1}半学期{2}记录...'.format(
-                user.name, scope.half_term, taskKey);
+            scope.statusText = '正在为"{0}"提交{1}半学期{2}记录...'.format(
+                user.name, ['上', '下'][scope.half_term % 2], taskKey);
             return zbrpc.report_limited_schedule_task(
                 scope.get_report_type(ATT_LIMIT_GRID),
                 scope.classInfo.zb_id, user.zb_id, half_term, records.book,
