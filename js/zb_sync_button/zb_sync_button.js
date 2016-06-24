@@ -603,6 +603,7 @@ define('zb_sync_button/zb_sync_button',
                     zbrpc.create_user(pre_classID, user))
                         .then(function(response) {
                           scope.finished++;
+                          scope.userCreated = true;
                           return scope.checkResponse(response, user, taskKey,
                               0);
                         });
@@ -613,7 +614,13 @@ define('zb_sync_button/zb_sync_button',
               scope.totalTasks += requests.length;
               scope.statusText = '正在推送用户信息...';
 
-              return utils.requestOneByOne(requests);
+              return utils.requestOneByOne(requests).then(function() {
+                if (!scope.userCreated) return true;
+
+                return zbrpc.list_users(pre_classID).then(function(response) {
+                  return scope.update_zb_ids(users, response.data.data);
+                });
+              });
             });
           },
           /// courseId: 加行：1，入行论：2，净土：3
