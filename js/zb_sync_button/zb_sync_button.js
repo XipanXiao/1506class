@@ -471,11 +471,12 @@ define('zb_sync_button/zb_sync_button',
                     var parts = (task.zb_name || '').split('_');
                     var stat = user.stats[0] || {sum: 0, duration: 0};
                     if (parts.length == 2) {
-                      if (stat.sum) {
+                      var countKey = parts[0] + '_count';
+                      if (!taskStats[countKey]) {
                         // Do not overwrite the existing value written with
                         // a different type (e.g. if fohao_count has value with
                         // fohao_type 0, do not reset it with fohao_type 1.
-                        taskStats[parts[0] + '_count'] = stat.sum;
+                        taskStats[countKey] = stat.sum;
                         taskStats[parts[0] + '_type'] = parts[1];
                       }
                     } else {
