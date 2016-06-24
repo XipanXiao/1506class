@@ -39,6 +39,7 @@ try {
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($ch, CURLOPT_HEADER, 1);
   curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+  curl_setopt($ch, CURLOPT_TIMEOUT, 60);
   
   // All cookies with name like 'PROXY_xx' are from the proxied server.
   $proxy_prefix = "PROXY_";
