@@ -775,7 +775,8 @@ define('zb_sync_button/zb_sync_button',
                   3: 'A',
                   4: 'B'
               }[scope.classInfo.department_id];
-              prefix += (scope.classInfo.start_year % 100) + '-06';
+              prefix = (prefix || '') +
+                  (scope.classInfo.start_year % 100) + '-06-';
             }
             var index = (maxIndexes[prefix] || 0);
             var nextSn = function() {
