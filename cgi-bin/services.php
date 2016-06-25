@@ -48,13 +48,15 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "users") {
     $email = empty($_GET["email"]) ? null : $_GET["email"];
     $classId = empty($_GET["classId"]) ? null : $_GET["classId"];
+    $sn = empty($_GET["sn"]) ? null : $_GET["sn"];
 
     if ($classId) {
       if (isSysAdmin($user) || isClassLeader($user, $classId)) {
         $response = get_users(null, $classId);
       }
-    } elseif ($email) {
-      $response = current(get_users($email));
+    } elseif ($email || $sn) {
+      $response = current($email ?
+          get_users($email) : get_users(null, null, null, $sn));
       if ($response && !isSysAdmin($user) &&
           !isClassLeader($user, $response->$classId)) {
         $response = null;

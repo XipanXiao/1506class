@@ -238,7 +238,7 @@ function get_user($email) {
   return $user;
 }
 
-function get_users($email, $classId = null, $user_id = null) {
+function get_users($email, $classId = null, $user_id = null, $sn = null) {
   global $medoo;
 
   $result = null;
@@ -248,6 +248,8 @@ function get_users($email, $classId = null, $user_id = null) {
     $result = $medoo->select("users", "*", ["email" => $email]);
   } elseif ($user_id) {
     $result = $medoo->select("users", "*", ["id" => $user_id]);
+  } elseif ($sn) {
+    $result = $medoo->select("users", "*", ["internal_id" => $sn]);
   }
 
   if (empty($result)) {

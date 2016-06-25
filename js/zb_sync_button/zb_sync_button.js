@@ -64,6 +64,7 @@ define('zb_sync_button/zb_sync_button',
               break;
             case 'class':
               utils.requestOneByOne([
+                  scope.check_serial_numbers,
                   scope.ensure_authenticated,
                   scope.sync_class
               ]).then(done);
@@ -727,6 +728,77 @@ define('zb_sync_button/zb_sync_button',
           };
           scope.cancel = function() {
             zbrpc.cancel();
+          };
+
+          scope.parse_serial_number = function(sn) {
+            var prefix, index;
+            var m = /(.+)-([0-9]+)/.exec(sn);
+            if (m && m[2]) {
+              prefix = m[1] + '-';
+              index = parseInt(m[2]);
+            } else {
+              m = /([0-9]+)$/.exec(sn);
+              if (!m || !m[1]) return null;
+
+              index = parseInt(m[1]);
+              prefix = sn.substring(0, sn.length - m[1].length);
+            }
+            
+            return {prefix: prefix, index: index};
+          };
+
+          scope.allocate_serial_number = function() {
+            var prefixes = {};
+            var maxIndexes = {};
+
+            utils.forEach(scope.users, function(user) {
+              var sn = scope.parse_serial_number(user.internal_id);
+              if (!sn) return;
+              
+              prefixes[sn.prefix] = (prefixes[sn.prefix] || 0) + 1;
+              maxIndexes[sn.prefix] =
+                  Math.max(maxIndexes[sn.prefix] || 0, sn.index);
+            });
+
+            var prefix;
+            var maxOccur = 0;
+            for (var key in prefixes) {
+              if (prefixes[key] > maxOccur) {
+                maxOccur = prefixes[key];
+                prefix = key;
+              }
+            }
+            
+            if (!prefix) {
+              prefix = {
+                  2: 'C',
+                  3: 'A',
+                  4: 'B'
+              }[scope.classInfo.department_id];
+              prefix += (scope.classInfo.start_year % 100) + '-06';
+            }
+            var index = (maxIndexes[prefix] || 0);
+            var nextSn = function() {
+              index++;
+              var sn = prefix + (index < 10 ? ('0' + index) : index);
+              return rpc.get_users(null, null, sn).then(function(response) {
+                return utils.isEmpty(response.data) ?
+                    (scope.sn = sn) : nextSn();
+              });
+            };
+            return nextSn();
+          };
+          scope.check_serial_numbers = function() {
+            var requests = [];
+            utils.forEach(scope.users, function(user) {
+              if (user.internal_id) return;
+              requests.push(scope.allocate_serial_number);
+              requests.push(function() {
+                user.internal_id = scope.sn;
+                return rpc.update_user(user);
+              });
+            });
+            return utils.requestOneByOne(requests);
           };
           scope.totalTasks = 0;
           scope.finished = 0;
