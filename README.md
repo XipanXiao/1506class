@@ -1,6 +1,6 @@
 # 1506class
 
-Database Design
+Database Design (out of date)
 ---------------
 [Database structure](https://docs.google.com/document/d/1SACT2kfJpqAU_GyAZNAFLb-LTRKl3gU1wRCzh0vSRVQ/edit?usp=sharing)
 
@@ -44,10 +44,12 @@ Fontend Overview
 ```
 
 
-Also [Polymer](https://www.polymer-project.org/1.0/) is used as the widget library.
+Also [Polymer](https://www.polymer-project.org/1.0/) is used as a widget library.
 
 ### Module management and custom directives
-[RequireJS](http://requirejs.org/) and [AngularJS](https://angularjs.org/) are used to define modules and separate the application to small pieces. So a typical directive (or componet if you prefer this name) looks like:
+[RequireJS](http://requirejs.org/) and [AngularJS](https://angularjs.org/) are used to define modules and separate the application to small pieces. However [RequireJS](http://requirejs.org/) is really not used since all JavaScript files are always combined to a single one to reduce HTTP requests. So every time a JavaScript file is modified please run 'aggregate.sh' to re-generate the combined single JavaScript file (admin.js or index.js).
+
+A typical directive (or component if you prefer this name) looks like:
 
 ```JavaScript
 define(['services'], function() {
@@ -105,10 +107,11 @@ Getting started to contribute
 extension=php_mysqli.dll
 extension=php_pdo_mysql.dll
 ```
+Export a 'sql' file from the server's [mysql admin page](/phpmyadmin/). Import to your local mysql database using any mysql client.
 3. Install a [github](https://github.com) client or command line tool.
 4. Install any IDE like [Eclipse](http://www.eclipse.org).
 5. Download the code using your github client, put it under your Apache's web home directory, e.g. '/Users/xipanxiao/Sites'.
-6. Find the 'data' directory from the root directory of the source code, rename 'config.php.template' to 'config.php', modify the MySQL connection information based on your setup. Rename 'create_users.php.template' to 'create_users.php'.
-7. Launch a browser and navigate to the path of 'reset.php'. e.g. 'http://localhost/~xipanxiao/1506class/cgi-bin/reset.php'. Input the answer to the question (It is setup in 'config.php' as 'pet') and submit. This will create the MySQL database for you. Then browse to the path of 'index.html', e.g. 'http://localhost/~xipanxiao/1506class/index.html'.
-8. Pick any open [issues](https://github.com/XipanXiao/1506class/issues) and start work on it.
-9. Create a 'pull request' using your github client. I'll be informed to review your submission.
+6. Find the 'data' directory from the root directory of the source code, find 'config.php', modify the MySQL connection information based on your setup.
+7. Run 'aggregate.sh' then browse to the path of 'index.html', e.g. 'http://localhost/~xipanxiao/buddcoursesdev/index.html'.
+8. Open [issues](https://github.com/XipanXiao/1506class/issues).
+9. Create a 'pull request' using your github client. Inform me to review your code.
