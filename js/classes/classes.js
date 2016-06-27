@@ -10,8 +10,14 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
           permission: '@'
         },
         link: function($scope) {
+          $scope.initUser = function() {
+            return rpc.get_user().then(function(user) {
+              return perm.user = user;
+            });
+          };
+
           $scope.reload = function() {
-            rpc.get_classes().then(function(response) {
+            return rpc.get_classes().then(function(response) {
               $scope.showImportDialog = false;
               var classes = utils.where(response.data, function(info) {
                 return perm.canWrite(info);
@@ -40,10 +46,11 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
               };
   
               $scope.yearChanged();
+              return true;
             });
           };
           
-          $scope.reload();
+          utils.requestOneByOne([$scope.initUser, $scope.reload]);
 
           $scope.select = function (id) {
             var classInfo = $scope.classes[id];
