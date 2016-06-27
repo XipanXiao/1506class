@@ -14,5 +14,13 @@
 		"pet": "buzhanguo",
 		"session_path": "${OPENSHIFT_TMP_DIR}"
 	},
+        "buddcourses-bicwdev.rhcloud.com": {
+                "servername": "${OPENSHIFT_MYSQL_DB_HOST}",
+                "username": "${OPENSHIFT_MYSQL_DB_USERNAME}",
+                "password": "${OPENSHIFT_MYSQL_DB_PASSWORD}",
+                "dbname": "buddcourses",
+                "pet": "buzhanguo",
+                "session_path": "${OPENSHIFT_TMP_DIR}"
+        },
 	"closing": "*/?>"
 }
