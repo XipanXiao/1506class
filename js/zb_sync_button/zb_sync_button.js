@@ -378,7 +378,7 @@ define('zb_sync_button/zb_sync_button',
             var requests = [];
             utils.forEach(scope.users, function(user) {
               var stats = user.guanxiuStats;
-              if (!stats || !stats.length) return;
+              if (utils.isEmpty(stats)) return;
               if (scope.checkUserTask(user, taskKey)) return;
 
               var record = scope.getTimedTaskRecords(stats,
