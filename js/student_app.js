@@ -12,6 +12,8 @@ define('student_app', ['app_bar/app_bar', 'setup_tasks/setup_tasks',
       .directive('body', function(perm, rpc) {
         return {
           link: function($scope) {
+            $scope.pageLoaded = [];
+
             rpc.get_user().then(function(user) {
               $scope.user = user;
               perm.user = user;
@@ -19,6 +21,16 @@ define('student_app', ['app_bar/app_bar', 'setup_tasks/setup_tasks',
               $scope.isFirstClass = function() {
                 return user.classInfo && user.classInfo.department_id == 1;
               };
+            });
+
+            var pages = document.querySelector('iron-pages');
+            var tabs = document.querySelector('paper-tabs');
+       
+            tabs.addEventListener('iron-select', function() { 
+              $scope.pageLoaded[pages.selected = tabs.selected] = true;
+              setTimeout(function() {
+                $scope.$apply();
+              }, 0);
             });
           }
         };
