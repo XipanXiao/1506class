@@ -131,6 +131,11 @@
           </label>
         </div>
         <div class="css-table-cell">
+          <label>
+            <input type="checkbox" ng-model="user.enroll_tasks" bit-index="7"
+                ng-change="save('enroll_tasks')" ng-disabled="!admining">
+            是否自学
+          </label>
         </div>          
       </div>
     </div>
