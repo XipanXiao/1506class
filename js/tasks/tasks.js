@@ -7,15 +7,16 @@ define('tasks/tasks', ['progress_bar/progress_bar', 'services', 'utils'],
           departmentId: '@'
         },
         link: function($scope) {
-          $scope.$watch('departmentId', function() {
-            if (!$scope.departmentId) return;
+          $scope.$watch('departmentId', $scope.loadTasks);
+
+          $scope.loadTasks = function() {
+            if (!$scope.departmentId || !$scope.half_term) return;
 
             rpc.get_tasks($scope.departmentId).then(function(response) {
               $scope.tasks = [];
               
               angular.forEach(response.data, function(task) {
-                if ($scope.half_term &&
-                    $scope.half_term < task.starting_half_term) return;
+                if ($scope.half_term < task.starting_half_term) return;
 
                 task = angular.copy(task);
                 rpc.get_last_task_record(task.id).then(function(response) {
@@ -34,7 +35,7 @@ define('tasks/tasks', ['progress_bar/progress_bar', 'services', 'utils'],
               });
               $scope.isNotEmpty = !utils.isEmpty($scope.tasks);
             });
-          });
+          };
               
           $scope.reportTask = function(task) {
             var data = {
@@ -69,15 +70,9 @@ define('tasks/tasks', ['progress_bar/progress_bar', 'services', 'utils'],
           $scope.toLocalTime = function(uts) {
             return utils.toDateTime(uts).toLocaleString();
           };
-          $scope.filterTasks = function(tasks) {
-            if (!$scope.half_term) return tasks;
-            return utils.where(tasks, function(task) {
-              return $scope.half_term >= task.starting_half_term;
-            });
-          };
           $scope.$on('set-half-term', function(event, half_term) {
             $scope.half_term = half_term;
-            $scope.tasks = $scope.filterTasks($scope.tasks);
+            $scope.loadTasks();
           });
           $scope.tasks = [];
         },
