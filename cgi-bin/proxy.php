@@ -3,18 +3,9 @@ include_once 'config.php';
 include_once "datatype.php";
 include_once 'permission.php';
 
-if (!function_exists('http_parse_cookies')) {
-    function http_parse_cookies($raw_headers) {
-      preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $raw_headers, $matches);
-
-      $cookies = array();
-      foreach($matches[1] as $item) {
-        parse_str($item, $cookie);
-        $cookies = array_merge($cookies, $cookie);
-      }
-      
-      return $cookies;
-    }
+if (empty($config->zbServiceUrl)) {
+  echo '{"error": "Proxy disabled"}';
+  exit();
 }
 
 if (empty($_SESSION["user"])) {
@@ -26,6 +17,20 @@ if (empty($_SESSION["user"])) {
     echo '{"error": "permission denied"}';
     return;
   }
+}
+
+if (!function_exists('http_parse_cookies')) {
+	function http_parse_cookies($raw_headers) {
+		preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $raw_headers, $matches);
+
+		$cookies = array();
+		foreach($matches[1] as $item) {
+			parse_str($item, $cookie);
+			$cookies = array_merge($cookies, $cookie);
+		}
+
+		return $cookies;
+	}
 }
 
 $ch = null;
@@ -68,6 +73,7 @@ try {
   	exit();
   }
 
+  $url = str_replace("zbServiceUrl", $config->zbServiceUrl, $url);
   curl_setopt($ch, CURLOPT_URL, $url);
   curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
 

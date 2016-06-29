@@ -3,7 +3,7 @@ define('zb_services', ['utils'], function() {
   // All requests are proxied (crossing domain ajax).
   var proxyUrl = 'cgi-bin/proxy.php';
   var redirectUrl = 'cgi-bin/redirect.php';
-  var serviceUrl = 'http://db.zhibeifw.com:8888/zb';
+  var serviceUrl = 'zbServiceUrl';
   
   function get_proxied_url(url) {
     return proxyUrl + '?url=' + encodeURIComponent(url);
