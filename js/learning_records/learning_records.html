@@ -18,10 +18,8 @@
 	          class="css-table-cell">
 	        <div ng-switch="attendence">
 	          <div ng-switch-when="true">
-	            <select ng-options="attendOptions[value] for value in [0, 1, 2]"
-	                ng-model="user.records[schedule.course_id].attended"
+	            <input type="checkbox" ng-model="user.records[schedule.course_id].attended"
 	                ng-change="reportTask(user, schedule.course_id)">
-	            </select>
 	          </div>
 	          <div ng-switch-default>
 	            <input type="checkbox" ng-model="user.records[schedule.course_id].video" title="听传承"

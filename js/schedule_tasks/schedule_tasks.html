@@ -22,11 +22,9 @@
         <div class="css-table-cell">{{users[schedule.review].name}}</div>
         <div class="css-table-cell">{{users[schedule.open].name}}</div>
         <div class="css-table-cell">
-          <select ng-options="attendOptions[value] for value in [0, 1, 2]"
-              ng-model="records[schedule.course_id].attended"
+          <input type="checkbox" ng-model="records[schedule.course_id].attended"
               ng-change="reportTask(schedule.course_id)"
               ng-if="!vacation(schedule)" ng-disabled="true">
-          </select>
         </div>
         <div class="css-table-cell">
           <input type="checkbox" ng-model="records[schedule.course_id].video"

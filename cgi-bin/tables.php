@@ -434,7 +434,7 @@ function report_task($user_id, $task_id, $sub_index, $count, $duration) {
 
 function convert_schedule_record($source, $string_to_int = false) {
   $target = [];
-  foreach (["video", "text"] as $task) {
+  foreach (["video", "text", "attended"] as $task) {
     if (isset($source[$task])) {
       if ($string_to_int) {
         $target[$task] = $source[$task] == "true" ? 1 : 0;
@@ -442,10 +442,6 @@ function convert_schedule_record($source, $string_to_int = false) {
         $target[$task] = $source[$task] == 1 ? true : false;
       }
     }
-  }
-  
-  if (isset($source["attended"])) {
-    $target["attended"] = intval($source["attended"]);
   }
 
   return $target;
