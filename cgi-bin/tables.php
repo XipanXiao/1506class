@@ -510,6 +510,12 @@ function get_schedules($classId, $records, $user_id) {
     $group["courses"] =
         keyed_by_id($medoo->select("courses", ["id", "name"],
             ["group_id" => $group["course_group"]]));
+    if (!empty($group["course_group2"])) {
+      $group["courses2"] =
+          keyed_by_id($medoo->select("courses", ["id", "name"],
+              ["group_id" => $group["course_group2"]]));
+    }
+
     $group["limited_courses"] =
         keyed_by_id($medoo->select("courses", ["id", "name"],
             ["group_id" => $group["limited_course_group"]]));
@@ -544,6 +550,10 @@ function update_schedule($schedule) {
       "group_id" => intval($schedule["group_id"])
   ];
   
+  if (!empty($schedule["course_id2"])) {
+    $datas["course_id2"] = intval($schedule["course_id2"]);
+  }
+  
   $id = $schedule["id"];
   if ($id == 0) {
     return $medoo->insert("schedules", $datas);
@@ -556,7 +566,8 @@ function update_schedule_group($group) {
   global $medoo;
 
   $datas = [];
-  $fields = ["classId", "course_group", "term", "limited_course_group"];
+  $fields = ["classId", "course_group", "course_group2", "term",
+      "limited_course_group"];
   foreach ($fields as $field) {
     if (!empty($group[$field])) {
       $datas[$field] = $group[$field];
