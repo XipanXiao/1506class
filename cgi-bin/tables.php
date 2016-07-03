@@ -447,20 +447,35 @@ function convert_schedule_record($source, $string_to_int = false) {
   return $target;
 }
 
+/// Whether all fields in the array are all 0.
+function is_empty_data($datas, $fields) {
+  foreach ($fields as $field) {
+    if ($datas[$field]) return false;
+  }
+
+  return true;
+}
+
 function report_schedule_task($user_id, $schedule) {
   global $medoo;
   
   $course_id = intval($schedule["course_id"]);
   $datas = convert_schedule_record($schedule, true);
-  
-  $rows = $medoo->update("schedule_records", $datas, [
-    "AND" => ["course_id" => $course_id, "student_id" => $user_id]
-  ]);
-  
+
+  $table = "schedule_records";
+
+  $where = ["AND" => ["course_id" => $course_id, "student_id" => $user_id]];
+
+  if (is_empty_data($datas, ["video", "text", "attended"])) {
+    return $medoo->delete($table, $where);
+  }
+
+  $rows = $medoo->update($table, $datas, $where);
+
   if ($rows == 0) {
     $datas["student_id"] = $user_id;
     $datas["course_id"] = $course_id;
-    $rows = $medoo->insert("schedule_records", $datas);
+    $rows = $medoo->insert($table, $datas);
   }
   
   return $rows;
