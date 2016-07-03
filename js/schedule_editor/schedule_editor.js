@@ -53,8 +53,8 @@ define('schedule_editor/schedule_editor',
                 group.editing = true;
               };
               $scope.removeGroup = function(group) {
-                var message = 'Are you sure to remove this group {0}?'.
-                    format(group.name);
+                var message = 'Are you sure to remove this term {0}?'.
+                    format(group.term);
                 if (!window.confirm(message)) return;
 
                 rpc.remove_schedule_group(group.id).then(function(response) {

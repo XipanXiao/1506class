@@ -2,7 +2,7 @@
 
 <div ng-repeat="group in schedule_groups" class="padded-element">
   <div class="center">
-    <h2>{{group.name}}</h2>
+    <h2>第{{group.term || '?'}}学期</h2>
     <iron-icon icon="editor:border-color" title="编辑" ng-click="editGroup(group)" class="selectable">
     </iron-icon>
     <iron-icon icon="icons:delete" title="删除" ng-click="removeGroup(group)" class="selectable"

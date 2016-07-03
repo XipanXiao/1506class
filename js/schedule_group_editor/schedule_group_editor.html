@@ -5,10 +5,9 @@
     </course-groups>
   </div>
   <div>
-    名称：<editable-label value="group.name"></editable-label>
+    开始时间：<editable-label type="datetime" value="group.start_time"></editable-label>
     总第<select ng-options="value for value in terms" ng-model="group.term"></select>学期
   </div>
-  <div>开始时间：<editable-label type="datetime" value="group.start_time"></editable-label></div>
   <div>限制性课程：
     <course-groups group-id="group.limited_course_group" class="inline"
         on-change="limitedGroupChange(courses)">

@@ -556,7 +556,7 @@ function update_schedule_group($group) {
   global $medoo;
 
   $datas = [];
-  $fields = ["classId", "course_group", "name", "term", "limited_course_group"];
+  $fields = ["classId", "course_group", "term", "limited_course_group"];
   foreach ($fields as $field) {
     if (!empty($group[$field])) {
       $datas[$field] = $group[$field];
