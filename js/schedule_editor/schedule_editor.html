@@ -29,6 +29,7 @@
       <div class="css-table-cell">{{getWeeklyTime(group, $index)}}</div>
       <div class="css-table-cell">
         {{group.courses[schedule.course_id].name}}
+        {{schedule.course_id2 ? '/ ' + group.courses[schedule.course_id2].name : ''}}
       </div>
       <div class="css-table-cell">
         <user-picker ng-if="schedule.id && !vacation(schedule)" user-id="schedule.review"

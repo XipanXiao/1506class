@@ -4,6 +4,11 @@
         on-change="courseGroupChanged(courses)">
     </course-groups>
   </div>
+  <div>课程2(可选)：
+    <course-groups group-id="group.course_group2" class="inline"
+        on-change="courseGroupChanged(courses, true)">
+    </course-groups>
+  </div>
   <div>
     开始时间：<editable-label type="datetime" value="group.start_time"></editable-label>
     总第<select ng-options="value for value in terms" ng-model="group.term"></select>学期
