@@ -1,52 +1,67 @@
 <div class="learning-groups">
 	<div ng-repeat="group in schedule_groups" class="section">
 	  <h3 class="inline table-title">第{{group.term}}学期</h3>
-	  <zb-sync-button ng-if="!attendence" type="schedule_task" users="users"
-	      class-id="classId" schedule-group="group">
-	  </zb-sync-button>
-	  <div class="css-table odd-even">
-	    <div class="css-table-row header">
-	      <div ng-if="group.schedules" class="css-table-cell name-field"></div>
-	      <div ng-repeat="schedule in group.schedules" ng-if="!vacation(schedule)"
-	          class="css-table-cell">
-	        {{group.courses[schedule.course_id].name}}
-	      </div>
+	  <div ng-switch="attendence">
+	    <div ng-switch-when="true">
+        <div class="css-table odd-even">
+          <div class="css-table-row header">
+            <div ng-if="group.schedules" class="css-table-cell name-field"></div>
+            <div ng-repeat="schedule in group.schedules" ng-if="!vacation(schedule)"
+                class="css-table-cell">
+              {{group.courses[schedule.course_id].name}}
+            </div>
+          </div>
+          <div ng-repeat="user in users" class="css-table-row">
+            <div class="css-table-cell name-field">{{user.name}}</div>
+            <div ng-repeat="schedule in group.schedules" ng-if="!vacation(schedule)"
+                class="css-table-cell">
+              <input type="checkbox" ng-model="user.records[schedule.course_id].attended"
+                  ng-change="reportTask(user, schedule.course_id)">
+            </div>
+          </div>
+        </div>
 	    </div>
-	    <div ng-repeat="user in users" class="css-table-row">
-	      <div class="css-table-cell name-field">{{user.name}}</div>
-	      <div ng-repeat="schedule in group.schedules" ng-if="!vacation(schedule)"
-	          class="css-table-cell">
-	        <div ng-switch="attendence">
-	          <div ng-switch-when="true">
-	            <input type="checkbox" ng-model="user.records[schedule.course_id].attended"
-	                ng-change="reportTask(user, schedule.course_id)">
-	          </div>
-	          <div ng-switch-default>
-	            <input type="checkbox" ng-model="user.records[schedule.course_id].video" title="听传承"
-	              ng-click="reportTask(user, schedule.course_id)">
-	            <input type="checkbox" ng-model="user.records[schedule.course_id].text" title="读法本"
-	              ng-click="reportTask(user, schedule.course_id)">
-	          </div>
-	        </div>
-	      </div>
+	    <div ng-switch-default>
+		    <zb-sync-button type="schedule_task" users="users" class-id="classId"
+		        schedule-group="group">
+		    </zb-sync-button>
+		    <div class="css-table odd-even">
+		      <div class="css-table-row header">
+		        <div ng-if="group.schedules" class="css-table-cell name-field"></div>
+		        <div ng-repeat="schedule in group.schedules" ng-if="!vacation(schedule)"
+		            class="css-table-cell">
+		          {{group.courses[schedule.course_id].name}}
+		        </div>
+		      </div>
+		      <div ng-repeat="user in users" class="css-table-row">
+		        <div class="css-table-cell name-field">{{user.name}}</div>
+		        <div ng-repeat="schedule in group.schedules" ng-if="!vacation(schedule)"
+		            class="css-table-cell">
+              <input type="checkbox" ng-model="user.records[schedule.course_id].video" title="听传承"
+                ng-click="reportTask(user, schedule.course_id)">
+              <input type="checkbox" ng-model="user.records[schedule.course_id].text" title="读法本"
+                ng-click="reportTask(user, schedule.course_id)">
+		        </div>
+		      </div>
+		    </div>
+		    <div class="css-table odd-even">
+		      <div class="css-table-row header">
+		        <div ng-if="group.limited_courses" class="css-table-cell name-field"></div>
+		        <div ng-repeat="course in group.limited_courses" class="css-table-cell">
+		          {{course.name}}
+		        </div>
+		      </div>
+		      <div ng-repeat="user in users" class="css-table-row">
+		        <div class="css-table-cell name-field">{{user.name}}</div>
+		        <div ng-repeat="course in group.limited_courses" class="css-table-cell">
+		          <input type="checkbox" ng-model="user.records[course.id].video" title="听传承"
+		            ng-click="reportTask(user, course.id)">
+		          <input type="checkbox" ng-model="user.records[course.id].text" title="读法本"
+		            ng-click="reportTask(user, course.id)">
+		        </div>
+		      </div>
+		    </div>
 	    </div>
 	  </div>
-    <div ng-if="!attendence" class="css-table odd-even">
-      <div class="css-table-row header">
-        <div ng-if="group.limited_courses" class="css-table-cell name-field"></div>
-        <div ng-repeat="course in group.limited_courses" class="css-table-cell">
-          {{course.name}}
-        </div>
-      </div>
-      <div ng-repeat="user in users" class="css-table-row">
-        <div class="css-table-cell name-field">{{user.name}}</div>
-        <div ng-repeat="course in group.limited_courses" class="css-table-cell">
-          <input type="checkbox" ng-model="user.records[course.id].video" title="听传承"
-            ng-click="reportTask(user, course.id)">
-          <input type="checkbox" ng-model="user.records[course.id].text" title="读法本"
-            ng-click="reportTask(user, course.id)">
-        </div>
-      </div>
-    </div>
 	</div>
 </div>
