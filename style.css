@@ -468,3 +468,7 @@ paper-dialog#new-user-dlg {
 .table-title {
   padding: 0 32px;
 }
+
+.learning-record-cell {
+  vertical-align: middle;
+}
