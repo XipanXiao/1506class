@@ -472,3 +472,7 @@ paper-dialog#new-user-dlg {
 .learning-record-cell {
   vertical-align: middle;
 }
+
+.wide-schedule-table {
+  width: 900px;
+}
