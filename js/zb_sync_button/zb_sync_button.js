@@ -71,29 +71,28 @@ define('zb_sync_button/zb_sync_button',
               break;
             }
           };
+          scope.getCourseRecord = function(user, course_id, audio, book) {
+            if (!parseInt(course_id)) return;
+
+            var record = user.records[course_id];
+            audio.push((record && record.video) ? 1 : 0);
+            book.push((record && record.text) ? 1 : 0);
+          };
           
           scope.getBookAudioRecords = function(lessons, user, limited) {
-            var index = 0;
             var group = scope.scheduleGroup;
             var audio = [];
             var book = [];
 
             if (limited) {
               utils.forEach(group.limited_courses, function(course) {
-                var record = user.records[course.id];
-                audio[index] = (record && record.video) ? 1 : 0;
-                book[index] = (record && record.text) ? 1 : 0;
-                index++;
+                scope.getCourseRecord(user, course.id, audio, book);
               });
             } else {
-              for (var id in group.schedules) {
-                var schedule = group.schedules[id];
-                if (!parseInt(schedule.course_id)) continue;
-                var record = user.records[schedule.course_id];
-                audio[index] = (record && record.video) ? 1 : 0;
-                book[index] = (record && record.text) ? 1 : 0;
-                index++;
-              }
+              utils.forEach(group.schedules, function(schedule) {
+                scope.getCourseRecord(user, schedule.course_id, audio, book);
+                scope.getCourseRecord(user, schedule.course_id2, audio, book);
+              });
             }
 
             var schedules = scope.get_report_lessons_count();

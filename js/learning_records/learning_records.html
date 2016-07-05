@@ -1,8 +1,8 @@
 <div class="learning-groups">
   <div ng-repeat="group in schedule_groups" class="section">
-    <h3 class="inline table-title">第{{group.term}}学期</h3>
     <div ng-switch="attendence">
       <div ng-switch-when="true">
+        <h3 class="inline table-title">第{{group.term}}学期</h3>
         <div class="css-table odd-even">
           <div class="css-table-row header">
             <div ng-if="group.schedules" class="css-table-cell name-field"></div>
@@ -26,6 +26,7 @@
         </div>
       </div>
       <div ng-switch-default>
+        <h3 class="inline table-title">第{{group.term}}学期</h3>
         <zb-sync-button type="schedule_task" users="users" class-id="classId"
             schedule-group="group">
         </zb-sync-button>
