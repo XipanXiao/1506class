@@ -17,8 +17,8 @@
       <div class="css-table-cell"><strong>周数</strong></div>
       <div class="css-table-cell"><strong>时间</strong></div>
       <div class="css-table-cell"><strong>上课内容</strong></div>
-      <div class="css-table-cell"><strong>总结</strong></div>
-      <div class="css-table-cell"><strong>串讲</strong></div>
+      <div class="css-table-cell"><strong>{{group.course_group2 ? '串讲' : '总结'}}</strong></div>
+      <div class="css-table-cell"><strong>串讲{{group.course_group2 ? '2' : ''}}</strong></div>
     </div>
   
     <div ng-repeat="schedule in group.schedules" class="css-table-row" id="{{schedule.id}}"
