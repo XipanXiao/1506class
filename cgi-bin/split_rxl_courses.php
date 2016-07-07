@@ -146,8 +146,9 @@ function fix_double_course_group($course_group) {
 	  	];
 
 		  echo 'inserting new course: '. $course["name"] . " to group " .
-		      $course["group_id"] . "<br>"; 
-		  if (empty($course = update_course($course))) {
+		      $course["group_id"] . "<br>";
+		  $course = update_course($course);
+		  if (empty($course)) {
 		    echo "Failed to create course: " . $course["id"] . " " .
 			    	$course["name"] . "<br>";
 		    return;
