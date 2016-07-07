@@ -88,7 +88,7 @@ define('schedule_group_editor/schedule_group_editor',
                 var courseIndex = 0;
                 var schedule_id = 0;
                 var group = scope.group;
-                var weeks = Math.max(course_ids.length, 25);
+                var weeks = course_ids.length > 10 ? 25 : course_ids.length;
                 
                 if (group.schedules && utils.keys(group.schedules).length) {
                   // Modifying existing schedules.
@@ -109,14 +109,7 @@ define('schedule_group_editor/schedule_group_editor',
                 // Appending new schedules.
                 for (; week < weeks; week++) {
                   var courseId = 0;
-                  var holiday = utils.isHolidayWeek(group.start_time, week);
-                  if (holiday) {
-                    // Don't append a holiday at the end.
-                    if (week == weeks - 1) break;
-                  } else {
-                    courseId = course_ids[courseIndex++];
-                    if (!courseId) break;
-                  }
+                  courseId = course_ids[courseIndex++] || 0;
 
                   var schedule = {
                     id: 0,
@@ -124,7 +117,7 @@ define('schedule_group_editor/schedule_group_editor',
                     group_id: group.id
                   };
                   if (hasSecondCourse) {
-                    schedule.course_id2 = course_ids[courseIndex++];
+                    schedule.course_id2 = course_ids[courseIndex++] || 0;
                   }
                   group.schedules[schedule_id] = schedule;
                   schedule_id++;
