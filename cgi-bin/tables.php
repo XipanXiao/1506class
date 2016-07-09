@@ -152,10 +152,12 @@ function get_classes($classId) {
   global $medoo;
   
   $int_fields = ["id", "department_id", "teacher_id", "start_year",
-      "perm_level", "weekday"];
+      "perm_level", "weekday", "zb_id"];
   $classes = keyed_by_id($medoo->select("classes", "*",
       $classId ? ["id" => $classId] : null));
   foreach ($classes as $id => $classInfo) {
+    $classInfo["self_report"] = isset($classInfo["self_report"])
+        && intval($classInfo["self_report"]) == 1;
     $classes[$id] = convert_int_fields($classInfo, $int_fields);
   }
   return $classes;
@@ -187,6 +189,10 @@ function update_class($classInfo) {
     if (isset($classInfo[$field])) {
       $datas[$field] = $classInfo[$field];
     }
+  }
+
+  if (isset($classInfo["self_report"])) {
+    $datas["self_report"] = $classInfo["self_report"] == "true" ? 1 : 0;
   }
   
   $id = intval($classInfo["id"]);
@@ -543,17 +549,15 @@ function get_schedules($classId, $records, $user_id) {
 
 function update_schedule($schedule) {
   global $medoo;
-  
-  $datas = ["open" => intval($schedule["open"]),
-      "review" => intval($schedule["review"]),
-      "course_id" => intval($schedule["course_id"]),
-      "group_id" => intval($schedule["group_id"])
-  ];
-  
-  if (!empty($schedule["course_id2"])) {
-    $datas["course_id2"] = intval($schedule["course_id2"]);
+
+  $datas = [];
+  $int_fields = ["course_id", "course_id2", "group_id", "open", "review"];
+  foreach ($int_fields as $field) {
+    if (isset($schedule[$field])) {
+      $datas[$field] = intval($schedule[$field]);
+    }
   }
-  
+
   $id = $schedule["id"];
   if ($id == 0) {
     return $medoo->insert("schedules", $datas);

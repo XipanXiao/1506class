@@ -42,8 +42,8 @@
 	  </label>
 	</div>
   <div class="padded-element">
-    智悲id: 
-    <a href="{{zbUrl}}" target="_blank">{{classInfo.zb_id}}</a>
+    允许学员自报考勤 
+    <input type="checkbox" ng-model="classInfo.self_report">
   </div>
   <iron-icon icon="icons:delete" title="删除" ng-click="remove()" class="selectable padded-element"
       ng-if="classInfo.id">

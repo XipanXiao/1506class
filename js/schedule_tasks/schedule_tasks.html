@@ -49,7 +49,7 @@
         <div class="css-table-cell">
           <input type="checkbox" ng-model="records[schedule.course_id].attended"
               ng-change="reportTask(schedule.course_id)"
-              ng-if="!vacation(schedule)" ng-disabled="true">
+              ng-if="!vacation(schedule)" ng-disabled="!user.classInfo.self_report">
         </div>
       </div>
     </div>

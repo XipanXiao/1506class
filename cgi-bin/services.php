@@ -62,6 +62,9 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         $response = null;
       }
     } else {
+      $user = current(get_users($user->email));
+      // Refresh the session user data every time the user access the home page.
+      $_SESSION["user"] = serialize($user);
       $response = $user;
     }
   } elseif ($resource_id == "learning_records" && !empty($_GET["classId"])) {
