@@ -360,7 +360,8 @@ define('importers', ['permission', 'services', 'utils'], function() {
             '学号',
             '法名',
             '微信',
-            '是否愿意发心工作'
+            '是否愿意发心工作',
+            '注册时间'
           ];
           var exportUser = function(user, className) {
             utils.setCountryLabels(user);
@@ -393,7 +394,8 @@ define('importers', ['permission', 'services', 'utils'], function() {
               (user.internal_id || '') + delimiter +
               (user.nickname || '') + delimiter +
               (user.im || '') + delimiter +
-              utils.getDisplayLabel(user, 'volunteer');
+              utils.getDisplayLabel(user, 'volunteer') + delimiter +
+              user.ts
           };
           var createDataUrl = function(data, file) {
             data = new Blob([data], {type: 'text/plain'});
