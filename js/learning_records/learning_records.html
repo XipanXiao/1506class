@@ -20,6 +20,7 @@
             <div ng-repeat="schedule in group.schedules" ng-if="!vacation(schedule)"
                 class="css-table-cell">
               <input type="checkbox" ng-model="user.records[schedule.course_id].attended"
+                  title="{{user.name + '/' + group.courses[schedule.course_id].name}}"
                   ng-change="reportTask(user, schedule.course_id)">
             </div>
           </div>
