@@ -11,10 +11,7 @@ function try_backup() {
     if (time() - $timestamp < 3600*24) return null;
   }
   
-  $command = "mysqldump -u $OPENSHIFT_MYSQL_DB_USERNAME ". 
-      "-h $OPENSHIFT_MYSQL_DB_HOST -p $OPENSHIFT_MYSQL_DB_PASSWORD ". 
-      "buddcourses --default-character-set=utf8 --result-file=".
-      $filename;
+  $command = $dir. "/../repo/backup.sh ". $filename; 
   return exec($command);
 }
 ?>
