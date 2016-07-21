@@ -4,6 +4,7 @@ include_once "connection.php";
 include_once "tables.php";
 include_once "util.php";
 include_once 'permission.php';
+include_once 'backup.php';
 
 if(!empty($_POST["email"])) {
   $password = 
@@ -25,6 +26,7 @@ if(!empty($_POST["email"])) {
     $page = isAdmin($user) ? "admin.html" : "index.html";
     client_redirect("../" . $page, 1,
         "Authenticated successfully, redirecting...");
+    try_backup();
   } else {
     echo "<h1>Error</h1>";
     echo "<p>Sorry, your account could not be found.".
