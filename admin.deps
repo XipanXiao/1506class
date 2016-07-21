@@ -24,6 +24,7 @@ js/new_user_dialog/new_user_dialog.js
 js/user_editor/user_editor.js
 js/zb_sync_button/zb_sync_button.js
 js/users/users.js
+js/navigate_bar/navigate_bar.js
 js/learning_records/learning_records.js
 js/course_editor_dialog/course_editor_dialog.js
 js/course_groups/course_groups.js
