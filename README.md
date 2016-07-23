@@ -115,3 +115,6 @@ Export a 'sql' file from the server's [mysql admin page](/phpmyadmin/). Import t
 7. Run 'aggregate.sh' then browse to the path of 'index.html', e.g. 'http://localhost/~xipanxiao/buddcoursesdev/index.html'.
 8. Open [issues](https://github.com/XipanXiao/1506class/issues).
 9. Create a 'pull request' using your github client. Inform me to review your code.
+
+### Backup and restore
+The system automatically backups a snapshot of the database under ~/app-root/data everyday of the week. So there are 7 backups under that folder named like "buddcourses_[0-6].sql". The files are also copied to /tmp. Whenever you run "git push" to update the server the backups under ~/app-root/data will be deleted! Be sure to make a manual backup (export from phpmyadmin) before running "git push".
