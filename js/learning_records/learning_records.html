@@ -1,7 +1,7 @@
 <navigate-bar class="right padded-element" navigate="navigate(direction)"></navigate-bar>
 <div class="learning-groups">
   <div ng-repeat="group in schedule_groups">
-    <div ng-switch="attendence" ng-if="isCurrentGroup(group)" class="section">
+    <div ng-switch="attendence" class="section">
       <div ng-switch-when="true">
         <h3 class="inline table-title">第{{group.term}}学期</h3>
         <div class="css-table odd-even">

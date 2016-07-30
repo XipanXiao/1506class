@@ -499,14 +499,19 @@ function keyed_by_id($rows, $id_key = "id") {
   return $result;
 }
 
-function get_schedules($classId, $records, $user_id) {
+function get_schedules($classId, $term, $records, $user_id) {
   global $medoo;
   
   date_default_timezone_set("UTC");
+  
+  if (intval($term) == 0) {
+  	$term = $medoo->max("schedule_groups", "term", ["classId" => $classId]);
+  	if (!$term) return null;
+  }
 
   $schedule_groups =
       keyed_by_id($medoo->select("schedule_groups", "*",
-          ["classId" => $classId]));
+          ["AND" => ["classId" => $classId, "term" => $term]]));
 
   foreach ($schedule_groups as $group_id => $group) {
     $group["start_time"] = (new DateTime($group["start_time"]))->getTimestamp();

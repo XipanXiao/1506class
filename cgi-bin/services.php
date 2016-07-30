@@ -68,7 +68,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       $response = $user;
     }
   } elseif ($resource_id == "learning_records" && !empty($_GET["classId"])) {
-    $response = get_schedules($_GET["classId"], $_GET["records"], $user->id);
+    $response = get_schedules($_GET["classId"], $_GET["term"], $_GET["records"],
+        $user->id);
   } elseif ($resource_id == "search") {
     if (isSysAdmin($user)) {
       $response = search($_GET["prefix"]);

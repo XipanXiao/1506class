@@ -19,27 +19,33 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
               
               $scope.$watch('user', function() {
                 if (!$scope.user) return;
+                $scope.reload();
+              });
 
-                rpc.get_schedules($scope.user.classId, 'mine')
+              $scope.reload = function(term) {
+                rpc.get_schedules($scope.user.classId, term || 0, 'mine')
                     .then(function(response) {
+                  if (!$scope.setHalfTerm(response.data.groups)) return;
+
                   $scope.schedule_groups = response.data.groups;
                   $scope.users = response.data.users;
                   $scope.records = $scope.users[$scope.user.id].records;
-                  $scope.initCurrentTerm();
-                  $scope.setHalfTerm();
                 });
-              });
+              };
               
-              $scope.setHalfTerm = function() {
-                var lastSchedule = utils.last($scope.schedule_groups);
-                if (!lastSchedule) return;
-                var half_term = lastSchedule.term * 2;
+              $scope.setHalfTerm = function(groups) {
+                var lastSchedule = utils.last(groups);
+                if (!lastSchedule) return false;
+
+                $scope.term = lastSchedule.term;
+                var half_term = $scope.term * 2;
                 var midTerm = utils.getMidTerm(lastSchedule);
                 var now = utils.unixTimestamp(new Date());
                 if (now > midTerm) {
                   half_term++;
                 } 
                 $rootScope.$broadcast('set-half-term', half_term);
+                return true;
               };
               
               $scope.reportTask = function (course_id) {
@@ -48,60 +54,22 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                 rpc.report_schedule_task(record);
               };
               
-              /// Check whether the schedule group is in the time frame of the
-              /// current selected term.
-              $scope.isCurrentGroup = function(group) {
-                if (!$scope.currentTerm) return false;
-
-                var diff = utils.unixTimestamp($scope.currentTerm) -
-                  group.start_time;
-                // A group is considered in the time frame if its start time
-                // is within a 4 weeks interval of the start time of the term.
-                return Math.abs(diff) < 60 * 60 * 24 * 14;
-              };
-              
               $scope.navigate = function(direction) {
-                if (utils.isEmpty($scope.schedule_groups)) return;
-
-                var firstGroup, lastGroup;
+                var term = $scope.term;
                 switch (direction) {
-                case -2:
-                  firstGroup = utils.first($scope.schedule_groups);
-                  $scope.currentTerm = utils.toDateTime(firstGroup.start_time);
+                case 0:
+                case 2:
+                  term = 0;
                   break;
-                case +2:
-                  lastGroup = utils.last($scope.schedule_groups);
-                  $scope.currentTerm = utils.toDateTime(lastGroup.start_time);
-                  break;
+                case 1:
                 case -1:
-                  firstGroup = utils.first($scope.schedule_groups);
-                  if ($scope.isCurrentGroup(firstGroup)) break;
-  
-                  $scope.currentTerm =
-                    utils.nextTerm($scope.currentTerm, direction);
+                  term = $scope.term + direction;
                   break;
-                case +1:
-                  lastGroup = utils.last($scope.schedule_groups);
-                  if ($scope.isCurrentGroup(lastGroup)) break;
-
-                  $scope.currentTerm =
-                      utils.nextTerm($scope.currentTerm, direction);
+                case -2:
+                  term = 1;
                   break;
-                default:
-                  $scope.initCurrentTerm();
                 }
-              };
-              
-              $scope.initCurrentTerm = function() {
-                var date = utils.getDefaultStartTime();
-                $scope.currentTerm = utils.nextTerm(date, -1);
-
-                var current = function(group) {
-                  return $scope.isCurrentGroup(group);
-                };
-                if (!utils.any($scope.schedule_groups, current)) {
-                  $scope.navigate(2);
-                }
+                $scope.reload(term);
               };
               
               $scope.hasLimitedCourses = function(group) {

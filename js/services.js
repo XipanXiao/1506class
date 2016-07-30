@@ -127,9 +127,9 @@ define('services', [], function() {
       },
 
       // records: 'class', 'mine' or 'none'.
-      get_schedules: function(classId, records) {
-        var url = "{0}?rid=learning_records&classId={1}&records={2}".
-            format(serviceUrl, classId, records || 'none');
+      get_schedules: function(classId, term, records) {
+        var url = "{0}?rid=learning_records&classId={1}&term={2}&records={3}".
+            format(serviceUrl, classId, term, records || 'none');
         return $http.get(url);
       },
       

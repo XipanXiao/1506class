@@ -19,13 +19,20 @@ define('learning_records/learning_records', [
               };
 
               $scope.$watch('classId', function() {
-                rpc.get_schedules($scope.classId, 'class')
+                $scope.reload();
+              });
+              
+              $scope.reload = function(term) {
+                rpc.get_schedules($scope.classId, term || 0, 'class')
                     .then(function(response) {
+                  var group = utils.first(response.data.groups);
+                  if (!group) return;
+
+                  $scope.term = group.term;
                   $scope.schedule_groups = response.data.groups;
                   $scope.users = response.data.users;
-                  $scope.initCurrentTerm();
                 });
-              });
+              };
               
               $scope.reportTask = function(user, course_id) {
                 var record = user.records[course_id];
@@ -34,60 +41,22 @@ define('learning_records/learning_records', [
                 rpc.report_schedule_task(record);
               };
 
-              /// Check whether the schedule group is in the time frame of the
-              /// current selected term.
-              $scope.isCurrentGroup = function(group) {
-                if (!$scope.currentTerm) return false;
-
-                var diff = utils.unixTimestamp($scope.currentTerm) -
-                  group.start_time;
-                // A group is considered in the time frame if its start time
-                // is within a 4 weeks interval of the start time of the term.
-                return Math.abs(diff) < 60 * 60 * 24 * 14;
-              };
-              
               $scope.navigate = function(direction) {
-                if (utils.isEmpty($scope.schedule_groups)) return;
-
-                var firstGroup, lastGroup;
+                var term = $scope.term;
                 switch (direction) {
-                case -2:
-                  firstGroup = utils.first($scope.schedule_groups);
-                  $scope.currentTerm = utils.toDateTime(firstGroup.start_time);
+                case 0:
+                case 2:
+                  term = 0;
                   break;
-                case +2:
-                  lastGroup = utils.last($scope.schedule_groups);
-                  $scope.currentTerm = utils.toDateTime(lastGroup.start_time);
-                  break;
+                case 1:
                 case -1:
-                  firstGroup = utils.first($scope.schedule_groups);
-                  if ($scope.isCurrentGroup(firstGroup)) break;
-  
-                  $scope.currentTerm =
-                    utils.nextTerm($scope.currentTerm, direction);
+                  term = $scope.term + direction;
                   break;
-                case +1:
-                  lastGroup = utils.last($scope.schedule_groups);
-                  if ($scope.isCurrentGroup(lastGroup)) break;
-
-                  $scope.currentTerm =
-                      utils.nextTerm($scope.currentTerm, direction);
+                case -2:
+                  term = 1;
                   break;
-                default:
-                  $scope.initCurrentTerm();
                 }
-              };
-              
-              $scope.initCurrentTerm = function() {
-                var date = utils.getDefaultStartTime();
-                $scope.currentTerm = utils.nextTerm(date, -1);
-
-                var current = function(group) {
-                  return $scope.isCurrentGroup(group);
-                };
-                if (!utils.any($scope.schedule_groups, current)) {
-                  $scope.navigate(2);
-                }
+                $scope.reload(term);
               };
             },
             templateUrl : 'js/learning_records/learning_records.html'
