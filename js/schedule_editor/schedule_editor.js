@@ -32,7 +32,11 @@ define('schedule_editor/schedule_editor',
                   for (var id in response.data.users) {
                     $scope.users[id] = response.data.users[id].name;
                   }
-                  
+
+                  if (!$scope.schedule_groups) {
+                    $scope.schedule_groups = {};
+                  }
+
                   $scope.schedule_groups[0] = {
                     id: 0,
                     classId: $scope.classId,

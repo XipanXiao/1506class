@@ -14,6 +14,10 @@ define('schedule_group_editor/schedule_group_editor',
             },
             link: function(scope) {
               scope.saveGroup = function(group) {
+                if (!parseInt(group.term) || !parseInt(group.course_group)) {
+                  alert('请选择课程组和学期');
+                  return;
+                }
                 rpc.update_schedule_group(group).then(function(response) {
                   if (parseInt(response.data.updated)) {
                     group.editing = false;
