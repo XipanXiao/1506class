@@ -51,7 +51,17 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $sn = empty($_GET["sn"]) ? null : $_GET["sn"];
 
     if ($classId) {
-      if (isSysAdmin($user) || isClassLeader($user, $classId)) {
+    	$classInfo = null;
+    	if ($classId == $user->classId) {
+    		$classInfo = $user->classInfo;
+    	} else {
+    		$classes = get_classes($classId);
+    		if (!empty($classes)) {
+    		  $classInfo = $classes[$classId];
+    		}
+    	}
+
+      if ($classInfo && canRead($user, $classInfo)) {
         $response = get_users(null, $classId);
       }
     } elseif ($email || $sn) {

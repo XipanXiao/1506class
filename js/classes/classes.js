@@ -20,7 +20,7 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
             return rpc.get_classes().then(function(response) {
               $scope.showImportDialog = false;
               var classes = utils.where(response.data, function(info) {
-                return perm.canWrite(info);
+                return perm.canRead(info);
               });
               $scope.alumnis = utils.groupBy(classes, 'start_year');
               $scope.years =

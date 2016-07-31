@@ -7,14 +7,14 @@ define('permission', ['utils'], function() {
       ROLES: {
         STUDENT: 0x7,
         LEADER: 0xF,
-        TEACHER: 0x17,
+        YEAR_LEADER: 0x3F,
         INSPECTION: 0x55,
         ADMIN: 0xFF
       },
       permissions: {
         0xFF: '管理员',  //4: 11111111  rw all data
         0x55: '学院督查', //4: 01010101 r
-        0x17: '辅导员', //3: 010111    r class year data
+        0x3F: '年级组长', //3: 00111111    rw class year data
         0xF: '组长',    //2: 1111     rw class data
         0x7: '学员',    //2: 0111       rw own data, r class data
         0: '所有人'
@@ -25,8 +25,12 @@ define('permission', ['utils'], function() {
       },
       /// Class leaders (and below) should see only classes of the same year.
       checkClass: function(user, classInfo) {
-        return user.permission > this.ROLES.LEADER ||
+        return user.permission >= this.ROLES.LEADER &&
             user.classInfo.id == classInfo.id;
+      },
+      checkYear: function(user, classInfo) {
+        return user.permission >= this.ROLES.YEAR_LEADER &&
+            user.classInfo.start_year == classInfo.start_year;
       },
       canRead: function(classInfo) {
         if (!this.user) return false;
@@ -35,8 +39,12 @@ define('permission', ['utils'], function() {
           return true;
         }
 
-        return (this.user.permission >> ((classInfo.perm_level - 1) * 2)) &&
-            this.checkClass(this.user, classInfo);
+        var perm = this.user.permission >> ((classInfo.perm_level - 1) * 2);
+        if (!perm) return false;
+        
+        return this.checkClass(this.user, classInfo) ||
+            this.checkYear(this.user, classInfo) ||
+            this.isSysAdmin();
       },
       canWrite: function(classInfo) {
         if (!this.user) return false;
@@ -45,8 +53,12 @@ define('permission', ['utils'], function() {
           return true;
         }
 
-        return ((this.user.permission >> ((classInfo.perm_level - 1) * 2)) & 2)
-            && this.checkClass(this.user, classInfo);
+        var perm = this.user.permission >> ((classInfo.perm_level - 1) * 2);
+        if (!(perm & 2)) return false;
+        
+        return this.checkClass(this.user, classInfo) ||
+            this.checkYear(this.user, classInfo) ||
+            this.isSysAdmin();
       },
       level: function(permission) {
         var result = 0;
