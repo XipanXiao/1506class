@@ -34,6 +34,7 @@ define('permission', ['utils'], function() {
       },
       canRead: function(classInfo) {
         if (!this.user) return false;
+        if (this.isSysAdmin()) return true;
 
         if (classInfo.teacher_id == this.user.id || !classInfo.perm_level) {
           return true;
@@ -43,11 +44,11 @@ define('permission', ['utils'], function() {
         if (!perm) return false;
         
         return this.checkClass(this.user, classInfo) ||
-            this.checkYear(this.user, classInfo) ||
-            this.isSysAdmin();
+            this.checkYear(this.user, classInfo);
       },
       canWrite: function(classInfo) {
         if (!this.user) return false;
+        if (this.isSysAdmin()) return true;
 
         if (classInfo.teacher_id == this.user.id || !classInfo.perm_level) {
           return true;
@@ -57,8 +58,7 @@ define('permission', ['utils'], function() {
         if (!(perm & 2)) return false;
         
         return this.checkClass(this.user, classInfo) ||
-            this.checkYear(this.user, classInfo) ||
-            this.isSysAdmin();
+            this.checkYear(this.user, classInfo);
       },
       level: function(permission) {
         var result = 0;

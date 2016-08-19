@@ -14,6 +14,25 @@ if (empty($_SESSION["user"])) {
 
 $student_id = $user->id;
 
+function get_class_info($classId) {
+  global $user;
+  $classInfo = null;
+  if ($classId == $user->classId) {
+    $classInfo = $user->classInfo;
+  } else {
+    $classes = get_classes($classId);
+    if (!empty($classes)) {
+      $classInfo = $classes[$classId];
+    }
+  }
+  return $classInfo;
+}
+
+function canReadClass($classInfo) {
+  global $user;
+  return canRead($user, $classInfo);
+}
+
 if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   $resource_id = $_GET["rid"];
   $classId = empty($_GET["classId"]) ? $user->classId : $_GET["classId"];
@@ -21,11 +40,13 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   if ($resource_id == "departments") {
     $response = get_departments();
   } elseif ($resource_id == "classes") {
+    $classes = [];
     if (empty($_GET["classId"])) {
-      $response = get_classes(null);
+      $classes = get_classes(null);
     } else {
-      $response = get_classes($classId);
+      $classes = get_classes($classId);
     }
+    $response = array_filter($classes, "canReadClass");
   } elseif ($resource_id == "course_groups") {
     $response = get_course_groups($_GET["detailed"]);
   } elseif ($resource_id == "admins") {
@@ -51,15 +72,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $sn = empty($_GET["sn"]) ? null : $_GET["sn"];
 
     if ($classId) {
-    	$classInfo = null;
-    	if ($classId == $user->classId) {
-    		$classInfo = $user->classInfo;
-    	} else {
-    		$classes = get_classes($classId);
-    		if (!empty($classes)) {
-    		  $classInfo = $classes[$classId];
-    		}
-    	}
+      $classInfo = get_class_info($classId);
 
       if ($classInfo && canRead($user, $classInfo)) {
         $response = get_users(null, $classId);
@@ -78,8 +91,17 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       $response = $user;
     }
   } elseif ($resource_id == "learning_records" && !empty($_GET["classId"])) {
-    $response = get_schedules($_GET["classId"], $_GET["term"], $_GET["records"],
-        $user->id);
+    $whose = $_GET["records"];
+    if ($whose == "class") {
+      $classInfo = get_class_info($_GET["classId"]);
+      if (!canRead($user, $classInfo)) {
+        $response = ["error" => "permission denied."];
+      }
+    }
+    if (!$response) {
+      $response = get_schedules($_GET["classId"], $_GET["term"], $whose,
+          $user->id);
+    }
   } elseif ($resource_id == "search") {
     if (isSysAdmin($user)) {
       $response = search($_GET["prefix"]);
@@ -135,14 +157,14 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "course") {
     $response = update_course($_POST); 
   } elseif ($resource_id == "user") {
-    if (!isAdmin($user)) {
-      if (empty($_POST["id"]) || $user->id != $_POST["id"]) exit();
+    if (empty($_POST["id"])) exit();
+  	if (!isAdmin($user)) {
+      if ($user->id != $_POST["id"]) exit();
     } elseif (!isSysAdmin($user)) {
-      if (empty($_POST["id"])) exit();
-
       $userToUpdate = current(get_users(null, null, $_POST["id"]));
-      if (!$userToUpdate ||
-          !isClassLeader($user, $userToUpdate->classId)) exit();
+      if (!$userToUpdate) exit();
+      $classInfo = get_class_info($userToUpdate->classId);
+      if (!classInfo || !canWrite($user, $classInfo)) exit();
     }
     
     if (!empty($_POST["permission"]) &&
