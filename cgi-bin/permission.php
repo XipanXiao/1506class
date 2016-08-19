@@ -60,7 +60,7 @@ function checkDepartmentLevel($user, $classInfo) {
   $user_dep = $departments[$user_dep_id];
   $target_dep = $departments[$target_dep_id];
   
-  return $user_dep["level"] >= $target_dep["level"];
+  return $user_dep["level"] == $target_dep["level"];
 }
 
 ?>
