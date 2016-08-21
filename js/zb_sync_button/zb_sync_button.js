@@ -156,6 +156,7 @@ define('zb_sync_button/zb_sync_button',
           scope.getEndTerm = function() {
             var startDate = utils.toDateTime(scope.scheduleGroup.start_time);
             var endTerm = new Date(startDate.getTime());
+            // Each term lasts for 25 weeks.
             endTerm.setDate(startDate.getDate() + 7 * 25);
             return utils.unixTimestamp(endTerm);
           };
@@ -508,7 +509,11 @@ define('zb_sync_button/zb_sync_button',
             var requests = [];
             utils.forEach(scope.tasks, function(task) {
               requests.push(function() {
-                return scope.getTaskStats(task, start_time + extraReportTime,
+                // Is this the first time to report the [task]?
+                var isFirstTime = task.starting_half_term == scope.half_term; 
+                return scope.getTaskStats(task,
+                    // For first time reporting, do not skip the first 25 days.
+                    isFirstTime ? start_time : start_time + extraReportTime,
                     end_time + extraReportTime);
               });
             });
