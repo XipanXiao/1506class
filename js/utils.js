@@ -411,6 +411,15 @@ define('utils', [], function() {
         midTerm.setDate(startDate.getDate() + 7 * 12);
         return this.unixTimestamp(midTerm);
       },
+      /// Given a string [data], creates a data url.
+      ///
+      /// The previously created data url is stored in [file] and will be
+      /// destroyed.
+      createDataUrl: function(data, file) {
+        data = new Blob([data], {type: 'text/plain'});
+        if (file) window.URL.revokeObjectURL(file);
+        return file = window.URL.createObjectURL(data);
+      },
 
       // Index of bit in the user.enroll_tasks bits.
       // Indicating whether welcome letter is sent.

@@ -58,6 +58,29 @@ define('learning_records/learning_records', [
                 }
                 $scope.reload(term);
               };
+
+              $scope.export = function() {
+                var data = '';
+               utils.forEach($scope.schedule_groups, function(group) {
+                 utils.forEach(group.schedules, function(schedule) {
+                   if ($scope.vacation(schedule)) return;
+                   data += '\t' + group.courses[schedule.course_id].name + '\t';
+                 });
+                 data += '\n';
+                 utils.forEach($scope.users, function(user) {
+                   data += user.name;
+                   utils.forEach(group.schedules, function(schedule) {
+                     if ($scope.vacation(schedule)) return;
+                     var record = user.records[schedule.course_id];
+                     var video = (record && record.video) ? '' : '未听';
+                     var text = (record && record.text) ? '' : '未看';
+                     data += '\t' + video + '\t' + text;
+                   });
+                   data += '\n';
+                 });
+               });
+               $scope.exportedRecords = utils.createDataUrl(data, $scope.exportedRecords);
+              };
             },
             templateUrl : 'js/learning_records/learning_records.html'
           };
