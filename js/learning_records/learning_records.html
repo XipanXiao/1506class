@@ -32,7 +32,10 @@
         <iron-icon class="small-icon selectable" icon="cloud-download" title="导出" ng-click="export()">
         </iron-icon>
         <a ng-if="exportedRecords" href="{{exportedRecords}}" download="第{{group.term}}学期.txt">
-            第{{group.term}}学期.txt
+          第{{group.term}}学期.txt
+        </a>
+        <a ng-if="exportedRecords2" href="{{exportedRecords2}}" download="第{{group.term}}学期课程2.txt">
+          第{{group.term}}学期课程2.txt
         </a>
         &nbsp;&nbsp;
         <zb-sync-button type="schedule_task" users="users" class-id="classId"
