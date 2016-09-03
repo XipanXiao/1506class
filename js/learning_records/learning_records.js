@@ -61,44 +61,48 @@ define('learning_records/learning_records', [
 
               $scope.exportCourse = function(group, course_ids, secondary) {
                 var data = '';
-                 utils.forEach(course_ids, function(course_id) {
-                   data += '\t' + group.courses[course_id].name + '\t';
-                 });
-                 data += '\n';
-                 utils.forEach($scope.users, function(user) {
-                   data += user.name;
-                   utils.forEach(course_ids, function(course_id) {
-                     var record = user.records[course_id];
-                     var video = (record && record.video) ? '' : '未听';
-                     var text = (record && record.text) ? '' : '未看';
-                     data += '\t' + video + '\t' + text;
-                   });
-                   data += '\n';
-                 });
+                utils.forEach(course_ids, function(course_id) {
+                  data += '\t' + group.courses[course_id].name + '\t';
+                });
+                data += '\n';
+                utils.forEach($scope.users, function(user) {
+                  data += user.name;
+                  utils.forEach(course_ids, function(course_id) {
+                    var record = user.records[course_id];
+                    var video = (record && record.video) ? '' : '未听';
+                    var text = (record && record.text) ? '' : '未看';
+                    data += '\t' + video + '\t' + text;
+                  });
+                  data += '\n';
+                });
                 if (secondary) {
-                  $scope.exportedRecords2 = utils.createDataUrl(data, $scope.exportedRecords2);
+                  $scope.exportedRecords2 = utils.createDataUrl(data,
+                      $scope.exportedRecords2);
                 } else {
-                  $scope.exportedRecords = utils.createDataUrl(data, $scope.exportedRecords);
+                  $scope.exportedRecords = utils.createDataUrl(data,
+                      $scope.exportedRecords);
                 }
               };
-               $scope.getCourses = function(group, secondary) {
-                 var isNotVacation = function(schedule) {
-                   return !$scope.vacation(schedule);
-                 };
-                 var getCourseId = function(schedule) {
-                   return secondary && schedule.course_id2 || schedule.course_id;
-                 };
-                 return utils.map(utils.where(group.schedules, isNotVacation), getCourseId);
-               };
-               $scope.export = function() {
-                 utils.forEach($scope.schedule_groups, function(group) {
-                   var course_ids = $scope.getCourses(group);
-                   $scope.exportCourse(group, course_ids);
-                   if (!parseInt(group.course_group2)) return;
-                   var course_ids2 = $scope.getCourses(group, true);
-                   $scope.exportCourse(group, course_ids2, true);
-                 });
-               };
+              $scope.getCourses = function(group, secondary) {
+                var isNotVacation = function(schedule) {
+                  return !$scope.vacation(schedule);
+                };
+                var getCourseId = function(schedule) {
+                  return secondary && schedule.course_id2 || schedule.course_id;
+                };
+                return utils.map(utils.where(group.schedules, isNotVacation),
+                    getCourseId);
+              };
+              $scope.export = function() {
+                utils.forEach($scope.schedule_groups, function(group) {
+                  var course_ids = $scope.getCourses(group);
+                  $scope.exportCourse(group, course_ids);
+                  if (!parseInt(group.course_group2))
+                    return;
+                  var course_ids2 = $scope.getCourses(group, true);
+                  $scope.exportCourse(group, course_ids2, true);
+                });
+              };
             },
             templateUrl : 'js/learning_records/learning_records.html'
           };
