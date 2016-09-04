@@ -520,10 +520,9 @@ define('zb_sync_button/zb_sync_button',
 
             var startTerm =
                 utils.roundToDefaultStartTime(scope.scheduleGroup.start_time);
-            var midTerm = utils.getMidTerm(scope.scheduleGroup);
+            var midTerm = utils.getMidTerm(scope.scheduleGroup) +
+                extraReportTime;
             var endTerm = utils.roundToDefaultStartTime(scope.getEndTerm());
-            var start_time = fistHalf ? startTerm : midTerm;
-            var end_time = fistHalf ? midTerm : endTerm;
 
             var requests = [];
             utils.forEach(scope.tasks, function(task) {
@@ -533,8 +532,11 @@ define('zb_sync_button/zb_sync_button',
                 var isFirstTime = task.starting_half_term == scope.half_term;
                 var start_cut_time = scope.lastReportTime ||
                     (isFirstTime ? startTerm : (start_time + extraReportTime));
-                return scope.getTaskStats(task, start_cut_time,
-                    end_time + extraReportTime);
+                var end_cut_time = scope.scheduleGroup.end_time ||
+                    endTerm + extraReportTime;
+                var start_time = fistHalf ? start_cut_time : midTerm;
+                var end_time = fistHalf ? midTerm : end_cut_time;
+                return scope.getTaskStats(task, start_time, end_time);
               });
             });
             return utils.requestOneByOne(requests);
@@ -640,7 +642,7 @@ define('zb_sync_button/zb_sync_button',
                 requests.push(request);
               });
               scope.totalTasks += requests.length;
-              scope.statusText = '正在推送用户信息...';
+              scope.statusText = '正在上报用户信息...';
 
               return utils.requestOneByOne(requests).then(function() {
                 if (!scope.userCreated) return true;
