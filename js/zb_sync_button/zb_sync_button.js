@@ -152,7 +152,9 @@ define('zb_sync_button/zb_sync_button',
             }
             return [first, second];
           };
-          
+
+          /// Returns the date after 7*25 days of the start time of the current
+          /// schedule group.
           scope.getEndTerm = function() {
             var startDate = utils.toDateTime(scope.scheduleGroup.start_time);
             var endTerm = new Date(startDate.getTime());
@@ -491,16 +493,33 @@ define('zb_sync_button/zb_sync_button',
                   return true; 
                 });
           };
-          
+
+          /// Retrieves the last reporting time that was stored at the
+          /// 'end_time' field for a schedule group.
+          scope.getLastReportTime = function() {
+            scope.lastReportTime = 0;
+
+            return rpc.get_schedules(scope.classId,
+                scope.scheduleGroup.term - 1).then(function(response) {
+              var group = utils.first(response.data.groups);
+              scope.lastReportTime = group && group.end_time;
+              return true;
+            });
+          };
+
+          /// Collects all task reports since last report.
+          ///
+          /// By default if there is no special reason the time is cut between
+          /// dates like 06/16 00:00:00 and 12/16 00:00:00. Otherwise if a
+          /// special time is previously cut (and saved), use that time.
           scope.getAllTaskStats = function() {
             var fistHalf = scope.half_term % 2 == 0;
-            // A lot of people were not able to report their first Dingli
-            // task in time. Add this extra 25 days to avoid a zero number
-            // for the first report.
-            var extraReportTime = 3600 * 24 * 25;
+            // A lot of people were not able to report their tasks
+            // in time. Add this extra 15 days to avoid a zero number.
+            var extraReportTime = 3600 * 24 * 15;
 
             var startTerm =
-              utils.roundToDefaultStartTime(scope.scheduleGroup.start_time);
+                utils.roundToDefaultStartTime(scope.scheduleGroup.start_time);
             var midTerm = utils.getMidTerm(scope.scheduleGroup);
             var endTerm = utils.roundToDefaultStartTime(scope.getEndTerm());
             var start_time = fistHalf ? startTerm : midTerm;
@@ -510,10 +529,11 @@ define('zb_sync_button/zb_sync_button',
             utils.forEach(scope.tasks, function(task) {
               requests.push(function() {
                 // Is this the first time to report the [task]?
-                var isFirstTime = task.starting_half_term == scope.half_term; 
-                return scope.getTaskStats(task,
-                    // For first time reporting, do not skip the first 25 days.
-                    isFirstTime ? start_time : start_time + extraReportTime,
+                // For first time reporting, do not skip the first 15 days.
+                var isFirstTime = task.starting_half_term == scope.half_term;
+                var start_cut_time = scope.lastReportTime ||
+                    (isFirstTime ? startTerm : (start_time + extraReportTime));
+                return scope.getTaskStats(task, start_cut_time,
                     end_time + extraReportTime);
               });
             });
@@ -527,6 +547,7 @@ define('zb_sync_button/zb_sync_button',
             var requests = [
                 scope.getTasks,
                 scope.get_preclass_lessons,
+                scope.getLastReportTime,
                 scope.getAllTaskStats
             ];
             utils.forEach(scope.users, function(user) {

@@ -515,6 +515,9 @@ function get_schedules($classId, $term, $records, $user_id) {
 
   foreach ($schedule_groups as $group_id => $group) {
     $group["start_time"] = (new DateTime($group["start_time"]))->getTimestamp();
+    if (!empty($group["end_time"])) {
+      $group["end_time"] = (new DateTime($group["end_time"]))->getTimestamp();
+    }
     $group["schedules"] = keyed_by_id($medoo->select("schedules", "*",
         ["group_id" => $group_id]));
     
