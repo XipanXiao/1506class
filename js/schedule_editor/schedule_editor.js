@@ -1,11 +1,13 @@
 define('schedule_editor/schedule_editor',
     ['course_editor_dialog/course_editor_dialog',
      'editable_label/editable_label',
+     'navigate_bar/navigate_bar',
     'schedule_group_editor/schedule_group_editor', 'services',
     'user_picker/user_picker', 'utils'], function() {
 
   return angular.module('ScheduleEditorModule',
       ['CourseEditorDialogModule', 'EditableLabelModule',
+       'NavigateBarModule',
        'ScheduleGroupEditorModule', 'ServicesModule', 'UserPickerModule',
        'UtilsModule']).directive('scheduleEditor', function(rpc, utils) {
           return {
@@ -24,10 +26,15 @@ define('schedule_editor/schedule_editor',
                 $scope.loadSchedules();
               });
               
-              $scope.loadSchedules = function() {
-                return rpc.get_schedules($scope.classId)
+              $scope.loadSchedules = function(term) {
+                return rpc.get_schedules($scope.classId, term || 0)
                     .then(function(response) {
                   $scope.schedule_groups = response.data.groups;
+                  
+                  var group = utils.first($scope.schedule_groups);
+                  if (!group) return;
+                  
+                  $scope.term = group.term;
                   $scope.users = {};
                   for (var id in response.data.users) {
                     $scope.users[id] = response.data.users[id].name;
@@ -139,6 +146,23 @@ define('schedule_editor/schedule_editor',
               
               $scope.hasLimitedCourses = function(group) {
                 return utils.keys(group.limited_courses).length > 0;
+              };
+              $scope.navigate = function(direction) {
+                var term = $scope.term;
+                switch (direction) {
+                case 0:
+                case 2:
+                  term = 0;
+                  break;
+                case 1:
+                case -1:
+                  term = $scope.term + direction;
+                  break;
+                case -2:
+                  term = 1;
+                  break;
+                }
+                $scope.loadSchedules(term);
               };
             },
             templateUrl : 'js/schedule_editor/schedule_editor.html'
