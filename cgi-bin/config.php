@@ -28,22 +28,24 @@
     
     if (isset($_SESSION['config'])) {
       $config = unserialize($_SESSION['config']);
-      return $config;
-    }
-     
-    $config = (array)json_decode(file_get_contents('../data/config.php'));
+    } else {
+      $config = (array)json_decode(file_get_contents('../data/config.php'));
       
-    $config = empty($config[$_SERVER['HTTP_HOST']]) ?
-        $config["localhost"] : $config[$_SERVER['HTTP_HOST']];
+      $config = empty($config[$_SERVER['HTTP_HOST']]) ?
+          $config["localhost"] : $config[$_SERVER['HTTP_HOST']];
     
-    $config = replace_config_variables($config);
+      $config = replace_config_variables($config);
+    }
 
     if (isset($config->session_path)) {
       session_save_path($config->session_path);
     }
 
-    ini_set('session.gc_maxlifetime', 3600*24*7);
+    $session_timeout = sprintf('%d', 3600 * 24 * 30);
+    ini_set('session.gc_maxlifetime', $session_timeout);
+    ini_set('session.cookie_lifetime', $session_timeout);
     session_start();
+
     return $config;
   }
 
