@@ -32,16 +32,15 @@ define('schedule_editor/schedule_editor',
                   $scope.schedule_groups = response.data.groups;
                   
                   var group = utils.first($scope.schedule_groups);
-                  if (!group) return;
+                  if (group) {
+                    $scope.term = group.term;
+                  } else {
+                    $scope.schedule_groups = {};
+                  }
                   
-                  $scope.term = group.term;
                   $scope.users = {};
                   for (var id in response.data.users) {
                     $scope.users[id] = response.data.users[id].name;
-                  }
-
-                  if (!$scope.schedule_groups) {
-                    $scope.schedule_groups = {};
                   }
 
                   $scope.schedule_groups[0] = {
