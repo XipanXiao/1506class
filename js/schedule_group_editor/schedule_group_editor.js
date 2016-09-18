@@ -92,7 +92,8 @@ define('schedule_group_editor/schedule_group_editor',
                 var courseIndex = 0;
                 var schedule_id = 0;
                 var group = scope.group;
-                var weeks = course_ids.length > 10 ? 25 : course_ids.length;
+                var weeks = course_ids.length > 10 ? 
+                    utils.weeksOfTerm : course_ids.length;
                 
                 if (group.schedules && utils.keys(group.schedules).length) {
                   // Modifying existing schedules.

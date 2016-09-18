@@ -153,13 +153,13 @@ define('zb_sync_button/zb_sync_button',
             return [first, second];
           };
 
-          /// Returns the date after 7*25 days of the start time of the current
+          /// Returns the date after 7*26 days of the start time of the current
           /// schedule group.
           scope.getEndTerm = function() {
             var startDate = utils.toDateTime(scope.scheduleGroup.start_time);
             var endTerm = new Date(startDate.getTime());
-            // Each term lasts for 25 weeks.
-            endTerm.setDate(startDate.getDate() + 7 * 25);
+            // Each term lasts for 26 weeks.
+            endTerm.setDate(startDate.getDate() + 7 * utils.weeksOfTerm);
             return utils.unixTimestamp(endTerm);
           };
           

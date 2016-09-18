@@ -441,7 +441,7 @@ define('utils', [], function() {
       // Indicating whether the student don't practice.
       wensiIndex: 8,
       
-      weeksOfTerm: 25,
+      weeksOfTerm: 26,
       totalTerms: 12
     };
   });
