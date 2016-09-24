@@ -775,23 +775,36 @@ define('zb_sync_button/zb_sync_button',
           };
 
           scope.allocate_serial_number = function() {
+            var prefixes = {};
             var maxIndexes = {};
 
             utils.forEach(scope.users, function(user) {
               var sn = scope.parse_serial_number(user.internal_id);
               if (!sn) return;
               
+              prefixes[sn.prefix] = (prefixes[sn.prefix] || 0) + 1;
               maxIndexes[sn.prefix] =
                   Math.max(maxIndexes[sn.prefix] || 0, sn.index);
             });
 
-            var prefix = {
-                2: 'C',
-                3: 'A',
-                4: 'B'
-            }[scope.classInfo.department_id];
-            prefix = (prefix || '') +
-                (scope.classInfo.start_year % 100) + '-06-';
+            var prefix;
+            var maxOccur = 0;
+            for (var key in prefixes) {
+              if (prefixes[key] > maxOccur) {
+                maxOccur = prefixes[key];
+                prefix = key;
+              }
+            }
+            
+            if (!prefix) {
+              prefix = {
+                  2: 'C',
+                  3: 'A',
+                  4: 'B'
+              }[scope.classInfo.department_id];
+              prefix = (prefix || '') +
+                  (scope.classInfo.start_year % 100) + '-06-';
+            }
 
             var index = (maxIndexes[prefix] || 0);
             var nextSn = function() {
