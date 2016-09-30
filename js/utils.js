@@ -133,6 +133,13 @@ define('utils', [], function() {
           callback(map[key]);
         }
       },
+      fold: function(map, callback, init) {
+        var combined = init;
+        for (var key in map) {
+          combined = callback(map[key], combined);
+        }
+        return combined;
+      },
       groupBy: function(arr, key) {
         var groups = {};
         for (var idx in arr) {

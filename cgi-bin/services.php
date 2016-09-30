@@ -114,6 +114,12 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 
     $response = get_class_task_stats($classId, $_GET["task_id"], $startTime,
         $endTime, $isIndex);
+  } elseif ($resource_id == "state_stats") {
+  	if (!isSysAdmin($user)) return;
+  	$response = get_state_stats($_GET["country"]);
+  } elseif ($resource_id == "state_users") {
+  	if (!isSysAdmin($user)) return;
+  	$response = get_state_users($_GET["country"], $_GET["state"]);
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];

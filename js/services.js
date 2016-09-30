@@ -139,6 +139,18 @@ define('services', [], function() {
         return $http.get(url);
       },
       
+      get_state_stats: function(countryCode) {
+        var url = "{0}?rid=state_stats&country={1}".
+            format(serviceUrl, countryCode);
+        return $http.get(url);
+      },
+      
+      get_state_users: function(countryCode, state) {
+        var url = "{0}?rid=state_users&country={1}&state={2}".
+            format(serviceUrl, countryCode, state);
+        return $http.get(url);
+      },
+      
       update_user: function(user) {
         user.rid = 'user';
         return http_form_post($http, $httpParamSerializerJQLike(user));

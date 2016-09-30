@@ -476,3 +476,11 @@ paper-dialog#new-user-dlg {
 .wide-schedule-table {
   width: 900px;
 }
+
+address-filter {
+ max-width: 280px;
+}
+
+.indented {
+  padding-left: 16px;	
+}

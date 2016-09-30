@@ -505,8 +505,8 @@ function get_schedules($classId, $term, $records, $user_id) {
   date_default_timezone_set("UTC");
   
   if (intval($term) == 0) {
-  	$term = $medoo->max("schedule_groups", "term", ["classId" => $classId]);
-  	if (!$term) return null;
+    $term = $medoo->max("schedule_groups", "term", ["classId" => $classId]);
+    if (!$term) return null;
   }
 
   $schedule_groups =
@@ -651,5 +651,29 @@ function search($prefix) {
   
   return $medoo->select("users", ["classId", "name", "email"],
       ["OR" => ["name[~]" => $prefix, "email[~]" => $prefix]]);
+}
+
+/// Returns the distribution of people in each state of the country.
+///
+/// Returns a map like ["1" => 32, "2" => 48, ..., "8" => 26];
+function get_state_stats($countryCode) {
+  global $medoo;
+  
+  $sql = sprintf("SELECT COUNT(id) as sum, state FROM users WHERE country='%s' ".
+      " GROUP BY state", $countryCode);
+  $result = $medoo->query($sql)->fetchAll();
+  
+  $states = [];
+  foreach ($result as $record) {
+    $states[$record["state"]] = $record["sum"];
+  }
+  return $states;
+}
+
+function get_state_users($countryCode, $stateIndex) {
+  global $medoo;
+  
+  return $medoo->select("users", "*",
+      ["AND" => ["country" => $countryCode, "state" => $stateIndex]]);
 }
 ?>
