@@ -1,4 +1,4 @@
-define('class_info/class_info', ['bit_editor/bit_editor', 'importers',
+define('class_info/class_info', ['bit_editor/bit_editor',
     'class_editor/class_editor',
     'new_user_dialog/new_user_dialog', 
     'users/users',
@@ -7,13 +7,12 @@ define('class_info/class_info', ['bit_editor/bit_editor', 'importers',
     'zb_sync_button/zb_sync_button'], function() {
 
   return angular.module('ClassInfoModule', ['BitEditorModule',
-    'ImportersModule',
     'ClassEditorModule',
     'NewUserDialogModule',
     'UsersModule',
     'PermissionModule', 'ServicesModule',
     'UtilsModule', 'ZBSyncButtonModule'])
-        .directive('classInfo', function($rootScope, importers, perm, rpc, 
+        .directive('classInfo', function($rootScope, perm, rpc, 
             utils) {
       return {
         scope: {
@@ -36,20 +35,8 @@ define('class_info/class_info', ['bit_editor/bit_editor', 'importers',
           $scope.$watch('classId', function(classId) {
             $scope.reload(classId);
           });
-          $scope.isSysAdmin = function() {
-            return perm.isSysAdmin();
-          };
           $scope.showNewUserDialog = function() {
             document.getElementById('new-user-dlg').open();
-          };
-          $scope.exportUsers = function() {
-            importers.userImporter.exportUsers([$scope.classId],
-                $scope.exportedUrl).then(function(url) {
-                  $scope.exportedUrl = url;
-                });
-          };
-          $scope.userCount = function() {
-            return $scope.users && utils.keys($scope.users).length;
           };
         },
         templateUrl : 'js/class_info/class_info.html'

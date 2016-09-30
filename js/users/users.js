@@ -1,9 +1,10 @@
 define('users/users', ['bit_editor/bit_editor',
-    'permission', 'services',
+    'importers', 'permission', 'services',
     'user_editor/user_editor',
     'utils'], function() {
 
   return angular.module('UsersModule', ['BitEditorModule',
+    'ImportersModule',
     'PermissionModule', 'ServicesModule',
     'UserEditorModule', 'UtilsModule'])
         .directive('users', function($rootScope, importers, perm, rpc, utils) {
@@ -28,7 +29,14 @@ define('users/users', ['bit_editor/bit_editor',
             }
             $scope.editingUser = $scope.editingUser &&
                 utils.firstElement($scope.users, 'id', $scope.editingUser.id);
+            if ($scope.exportedUrl) {
+              window.URL.revokeObjectURL($scope.exportedUrl);
+              $scope.exportedUrl = null;
+            }
           });
+          $scope.isSysAdmin = function() {
+            return perm.isSysAdmin();
+          };
           $scope.isAdmin = function(user) {
             return user.permission > perm.ROLES.STUDENT;
           };
@@ -51,6 +59,15 @@ define('users/users', ['bit_editor/bit_editor',
           };
           $scope.updateEnroll = function(user) {
             rpc.update_user({id: user.id, enroll_tasks: user.enroll_tasks});
+          };
+          $scope.userCount = function() {
+            return $scope.users && utils.keys($scope.users).length;
+          };
+          $scope.exportUsers = function() {
+            importers.userImporter.exportUsers($scope.users,
+                $scope.exportedUrl).then(function(url) {
+                  $scope.exportedUrl = url;
+                });
           };
         },
         templateUrl : 'js/users/users.html'

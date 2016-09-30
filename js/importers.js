@@ -330,7 +330,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
         },
         
         /// Returns a Promise that is resolved when all users are exported.
-        exportUsers: function(classIds, dataUrl) {
+        exportUsers: function(users, dataUrl) {
           var serialNumber = 0;
           var labels = [
             '序号',
@@ -403,13 +403,19 @@ define('importers', ['permission', 'services', 'utils'], function() {
             return file = window.URL.createObjectURL(data);
           };
           
-          var classPromises = classIds.map(function(classId) {
-            return rpc.get_users(null, classId).then(function(response) {
-              var users = response.data;
-              return rpc.get_classes(classId).then(function(response) {
-                var className = response.data[classId].name;
-                return {name: className, users: users};
-              });
+          var classMap = {};
+          utils.forEach(users, function(user) {
+            var classInfo = classMap[user.classId];
+            if (!classInfo) {
+              classInfo = {id: user.classId, users: []};
+              classMap[user.classId] = classInfo;
+            }
+            classInfo.users.push(user);
+          });
+          var classPromises = utils.map(classMap, function(classInfo) {
+            return rpc.get_classes(classInfo.id).then(function(response) {
+              classInfo.className = response.data[classInfo.id].name;
+              return classInfo;
             });
           });
           
