@@ -1,13 +1,13 @@
 define('admin_app',
-    ['app_bar/app_bar', 'classes/classes', 'class_editor/class_editor',
-    'task_stats/task_stats', 'users/users', 'learning_records/learning_records',
+    ['app_bar/app_bar', 'classes/classes', 'class_info/class_info',
+    'task_stats/task_stats', 'learning_records/learning_records',
     'schedule_editor/schedule_editor', 'services', 'permission', 'utils',
     'zb_login_dialog/zb_login_dialog',
     'zb_choose_root_dialog/zb_choose_root_dialog'],
     function() {
 
   angular.module('AppModule', ['AppBarModule', 'ClassesModule',
-      'ClassEditorModule', 'TaskStatsModule', 'UsersModule',
+      'ClassInfoModule', 'TaskStatsModule',
       'LearningRecordsModule', 'PermissionModule', 'ScheduleEditorModule',
       'ServicesModule', 'UtilsModule', 'ZBLoginDialogModule',
       'ZBChooseRootDialogModule'])

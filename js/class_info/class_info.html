@@ -1,0 +1,16 @@
+<class-editor class-id="classId"></class-editor>
+<div ng-switch="isNewClass()">
+  <div ng-switch-when="true">
+		<input type="button" value="根据报名邮件新建用户..." ng-click="showNewUserDialog()">
+  </div>
+  <div ng-switch-default>
+    <!-- input type="button" value="分配学号..." ng-click="allocateIDs()"-->
+  </div>
+</div>
+<new-user-dialog refresh="reload(classId)"></new-user-dialog>
+<span class="padded-element">人数：{{userCount()}}</span>
+<input ng-if="isSysAdmin()" type="button" value="导出为tsv文件" ng-click="exportUsers()">
+<a ng-if="exportedUrl" href="{{exportedUrl}}" download="user.txt">user.txt</a>
+<zb-sync-button type="class" users="users" class-id="classId">
+</zb-sync-button>
+<users users="users"></users>
