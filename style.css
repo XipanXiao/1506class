@@ -484,3 +484,7 @@ address-filter {
 .indented {
   padding-left: 16px;	
 }
+
+google-chart {
+  width: 700px;
+}

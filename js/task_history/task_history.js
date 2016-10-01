@@ -44,6 +44,7 @@ define('task_history/task_history', ['utils',
               record.sum = (sum += record.count);
               record.totalDuration = (totalDuration += record.duration);
             }
+            scope.buildHistogram();
           });
         };
         
@@ -58,6 +59,26 @@ define('task_history/task_history', ['utils',
               scope.reloadTaskHistory();
             }
           });
+        };
+        
+        scope.buildHistogram = function() {
+          if (!(scope.task_history instanceof Array) ||
+              !scope.task_history.length) return;
+
+          var values = scope.task_history.map(function(record) {
+            return record.duration || record.count;
+          });
+          values.sort();
+          // Use median * 1.5 as cut off.
+          var cutOff = Math.round(1.5 * values[Math.round(values.length / 2)]);
+
+          scope.histogram = scope.task_history.map(function(record) {
+            return [record.ts,
+                Math.min(cutOff, record.duration || record.count)];
+          });
+          
+          scope.chartOptions = '{"vAxis": {"minValue": 0, "maxValue": {0}}}'.
+              format(cutOff);
         };
       },
       templateUrl : 'js/task_history/task_history.html'
