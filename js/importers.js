@@ -414,7 +414,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
           });
           var classPromises = utils.map(classMap, function(classInfo) {
             return rpc.get_classes(classInfo.id).then(function(response) {
-              classInfo.className = response.data[classInfo.id].name;
+              classInfo.name = response.data[classInfo.id].name;
               return classInfo;
             });
           });
@@ -422,11 +422,9 @@ define('importers', ['permission', 'services', 'utils'], function() {
           var result = '\uFEFF' + labels.join(delimiter) + '\n';
           return $q.all(classPromises).then(function(classes) {
             classes.forEach(function(classInfo) {
-              var className = classInfo.name;
-              var users = classInfo.users;
-              for (var id in users) {
-                result += exportUser(users[id], className) + '\n';
-              }
+              classInfo.users.forEach(function(user) {
+                result += exportUser(user, classInfo.name) + '\n';
+              });
             });
             return createDataUrl(result, dataUrl);
           });
