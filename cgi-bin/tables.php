@@ -296,7 +296,7 @@ function update_user($user) {
   
   $fields = ["internal_id", "name", "nickname", "email",
       "phone", "city", "country",
-      "im", "occupation", "birthday", "comments", "skills"];
+      "im", "occupation", "birthyear", "comments", "skills"];
 
   foreach ($user as $key => $value) {
     if ($key == "password") {

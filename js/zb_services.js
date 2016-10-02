@@ -37,7 +37,7 @@ define('zb_services', ['utils'], function() {
         name: user.name,
         sn: user.internal_id,
         gender: 1 - parseInt(user.sex),
-        birth_year: parseInt((user.birthday || '-').split('-')[0]),
+        birth_year: parseInt(user.birthyear),
         district1: user.countryLabel,
         district2: user.stateLabel + '-' + user.city,
         education: user.education + 3,

@@ -32,8 +32,8 @@ define('importers', ['permission', 'services', 'utils'], function() {
       "法名": "nickname",
       "性别": "sex",
       "sex": "sex",
-      "出生年月": "birthday",
-      "birthday": "birthday",
+      "出生年份": "birthyear",
+      "birthyear": "birthyear",
       "文化程度": "education",
       "您的学历": "education",
       "education": "education",
@@ -128,7 +128,10 @@ define('importers', ['permission', 'services', 'utils'], function() {
       user.birthday = extractFromPatter(/([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})/,
           (user.birthday||'').replace('年', '-').replace('月', '-'));
       user.birthday_label = user.birthday;
-      user.birthday = user.birthday ? (user.birthday + ' 00:00:00') : ''; 
+      user.birthday = user.birthday ? (user.birthday + ' 00:00:00') : '';
+      if (user.birthday) {
+        user.birthyear = user.birthday.split('-')[0];
+      }
       
       user.occupation = cutOff(user.occupation, 16);
 
@@ -226,6 +229,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
                   var year = (new Date()).getFullYear() -
                       parseInt(columnValues[c], 10);
                   user.birthday = '{0}-01-01 00:00:00'.format(year);
+                  user.birthyear = '' + year;
                 }
               }
               
@@ -267,7 +271,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
                 ignored.forEach(function(key) {delete existingUser[key];});
 
                 user.id = existingUser.id;
-                user.birthday = user.birthday || existingUser.birthday;
+                user.birthyear = user.birthyear || existingUser.birthyear;
                 user.classId = user.classId || existingUser.classId;
                 utils.diff(existingUser, user);
               } else {
@@ -368,7 +372,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
             return '' + (++serialNumber) + delimiter + 
               user.name + delimiter +
               utils.getDisplayLabel(user, 'sex') + delimiter +
-              utils.formatDate(user.birthday || '') + delimiter +
+              (user.birthyear || '') + delimiter +
               utils.getDisplayLabel(user, 'education') + delimiter +
               (user.occupation || '') + delimiter +
               delimiter +

@@ -44,11 +44,11 @@
         </div>          
       </div>
       <div class="css-table-row padded-element">
-        <div class="css-table-cell">生日</div>
-        <div class="css-table-cell">{{user.birthday}}</div>
+        <div class="css-table-cell">出生年份</div>
+        <div class="css-table-cell">{{user.birthyear}}</div>
         <div class="css-table-cell">
           <iron-icon class="selectable" icon="chevron-right"
-              ng-click="editing = 'birthday'">
+              ng-click="editing = 'birthyear'">
           </iron-icon>
         </div>          
       </div>
@@ -271,7 +271,8 @@
         <input ng-switch-when="skills" ng-model="user.skills" type="text" autofocus>
         <select ng-switch-when="volunteer" ng-model="user.volunteer"
             ng-options="volunteerLabels[value] for value in [1, 2, 3, 4, 5, 6]"></select>
-        <input ng-switch-when="birthday" ng-model="user.birthday" type="text" autofocus>
+        <input ng-switch-when="birthyear" ng-model="user.birthyear" type="number" min="1900"
+            pattern="\d{4}" autofocus>
         <input ng-switch-when="conversion" ng-model="user.conversion" type="text" pattern="\d{4}"
                 placeholder="2015" autofocus>
         <select ng-switch-when="channel" ng-model="user.channel"
