@@ -9,12 +9,16 @@
           ng-click="stateSelected(state)">
       {{state.label}}({{state.students}})
     </label>
-    <div class="indented" ng-if="state.checked" ng-repeat="key in state.cityKeys">
-	    <label>
-	      <input type="checkbox" ng-model="state.cities[key].checked"
-	         ng-click="reloadUsers()">
-	      {{state.cities[key].label}}({{state.cities[key].users.length}})
-	    </label>
+    <div class="indented" ng-if="state.checked">
+      <input type="button" ng-click="selectCities(state, {none: true})" value="Clear All">
+      <input type="button" ng-click="selectCities(state, {invert: true})" value="Invert">
+	    <div ng-repeat="key in state.cityKeys">
+	      <label>
+	        <input type="checkbox" ng-model="state.cities[key].checked"
+	           ng-click="reloadUsers()">
+	        {{state.cities[key].label}}({{state.cities[key].users.length}})
+	      </label>
+	    </div>
     </div>
   </div>
 </div>

@@ -123,6 +123,14 @@ define('address_filter/address_filter', [
             state.checked = true;
             scope.stateSelected(state);
           };
+          
+          scope.selectCities = function(state, options) {
+            if (!options.none && !options.invert) return;
+            utils.forEach(state.cities, function(city) {
+              city.checked = options.none ? false : !city.checked;
+            });
+            scope.reloadUsers();
+          };
         },
         templateUrl : 'js/address_filter/address_filter.html'
       };
