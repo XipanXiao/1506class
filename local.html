@@ -14,7 +14,10 @@
 <app-bar user="user" admining="true"></app-bar>
 <div class="flex">
   <address-filter country="user.country" state="user.state"></address-filter>
-  <users users="users"></users>
+  <div>
+    <checkbox-filter options="classYears" selection-changed="classYearChanged()"></checkbox-filter>
+    <users users="users"></users>
+  </div>
 </div>
 
 <script type="text/javascript" src="local.js?tag=201609262115"></script>
