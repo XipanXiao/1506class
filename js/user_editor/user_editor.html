@@ -59,7 +59,11 @@
       <div class="css-table-row padded-element">
         <div class="css-table-cell">学号</div>
         <div class="css-table-cell">{{user.internal_id}}</div>
-        <div class="css-table-cell"></div>          
+        <div class="css-table-cell">
+          <iron-icon ng-show="isSysAdmin()" class="selectable" icon="chevron-right"
+              ng-click="editing = 'internal_id'">
+          </iron-icon>
+        </div>          
       </div>
       <div class="css-table-row padded-element">
         <div class="css-table-cell">班级</div>
@@ -228,6 +232,7 @@
             ng-options="sexLabels[value] for value in [0, 1]">
         </select>
         <input ng-switch-when="email" ng-model="user.email" type="email" autofocus>
+        <input ng-switch-when="internal_id" ng-model="user.internal_id" type="text" autofocus>
         <classes ng-switch-when="classId" class-id="user.classId" permission="{{user.permission}}">
         </classes>
         <select ng-switch-when="permission" ng-model="user.permission" autofocus
