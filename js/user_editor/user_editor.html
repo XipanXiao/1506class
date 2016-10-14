@@ -285,6 +285,7 @@
         <select ng-switch-when="entrance" ng-model="user.entrance"
             ng-options="entranceLabels[value] for value in [0, 1, 2]"></select>
         <input ng-switch-when="comments" ng-model="user.comments" type="text" autofocus>
+        <div ng-if="error" class="error">{{error}}</div>
       </div>
       <input ng-if="editing != 'address'" type="submit" value="Save" ng-click="save()"
           class="css-table-cell">

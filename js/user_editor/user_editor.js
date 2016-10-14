@@ -41,6 +41,8 @@ define('user_editor/user_editor',
         $scope.$watch('editing', function() {
           if (!$scope.editing) return;
           document.querySelector('div.user-info-editor').scrollIntoView();
+          $scope.originalUser = utils.mix_in({}, $scope.user);
+          $scope.error = null;
         });
 
         $scope.save = function(editing) {
@@ -65,7 +67,12 @@ define('user_editor/user_editor',
               $rootScope.$broadcast('class-updated', user.classId);
             }
             
-            if (response.data.updated) $scope.editing = null;
+            if (response.data.updated) {
+              $scope.editing = null;
+            } else {
+              utils.mix_in($scope.user, $scope.originalUser);
+              $scope.error = response.data.error;
+            }
           });
         };
         
