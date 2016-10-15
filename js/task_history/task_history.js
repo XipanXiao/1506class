@@ -66,9 +66,9 @@ define('task_history/task_history', ['utils',
           if (!(scope.task_history instanceof Array) ||
               !scope.task_history.length) return;
 
+          var sum = 0;
           var values = [], cutOff;
           if (scope.selectedTask.duration) {
-            var sum = 0;
             scope.task_history.forEach(function(record) {
               values[record.sub_index] = 
                   (values[record.sub_index] || 0) + record.duration;
@@ -81,6 +81,7 @@ define('task_history/task_history', ['utils',
             }
           } else {
             values = scope.task_history.map(function(record) {
+              sum += record.count;
               return record.count;
             });
             values.sort();
@@ -91,6 +92,7 @@ define('task_history/task_history', ['utils',
             });
           }
           
+          scope.sum = sum;
           scope.chartOptions = '{"vAxis": {"minValue": 0, "maxValue": {0}}}'.
               format(cutOff);
         };
