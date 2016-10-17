@@ -55,7 +55,20 @@ define('tasks/tasks', ['progress_bar/progress_bar', 'services', 'utils'],
               $scope.reporting = false;
             });
           };
-          
+
+          $scope.removeLastRecord = function(task) {
+            var record = task.lastRecord;
+            var message = record.duration ? ',用时:{2}]' : ']';
+            message = ('您确认要删除这条记录吗？[时间:{0},数量:{1}' + message)
+                .format(utils.toDateTime(record.ts), record.count,
+                    record.duration);
+            if (!confirm(message)) return;
+            rpc.remove_task_record(record.id);
+            rpc.get_last_task_record(task.id).then(function (response) {
+              task.lastRecord = response.data;
+            });
+          };
+
           $scope.subTaskSelected = function(task) {
             var sub_index = task.lastRecord.sub_index;
 

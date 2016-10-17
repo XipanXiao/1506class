@@ -211,9 +211,8 @@ define('services', [], function() {
         return $http.delete(url);
       },
 
-      remove_task_record: function(userId, record_id) {
-        var url = '{0}?rid=task_records&id={1}&user_id={2}'.format(serviceUrl,
-            record_id, userId);
+      remove_task_record: function(record_id) {
+        var url = '{0}?rid=task_records&id={1}'.format(serviceUrl, record_id);
         return $http.delete(url);
       },
 

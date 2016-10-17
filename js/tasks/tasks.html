@@ -35,6 +35,9 @@
 	      </label>
       </div>
 	    <input type="submit" value="报数" ng-click="reportTask(task)" ng-disabled="reporting">
+      <iron-icon icon="icons:delete" title="撤销上一次报数" ng-click="removeLastRecord(task)"
+          class="selectable">
+      </iron-icon>
 	    <div ng-if="error">{{error}}</div>
 	  </div>
 	</div>

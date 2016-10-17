@@ -53,8 +53,7 @@ define('task_history/task_history', ['utils',
           message = ('您确认要删除这条记录吗？[时间:{0},数量:{1}' + message)
               .format(record.ts, record.count, record.duration);
           if (!confirm(message)) return;
-          rpc.remove_task_record(scope.user.id, record.id)
-              .then(function(response) {
+          rpc.remove_task_record(record.id).then(function(response) {
             if (response.data.deleted) {
               scope.reloadTaskHistory();
             }

@@ -367,7 +367,8 @@ function get_last_task_record($user_id, $task_id, $sub_index) {
       "sub_index" => intval($record["sub_index"]),
       "ts" => $record["uts"],
       "sum" => $sums[0],
-      "totalDuration" => $sums[1]
+      "totalDuration" => $sums[1],
+      "id" => intval($record["id"])
   ];
 }
 
