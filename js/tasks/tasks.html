@@ -24,20 +24,22 @@
         <div ng-switch-default>暂时没有学修记录。</div>
       </div>
     
-      <label>
-        本次数量:
-        <input class="count-input" type="number" ng-model="task.record.count" required>
-      </label>
-      <div>
-        <label ng-if="task.duration">
-          本次用时:
-          <input class="count-input" type="number" ng-model="task.record.duration" required>分钟
+      <form>
+        <label>
+          本次数量:
+          <input class="count-input" type="number" ng-model="task.record.count" required>
         </label>
-      </div>
-      <input type="submit" value="报数" ng-click="reportTask(task)" ng-disabled="reporting">
-      <iron-icon icon="icons:delete" title="撤销上一次报数" ng-click="removeLastRecord(task)"
-          class="selectable">
-      </iron-icon>
+        <div>
+          <label ng-if="task.duration">
+            本次用时:
+            <input class="count-input" type="number" ng-model="task.record.duration" required>分钟
+          </label>
+        </div>
+        <input type="submit" value="报数" ng-click="reportTask(task)" ng-disabled="reporting">
+        <iron-icon icon="icons:delete" title="撤销上一次报数" ng-click="removeLastRecord(task)"
+            class="selectable">
+        </iron-icon>
+      </form>
       <div ng-if="error">{{error}}</div>
     </div>
   </div>

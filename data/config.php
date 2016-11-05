@@ -6,6 +6,13 @@
     "dbname": "buddcourses",
     "zbServiceUrl": "http://db.zhibeifw.com:8888/zb"
   },
+  "10.254.151.229": {
+    "servername": "127.0.0.1",
+    "username": "root",
+    "password": "0217",
+    "dbname": "buddcourses",
+    "zbServiceUrl": "http://db.zhibeifw.com:8888/zb"
+  },
   "buddcourses-bicw.rhcloud.com": {
     "servername": "${OPENSHIFT_MYSQL_DB_HOST}",
     "username": "${OPENSHIFT_MYSQL_DB_USERNAME}",
