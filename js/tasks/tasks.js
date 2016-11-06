@@ -54,6 +54,9 @@ define('tasks/tasks', ['progress_bar/progress_bar', 'services', 'utils'],
             }).finally(function() {
               $scope.reporting = false;
             });
+
+            task.record.count = null;
+            task.record.duration = null;
           };
 
           $scope.removeLastRecord = function(task) {
