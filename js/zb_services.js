@@ -88,10 +88,11 @@ define('zb_services', ['utils'], function() {
             format(serviceUrl, pre_classID, halfTerm);
         return this.get_secure_url(url);
       },
-      login: function(username, password) {
+      login: function(username, password, captcha) {
         var data = {
           'username': username,
           'password': password,
+          'captcha': captcha,
           'url': serviceUrl + '/account/login' 
         };
         return http_form_post($http, $httpParamSerializerJQLike(data));

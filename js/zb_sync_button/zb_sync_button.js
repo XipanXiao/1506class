@@ -256,12 +256,13 @@ define('zb_sync_button/zb_sync_button',
               var username = credential.username;
               var password = credential.password;
               var editPassword = credential.editPassword;
+              var captcha = credential.captcha;
   
               scope.finished = 0;
               scope.totalTasks = 1;
   
               scope.statusText = '正在登录...';
-              zbrpc.login(username, password).then(function(response) {
+              zbrpc.login(username, password, captcha).then(function(response) {
                 if (zbrpc.is_showing_login_form(response.data)) {
                   scope.finished++;
                   alert('登录失败');
