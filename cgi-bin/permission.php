@@ -3,6 +3,10 @@ function isSysAdmin($user) {
   return ($user->permission & 0xFF) == 0xFF;
 }
 
+function isYearLeader($user) {
+  return ($user->permission & 0x3F) == 0x3F;
+}
+
 function isClassLeader($user, $classId) {
   return ($user->permission & 0xF) == 0xF && $user->classId == $classId;
 }

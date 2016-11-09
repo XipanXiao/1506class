@@ -78,6 +78,9 @@ define('permission', ['utils'], function() {
         if (!this.user) return false;
         return perm <= this.user.permission;
       },
+      isYearLeader: function() {
+        return this.user && this.user.permission >= this.ROLES.YEAR_LEADER;
+      },
       isSysAdmin: function() {
         return this.user && this.user.permission >= this.ROLES.ADMIN;
       }

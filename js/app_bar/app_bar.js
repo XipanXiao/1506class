@@ -13,6 +13,9 @@ define('app_bar/app_bar', ['permission', 'search_bar/search_bar'], function() {
           scope.isSysAdmin = function() {
             return perm.isSysAdmin();
           };
+          scope.isYearLeader = function() {
+            return perm.isYearLeader();
+          };
         },
         templateUrl : 'js/app_bar/app_bar.html'
       };

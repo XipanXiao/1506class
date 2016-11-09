@@ -33,6 +33,24 @@ function canReadClass($classInfo) {
   return canRead($user, $classInfo);
 }
 
+/// Whether the current [$user] has permission to read [$another] or not.
+function canReadUser($another) {
+  global $user;
+
+  return isSysAdmin($user) ||
+    (isYearLeader($user) && 
+        $user->classInfo.start_year == $another->classInfo.start_year) ||
+    isClassLeader($user, $another->classId);
+}
+
+/// Whether [$another] is at the same class year of the current [$user].
+function isSameYear($another) {
+  global $user;
+  $classId = $another["classId"];
+  $classes = get_classes($classId);
+  return $classes[$classId]["start_year"] == $user->classInfo["start_year"];
+}
+
 if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   $resource_id = $_GET["rid"];
   $classId = empty($_GET["classId"]) ? $user->classId : $_GET["classId"];
@@ -80,8 +98,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     } elseif ($email || $sn) {
       $response = current($email ?
           get_users($email) : get_users(null, null, null, $sn));
-      if ($response && !isSysAdmin($user) &&
-          !isClassLeader($user, $response->$classId)) {
+      if ($response && !canReadUser($response)) {
         $response = null;
       }
     } else {
@@ -103,8 +120,12 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
           $user->id);
     }
   } elseif ($resource_id == "search") {
-    if (isSysAdmin($user)) {
+    if (isYearLeader($user)) {
       $response = search($_GET["prefix"]);
+      if (!empty($response) && !isSysAdmin($user)) {
+        // For year leaders they can only see students of the same year.
+        $response = array_filter($response, "isSameYear");
+      }
     }
   } elseif ($resource_id == "task_stats") {
     $startTime =
@@ -115,11 +136,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = get_class_task_stats($classId, $_GET["task_id"], $startTime,
         $endTime, $isIndex);
   } elseif ($resource_id == "state_stats") {
-  	if (!isSysAdmin($user)) return;
-  	$response = get_state_stats($_GET["country"]);
+    if (!isSysAdmin($user)) return;
+    $response = get_state_stats($_GET["country"]);
   } elseif ($resource_id == "state_users") {
-  	if (!isSysAdmin($user)) return;
-  	$response = get_state_users($_GET["country"], $_GET["state"]);
+    if (!isSysAdmin($user)) return;
+    $response = get_state_users($_GET["country"], $_GET["state"]);
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];
@@ -159,13 +180,13 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "course_group") {
     $response = ["group" => update_course_group($_POST)];
   } elseif ($resource_id == "department") {
-  	if (!isSysAdmin($user)) return;
+    if (!isSysAdmin($user)) return;
     $response = ["updated" => update_department($_POST)];
   } elseif ($resource_id == "course") {
     $response = update_course($_POST); 
   } elseif ($resource_id == "user") {
     if (empty($_POST["id"])) exit();
-  	if (!isAdmin($user)) {
+    if (!isAdmin($user)) {
       if ($user->id != $_POST["id"]) exit();
     } elseif (!isSysAdmin($user)) {
       $userToUpdate = current(get_users(null, null, $_POST["id"]));
