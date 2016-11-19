@@ -100,31 +100,45 @@ define('schedule_editor/schedule_editor',
               /// Moves a schedule identified by [scheduleId] to the position
               /// after the schedule indentified by [insertAfter].
               $scope.insertSchedule = function(scheduleId, insertAfter) {
-                if (scheduleId == insertAfter ||
-                    scheduleId == insertAfter + 1) return;
-
                 var group = $scope.findGroup(scheduleId);
                 // Can only reorder within the same schedule group.
                 if (!group || group != $scope.findGroup(insertAfter)) return;
                 
                 var schedules = group.schedules;
+                if (scheduleId == insertAfter ||
+                    scheduleId == $scope.nextId(schedules, insertAfter, 1)) {
+                  return;
+                }
+
                 var schedule = angular.copy(schedules[scheduleId]);
                 
                 var id;
                 if (scheduleId < insertAfter) {
-                  for (id = scheduleId; id < insertAfter; id++) {
-                    schedules[id] = schedules[id+1];
+                  for (id = scheduleId; id < insertAfter;) {
+                    var nextId = $scope.nextId(schedules, id, 1); 
+                    schedules[id] = schedules[nextId];
                     schedules[id].id = id;
+                    id = nextId;
                   }
                 } else {
-                  for (id = scheduleId; id > insertAfter+1; id--) {
-                    schedules[id] = schedules[id-1];
+                  for (id = scheduleId; id > insertAfter+1;) {
+                    var nextId = $scope.nextId(schedules, id, -1); 
+                    schedules[id] = schedules[nextId];
                     schedules[id].id = id;
+                    id = nextId;
                   }
                 } 
                 schedule.id = id;
                 schedules[id] = schedule;
                 $scope.editGroup(group);
+              };
+              
+              $scope.nextId = function(schedules, scheduleId, direction) {
+                var scheduleIds = utils.keys(schedules);
+                for (var index = 0;index < scheduleIds.length; index++) {
+                  if (scheduleIds[index] != scheduleId) continue;
+                  return scheduleIds[index + direction];
+                }
               };
               
               $scope.copySchedule = function(scheduleTo, scheduleFrom) {
