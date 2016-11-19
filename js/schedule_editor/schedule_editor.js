@@ -27,8 +27,8 @@ define('schedule_editor/schedule_editor',
               });
               
               $scope.loadSchedules = function(term) {
-                return rpc.get_schedules($scope.classId, term || 0)
-                    .then(function(response) {
+                return rpc.get_schedules($scope.classId,
+                    term || $scope.term || 0).then(function(response) {
                   $scope.schedule_groups = response.data.groups;
                   
                   var group = utils.first($scope.schedule_groups);
@@ -104,6 +104,7 @@ define('schedule_editor/schedule_editor',
                     scheduleId == insertAfter + 1) return;
 
                 var group = $scope.findGroup(scheduleId);
+                // Can only reorder within the same schedule group.
                 if (!group || group != $scope.findGroup(insertAfter)) return;
                 
                 var schedules = group.schedules;

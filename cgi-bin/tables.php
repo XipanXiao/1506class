@@ -559,7 +559,7 @@ function get_schedules($classId, $term, $records, $user_id) {
 function update_schedule($schedule) {
   global $medoo;
 
-  $datas = [];
+  $datas = ["course_id" => NULL, "course_id2" => NULL];
   $int_fields = ["course_id", "course_id2", "group_id", "open", "review"];
   foreach ($int_fields as $field) {
     if (isset($schedule[$field])) {

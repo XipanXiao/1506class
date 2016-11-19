@@ -2,7 +2,7 @@
   "localhost": {
     "servername": "127.0.0.1",
     "username": "root",
-    "password": "1234567890",
+    "password": "2345678901",
     "dbname": "buddcourses",
     "zbServiceUrl": "http://www.zhibei.info/zb"
   },

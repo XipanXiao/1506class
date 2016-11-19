@@ -114,7 +114,7 @@ define('schedule_group_editor/schedule_group_editor',
                 // Appending new schedules.
                 for (; week < weeks; week++) {
                   var courseId = 0;
-                  courseId = course_ids[courseIndex++] || 0;
+                  courseId = course_ids[courseIndex++] || null;
 
                   var schedule = {
                     id: 0,
@@ -122,7 +122,7 @@ define('schedule_group_editor/schedule_group_editor',
                     group_id: group.id
                   };
                   if (hasSecondCourse) {
-                    schedule.course_id2 = course_ids[courseIndex++] || 0;
+                    schedule.course_id2 = course_ids[courseIndex++] || null;
                   }
                   group.schedules[schedule_id] = schedule;
                   schedule_id++;
