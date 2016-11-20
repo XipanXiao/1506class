@@ -26,6 +26,10 @@ define('schedule_editor/schedule_editor',
                 $scope.loadSchedules();
               });
               
+              $scope.$on('reload-schedules', function(event, term) {
+                $scope.loadSchedules(term);
+              });
+              
               $scope.loadSchedules = function(term) {
                 return rpc.get_schedules($scope.classId,
                     term || $scope.term || 0).then(function(response) {

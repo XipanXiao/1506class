@@ -5,12 +5,10 @@ define('schedule_group_editor/schedule_group_editor',
   return angular.module('ScheduleGroupEditorModule',
       ['CourseGroupsModule', 'EditableLabelModule', 'ServicesModule',
        'UtilsModule']).directive('scheduleGroupEditor',
-        function(rpc, utils) {
+        function($rootScope, rpc, utils) {
           return {
             scope: {
-              group: '=',
-              onCancel: '&',
-              onSave: '&'
+              group: '='
             },
             link: function(scope) {
               scope.saveGroup = function(group) {
@@ -21,9 +19,13 @@ define('schedule_group_editor/schedule_group_editor',
                 rpc.update_schedule_group(group).then(function(response) {
                   if (parseInt(response.data.updated)) {
                     group.editing = false;
-                    scope.onSave();
+                    scope.reloadGroup(group.term);
                   }
                 });
+              };
+              
+              scope.reloadGroup = function(term) {
+                $rootScope.$broadcast('reload-schedules', term);
               };
 
               /// Returns true if name1 and name2 has the same name prefix.

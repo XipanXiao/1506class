@@ -10,9 +10,7 @@
         ng-if="group.id">
     </iron-icon>
   </div>
-  <schedule-group-editor ng-if="group.editing" group="group" on-cancel="loadSchedules()"
-      on-save="loadSchedules()">
-  </schedule-group-editor>
+  <schedule-group-editor ng-if="group.editing" group="group"></schedule-group-editor>
   <div class="css-table odd-even schedule-tasks">
     <div class="css-table-row header">
       <div class="css-table-cell"><strong>周数</strong></div>
