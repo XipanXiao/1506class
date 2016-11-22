@@ -1,9 +1,9 @@
 define('schedule_group_editor/schedule_group_editor',
-    ['course_groups/course_groups', 'editable_label/editable_label',
+    ['course_groups/course_groups', 'timestamp/timestamp',
     'services', 'utils'], function() {
 
   return angular.module('ScheduleGroupEditorModule',
-      ['CourseGroupsModule', 'EditableLabelModule', 'ServicesModule',
+      ['CourseGroupsModule', 'TimestampModule', 'ServicesModule',
        'UtilsModule']).directive('scheduleGroupEditor',
         function($rootScope, rpc, utils) {
           return {

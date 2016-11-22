@@ -12,24 +12,9 @@ define('editable_label/editable_label', function() {
 					  link: function(scope) {
 					    scope.convertValue = function(toLocal) {
 					      if (toLocal) {
-					        if (scope.type == 'datetime') {
-					          scope.localValue =
-					            new Date(scope.value * 1000).toLocaleString();
-					        } else {
-					          scope.localValue = scope.value;
-					        }
+					        scope.localValue = scope.value;
 					      } else {
-					        if (scope.type == 'datetime') {
-					          var timestamp = Date.parse(scope.localValue);
-					          if (isNaN(timestamp)) {
-					            alert('错误的时间格式，请重新输入');
-					            scope.editing = true;
-					            return;
-					          }
-					          scope.value = timestamp / 1000;
-					        } else {
-					          scope.value = scope.localValue;
-					        }
+					        scope.value = scope.localValue;
 					      }
 					    };
 

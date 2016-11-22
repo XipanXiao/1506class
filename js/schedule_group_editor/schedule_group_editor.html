@@ -10,7 +10,7 @@
     </course-groups>
   </div>
   <div>
-    开始时间：<editable-label type="datetime" value="group.start_time"></editable-label>
+    开始时间：<input type="datetime-local" ng-model="group.start_time" timestamp>
     总第<select ng-options="value for value in terms" ng-model="group.term"></select>学期
   </div>
   <div>限制性课程：
