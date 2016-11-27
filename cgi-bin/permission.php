@@ -50,21 +50,6 @@ function checkClass($user, $classInfo) {
 
 function checkYear($user, $classInfo) {
   return $user->permission >= 0x3F &&
-      $user->classInfo["start_year"] == $classInfo["start_year"] &&
-      checkDepartmentLevel($user, $classInfo);
+      $user->classInfo["start_year"] == $classInfo["start_year"];
 }
-
-function checkDepartmentLevel($user, $classInfo) {
-  $user_dep_id = $user->classInfo["department_id"];
-  $target_dep_id = $classInfo["department_id"];
-
-  if ($user_dep_id == $target_dep_id) return true;
-
-  $departments = get_departments(); 
-  $user_dep = $departments[$user_dep_id];
-  $target_dep = $departments[$target_dep_id];
-  
-  return $user_dep["level"] == $target_dep["level"];
-}
-
 ?>
