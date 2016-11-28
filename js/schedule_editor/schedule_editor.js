@@ -67,6 +67,7 @@ define('schedule_editor/schedule_editor',
                 group.editing = true;
               };
               $scope.removeGroup = function(group) {
+                if (parseInt(group.end_time)) return;
                 var message = 'Are you sure to remove this term {0}?'.
                     format(group.term);
                 if (!window.confirm(message)) return;
