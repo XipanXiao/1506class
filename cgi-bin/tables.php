@@ -575,6 +575,14 @@ function update_schedule($schedule) {
   return $medoo->update("schedules", $datas, ["id" => $id]);
 }
 
+function formatTimestamp($tm) {
+  date_default_timezone_set("UTC");
+
+  $dt = new DateTime();
+  $dt->setTimestamp($tm);
+  return $dt->format("Y-m-d H:i:s");
+}
+
 function update_schedule_group($group) {
   global $medoo;
 
@@ -588,11 +596,10 @@ function update_schedule_group($group) {
   }
   
   if (!empty($group["start_time"])) {
-    date_default_timezone_set("UTC");
-
-    $dt = new DateTime();
-    $dt->setTimestamp(intval($group["start_time"]));
-    $datas["start_time"] = $dt->format("Y-m-d H:i:s");
+    $datas["start_time"] = formatTimestamp(intval($group["start_time"]));
+  }
+  if (!empty($group["end_time"])) {
+    $datas["end_time"] = formatTimestamp(intval($group["end_time"]));
   }
 
   $id = $group["id"];

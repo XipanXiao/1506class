@@ -508,6 +508,19 @@ define('zb_sync_button/zb_sync_button',
             });
           };
 
+          /// Returns the end cut time for reporting tasks like dingli, for the
+          /// current term (specified by scope.scheduleGroup), as a timestamp.
+          scope.getTermEndCutTime = function(extraReportTime) {
+            // If we ever reported for this term, the cut time is settled down.  
+            if (scope.scheduleGroup.end_time) {
+              return scope.scheduleGroup.end_time;
+            }
+            // The cut date could not be later than 15 days after the term end. 
+            var cut = utils.roundToDefaultStartTime(scope.getEndTerm()) +
+                extraReportTime;
+            var now = utils.unixTimestamp(new Date());
+            return Math.min(now, cut);
+          };
           /// Collects all task reports since last report.
           ///
           /// By default if there is no special reason the time is cut between
@@ -523,7 +536,8 @@ define('zb_sync_button/zb_sync_button',
                 utils.roundToDefaultStartTime(scope.scheduleGroup.start_time);
             var midTerm = utils.getMidTerm(scope.scheduleGroup) +
                 extraReportTime;
-            var endTerm = utils.roundToDefaultStartTime(scope.getEndTerm());
+            var end_cut_time = scope.getTermEndCutTime(extraReportTime);
+            if (!fistHalf) scope.scheduleGroup.end_time = end_cut_time;
 
             var requests = [];
             utils.forEach(scope.tasks, function(task) {
@@ -533,8 +547,6 @@ define('zb_sync_button/zb_sync_button',
                 var isFirstTime = task.starting_half_term == scope.half_term;
                 var start_cut_time = scope.lastReportTime ||
                     (isFirstTime ? startTerm : (start_time + extraReportTime));
-                var end_cut_time = scope.scheduleGroup.end_time ||
-                    endTerm + extraReportTime;
                 var start_time = fistHalf ? start_cut_time : midTerm;
                 var end_time = fistHalf ? midTerm : end_cut_time;
                 return scope.getTaskStats(task, start_time, end_time);
@@ -551,7 +563,8 @@ define('zb_sync_button/zb_sync_button',
                 scope.getTasks,
                 scope.get_preclass_lessons,
                 scope.getLastReportTime,
-                scope.getAllTaskStats
+                scope.getAllTaskStats,
+                scope.saveReportTime
             ];
             utils.forEach(scope.users, function(user) {
               requests.push(function() {
@@ -829,6 +842,12 @@ define('zb_sync_button/zb_sync_button',
               });
             });
             return utils.requestOneByOne(requests);
+          };
+          scope.saveReportTime = function() {
+            var group = scope.scheduleGroup;
+            if (!group.end_time) return utils.truePromise();
+            return rpc.update_schedule_group({id: group.id,
+              end_time: group.end_time});
           };
           scope.totalTasks = 0;
           scope.finished = 0;
