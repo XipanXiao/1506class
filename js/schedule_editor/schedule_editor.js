@@ -21,6 +21,10 @@ define('schedule_editor/schedule_editor',
                 return utils.getWeeklyTime(group.start_time, index);
               };
               
+              $scope.toDateTime = function(tm) {
+                return tm ? utils.toDateTime(tm).toLocaleString() : '';
+              };
+              
               $scope.$watch('classId', function() {
                 if (!$scope.classId) return;
                 $scope.loadSchedules();

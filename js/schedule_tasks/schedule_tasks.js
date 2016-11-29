@@ -75,6 +75,11 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
               $scope.hasLimitedCourses = function(group) {
                 return utils.keys(group.limited_courses).length > 0;
               };
+              $scope.endTimeLabel = function(group) {
+                var tm = group && group.end_time;
+                return tm ?
+                    '报数已截止于' + utils.toDateTime(tm).toLocaleString() : '';
+              };
             },
             templateUrl : 'js/schedule_tasks/schedule_tasks.html'
           };

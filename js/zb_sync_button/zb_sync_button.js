@@ -849,6 +849,11 @@ define('zb_sync_button/zb_sync_button',
             return rpc.update_schedule_group({id: group.id,
               end_time: group.end_time});
           };
+          scope.endTimeLabel = function() {
+            var tm = scope.scheduleGroup && scope.scheduleGroup.end_time;
+            return tm ?
+                '(截止时间' + utils.toDateTime(tm).toLocaleString() + ')' : '';
+          };
           scope.totalTasks = 0;
           scope.finished = 0;
           scope.results = {};
