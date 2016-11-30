@@ -153,14 +153,8 @@ define('zb_sync_button/zb_sync_button',
             return [first, second];
           };
 
-          /// Returns the date after 7*26 days of the start time of the current
-          /// schedule group.
           scope.getEndTerm = function() {
-            var startDate = utils.toDateTime(scope.scheduleGroup.start_time);
-            var endTerm = new Date(startDate.getTime());
-            // Each term lasts for 26 weeks.
-            endTerm.setDate(startDate.getDate() + 7 * utils.weeksOfTerm);
-            return utils.unixTimestamp(endTerm);
+            return utils.getEndTime(scope.scheduleGroup);
           };
           
           // Determine which half terms to report, based on current time.
@@ -530,7 +524,7 @@ define('zb_sync_button/zb_sync_button',
             var fistHalf = scope.half_term % 2 == 0;
             // A lot of people were not able to report their tasks
             // in time. Add this extra 15 days to avoid a zero number.
-            var extraReportTime = 3600 * 24 * 15;
+            var extraReportTime = utils.extraReportTime;
 
             var startTerm =
                 utils.roundToDefaultStartTime(scope.scheduleGroup.start_time);

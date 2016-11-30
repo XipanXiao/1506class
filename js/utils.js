@@ -249,6 +249,15 @@ define('utils', [], function() {
         
         return date;
       },
+      /// Returns the date after 7*26 days of the start time.
+      getEndTime: function(scheduleGroup) {
+        var startDate = this.toDateTime(scheduleGroup.start_time);
+        var endTerm = new Date(startDate.getTime());
+        // Each term lasts for 26 weeks.
+        var weeks = this.keys(scheduleGroup.schedules).length - 1;
+        endTerm.setDate(startDate.getDate() + 7 * weeks + 1);
+        return this.unixTimestamp(endTerm);
+      },
       /// Given a date like 2015-12-05 18:00:00, returns 2015-12-01 00:00:00,
       /// a date like 05-28, returns 06-01.
       roundToDefaultStartTime: function(unixtimestamp) {
@@ -449,7 +458,10 @@ define('utils', [], function() {
       wensiIndex: 8,
       
       weeksOfTerm: 26,
-      totalTerms: 12
+      totalTerms: 12,
+      // A lot of people were not able to report their tasks
+      // in time. Add this extra 15 days to avoid a zero number.
+      extraReportTime: 3600 * 24 * 15
     };
   });
 });

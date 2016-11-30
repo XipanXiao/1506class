@@ -27,6 +27,7 @@ define('schedule_editor/schedule_editor',
               
               $scope.$watch('classId', function() {
                 if (!$scope.classId) return;
+                $scope.term = 0;
                 $scope.loadSchedules();
               });
               
@@ -186,6 +187,15 @@ define('schedule_editor/schedule_editor',
                   break;
                 }
                 $scope.loadSchedules(term);
+              };
+              $scope.getEndTime = function(group) {
+                var end_time = utils.getEndTime(group);
+                return utils.toDateTime(end_time).toLocaleString();
+              };
+              $scope.getReportCutTime = function(group) {
+                var end_time = utils.getEndTime(group) +
+                    utils.extraReportTime;
+                return utils.toDateTime(end_time).toLocaleString();
               };
             },
             templateUrl : 'js/schedule_editor/schedule_editor.html'

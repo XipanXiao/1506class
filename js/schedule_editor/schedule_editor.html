@@ -7,10 +7,16 @@
     <iron-icon icon="editor:border-color" title="编辑" ng-click="editGroup(group)" class="selectable">
     </iron-icon>
     <div ng-switch="!!group.end_time" class="inline">
-	    <iron-icon ng-switch-when="false" icon="icons:delete" title="删除" ng-click="removeGroup(group)"
-	        class="selectable" ng-if="group.id">
-	    </iron-icon>
-	    <span ng-switch-default>已上报于{{toDateTime(group.end_time)}}</span>
+      <div class="inline" ng-switch-when="false">
+        <iron-icon icon="icons:delete" title="删除" ng-click="removeGroup(group)"
+            class="selectable" ng-if="group.id">
+        </iron-icon>
+        <span ng-if="group.term">
+          最早报数时间{{getEndTime(group)}}，
+          截止报数时间{{getReportCutTime(group)}} 
+        </span>
+      </div>
+      <span ng-switch-default>已上报于{{toDateTime(group.end_time)}}</span>
     </div>
   </div>
   <schedule-group-editor ng-if="group.editing" group="group"></schedule-group-editor>
@@ -47,10 +53,10 @@
   </div>
   <div ng-if="hasLimitedCourses(group)">
     <h2>限制性课程</h2>
-	  <div class="css-table odd-even schedule-tasks">
-	    <div ng-repeat="course in group.limited_courses" class="css-table-row">
-	      <div class="css-table-cell">{{course.name}}</div>
-	    </div>
-	  </div>
+    <div class="css-table odd-even schedule-tasks">
+      <div ng-repeat="course in group.limited_courses" class="css-table-row">
+        <div class="css-table-cell">{{course.name}}</div>
+      </div>
+    </div>
   </div>
 </div>
