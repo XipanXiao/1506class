@@ -67,7 +67,12 @@
         <div class="css-table-cell"><strong>读法本</strong></div>
       </div>
       <div ng-repeat="course in group.limited_courses" class="css-table-row">
-        <div class="css-table-cell">{{course.name}}</div>
+        <div class="css-table-cell">
+          <a href="https://www.youtube.com/results?search_query={{course.name}}"
+              target="_blank" title="Click to search in YouTube">
+            {{course.name}}
+          </a>
+        </div>
         <div class="css-table-cell">
           <input type="checkbox" ng-model="records[course.id].video"
               ng-click="reportTask(course.id)">
