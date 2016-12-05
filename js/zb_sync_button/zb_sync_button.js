@@ -846,7 +846,7 @@ define('zb_sync_button/zb_sync_button',
           scope.endTimeLabel = function() {
             var tm = scope.scheduleGroup && scope.scheduleGroup.end_time;
             return tm ?
-                '(截止时间' + utils.toDateTime(tm).toLocaleString() + ')' : '';
+                '(上报时间' + utils.toDateTime(tm).toLocaleString() + ')' : '';
           };
           scope.totalTasks = 0;
           scope.finished = 0;
