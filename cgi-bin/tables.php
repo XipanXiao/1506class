@@ -566,7 +566,9 @@ function update_schedule($schedule) {
       $datas[$field] = intval($schedule[$field]);
     }
   }
-
+  if (intval($datas["course_id"]) == 0) {
+  	$datas["course_id2"] = NULL;
+  }
   $id = $schedule["id"];
   if ($id == 0) {
     return $medoo->insert("schedules", $datas);

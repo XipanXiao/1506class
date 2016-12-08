@@ -90,45 +90,25 @@ define('zb_sync_button/zb_sync_button',
               });
             } else {
               utils.forEach(group.schedules, function(schedule) {
+                if (!parseInt(schedule.course_id)) return;
+
                 scope.getCourseRecord(user, schedule.course_id, audio, book);
                 scope.getCourseRecord(user, schedule.course_id2, audio, book);
               });
             }
 
-            var schedules = scope.get_report_lessons_count();
+            var schedules = lessons.length;
             audio = (scope.half_term % 2) == 0 ? audio.slice(0, schedules) :
                 audio.slice(audio.length - schedules);
             book = (scope.half_term % 2) == 0 ? book.slice(0, schedules) :
-                book.slice(audio.length - schedules);
+                book.slice(book.length - schedules);
 
-            if (audio.length * 2 == lessons.length) {
-
-              var duplicate = function(arr) {
-                for (var index = arr.length - 1; index >= 0; index--) {
-                  arr[index*2] = arr[index*2+1] = arr[index];
-                }
-                return arr;
-              };
-
-              return {
-                audio: duplicate(audio),
-                book: duplicate(book)
-              };
-            } else {
-              return {
-                audio: audio,
-                book: book
-              };
-            }
+            return {
+              audio: audio,
+              book: book
+            };
           };
           
-          scope.get_report_lessons_count = function() {
-            var lessons = scope.lessons;
-            // Some ruxinglun classes take 2 courses for a single schedule. 
-            return lessons.length > 15 && lessons.length % 2 == 0 ?
-                Math.floor(lessons.length / 2) : lessons.length;
-          };
-
           scope.get_attendance = function(user) {
             var group = scope.scheduleGroup;
             var atts = [];
@@ -141,7 +121,7 @@ define('zb_sync_button/zb_sync_button',
               atts.push(record && record.attended == 1 ? 1 : 0);
             }
             
-            var schedules = scope.get_report_lessons_count();
+            var schedules = scope.lessons.length;
             var firstHalf = scope.half_term % 2 == 0 ?
                 schedules : atts.length - schedules;
             var first = 0;
