@@ -162,11 +162,10 @@ function get_classes($classId) {
   
   $int_fields = ["id", "department_id", "teacher_id", "start_year",
       "perm_level", "weekday", "zb_id"];
-  $classes = keyed_by_id($medoo->select("classes", "*",
-      $classId ? 
-      ["AND" =>
-          ["id" => $classId, "OR" => ["deleted[!]" => 1, "deleted" => NULL]]
-      ] : null));
+  $undeleted = ["deleted[!]" => 1, "deleted" => NULL];
+  $classes = keyed_by_id($medoo->select("classes", "*", $classId 
+      ? ["AND" => ["id" => $classId, "OR" => $undeleted]]
+      : ["OR" => $undeleted]));
 
   foreach ($classes as $id => $classInfo) {
     $classInfo["self_report"] = isset($classInfo["self_report"])
