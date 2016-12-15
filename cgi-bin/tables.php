@@ -101,8 +101,17 @@ function remove_schedule_group($id) {
 
 function remove_class($id) {
   global $medoo;
+ 
+  // If there is no reference to this class, it's deleted from the DB.
+  $deleted = $medoo->delete("classes", ["id" => $id]);
+  if ($deleted) return $deleted;
+
+  // If there are users, cannot mark it as 'deleted'.
+  $users = $medoo->count("users", ["classId" => $id]);
+  if ($users) return 0;
   
-  return $medoo->delete("classes", ["id" => $id]);
+  // Mark it as 'deleted'.
+  return $medoo->update("classes", ["deleted" => 1], ["id" => $id]);
 }
 
 function remove_task($id) {
@@ -154,7 +163,11 @@ function get_classes($classId) {
   $int_fields = ["id", "department_id", "teacher_id", "start_year",
       "perm_level", "weekday", "zb_id"];
   $classes = keyed_by_id($medoo->select("classes", "*",
-      $classId ? ["id" => $classId] : null));
+      $classId ? 
+      ["AND" =>
+          ["id" => $classId, "OR" => ["deleted[!]" => 1, "deleted" => NULL]]
+      ] : null));
+
   foreach ($classes as $id => $classInfo) {
     $classInfo["self_report"] = isset($classInfo["self_report"])
         && intval($classInfo["self_report"]) == 1;
@@ -567,7 +580,7 @@ function update_schedule($schedule) {
     }
   }
   if (intval($datas["course_id"]) == 0) {
-  	$datas["course_id2"] = NULL;
+    $datas["course_id2"] = NULL;
   }
   $id = $schedule["id"];
   if ($id == 0) {
