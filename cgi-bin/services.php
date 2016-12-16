@@ -179,7 +179,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       $response = ["updated" => update_class($_POST)];
     }
   } elseif ($resource_id == "course_group") {
-    $response = ["group" => update_course_group($_POST)];
+    if (!isSysAdmin($user)) return;
+  	$response = ["group" => update_course_group($_POST)];
   } elseif ($resource_id == "department") {
     if (!isSysAdmin($user)) return;
     $response = ["updated" => update_department($_POST)];
