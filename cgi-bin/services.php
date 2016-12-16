@@ -165,6 +165,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         $duration);
     $response = get_last_task_record($task_user_id, $task_id);
   } elseif ($resource_id == "task") {
+    if (!isSysAdmin($user)) return;
     $response = ["updated" => update_task($_POST)];
   } elseif ($resource_id == "schedule_tasks") {
     $response = ["updated" => report_schedule_task($task_user_id, $_POST)];
@@ -183,7 +184,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     if (!isSysAdmin($user)) return;
     $response = ["updated" => update_department($_POST)];
   } elseif ($resource_id == "course") {
-    $response = update_course($_POST); 
+    if (!isSysAdmin($user)) return;
+  	$response = update_course($_POST); 
   } elseif ($resource_id == "user") {
     if (empty($_POST["id"])) exit();
     if (!isAdmin($user)) {
