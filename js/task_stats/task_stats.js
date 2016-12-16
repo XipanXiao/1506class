@@ -49,11 +49,6 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
           scope.$watch('selectedTask', function() {
             scope.refreshStats();
           });
-          scope.expand = function() {
-            if (scope.admining) {
-              document.querySelector('#task-editor-dlg').open();
-            }
-          };
           scope.range = function() {
             var arr = [];
             var start = scope.currentPage, end = start + pageSize;

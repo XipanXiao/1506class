@@ -222,9 +222,7 @@ function update_task($task) {
   $fields = ["department_id", "name", "max", "duration", "sub_tasks",
       "starting_half_term", "zb_name", "zb_course_id"];
   foreach ($fields as $field) {
-    if (!empty($task[$field])) {
-      $datas[$field] = $task[$field];
-    }
+    $datas[$field] = $task[$field];
   }
   
   $id = intval($task["id"]);
