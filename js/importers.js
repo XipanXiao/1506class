@@ -364,6 +364,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
             '学号',
             '法名',
             '微信',
+            'YY',
             '是否愿意发心工作',
             '注册时间'
           ];
@@ -398,6 +399,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
               (user.internal_id || '') + delimiter +
               (user.nickname || '') + delimiter +
               (user.im || '') + delimiter +
+              (user.yy || '') + delimiter +
               utils.getDisplayLabel(user, 'volunteer') + delimiter +
               user.ts
           };

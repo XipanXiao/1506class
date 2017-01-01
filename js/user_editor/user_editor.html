@@ -171,6 +171,14 @@
         </div>          
       </div>
       <div class="css-table-row padded-element">
+        <div class="css-table-cell">YY</div>
+        <div class="css-table-cell">{{user.yy}}</div>
+        <div class="css-table-cell">
+          <iron-icon class="selectable" icon="chevron-right" ng-click="editing = 'yy'">
+          </iron-icon>
+        </div>          
+      </div>
+      <div class="css-table-row padded-element">
         <div class="css-table-cell">地址</div>
         <div class="css-table-cell">
           <div>{{user.city}} {{user.stateLabel}}</div>
@@ -240,6 +248,7 @@
         </select>
         <input ng-switch-when="phone" ng-model="user.phone" type="tel" autofocus>
         <input ng-switch-when="im" ng-model="user.im" type="text" autofocus>
+        <input ng-switch-when="yy" ng-model="user.yy" type="number" autofocus>
         <div ng-switch-when="password">
           <input type="password" ng-model="user.password" autofocus>
           <input type="password" ng-model="user.confirm" autofocus>
