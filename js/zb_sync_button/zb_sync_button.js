@@ -625,10 +625,10 @@ define('zb_sync_button/zb_sync_button',
                           return scope.checkResponse(response, user, taskKey,
                               0);
                         });
-
                 };
                 requests.push(request);
               });
+              requests.push(scope.checkUsers);
               scope.totalTasks += requests.length;
               scope.statusText = '正在上报用户信息...';
 
@@ -641,6 +641,41 @@ define('zb_sync_button/zb_sync_button',
               });
             });
           },
+          
+          scope.checkUsers = function() {
+            var preClassID = scope.classInfo.zb_id;
+            return zbrpc.list_users(preClassID).then(function(response) {
+              var problems = [];
+              var zb_users = response.data.data;
+              var zb_users_map = {};
+
+              scope.finished++;
+              zb_users.forEach(function(zb_user) {
+                if (parseInt(zb_user.status) == 11) return;
+                zb_users_map[zb_user.userID] = zb_user;
+              });
+              var local_user_map = {};
+              utils.forEach(scope.users, function(user) {
+                if (!user.zb_id || !zb_users_map[user.zb_id]) {
+                  problems.push(user.name);
+                  return;
+                }
+                local_user_map[user.zb_id] = user;
+              });
+              for (var id in zb_users_map) {
+                if (!local_user_map[id]) {
+                  problems.push(zb_users_map[id].name);
+                }
+              }
+              if (!problems.length) return true;
+
+              alert('请检查如下的用户，他们的记录缺失。如果在学院（智悲）系统缺失，可能是' + 
+                  '因为他在别的班中，需要到学院系统换班；如果在本系统缺失，可能是因为他在' +
+                  '学院系统转学，需要手工同步到本系统中（因为自动同步还没开发）\n\n' +
+                  problems.join('\n'));
+              return false;
+            });
+          };
           /// courseId: 加行：1，入行论：2，净土：3
           /// startdate: '2015-06-01'
           /// district1: '美国'
