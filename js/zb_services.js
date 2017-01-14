@@ -43,7 +43,9 @@ define('zb_services', ['utils'], function() {
         education: user.education + 3,
         lifelong: utils.isBitSet(user.enroll_tasks, utils.permanentIndex) ?
           1 : 0,
-        job: user.occupation,
+        job: user.occupation || '无',
+        //TODO: fill 'is_fdy' in the future (is teacher (fu dao yuan))?
+        is_fdy: 0,
         is_ytb: utils.isBitSet(user.enroll_tasks, utils.workshopIndex) ? 
             1 : 0,
         study_style:
@@ -144,8 +146,13 @@ define('zb_services', ['utils'], function() {
         data.url = '{0}/user/basic?userID={1}'.format(serviceUrl, user.zb_id);
 
         return http_form_post($http, $httpParamSerializerJQLike(data))
-            .then(function() {
-              return {data: {returnValue: 'success'}};
+            .then(function(response) {
+              if (response.data.startsWith('<!DOCTYPE html>')) {
+                return {data: {returnValue: 'success'}};
+              } else {
+                alert(response.data);
+                return {data: {error: response.data}};
+              }
             });
       },
       list_users: function(pre_classID) {
