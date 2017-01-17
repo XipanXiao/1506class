@@ -445,9 +445,11 @@ define('zb_sync_button/zb_sync_button',
                 start_time, end_time).then(function(response) {
                   var users = response.data || [];
                   users.forEach(function(user) {
+                    if (!user.stats[0]) return;
+
                     var taskStats = scope.users[user.id].taskStats || {};
                     var parts = (task.zb_name || '').split('_');
-                    var stat = user.stats[0] || {sum: 0, duration: 0};
+                    var stat = user.stats[0];
                     if (parts.length == 2) {
                       var countKey = parts[0] + '_count';
                       if (!taskStats[countKey]) {

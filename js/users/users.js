@@ -10,7 +10,8 @@ define('users/users', ['bit_editor/bit_editor',
         .directive('users', function($rootScope, importers, perm, rpc, utils) {
       return {
         scope: {
-          users: '='
+          users: '=',
+          onDelete: '&'
         },
         restrict: 'E',
         link: function($scope) {
@@ -49,8 +50,8 @@ define('users/users', ['bit_editor/bit_editor',
           });
           $scope.remove = function(user) {
             if (confirm('Are you sure to remove ' + user.email + '?')) {
-              rpc.remove_user(user.id).then(function() {
-                $scope.reload($scope.classId);
+              rpc.remove_user(user.id).then(function(response) {
+                if (response.data.deleted) $scope.onDelete();
               });
             }
           };
