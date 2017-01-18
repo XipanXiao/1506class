@@ -180,15 +180,19 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     }
   } elseif ($resource_id == "course_group") {
     if (!isSysAdmin($user)) return;
-  	$response = ["group" => update_course_group($_POST)];
+    $response = ["group" => update_course_group($_POST)];
   } elseif ($resource_id == "department") {
     if (!isSysAdmin($user)) return;
     $response = ["updated" => update_department($_POST)];
   } elseif ($resource_id == "course") {
     if (!isSysAdmin($user)) return;
-  	$response = update_course($_POST); 
+    $response = update_course($_POST); 
   } elseif ($resource_id == "user") {
-    if (empty($_POST["id"])) exit();
+    if (!isset($_POST["id"])) {
+      $response = ["error" => "User id is not set"];
+      echo json_encode($response);
+      exit();
+    }
     if (!isAdmin($user)) {
       if ($user->id != $_POST["id"]) exit();
     } elseif (!isSysAdmin($user)) {
