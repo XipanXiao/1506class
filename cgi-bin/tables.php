@@ -296,6 +296,7 @@ function get_admins($permission) {
 function remove_user($id) {
   global $medoo;
 
+  $medoo->delete("class_prefs", ["user_id" => $id]);
   return $medoo->delete("users", ["id" => $id]);
 }
 
