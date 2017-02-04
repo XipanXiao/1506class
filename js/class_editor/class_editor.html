@@ -5,9 +5,10 @@
     <iron-icon icon="editor:border-color" class="small-icon" ng-click="openDepartmentEditor()">
     </iron-icon>
   </div>
-  <div class="padded-element">
+  <div class="padded-element" ng-switch="classInfo.id">
     名称：
-    <editable-label value="classInfo.name"></editable-label>
+    <span ng-switch-when="1">{{classInfo.name}}</span>
+    <editable-label ng-switch-default value="classInfo.name"></editable-label>
   </div>
   <label class="padded-element">
     届别：
