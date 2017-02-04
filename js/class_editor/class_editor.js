@@ -1,12 +1,14 @@
 define('class_editor/class_editor', ['departments/departments',
     'department_editor_dialog/department_editor_dialog', 
     'editable_label/editable_label',
+    'time/time',
     'permission', 'services', 'user_picker/user_picker', 'utils',
     'zb_services'], function() {
 
   return angular.module('ClassEditorModule',
       ['DepartmentEditorDialogModule',
-       'DepartmentsModule', 'EditableLabelModule', 'ServicesModule',
+       'DepartmentsModule', 'EditableLabelModule', 'TimeModule', 
+       'ServicesModule',
        'UserPickerModule', 'UtilsModule',
        'ZBServicesModule']).directive('classEditor',
         function($rootScope, perm, rpc, utils, zbrpc) {

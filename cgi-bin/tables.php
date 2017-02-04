@@ -195,7 +195,7 @@ function update_class($classInfo) {
   
   $datas = [];
   $fields = ["department_id", "name", "class_room", "email", "start_year", 
-      "perm_level", "weekday", "zb_id"];
+      "perm_level", "weekday", "time", "zb_id"];
 
   foreach ($fields as $field) {
     if (isset($classInfo[$field])) {

@@ -2,6 +2,7 @@ js/countries.js
 js/require.js
 js/angular.js
 js/utils.js
+js/time/time.js
 js/services.js
 js/permission.js
 js/importers.js
