@@ -11,6 +11,7 @@ define('users/users', ['bit_editor/bit_editor',
       return {
         scope: {
           users: '=',
+          classId: '=',
           onDelete: '&'
         },
         restrict: 'E',
