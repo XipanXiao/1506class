@@ -49,6 +49,8 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
               };
               
               $scope.reportTask = function (course_id) {
+                if ($scope.user.classId == 1) return;
+
                 var record = $scope.records[course_id];
                 record.course_id = course_id;
                 rpc.report_schedule_task(record);

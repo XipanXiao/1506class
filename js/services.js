@@ -27,10 +27,20 @@ define('services', [], function() {
         return $http.get(serviceUrl + '?rid=departments');
       },
     
-      get_classes: function(classId) {
-        var url = '{0}?rid=classes&classId={1}'.format(serviceUrl,
-            classId || '');
+      get_classes: function(classId, candidate) {
+        var url = '{0}?rid=classes&classId={1}&candidate={2}'.format(serviceUrl,
+            classId || '', candidate || '');
         return $http.get(url);
+      },
+      
+      get_class_prefs: function(all) {
+        var url = '{0}?rid=class_prefs&all={1}'.format(serviceUrl, all || '');
+        return $http.get(url);
+      },
+      
+      update_class_prefs: function(prefs) {
+        prefs.rid = 'class_prefs';
+        return http_form_post($http, $httpParamSerializerJQLike(prefs));
       },
       
       update_class: function(classInfo) {

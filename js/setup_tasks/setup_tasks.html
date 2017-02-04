@@ -28,6 +28,23 @@
   </div>
   <div class="padded-element">
     <div class="task" ng-class="{'completed-task': user.yyed}">
+      <div class="header section-header">选择共修时间</div>
+      <div>
+        <label>首选
+          <select ng-options="getClassLabel(id) for id in classIds"
+              ng-model="class_pref.pref1" ng-change="update_pref()"></select>
+        </label>
+      </div>
+      <div>
+        <label>次选
+          <select ng-options="getClassLabel(id) for id in classIds"
+              ng-model="class_pref.pref2" ng-change="update_pref()"></select>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="padded-element">
+    <div class="task" ng-class="{'completed-task': user.yyed}">
       <div class="header section-header">安装YY</div>
       网络共修必须安装YY客户端，网页版本功能不全。
       <div>Windows:

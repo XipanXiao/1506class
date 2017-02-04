@@ -1,6 +1,7 @@
 <?php
 include_once 'config.php';
 include_once 'connection.php';
+include_once 'class_prefs.php';
 include_once 'tables.php';
 include_once 'util.php';
 
@@ -23,6 +24,7 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
   }
     
   $_SESSION['user'] = serialize($user);
+  random_assign_prefs($user);
     
   client_redirect('../index.html', 1, 'Registered, redirecting...');
 }
