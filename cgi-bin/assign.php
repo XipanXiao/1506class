@@ -1,5 +1,5 @@
 <?php
-
+/*
 include_once 'config.php';
 include_once 'connection.php';
 include_once 'class_prefs.php';
@@ -10,5 +10,5 @@ $users = get_users(null, 1);
 foreach ($users as $user) {
 	random_assign_prefs($user);
 }
-
+*/
 ?>
