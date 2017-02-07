@@ -357,9 +357,16 @@ define('utils', [], function() {
       channelLabels: ['', '其他方式', '智悲佛网', '国际佛学网',
           '美国智悲菩提讲修', '本地招生材料', '微信', '微博或论坛', '朋友介绍'],
       entranceLabels: ['本站', '微信', 'zbfw'], 
+      weekDayLabels: ['星期日', '星期一', '星期二', '星期三', '星期四',
+                       '星期五', '星期六'],
 
       getDisplayLabel: function(user, key) {
         return this[key+'Labels'][user[key]] || '';
+      },
+      getClassLabel: function(classInfo, deps) {
+        return '' + (deps && deps[classInfo.department_id].name || '') +
+            (this.weekDayLabels[classInfo.weekday] || '') + 
+            (classInfo.time || '');
       },
       getNextName: function(name) {
         var match = /([^0-9]*)([0-9]+)(.*)/.exec(name);

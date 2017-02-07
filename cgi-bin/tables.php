@@ -157,15 +157,14 @@ function remove_schedule($id) {
   return $medoo->delete("schedules", ["id" => $id]);
 }
 
-function get_classes($classId) {
+function get_classes($filters = []) {
   global $medoo;
   
   $int_fields = ["id", "department_id", "teacher_id", "start_year",
       "perm_level", "weekday", "zb_id"];
   $undeleted = ["deleted[!]" => 1, "deleted" => NULL];
-  $classes = keyed_by_id($medoo->select("classes", "*", $classId 
-      ? ["AND" => ["id" => $classId, "OR" => $undeleted]]
-      : ["OR" => $undeleted]));
+  $filters = array_merge($filters, ["OR" => $undeleted]);
+  $classes = keyed_by_id($medoo->select("classes", "*", ["AND" => $filters]));
 
   foreach ($classes as $id => $classInfo) {
     $classInfo["self_report"] = isset($classInfo["self_report"])
@@ -246,7 +245,7 @@ function get_user($email) {
   $result = $medoo->select("users", "*", ["email" => $email]);
   if (empty($result)) return null;
   
-  $classes = get_classes($result[0]["classId"]);
+  $classes = get_classes(["id" => $result[0]["classId"]]);
 
   $user = new User($result[0]);
   $user->classInfo = $classes[$user->classId];
@@ -272,7 +271,8 @@ function get_users($email, $classId = null, $user_id = null, $sn = null) {
     return [];
   }
 
-  $classes = ($email || $user_id) ? get_classes($result[0]["classId"]) : null;
+  $classes = ($email || $user_id) ? 
+  		get_classes(["id" => $result[0]["classId"]]) : null;
   $users = array();
 
   foreach ($result as $index => $row) {

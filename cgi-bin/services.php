@@ -21,7 +21,7 @@ function get_class_info($classId) {
   if ($classId == $user->classId) {
     $classInfo = $user->classInfo;
   } else {
-    $classes = get_classes($classId);
+    $classes = get_classes(["id" => $classId]);
     if (!empty($classes)) {
       $classInfo = $classes[$classId];
     }
@@ -48,7 +48,7 @@ function canReadUser($another) {
 function isSameYear($another) {
   global $user;
   $classId = $another["classId"];
-  $classes = get_classes($classId);
+  $classes = get_classes(["id" => $classId]);
   return $classes[$classId]["start_year"] == $user->classInfo["start_year"];
 }
 
@@ -61,12 +61,15 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "classes") {
     $classes = [];
     if (!empty($_GET["classId"])) {
-      $response = array_filter(get_classes($classId), "canReadClass");
-    } elseif (!empty($_GET["candidate"])) {
-    	$response = get_class_candidates($user);
+      $response = array_filter(get_classes(["id" => $classId]), "canReadClass");
+    } elseif (!empty($_GET["department_id"])) {
+      $filters = ["department_id" => $_GET["department_id"]];
+      $response = array_filter(get_classes($filters), "canReadClass");
     } else {
-      $response = array_filter(get_classes(null), "canReadClass");
+      $response = array_filter(get_classes(), "canReadClass");
     }
+  } elseif ($resource_id == "class_candidates") {
+    $response = get_class_candidates($user);
   } elseif ($resource_id == "course_groups") {
     $response = get_course_groups($_GET["detailed"]);
   } elseif ($resource_id == "admins") {
@@ -144,7 +147,13 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     if (!isSysAdmin($user)) return;
     $response = get_state_users($_GET["country"], $_GET["state"]);
   } elseif ($resource_id == "class_prefs") {
-  	$response = get_class_prefs(empty($_GET["all"]) ? $user->id : null);
+    if (isYearLeader($user) || isSysAdmin($user)) {
+      $response = get_class_prefs(
+          isset($_GET["department_id"]) ? null : $user->id,
+          isset($_GET["department_id"]) ? $_GET["department_id"] : null);
+    } else {
+      $response = get_class_prefs($user->id, null);
+    }
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];
@@ -244,7 +253,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       }
     }
   } elseif ($resource_id == "class_prefs") {
-  	update_class_pref($user->id, $_POST["pref1"], $_POST["pref2"]);
+    update_class_pref($user->id, $_POST);
   }
 } elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE" &&
     isset ( $_REQUEST["rid"] )) {

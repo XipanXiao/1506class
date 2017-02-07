@@ -27,14 +27,19 @@ define('services', [], function() {
         return $http.get(serviceUrl + '?rid=departments');
       },
     
-      get_classes: function(classId, candidate) {
-        var url = '{0}?rid=classes&classId={1}&candidate={2}'.format(serviceUrl,
-            classId || '', candidate || '');
+      get_classes: function(classId, department_id) {
+        var url = '{0}?rid=classes&classId={1}&department_id={2}'.
+            format(serviceUrl, classId || '', department_id || '');
         return $http.get(url);
       },
       
-      get_class_prefs: function(all) {
-        var url = '{0}?rid=class_prefs&all={1}'.format(serviceUrl, all || '');
+      get_class_candidates: function() {
+        return $http.get('{0}?rid=class_candidates'.format(serviceUrl));
+      },
+      
+      get_class_prefs: function(department_id) {
+        var url = '{0}?rid=class_prefs&department_id={1}'.
+            format(serviceUrl, department_id);
         return $http.get(url);
       },
       

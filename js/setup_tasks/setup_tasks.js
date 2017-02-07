@@ -12,29 +12,27 @@ define('setup_tasks/setup_tasks',
             var user = scope.user;
             rpc.update_user({id: user.id, enroll_tasks: user.enroll_tasks});
           };
-          rpc.get_classes(null, true).then(function(response) {
+          rpc.get_class_candidates().then(function(response) {
             scope.classes = response.data;
             scope.classIds = utils.keys(scope.classes);
           });
           rpc.get_departments().then(function(response) {
             scope.departments = response.data;
           });
-          rpc.get_class_prefs().then(function(response) {
+          rpc.get_class_prefs('').then(function(response) {
             scope.class_pref = response.data[scope.user.id];
             if (utils.isEmpty(scope.class_pref)) {
               scope.class_pref = {};
             }
           });
           scope.update_pref = function() {
-            rpc.update_class_prefs(scope.class_pref);
+            var prefs = utils.mix_in(scope.class_pref, {
+              department_id: scope.user.classId == 1 ? 0 : 1
+            });
+            rpc.update_class_prefs(prefs);
           };
           scope.getClassLabel = function(id) {
-            var classInfo = scope.classes[id];
-            var dayLabels = ['星期日', '星期一', '星期二', '星期三', '星期四',
-                               '星期五', '星期六'];
-            var dep = (scope.departments || {})[classInfo.department_id] || {};
-            return (dep.name || '') + (dayLabels[classInfo.weekday] || '') + 
-                (classInfo.time || '');
+            return utils.getClassLabel(scope.classes[id], scope.departments);
           };
           
         },
