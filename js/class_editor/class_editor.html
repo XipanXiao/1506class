@@ -55,4 +55,7 @@
 	  <input type="submit" value="Save" ng-click="save()" ng-disabled="!isDirty()">
   </div>
   <div class="error padded-element">{{error}}</div>
+  <a href="assignment.html?department_id={{classId == 1 ? 0 : 1}}"
+      ng-if="needsAssignment()" target="_blank" class="padded-element">
+      查看分班选择</a>
 </div>
