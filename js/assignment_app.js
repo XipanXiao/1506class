@@ -28,7 +28,7 @@ define('assignment_app', [
                 parseInt(getUrlParameter('department_id') || 0);
             rpc.get_user().then(function(user) {
               perm.user = user;
-              if (!perm.isSysAdmin()) {
+              if (!perm.isSysAdmin() && !perm.isYearLeader()) {
                 utils.redirect('login.html');
                 return;
               }

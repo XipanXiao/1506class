@@ -294,6 +294,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   }     
 }
 
+if (is_array($response) && empty($response)) {
+	echo '[]';
+	return;
+}
+
 if ($response) {
   if (is_array($response) && isset($response["updated"]) &&
       intval($response["updated"]) == 0) {
