@@ -33,8 +33,11 @@ define('zb_sync_button/zb_sync_button',
 
             var done = function() {
               scope.inprogress = false;
+              if (scope.errors.length) {
+                alert(scope.errors.join('\n'));
+              }
             };
-            
+            scope.errors = [];
             switch (scope.type) {
             case 'schedule_task':
               var half_terms = scope.getHalfTerms();
@@ -197,10 +200,11 @@ define('zb_sync_button/zb_sync_button',
               result[task] = true;
               userResult[scope.half_term % 2] = result;
               scope.results[user.id] = userResult;
-              return true; 
+            } else {
+              scope.errors.push(
+                  '学员"{0}"的"{1}"记录未能成功提交，请重试'.format(user.name, task));
             }
-            alert('学员"{0}"的"{1}"记录未能成功提交，请重试'.format(user.name, task));
-            return false;
+            return true; 
           };
           scope.checkUserTask = function(user, task) {
             return scope.results[user.id] &&
