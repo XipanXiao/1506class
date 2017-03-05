@@ -467,7 +467,7 @@ define('zb_sync_button/zb_sync_button',
                       taskStats[task.zb_name + '_count'] = stat.sum;
                     }
                     if (task.duration) {
-                      taskStats[task.zb_name + '_time'] = stat.duration;
+                      taskStats[task.zb_name + '_time'] = stat.duration / 60.0;
                     }
                     scope.users[user.id].taskStats = taskStats;
                   });
