@@ -317,7 +317,7 @@ function update_user($user) {
         $datas[$key] = intval($value);
       }
     } elseif (in_array($key, $fields)) {
-      $datas[$key] = $value;
+      $datas[$key] = trim($value);
     }
   }
 
