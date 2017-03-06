@@ -23,8 +23,12 @@ define('zb_sync_button/zb_sync_button',
             if (!scope.classId) return;
             rpc.get_classes(scope.classId).then(function(response) {
               scope.classInfo = response.data[scope.classId];
-              scope.zbUrl = zbrpc.get_report_result_url(scope.classInfo.zb_id,
-                  scope.scheduleGroup ? scope.scheduleGroup.term * 2 : '');
+              if (scope.type == 'schedule_task') {
+                scope.zbUrl = zbrpc.get_report_result_url(scope.classInfo.zb_id,
+                    scope.scheduleGroup ? scope.scheduleGroup.term * 2 : '');
+              } else {
+                scope.zbUrl = zbrpc.get_class_info_url(scope.classInfo.zb_id);
+              }
             });
           });
           scope.sync = function() {

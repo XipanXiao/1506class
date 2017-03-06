@@ -90,6 +90,11 @@ define('zb_services', ['utils'], function() {
             format(serviceUrl, pre_classID, halfTerm);
         return this.get_secure_url(url);
       },
+      get_class_info_url: function(pre_classID) {
+        var url = '{0}/pre/classinfo?pre_classID={1}'.
+            format(serviceUrl, pre_classID);
+        return this.get_secure_url(url);
+      },
       login: function(username, password, captcha) {
         var data = {
           'username': username,
