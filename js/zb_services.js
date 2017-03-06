@@ -232,6 +232,9 @@ define('zb_services', ['utils'], function() {
         var url = '{0}/pre/classselect_ajax?type=init_root_tree'.
             format(serviceUrl);
         return $http.get(get_proxied_url(url));
+      },
+      is_normal_user: function(user) {
+        return parseInt(user.status) == 0;
       }
     };
   });

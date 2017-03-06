@@ -661,7 +661,7 @@ define('zb_sync_button/zb_sync_button',
 
               scope.finished++;
               zb_users.forEach(function(zb_user) {
-                if (parseInt(zb_user.status) == 11) return;
+                if (!zbrpc.is_normal_user(zb_user)) return;
                 zb_users_map[zb_user.userID] = zb_user;
               });
               var local_user_map = {};
