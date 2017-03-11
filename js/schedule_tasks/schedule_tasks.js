@@ -82,6 +82,12 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                 return tm ?
                     '报数已截止于' + utils.toDateTime(tm).toLocaleString() : '';
               };
+              $scope.isMiddleTermWeek = function(schedules, week) {
+                var vacations = utils.where(schedules, $scope.vacation);
+                var length = 
+                  utils.keys(schedules).length - utils.keys(vacations).length;
+                return week == Math.floor(length / 2) + 1;
+              };
             },
             templateUrl : 'js/schedule_tasks/schedule_tasks.html'
           };

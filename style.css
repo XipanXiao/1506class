@@ -488,3 +488,8 @@ address-filter {
 google-chart {
   width: 700px;
 }
+
+.report-week {
+  background-color: green !important;
+  color: white;  
+}
