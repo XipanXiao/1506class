@@ -9,8 +9,8 @@
 
 <hr>
 <form>
-  <input type="text" name="username" value="zhibeihw1" ng-model="username">
-  <input type="password" name="password" value="78901234" ng-model="password">
+  <input type="text" name="username" value="" ng-model="username">
+  <input type="password" name="password" value="" ng-model="password">
   <input type="button" value="login" ng-click="login()">
   <div>{{loginResult}}</div>
 </form>
@@ -83,7 +83,7 @@ app.controller('myCtrl', function($scope, $http, $httpParamSerializerJQLike) {
         $scope.pre_classID = parseInt($scope.response.data[0].pre_classID);
       });
     };
-    $scope.username = 'zhibeihw1';
+    $scope.username = '';
     $scope.courseId = 1;
     $scope.startdate = '2015-06-01';
     $scope.district1 = '美国';
