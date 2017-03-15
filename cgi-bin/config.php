@@ -46,6 +46,9 @@
     ini_set('session.cookie_lifetime', $session_timeout);
     session_start();
 
+    if ($config->origin_whitelist) {
+    	header("Access-Control-Allow-Origin: ". $config->origin_whitelist);
+    }
     return $config;
   }
 

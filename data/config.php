@@ -4,7 +4,8 @@
     "username": "root",
     "password": "2345678901",
     "dbname": "buddcourses",
-    "zbServiceUrl": "http://www.zhibei.info/zb"
+    "zbServiceUrl": "http://www.zhibei.info/zb",
+    "origin_whitelist": "*"
   },
   "10.254.151.229": {
     "servername": "127.0.0.1",
@@ -27,7 +28,8 @@
     "password": "${OPENSHIFT_MYSQL_DB_PASSWORD}",
     "dbname": "buddcourses",
     "session_path": "${OPENSHIFT_TMP_DIR}",
-    "zbServiceUrl": ""
+    "zbServiceUrl": "",
+    "origin_whitelist": "*"
   },
   "closing": "*/?>"
 }
