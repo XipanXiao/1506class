@@ -125,13 +125,6 @@ define('importers', ['permission', 'services', 'utils'], function() {
       if (!user.email) return false;
       
       user.email = user.email.toLowerCase();
-      user.birthday = extractFromPatter(/([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})/,
-          (user.birthday||'').replace('年', '-').replace('月', '-'));
-      user.birthday_label = user.birthday;
-      user.birthday = user.birthday ? (user.birthday + ' 00:00:00') : '';
-      if (user.birthday) {
-        user.birthyear = user.birthday.split('-')[0];
-      }
       
       user.occupation = cutOff(user.occupation, 16);
 
@@ -228,7 +221,6 @@ define('importers', ['permission', 'services', 'utils'], function() {
                 if (result.headers[c].indexOf('年龄') >= 0) {
                   var year = (new Date()).getFullYear() -
                       parseInt(columnValues[c], 10);
-                  user.birthday = '{0}-01-01 00:00:00'.format(year);
                   user.birthyear = '' + year;
                 }
               }
