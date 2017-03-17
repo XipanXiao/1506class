@@ -13,8 +13,10 @@
     }
     var server = findGetParameter('server') || '';
     function getXMLRequest() {
-      return window.XMLHttpRequest ? 
+      var xmlhttp = window.XMLHttpRequest ? 
           new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+      xmlhttp.withCredentials = true;
+      return xmlhttp;
     }
     function getString(url) {
       return new Promise(function(resolve, reject) {
@@ -41,6 +43,8 @@
           params += '&' + key + '=' + data[key];
         }
         xmlhttp.open("POST", server + url, true);
+        xmlhttp.setRequestHeader("Content-type", 
+            "application/x-www-form-urlencoded");
         xmlhttp.send(params);
       });
     }
@@ -49,7 +53,7 @@
       var password = document.getElementById('password').value;
       post('cgi-bin/login.php', 
           {email: email, password: password}).then(function(response) {
-        alert('logined');
+        document.getElementById('logined').innerHTML = 'logined';
       });
     }
     function listClasses() {
@@ -73,7 +77,7 @@
 
 <body>
 <hr>
-<form>
+<form onsubmit="return false;">
   <h2>Login</h2>
   <div>
   POST cgi-bin/login.php?email=test@example.com&password=passw0rd
@@ -84,6 +88,7 @@
   <label>email<input type="text" id="email"></label>
   <label>password<input type="password" id="password"></label>
   <input type="submit" value="login" onclick="login()">
+  <div id="logined"></div>
 </form>
 
 <hr>

@@ -44,11 +44,23 @@
     $session_timeout = sprintf('%d', 3600 * 24 * 30);
     ini_set('session.gc_maxlifetime', $session_timeout);
     ini_set('session.cookie_lifetime', $session_timeout);
-    session_start();
+    ini_set('session.cookie_httponly', "1");
 
     if ($config->origin_whitelist) {
-    	header("Access-Control-Allow-Origin: ". $config->origin_whitelist);
+    	$origin = getallheaders()["Origin"];
+    	if ($config->origin_whitelist != "*" && 
+    			$config->origin_whitelist != $origin) {
+    		return $config;
+    	}
+      header("Access-Control-Allow-Origin: ". $origin);
+      header("Access-Control-Allow-Credentials: true");
+      header("Access-Control-Allow-Headers: Content-Type, Authorization, ".
+          "Content-Length, X-Requested-With, X-Prototype-Version, ".
+          "Origin, Allow, *");
+      header("Access-Control-Allow-Methods: GET,PUT,POST,DELETE,OPTIONS,HEAD");
+      header("Access-Control-Max-Age: ". $session_timeout);
     }
+    session_start();
     return $config;
   }
 
