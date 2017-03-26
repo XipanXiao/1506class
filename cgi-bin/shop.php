@@ -89,27 +89,21 @@ function get_order($id) {
 	if (empty($orders)) return null;
 	
 	$order = current($orders);
-	$items = $medoo->select("order_details", "*", ["order_id" => $id]);
-	$order["items"] = $items;
+	$order["items"] = $medoo->select("order_details", "*", ["order_id" => $id]);
 	
-	$total = 0.0;
-	foreach ($items as $item) {
-		$total += $item["price"] * $item["count"];
-	}
-
-	$order["total"] = $total;
 	return $order;
 }
 
 function get_orders($user_id, $start_timestamp, $end_timestamp) {
 	global $medoo;
 	
-	return $medoo->select("orders", "*", ["AND" => 
-			[
-					"user_id" => $user_id, 
-					"created_time[><]" => [$start_timestamp, $end_timestamp]
-			]
-	]);
+	$timeFilter = ["created_time[><]" => [$start_timestamp, $end_timestamp]];
+	if ($user_id) {
+		return $medoo->select("orders", "*", ["AND" => 
+				array_merge(["user_id" => $user_id], $timeFilter)]); 
+	} else {
+		return $medoo->select("orders", "*", $timeFilter);
+	}
 }
 
 function place_oder($user_id, $order) {

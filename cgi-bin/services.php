@@ -3,6 +3,7 @@ include_once 'config.php';
 include_once 'class_prefs.php';
 include_once 'tables.php';
 include_once 'permission.php';
+include_once 'shop.php';
 
 $response = null;
 
@@ -154,6 +155,25 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     } else {
       $response = get_class_prefs($user->id, null);
     }
+  } elseif ($resource_id == "orders") {
+    if (isset($_GET["order_id"])) {
+      $order = get_order($_GET["order_id"]);
+      if (!$order) {
+        $response = "{}";
+      } elseif (isAdmin($user) || $order["user_id"] == $user->id) {
+        $response = $order;
+      } else {
+        $response = ["error" => "permission denied"];
+      }
+    } elseif (isset($_GET["all"]) && $_GET["all"]) {
+      if (isAdmin($user)) {
+        $response = get_orders(null, $_GET["start"], $_GET["end"]);
+      } else {
+        $response = ["error" => "permission denied"];
+      }
+    } else {
+      $response = get_orders($user->id, $_GET["start"], $_GET["end"]);
+    }
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];
@@ -176,7 +196,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $duration = empty($_POST["duration"]) ? null : intval($_POST["duration"]);
     report_task($task_user_id, $task_id, $_POST["sub_index"], $_POST["count"],
         $duration);
-    $response = get_last_task_record($task_user_id, $task_id);
+    $response = get_last_task_record($task_user_id, $task_id, null);
   } elseif ($resource_id == "task") {
     if (!isSysAdmin($user)) return;
     $response = ["updated" => update_task($_POST)];
@@ -295,8 +315,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 }
 
 if (is_array($response) && empty($response)) {
-	echo '[]';
-	return;
+  echo '[]';
+  return;
 }
 
 if ($response) {
