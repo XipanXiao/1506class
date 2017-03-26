@@ -6,18 +6,11 @@ include_once "util.php";
 
 $medoo = get_medoo();
 
-function table_exists($table) {
-	global $medoo;
-	
-	$result = $medoo->query("SELECT 1 FROM ". $table. " LIMIT 1");
-	return !empty($result);
-}
-
 function create_class_pref_table() {
   global $medoo;
 
   $name = "class_prefs";
-  if (table_exists($name)) return;
+  if (table_exists($medoo, $name)) return;
   
   $result = $medoo->query("CREATE TABLE ". $name. "(
   		user_id INT,

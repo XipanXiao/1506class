@@ -10,4 +10,10 @@ function client_redirect($url, $delay, $message = "") {
       </body>
     </html>", $delay, $url, $message);
 }
+
+/// Returns true if the [$table] exists in the database.
+function table_exists($medoo, $table) {
+	$result = $medoo->query("SELECT 1 FROM ". $table. " LIMIT 1");
+	return !empty($result);
+}
 ?>
