@@ -160,13 +160,13 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       $order = get_order($_GET["order_id"]);
       if (!$order) {
         $response = "{}";
-      } elseif (isAdmin($user) || $order["user_id"] == $user->id) {
+      } elseif (isOrderManager($user) || $order["user_id"] == $user->id) {
         $response = $order;
       } else {
         $response = ["error" => "permission denied"];
       }
     } elseif (isset($_GET["all"]) && $_GET["all"]) {
-      if (isAdmin($user)) {
+      if (isOrderManager($user)) {
         $response = get_orders(null, $_GET["start"], $_GET["end"]);
       } else {
         $response = ["error" => "permission denied"];

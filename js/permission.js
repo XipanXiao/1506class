@@ -9,10 +9,12 @@ define('permission', ['utils'], function() {
         LEADER: 0xF,
         YEAR_LEADER: 0x3F,
         INSPECTION: 0x55,
-        ADMIN: 0xFF
+        ORDER_MANAGER: 0x355,
+        ADMIN: 0xFFFF
       },
       permissions: {
-        0xFF: '管理员',  //4: 11111111  rw all data
+        0xFFFF: '管理员',  //rw all data
+        0x355: '订单管理员', // 1101010101
         0x55: '学院督查', //4: 01010101 r
         0x3F: '年级组长', //3: 00111111    rw class year data
         0xF: '组长',    //2: 1111     rw class data

@@ -15,6 +15,10 @@ function isAdmin($user) {
   return $user->permission > 7 && ($user->permission & 7) == 7;
 }
 
+function isOrderManager($user) {
+  return ($user->permission & 0x355) == 0x355;
+}
+
 function canRead($user, $classInfo) {
   if (isSysAdmin($user)) return true;
 
