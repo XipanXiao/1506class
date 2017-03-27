@@ -118,7 +118,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     if ($whose == "class") {
       $classInfo = get_class_info($_GET["classId"]);
       if (!canRead($user, $classInfo)) {
-        $response = ["error" => "permission denied."];
+        $response = permision_denied_error();
       }
     }
     if (!$response) {
@@ -163,13 +163,13 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       } elseif (isOrderManager($user) || $order["user_id"] == $user->id) {
         $response = $order;
       } else {
-        $response = ["error" => "permission denied"];
+        $response = permision_denied_error();
       }
     } elseif (isset($_GET["all"]) && $_GET["all"]) {
       if (isOrderManager($user)) {
         $response = get_orders(null, $_GET["start"], $_GET["end"]);
       } else {
-        $response = ["error" => "permission denied"];
+        $response = permision_denied_error();
       }
     } else {
       $response = get_orders($user->id, $_GET["start"], $_GET["end"]);
@@ -178,21 +178,10 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];
   
-  $task_user_id = $student_id;
-  if (!empty($_POST["student_id"])) {
-    if (!isAdmin($user)) {
-      $response =
-          ["error" => "permission denied, you can't report tasks for others"];
-      echo json_encode($response);
-      return;
-    } else {
-      // Admins can report for others.
-      $task_user_id = $_POST["student_id"];
-    }
-  } 
-  
   if ($resource_id == "tasks") {
     $task_id = $_POST["task_id"];
+    $task_user_id = 
+        empty($_POST["student_id"]) ? $student_id : $_POST["student_id"];
     $duration = empty($_POST["duration"]) ? null : intval($_POST["duration"]);
     report_task($task_user_id, $task_id, $_POST["sub_index"], $_POST["count"],
         $duration);
@@ -201,7 +190,9 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     if (!isSysAdmin($user)) return;
     $response = ["updated" => update_task($_POST)];
   } elseif ($resource_id == "schedule_tasks") {
-    $response = ["updated" => report_schedule_task($task_user_id, $_POST)];
+    $task_user_id = 
+        empty($_POST["student_id"]) ? $student_id : $_POST["student_id"];
+  	$response = ["updated" => report_schedule_task($task_user_id, $_POST)];
   } elseif ($resource_id == "schedule") {
     $response = ["updated" => update_schedule($_POST)];
   }  elseif ($resource_id == "schedule_group") {
@@ -274,13 +265,24 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     }
   } elseif ($resource_id == "class_prefs") {
     update_class_pref($user->id, $_POST);
+  } elseif ($resource_id == "orders") {
+    $order = $_POST;
+    if ($order["user_id"] != $user->id && !isOrderManager($user)) {
+      $response = ["error" => "permision denied"];
+    } elseif (empty($order["id"])) {
+      $response = ["updated" => place_order($order)];
+    } else {
+      $response = ["updated" => update_order($order)];
+    }
   }
 } elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE" &&
     isset ( $_REQUEST["rid"] )) {
 
   $resource_id = $_REQUEST["rid"];
-  if (!isSysAdmin($user) && $resource_id != "task_records") {
-    $response = ["error" => "permission denied"];
+  if (!isSysAdmin($user) 
+      && $resource_id != "task_records" 
+      && $resource_id != "orders") {
+    $response = permision_denied_error();
     echo json_encode($response);
     exit();
   }
@@ -301,7 +303,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     if (!isAdmin($user)) {
       $record = get_task_record($_REQUEST["id"]);
       if (empty($record) || $record["student_id"] != $student_id) {
-        $response = ["error" => "permission denied"];
+        $response = permision_denied_error();
         echo json_encode($response);
         exit();
       }
@@ -311,7 +313,18 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = ["deleted" => remove_user($_REQUEST["id"])];
   } elseif ($resource_id == "department") {
     $response = ["deleted" => remove_department($_REQUEST["id"])];
-  }     
+  } elseif ($resource_id == "orders") {
+    if (isOrderManager($user)) {
+      $response = ["deleted" => delete_order($_REQUEST["id"])];
+    } else {
+      $order = get_order($_REQUEST["id"]);
+      if (!$order || $order["user_id"] != $user->id) {
+        $response = permision_denied_error();
+      } else {
+        $response = ["deleted" => delete_order($_REQUEST["id"])];
+      }
+    }
+  }
 }
 
 if (is_array($response) && empty($response)) {

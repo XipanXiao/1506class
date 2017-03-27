@@ -16,4 +16,8 @@ function table_exists($medoo, $table) {
 	$result = $medoo->query("SELECT 1 FROM ". $table. " LIMIT 1");
 	return !empty($result);
 }
+
+function permision_denied_error() {
+	return ["error" => "permission denied"];
+}
 ?>
