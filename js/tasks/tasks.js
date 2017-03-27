@@ -66,9 +66,10 @@ define('tasks/tasks', ['progress_bar/progress_bar', 'services', 'utils'],
                 .format(utils.toDateTime(record.ts), record.count,
                     record.duration);
             if (!confirm(message)) return;
-            rpc.remove_task_record(record.id);
-            rpc.get_last_task_record(task.id).then(function (response) {
-              task.lastRecord = response.data;
+            rpc.remove_task_record(record.id).then(function (response) {
+              if (response.data.deleted) {
+                task.lastRecord = response.data.last;
+              }
             });
           };
 
