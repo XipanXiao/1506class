@@ -166,6 +166,17 @@ define('services', [], function() {
         return $http.get(url);
       },
       
+      get_order: function(order_id) {
+        var url = "{0}?rid=orders&order_id={1}".format(serviceUrl, order_id);
+        return $http.get(url);
+      },
+      
+      get_orders: function(student_id, start, end) {
+        var url = "{0}?rid=orders&student_id={1}&start={2}&end={3}".
+            format(serviceUrl, student_id || '', start || '', end || '');
+        return $http.get(url);
+      },
+      
       update_user: function(user) {
         user.rid = 'user';
         return http_form_post($http, $httpParamSerializerJQLike(user));
@@ -184,6 +195,11 @@ define('services', [], function() {
       update_course_group: function(group) {
         group.rid = 'course_group';
         return http_form_post($http, $httpParamSerializerJQLike(group));
+      },
+      
+      update_order: function(order) {
+        order.rid = 'orders';
+        return http_form_post($http, $httpParamSerializerJQLike(order));
       },
       
       remove_course: function(course_id) {
@@ -228,6 +244,11 @@ define('services', [], function() {
 
       remove_task_record: function(record_id) {
         var url = '{0}?rid=task_records&id={1}'.format(serviceUrl, record_id);
+        return $http.delete(url);
+      },
+
+      remove_order: function(order_id) {
+        var url = '{0}?rid=orders&id={1}'.format(serviceUrl, order_id);
         return $http.delete(url);
       },
 
