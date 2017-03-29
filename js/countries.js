@@ -267,6 +267,11 @@ s_a[252] = "Bulawayo|Harare|ManicalandMashonaland Central|Mashonaland East|Masho
     getState: function(countryIndex, stateIndex) {
       return this.getStates(countryIndex)[stateIndex];
     },
+    getStateIndex: function(countryCode, stateName) {
+      var countryIndex = this.getCountryIndex(countryCode);
+      if (countryIndex < 0) return -1;
+      return this.getStates(countryIndex).indexOf(stateName);
+    },
     getCountryCode: function(countryIndex) {
       return codes[countryIndex];
     },
@@ -279,6 +284,19 @@ s_a[252] = "Bulawayo|Harare|ManicalandMashonaland Central|Mashonaland East|Masho
         map[codes[index]] = country_arr[index];
       }
       return map;
+    },
+    fromGoogleAddress: function(address) {
+      var result = {};
+      result.city = address.address_components[1]["long_name"];
+      
+      var index = address.address_components.length - 1;
+      result.countryCode = address.address_components[index--]["short_name"];
+      
+      var countryIndex = this.getCountryIndex(result.countryCode);
+      var state = address.address_components[index--]["long_name"];
+      result.stateIndex = this.getStateIndex(result.countryCode, state);
+      
+      return result;
     }
   };
   

@@ -10,6 +10,44 @@
     confirm.setCustomValidity(valid ? '' : '两次输入的密码不匹配');
     return valid;
   }
+  function getXMLRequest() {
+    return window.XMLHttpRequest ? 
+        new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  function httpGet(url) {
+    return new Promise(function(resolve, reject) {
+      var xmlhttp = getXMLRequest();
+      xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          resolve(JSON.parse(this.responseText));
+        }
+      };
+      xmlhttp.open("GET", url, true);
+      xmlhttp.send();
+    });
+  }
+  function lookup() {
+    var zip = document.querySelector('#zip').value;
+    if (!zip) return;
+
+    var url = 'http://maps.googleapis.com/maps/api/geocode/json?sensor=true&' + 
+        'address=' + zip;
+    httpGet(url).then(function(response) {
+      var error = document.querySelector('#address-error');
+      if (response.status != 'OK') {
+        error.innerHTML = 'Invalid zip code';
+        return;
+      }
+
+      error.innerHTML = '';
+      var address = window.countryData.fromGoogleAddress(response.results[0]);
+      
+      document.querySelector('#city').value = address.city;
+      document.querySelector('#country').value = address.countryCode;
+      document.querySelector('#country').onchange();
+      document.querySelector('#state').value = address.stateIndex; 
+    });
+  }
 </script>
 </head>
 
@@ -89,7 +127,24 @@
         </div>
         <div class="css-table-row">
           <div class="css-table-cell">
-            <label for="city">City <span class="required-asterisk">*</span></label>
+            <label for="street">街道地址(仅号码和街道，邮寄法本用) </label>
+          </div>
+          <div class="css-table-cell">
+            <input type="text" id="street" name="street">
+          </div>
+        </div>
+        <div class="css-table-row">
+          <div class="css-table-cell">
+            <label for="zip">邮编 <span class="required-asterisk">*</span></label>
+          </div>
+          <div class="css-table-cell">
+            <input type="text" id="zip" name="zip" onblur="lookup()" required>
+            <span id="address-error" class="error"></span>
+          </div>
+        </div>
+        <div class="css-table-row">
+          <div class="css-table-cell">
+            <label for="city">城市 <span class="required-asterisk">*</span></label>
           </div>
           <div class="css-table-cell"><input type="text" id="city" name="city" required></div>
         </div>

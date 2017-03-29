@@ -51,9 +51,11 @@ define('user_editor/user_editor',
           editing = editing || $scope.editing;
           switch (editing) {
           case 'address':
+            data.street = user.street;
             data.city = user.city;
             data.state = user.state;
             data.country = user.country;
+            data.zip = user.zip;
             break;
           case 'password':
             if (user.password != user.confirm) return;
@@ -90,6 +92,18 @@ define('user_editor/user_editor',
           $scope.states = utils.keys($scope.stateMap);
 
           utils.setCountryLabels(user);
+        };
+        
+        $scope.lookup = function() {
+          var user = $scope.user;
+          rpc.lookup(user.zip).then(function(address) {
+            if (!address) return;
+
+            address = window.countryData.fromGoogleAddress(address);            
+            user.city = address.city;
+            user.country = address.countryCode;
+            user.state = address.stateIndex; 
+          });
         };
         
         $scope.$watch('user.country', function() {

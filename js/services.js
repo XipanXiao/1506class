@@ -260,6 +260,15 @@ define('services', [], function() {
       update_department: function(department) {
         department.rid = 'department';
         return http_form_post($http, $httpParamSerializerJQLike(department));
+      },
+
+      /// Given a [zip] code, returns the address.
+      lookup: function(zip) {
+        var url = 'http://maps.googleapis.com/maps/api/geocode/json?' + 
+            'address={0}&sensor=true'.format(zip);
+        return $http.get(url).then(function(response) {
+          return response.data.status == 'OK' && response.data.results[0];
+        });
       }
     };
   });

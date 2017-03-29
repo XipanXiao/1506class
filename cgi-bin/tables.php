@@ -306,7 +306,7 @@ function update_user($user) {
   $datas = [];
   
   $fields = ["internal_id", "name", "nickname", "email",
-      "phone", "city", "country",
+      "phone", "street", "city", "country", "zip",
       "im", "occupation", "birthyear", "comments", "skills"];
 
   foreach ($user as $key => $value) {
