@@ -30,7 +30,7 @@
     var zip = document.querySelector('#zip').value;
     if (!zip) return;
 
-    var url = 'http://maps.googleapis.com/maps/api/geocode/json?sensor=true&' + 
+    var url = 'https://maps.googleapis.com/maps/api/geocode/json?sensor=true&' + 
         'address=' + zip;
     httpGet(url).then(function(response) {
       var error = document.querySelector('#address-error');
@@ -239,7 +239,7 @@
               <a href="https://docs.google.com/document/d/1nHy7BHnAUTw75CjjsBUPKIBU-nLlAAsPIIR35tSQLKk/edit?usp=sharing"
                   target="_blank">
                 学会章程
-              </a>
+              </a>，并将遵守佛学会的管理规定。
               <span class="required-asterisk">*</span>
             </label>
           </div>
