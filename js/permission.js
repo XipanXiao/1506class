@@ -9,16 +9,18 @@ define('permission', ['utils'], function() {
         LEADER: 0xF,
         YEAR_LEADER: 0x3F,
         INSPECTION: 0x55,
-        ORDER_MANAGER: 0x355,
+        FINANCE: 0x307,
+        ORDER_MANAGER: 0x357,
         ADMIN: 0xFFFF
       },
       permissions: {
         0xFFFF: '管理员',  //rw all data
-        0x355: '订单管理员', // 1101010101
-        0x55: '学院督查', //4: 01010101 r
-        0x3F: '年级组长', //3: 00111111    rw class year data
-        0xF: '组长',    //2: 1111     rw class data
-        0x7: '学员',    //2: 0111       rw own data, r class data
+        0x357: '订单管理', //00 11 01 01 01 11 rw orders, read all user data
+        0x307: '财务',    //00 11 00 00 01 11 rw orders, no access to other data.
+        0x55: '学院督查', // 00 00 01 01 01 01 r
+        0x3F: '年级组长', // 00 00 00 11 11 11 rw classes of the year
+        0xF: '组长',    //  00 00 00 00 11 11 rw class data
+        0x7: '学员',    //  00 00 00 00 01 11 rw own data, r class data
         0: '所有人'
       },
       isAdmin: function() {
