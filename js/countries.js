@@ -285,15 +285,44 @@ s_a[252] = "Bulawayo|Harare|ManicalandMashonaland Central|Mashonaland East|Masho
       }
       return map;
     },
-    fromGoogleAddress: function(address) {
+    /// Finds address component of the [type] for the [components] list. See
+    /// https://maps.googleapis.com/maps/api/geocode/json?address=01827&sensor=true
+    _findComponent: function(components, type) {
+      return components.find(function(component) {
+        return component.types.indexOf(type) >= 0;
+      });
+    },
+    fromGoogleResults: function(zip, results) {
+      for (var index in results) {
+        var address = this._fromGoogleAddress(zip, results[index]);
+        if (address) return address;
+      }
+      var address = results[0];
+      var zipComp = 
+          this._findComponent(address.address_components, 'postal_code');
+      zip = zipComp.short_name;
+      return this._fromGoogleAddress(zip, address);
+    },
+    _fromGoogleAddress: function(zip, address) {
+      var components = address.address_components;
+      var zipComponent = this._findComponent(components, 'postal_code');
+      if (zipComponent.short_name != zip && zipComponent.long_name != zip) {
+        return null;
+      }
+
       var result = {};
-      result.city = address.address_components[1]["long_name"];
+      var cityComponent = this._findComponent(components, 'locality') || 
+          this._findComponent(components, 'administrative_area_level_2') ||
+          this._findComponent(components, 'administrative_area_level_1');
+      result.city = cityComponent && cityComponent.long_name;
       
-      var index = address.address_components.length - 1;
-      result.countryCode = address.address_components[index--]["short_name"];
+      var country = this._findComponent(components, 'country');
+      result.countryCode = country && country.short_name || result.city;
       
       var countryIndex = this.getCountryIndex(result.countryCode);
-      var state = address.address_components[index--]["long_name"];
+      var stateComponent = 
+          this._findComponent(components, 'administrative_area_level_1'); 
+      var state = stateComponent && stateComponent.long_name || result.ciy;
       result.stateIndex = this.getStateIndex(result.countryCode, state);
       
       return result;

@@ -267,7 +267,7 @@ define('services', [], function() {
         var url = 'https://maps.googleapis.com/maps/api/geocode/json?' + 
             'address={0}&sensor=true'.format(zip);
         return $http.get(url).then(function(response) {
-          return response.data.status == 'OK' && response.data.results[0];
+          return response.data.status == 'OK' && response.data.results;
         });
       }
     };

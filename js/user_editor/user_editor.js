@@ -96,10 +96,11 @@ define('user_editor/user_editor',
         
         $scope.lookup = function() {
           var user = $scope.user;
-          rpc.lookup(user.zip).then(function(address) {
-            if (!address) return;
+          rpc.lookup(user.zip).then(function(results) {
+            if (!results) return;
 
-            address = window.countryData.fromGoogleAddress(address);            
+            var address = 
+                window.countryData.fromGoogleResults(user.zip, results);            
             user.city = address.city;
             user.country = address.countryCode;
             user.state = address.stateIndex; 
