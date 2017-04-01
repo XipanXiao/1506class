@@ -174,6 +174,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
           ? get_orders($user->id, $_GET["start"], $_GET["end"])
           : permision_denied_error();
     }
+  } elseif ($resource_id == "items") {
+    $response = get_shop_items();	
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];

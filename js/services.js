@@ -177,6 +177,11 @@ define('services', [], function() {
         return $http.get(url);
       },
       
+      get_items: function() {
+        var url = "{0}?rid=items".format(serviceUrl);
+        return $http.get(url);
+      },
+      
       update_user: function(user) {
         user.rid = 'user';
         return http_form_post($http, $httpParamSerializerJQLike(user));

@@ -31,6 +31,7 @@ function create_shop_tables() {
           FOREIGN KEY (category) REFERENCES item_categories(id),
         price DECIMAL NOT NULL,
         name VARCHAR(64) COLLATE utf8_unicode_ci NOT NULL,
+        image VARCHAR(256) COLLATE utf8_unicode_ci,
         description VARCHAR(64) COLLATE utf8_unicode_ci
         )");
     if (empty($result)) {
@@ -38,11 +39,14 @@ function create_shop_tables() {
       return false;
     }
     $medoo->insert($name, 
-        ["category" => 1, "price" => 23.0, "name" => "预科系入行论教材"]);
+        ["category" => 1, "price" => 23.0, "name" => "预科系入行论教材", 
+            "image" => "images/ruxinglun.jpg"]);
     $medoo->insert($name, 
-        ["category" => 1, "price" => 22.0, "name" => "预科系加行教材"]);
+        ["category" => 1, "price" => 22.0, "name" => "预科系加行教材", 
+            "image" => "images/jiaxing.jpg"]);
     $medoo->insert($name, 
-        ["category" => 1, "price" => 21.0, "name" => "预科系净土教材"]);
+        ["category" => 1, "price" => 21.0, "name" => "预科系净土教材", 
+            "image" => "images/jingtu.jpg"]);
   }
   
   $name = "orders";
@@ -143,5 +147,12 @@ function update_order($order) {
   }
 
   return $updated;
+}
+
+function get_shop_items() {
+	global $medoo;
+
+	create_shop_tables();
+	return $medoo->select("items", "*");
 }
 ?>
