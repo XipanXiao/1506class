@@ -1,7 +1,8 @@
 <?php
 /// 订书模块
-include_once "datatype.php";
+include_once 'config.php';
 include_once "connection.php";
+include_once 'permission.php';
 include_once "util.php";
 
 $medoo = get_medoo();
@@ -21,8 +22,8 @@ abstract class OrderStatus
 
 /// Checks whether we can close an order (shipped and paided).
 function _canClose($order) {
-	return $order["status"] == OrderStatus::SHIPPED &&
-	    $order["paid"] == $order["sub_total"];
+  return $order["status"] == OrderStatus::SHIPPED &&
+      $order["paid"] == $order["sub_total"];
 }
 
 function create_shop_tables() {
@@ -51,7 +52,7 @@ function create_shop_tables() {
         price DECIMAL NOT NULL,
         name VARCHAR(64) COLLATE utf8_unicode_ci NOT NULL,
         image VARCHAR(256) COLLATE utf8_unicode_ci,
-      	producer VARCHAR(64) COLLATE utf8_unicode_ci,
+        producer VARCHAR(64) COLLATE utf8_unicode_ci,
         description VARCHAR(64) COLLATE utf8_unicode_ci
         )");
     if (empty($result)) {
@@ -75,10 +76,10 @@ function create_shop_tables() {
         id INT PRIMARY KEY AUTO_INCREMENT,
         user_id INT,
         FOREIGN KEY (user_id) REFERENCES users(id),
-      	status TINYINT NOT NULL DEFAULT ". OrderStatus::CREATED. ",
+        status TINYINT NOT NULL DEFAULT ". OrderStatus::CREATED. ",
         extra_cost DECIMAL,
         sub_total DECIMAL NOT NULL DEFAULT 0,
-      	paid DECIMAL,
+        paid DECIMAL,
         `email` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
         `phone` varchar(16) COLLATE utf8_unicode_ci DEFAULT NULL,
         `street` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -226,5 +227,84 @@ function get_shop_items() {
 
   create_shop_tables();
   return $medoo->select("items", "*");
+}
+
+$response = null;
+
+if (empty($_SESSION["user"])) {
+  echo '{"error": "login needed"}';
+  exit();
+} else {
+  $user = unserialize($_SESSION["user"]);
+}
+
+if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
+  $resource_id = $_GET["rid"];
+  if ($resource_id == "orders") {
+    if (isset($_GET["order_id"])) {
+      $order = get_order($_GET["order_id"]);
+      if (!$order) {
+        $response = "{}";
+      } elseif (isOrderManager($user) || $order["user_id"] == $user->id) {
+        $response = $order;
+      } else {
+        $response = permision_denied_error();
+      }
+    } elseif (empty($_GET["student_id"])) {
+      $response = isOrderManager($user)
+      ? get_orders(null, $_GET["start"], $_GET["end"])
+      : permision_denied_error();
+    } else {
+      $response = $_GET["student_id"] == $user->id
+      ? get_orders($user->id, $_GET["start"], $_GET["end"])
+      : permision_denied_error();
+    }
+  } elseif ($resource_id == "items") {
+    $response = get_shop_items();
+  }
+} else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
+  $resource_id = $_POST["rid"];
+
+  if ($resource_id == "orders") {
+    $order = $_POST;
+    if ($order["user_id"] != $user->id && !isOrderManager($user)) {
+      $response = permision_denied_error();
+    } elseif (empty($order["id"])) {
+      $response = ["updated" => place_order($order)];
+    } else {
+      $response = ["updated" => update_order($order)];
+    }
+  }
+} elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE" &&
+    isset ( $_REQUEST["rid"] )) {
+
+  $resource_id = $_REQUEST["rid"];
+
+  if ($resource_id == "orders") {
+    if (isOrderManager($user)) {
+      $response = ["deleted" => delete_order($_REQUEST["id"])];
+    } else {
+      $order = get_order($_REQUEST["id"]);
+      if (!$order || $order["user_id"] != $user->id) {
+        $response = permision_denied_error();
+      } else {
+        $response = ["deleted" => delete_order($_REQUEST["id"])];
+      }
+    }
+  }
+}
+
+if (is_array($response) && empty($response)) {
+  echo '[]';
+  return;
+}
+
+if ($response) {
+  if (is_array($response) && isset($response["updated"]) &&
+      intval($response["updated"]) == 0) {
+        $response["error"] = get_db_error();
+      }
+
+  echo json_encode($response);
 }
 ?>

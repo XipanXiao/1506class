@@ -11,10 +11,10 @@ define('services', [], function() {
 
   var serviceUrl = 'cgi-bin/services.php';
   
-  function http_form_post($http, data) {
+  function http_form_post($http, data, url) {
     return $http({
         method: 'POST',
-        url: serviceUrl,
+        url: url || serviceUrl,
         data: data,
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
     });
@@ -167,19 +167,19 @@ define('services', [], function() {
       },
       
       get_order: function(order_id) {
-        var url = "{0}?rid=orders&order_id={1}".format(serviceUrl, order_id);
+        var url = "cgi-bin/shop.php?rid=orders&order_id={0}".format(order_id);
         return $http.get(url);
       },
       
       get_orders: function(student_id, start, end) {
-        var url = "{0}?rid=orders&student_id={1}&start={2}&end={3}".
-            format(serviceUrl, student_id || '', start || '', end || '');
+        var url = 
+            "cgi-bin/shop.php?rid=orders&student_id={0}&start={1}&end={2}".
+                format(student_id || '', start || '', end || '');
         return $http.get(url);
       },
       
       get_items: function() {
-        var url = "{0}?rid=items".format(serviceUrl);
-        return $http.get(url);
+        return $http.get('cgi-bin/shop.php?rid=items');
       },
       
       update_user: function(user) {
@@ -204,7 +204,8 @@ define('services', [], function() {
       
       update_order: function(order) {
         order.rid = 'orders';
-        return http_form_post($http, $httpParamSerializerJQLike(order));
+        return http_form_post($http, $httpParamSerializerJQLike(order),
+            'cgi-bin/shop.php');
       },
       
       remove_course: function(course_id) {
@@ -253,7 +254,7 @@ define('services', [], function() {
       },
 
       remove_order: function(order_id) {
-        var url = '{0}?rid=orders&id={1}'.format(serviceUrl, order_id);
+        var url = '{0}?rid=orders&id={1}'.format('cgi-bin/shop.php', order_id);
         return $http.delete(url);
       },
 
