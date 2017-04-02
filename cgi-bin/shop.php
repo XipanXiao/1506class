@@ -6,6 +6,25 @@ include_once "util.php";
 
 $medoo = get_medoo();
 
+abstract class OrderStatus
+{
+  /// Only new created orders can be cancelled (deleted) by the buyer.
+  const CREATED = 0;
+  /// When an order manager starts to work (e.g. inform the fulfil department)
+  /// on an order, the order is being processed, and can cannot be cancelled 
+  /// by the buyer. It can still be deleted by an order manager, if nothing is
+  /// paid by the buyer.
+  const PROCESSING = 1;
+  /// Shipped.
+  const SHIPPED = 3;
+}
+
+/// Checks whether we can close an order (shipped and paided).
+function _canClose($order) {
+	return $order["status"] == OrderStatus::SHIPPED &&
+	    $order["paid"] == $order["sub_total"];
+}
+
 function create_shop_tables() {
   global $medoo;
 
@@ -53,10 +72,19 @@ function create_shop_tables() {
   if (!table_exists($medoo, $name)) {
       $result = $medoo->query("CREATE TABLE ". $name. "(
         id INT PRIMARY KEY AUTO_INCREMENT,
-        status TINYINT NOT NULL DEFAULT 1,
         user_id INT,
         FOREIGN KEY (user_id) REFERENCES users(id),
+      	status TINYINT NOT NULL DEFAULT ". OrderStatus::CREATED. ",
         extra_cost DECIMAL,
+        sub_total DECIMAL NOT NULL DEFAULT 0,
+      	paid DECIMAL,
+        `email` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
+        `phone` varchar(16) COLLATE utf8_unicode_ci DEFAULT NULL,
+        `street` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+        `city` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
+        `state` tinyint(4) DEFAULT NULL,
+        `country` char(2) COLLATE utf8_unicode_ci DEFAULT NULL,
+        `zip` char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
         created_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
           ON UPDATE CURRENT_TIMESTAMP,
@@ -66,7 +94,17 @@ function create_shop_tables() {
       return false;
     }
   }
-
+  
+  $name = "closed_orders";
+  if (!table_exists($medoo, $name)) {
+    $result = $medoo->query("CREATE TABLE ". $name. 
+        " SELECT * FROM orders LIMIT 0");
+      if (empty($result)) {
+      error_log($medoo->error());
+      return false;
+    }
+  }
+  
   $name = "order_details";
   if (!table_exists($medoo, $name)) {
       $result = $medoo->query("CREATE TABLE ". $name. "(
@@ -79,6 +117,16 @@ function create_shop_tables() {
         count MEDIUMINT NOT NULL DEFAULT (1)
       )");
     if (empty($result)) {
+      error_log($medoo->error());
+      return false;
+    }
+  }
+
+  $name = "closed_order_details";
+  if (!table_exists($medoo, $name)) {
+    $result = $medoo->query("CREATE TABLE ". $name. 
+        " SELECT * FROM order_details LIMIT 0");
+      if (empty($result)) {
       error_log($medoo->error());
       return false;
     }
@@ -113,7 +161,7 @@ function get_orders($user_id, $start_timestamp, $end_timestamp) {
 function place_oder($order) {
   global $medoo;
 
-  $id = $medoo->insert("orders", ["user_id" => $order["user_id"]]);
+  $id = $medoo->insert("orders", $order);
   if (!$id) return false;
 
   foreach ($order["items"] as $item) {
@@ -123,8 +171,31 @@ function place_oder($order) {
   return $id;
 }
 
+function close_order($id) {
+  global $medoo;
+  
+  $order = get_order($id);
+  if (!$order || !_canClose($order)) return false;
+  
+  $sql = sprintf("INSERT INTO closed_order_details SELECT". 
+      "  * from order_details WHERE order_id = %d;", intval($id));
+  $medoo->query($sql);
+  
+  $sql = sprintf("INSERT INTO closed_orders SELECT". 
+      "  * from orders WHERE id = %d;", intval($id));
+  $medoo->query($sql);
+  
+  $medoo->delete("order_details", ["order_id" => $id]);
+  return $medoo->delete("orders", ["id" => $id]);
+}
+
 function delete_order($id) {
   global $medoo;
+  
+  $order = get_order($id);
+  if (!$order) return false;
+  
+  if (intval($order["status"]) != OrderStatus::CREATED) return false;
   
   $medoo->delete("order_details", ["order_id" => $id]);
   return $medoo->delete("orders", ["id" => $id]);
@@ -150,9 +221,9 @@ function update_order($order) {
 }
 
 function get_shop_items() {
-	global $medoo;
+  global $medoo;
 
-	create_shop_tables();
-	return $medoo->select("items", "*");
+  create_shop_tables();
+  return $medoo->select("items", "*");
 }
 ?>
