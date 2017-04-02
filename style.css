@@ -497,3 +497,16 @@ google-chart {
 .bio {
   max-width: 200px;
 }
+
+.item-image {
+  height: 160px;	
+}
+
+.item-price {
+	font-size: 21px;
+	line-height: 21px;
+}
+
+.white {
+	background: white;
+}

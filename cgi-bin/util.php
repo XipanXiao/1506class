@@ -20,4 +20,10 @@ function table_exists($medoo, $table) {
 function permision_denied_error() {
 	return ["error" => "permission denied"];
 }
+
+function get_db_error2($medoo) {
+	$errors = $medoo->error();
+	return (empty($errors) ? '' : $errors[2]). ": ". $medoo->last_query();
+}
+
 ?>

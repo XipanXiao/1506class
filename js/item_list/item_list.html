@@ -1,0 +1,17 @@
+<div ng-repeat="item in items">
+  <hr>
+  <div class="flex top-border">
+	  <div ng-if="item.image" >
+	    <img src="{{item.image}}" class="item-image padded-element">
+	  </div>
+	  <div>
+		  <h2>{{item.name}}</h2>
+		  <div>by {{item.producer}}</div>
+		  <div class="flex padded-element">
+		    $<span class="item-price">{{item.price}}</span>
+		  </div>
+      <input type="button" value="放入购物车">
+      <input type="button" value="一键买买买！">
+	  </div>
+  </div>
+</div>

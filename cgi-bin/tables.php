@@ -342,8 +342,7 @@ function update_user($user) {
 function get_db_error() {
   global $medoo;
   
-  $errors = $medoo->error();
-  return empty($errors) ? null : $errors[2];
+  return get_db_error2($medoo);
 }
 
 function get_last_task_record($user_id, $task_id, $sub_index) {

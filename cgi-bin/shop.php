@@ -36,7 +36,7 @@ function create_shop_tables() {
         name VARCHAR(64) COLLATE utf8_unicode_ci NOT NULL
         )");
     if (empty($result)) {
-      error_log($medoo->error());
+      error_log(get_db_error2($medoo));
       return false;
     }
     $medoo->insert($name, ["name" => "法本"]);
@@ -51,21 +51,22 @@ function create_shop_tables() {
         price DECIMAL NOT NULL,
         name VARCHAR(64) COLLATE utf8_unicode_ci NOT NULL,
         image VARCHAR(256) COLLATE utf8_unicode_ci,
+      	producer VARCHAR(64) COLLATE utf8_unicode_ci,
         description VARCHAR(64) COLLATE utf8_unicode_ci
         )");
     if (empty($result)) {
-      error_log($medoo->error());
+      error_log(get_db_error2($medoo));
       return false;
     }
     $medoo->insert($name, 
         ["category" => 1, "price" => 23.0, "name" => "预科系入行论教材", 
-            "image" => "images/ruxinglun.jpg"]);
+            "image" => "images/ruxinglun.jpg", "producer" => "索达吉堪布"]);
     $medoo->insert($name, 
         ["category" => 1, "price" => 22.0, "name" => "预科系加行教材", 
-            "image" => "images/jiaxing.jpg"]);
+            "image" => "images/jiaxing.jpg", "producer" => "索达吉堪布"]);
     $medoo->insert($name, 
         ["category" => 1, "price" => 21.0, "name" => "预科系净土教材", 
-            "image" => "images/jingtu.jpg"]);
+            "image" => "images/jingtu.jpg", "producer" => "索达吉堪布"]);
   }
   
   $name = "orders";
@@ -87,10 +88,10 @@ function create_shop_tables() {
         `zip` char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
         created_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-          ON UPDATE CURRENT_TIMESTAMP,
+          ON UPDATE CURRENT_TIMESTAMP
         )");
     if (empty($result)) {
-      error_log($medoo->error());
+      error_log(get_db_error2($medoo));
       return false;
     }
   }
@@ -100,7 +101,7 @@ function create_shop_tables() {
     $result = $medoo->query("CREATE TABLE ". $name. 
         " SELECT * FROM orders LIMIT 0");
       if (empty($result)) {
-      error_log($medoo->error());
+      error_log(get_db_error2($medoo));
       return false;
     }
   }
@@ -114,10 +115,10 @@ function create_shop_tables() {
         item_id INT,
         FOREIGN KEY (item_id) REFERENCES items(id),
         price DECIMAL NOT NULL,
-        count MEDIUMINT NOT NULL DEFAULT (1)
+        count MEDIUMINT NOT NULL DEFAULT 1
       )");
     if (empty($result)) {
-      error_log($medoo->error());
+      error_log(get_db_error2($medoo));
       return false;
     }
   }
@@ -127,7 +128,7 @@ function create_shop_tables() {
     $result = $medoo->query("CREATE TABLE ". $name. 
         " SELECT * FROM order_details LIMIT 0");
       if (empty($result)) {
-      error_log($medoo->error());
+      error_log(get_db_error2($medoo));
       return false;
     }
   }

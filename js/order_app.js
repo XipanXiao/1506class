@@ -1,5 +1,6 @@
 define('order_app', [
     'app_bar/app_bar',
+    'item_list/item_list',
     'services',
     'permission',
     'utils'],
@@ -7,6 +8,7 @@ define('order_app', [
 
   angular.module('AppModule', [
       'AppBarModule',
+      'ItemListModule',
       'ServicesModule',
       'PermissionModule',
       'UtilsModule',
