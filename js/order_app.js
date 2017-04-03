@@ -22,6 +22,9 @@ define('order_app', [
               items: {},
               add: function(item) {
                 this.items[item.id] = 1;
+              },
+              size: function() {
+                return utils.keys(this.items).length;
               }
             };
 

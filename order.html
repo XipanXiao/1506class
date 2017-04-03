@@ -17,6 +17,11 @@
 <app-bar user="user"></app-bar>
 
 <div class="center page-container">
+  <div class="right padded-element shopping-cart">
+    <span class="cart-size" ng-if="cart.size()">{{cart.size()}}</span>
+    <iron-icon icon="shopping-cart"></iron-icon>
+    <span>购物车</span>
+  </div>
   <paper-tabs noink selected="0">
     <paper-tab>下订单</paper-tab>
     <paper-tab>我的订单</paper-tab>

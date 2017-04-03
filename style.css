@@ -518,3 +518,16 @@ body.white {
   cursor: pointer;
   padding: 4px;	
 }
+
+.shopping-cart {
+  color: blue;
+  cursor: pointer;
+  position: relative;
+}
+
+.cart-size {
+  color: red;
+  left: 25px;
+  position: absolute;
+  top: 5px;
+}
