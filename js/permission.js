@@ -15,8 +15,8 @@ define('permission', ['utils'], function() {
       },
       permissions: {
         0xFFFF: '管理员',  //rw all data
-        0x357: '订单管理', //00 11 01 01 01 11 rw orders, read all user data
-        0x307: '财务',    //00 11 00 00 01 11 rw orders, no access to other data.
+        0x307: '订单管理', //00 11 00 00 01 11 rw orders, read all user data
+        0x107: '财务',    //00 01 00 00 01 11 rw orders, no access to other data.
         0x55: '学院督查', // 00 00 01 01 01 01 r
         0x3F: '年级组长', // 00 00 00 11 11 11 rw classes of the year
         0xF: '组长',    //  00 00 00 00 11 11 rw class data

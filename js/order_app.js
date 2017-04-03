@@ -17,6 +17,13 @@ define('order_app', [
         return {
           link: function(scope) {
             scope.pageLoaded = [];
+            
+            scope.cart = {
+              items: {},
+              add: function(item) {
+                this.items[item.id] = 1;
+              }
+            };
 
             rpc.get_user().then(function(user) {
               perm.user = user;

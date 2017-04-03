@@ -507,6 +507,14 @@ google-chart {
 	line-height: 21px;
 }
 
-.white {
+body.white {
 	background: white;
+}
+
+.add-cart-button {
+  background: #f0c14b;
+  border-radius: 3px;
+  border: 1px solid;
+  cursor: pointer;
+  padding: 4px;	
 }

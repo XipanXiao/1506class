@@ -60,7 +60,7 @@ function create_shop_tables() {
       return false;
     }
     $medoo->insert($name, 
-        ["category" => 1, "price" => 23.0, "name" => "预科系入行论教材", 
+        ["category" => 1, "price" => 23.0, "name" => "预科系入行论教材(全10册)", 
             "image" => "images/ruxinglun.jpg", "producer" => "索达吉堪布"]);
     $medoo->insert($name, 
         ["category" => 1, "price" => 22.0, "name" => "预科系加行教材", 
