@@ -1,6 +1,7 @@
 define('order_app', [
     'app_bar/app_bar',
     'item_list/item_list',
+    'shopping_cart/shopping_cart',
     'services',
     'permission',
     'utils'],
@@ -9,6 +10,7 @@ define('order_app', [
   angular.module('AppModule', [
       'AppBarModule',
       'ItemListModule',
+      'ShoppingCartModule',
       'ServicesModule',
       'PermissionModule',
       'UtilsModule',
@@ -19,12 +21,11 @@ define('order_app', [
             scope.pageLoaded = [];
             
             scope.cart = {
-              items: {},
+              items: [],
               add: function(item) {
-                this.items[item.id] = 1;
-              },
-              size: function() {
-                return utils.keys(this.items).length;
+                item.count = 1;
+                this.items.push(item);
+                scope.selectTab(1);
               }
             };
 
@@ -42,6 +43,10 @@ define('order_app', [
                 scope.$apply();
               }, 0);
             });
+            
+            scope.selectTab = function(index) {
+              tabs.selected = index;
+            };
           }
         };
       });

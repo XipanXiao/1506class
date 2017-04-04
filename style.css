@@ -20,6 +20,10 @@ body.admin {
   padding: 16px;
 }
 
+.h-padded-element {
+  padding: 0 16px;
+}
+
 .app-bar {
   background-color: #860200;
   color: white;
@@ -152,6 +156,7 @@ schedule-tasks {
   color: white;  
 }
 
+.clickable,
 .selectable {
   cursor: pointer;
 }
@@ -246,6 +251,14 @@ paper-tabs {
 
 .flex {
   display: flex;
+}
+
+.flex.center-align {
+  align-items: center;
+}
+
+.center-align {
+  text-align: center;
 }
 
 .task {
@@ -499,7 +512,11 @@ google-chart {
 }
 
 .item-image {
-  height: 160px;	
+  height: 160px;  
+}
+
+.item-image.small {
+  height: 100px;  
 }
 
 .item-price {
@@ -511,7 +528,7 @@ body.white {
 	background: white;
 }
 
-.add-cart-button {
+.yellow-button {
   background: #f0c14b;
   border-radius: 3px;
   border: 1px solid;
@@ -530,4 +547,12 @@ body.white {
   left: 25px;
   position: absolute;
   top: 5px;
+}
+
+.check-out-button {
+	width: 100px;
+}
+
+.right-align {
+  text-align: right;
 }
