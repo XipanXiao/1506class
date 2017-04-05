@@ -21,11 +21,61 @@ define('order_app', [
             scope.pageLoaded = [];
             
             scope.cart = {
-              items: [],
+              size: 0,
+              subTotal: 0.0,
+              items: {},
               add: function(item) {
-                item.count = 1;
-                this.items.push(item);
+                var existing = this.items[item.id];
+                if (existing) {
+                  existing.count++;
+                } else {
+                  item.count = 1;
+                  item.price = parseFloat(item.price);
+                  this.items[item.id] = item;
+                }
+                this.update();
                 scope.selectTab(1);
+              },
+              remove: function(id) {
+                delete this.items[id];
+                this.update();
+              },
+              update: function() {
+                this.size = 0;
+                this.subTotal = 0.0;
+                for (var id in this.items) {
+                  var item = this.items[id];
+                  this.size += item.count;
+                  this.subTotal += item.price * item.count;
+                }
+              },
+              checkOut: function() {
+                var user = scope.user;
+                var order = {
+                  user_id: user.id,
+                  sub_total: this.subTotal,
+                  email: user.email,
+                  phone: user.phone,
+                  street: user.street,
+                  city: user.city,
+                  state: user.state,
+                  country: user.country,
+                  zip: user.zip,
+                  items: []
+                };
+                for (var id in this.items) {
+                  var item = this.items[id];
+                  order.items.push({
+                    item_id: item.id,
+                    price: item.price,
+                    count: item.count
+                  });
+                }
+                rpc.update_order(order).then(function(response) {
+                  if (response.data.updated) {
+                    scope.selectTab(1);
+                  }
+                });
               }
             };
 

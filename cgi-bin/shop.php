@@ -163,10 +163,16 @@ function get_orders($user_id, $start_timestamp, $end_timestamp) {
 function place_oder($order) {
   global $medoo;
 
+  $items = [];
+  foreach ($order["items"] as $item) {
+  	array_push($items, $item);
+  }
+  unset($order["items"]);
+
   $id = $medoo->insert("orders", $order);
   if (!$id) return false;
 
-  foreach ($order["items"] as $item) {
+  foreach ($items as $item) {
     $item["order_id"] = $id;
     $medoo->insert("order_details", $item);
   }

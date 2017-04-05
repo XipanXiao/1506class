@@ -1,23 +1,36 @@
-<div ng-repeat="item in cart.items">
-  <hr>
-  <div class="flex top-border center-align">
-    <div ng-if="item.image" >
-      <img src="{{item.image}}" class="item-image padded-element small">
+<div class="css-table shopping-cart-list">
+  <div class="css-table-row">
+    <div class="css-table-cell"></div>
+    <div class="css-table-cell"></div>
+    <div class="css-table-cell">单价</div>
+    <div class="css-table-cell">数量</div>
+    <div class="css-table-cell"></div>
+  </div>
+  <div ng-repeat="item in cart.items" class="css-table-row top-border deletable">
+    <div class="css-table-cell">
+      <img src="{{item.image}}" class="item-image small">
     </div>
-    <div><h3>{{item.name}}</h3> by {{item.producer}}</div>
-    <span>${{item.price}}</span>
-    <input type="number" min="1" ng-model="item.count">
-    <iron-icon icon="delete" ng-click="remove(item)" class="clickable">
-    </iron-icon>
+    <div class="css-table-cell">
+      <h3>{{item.name}}</h3> by {{item.producer}}
+    </div>
+    <div class="css-table-cell">${{item.price}}</div>
+    <div class="css-table-cell">
+      <input type="number" min="1" ng-model="item.count" ng-change="cart.update()">
+    </div>
+    <div class="css-table-cell">
+      <iron-icon icon="delete" ng-click="cart.remove(item.id)" class="delete-button"
+          title="删除">
+      </iron-icon>
+    </div>
   </div>
 </div>
 <hr>
 <div class="right">
   <div class="center-align flex">
     <div class="h-padded-element">
-      总价 ({{cart.items.length}} items): ${{subTotal}}
+      总价 ({{cart.items.length}} items): ${{cart.subTotal}}
     </div>
-    <div class="yellow-button check-out-button center-align" ng-click="checkOut()">
+    <div class="yellow-button check-out-button center-align" ng-click="cart.checkOut()">
       提交订单
     </div>
   </div>

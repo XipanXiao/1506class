@@ -556,3 +556,20 @@ body.white {
 .right-align {
   text-align: right;
 }
+
+.shopping-cart-list .css-table-cell {
+  vertical-align: top;
+}
+
+.shopping-cart-list.css-table {
+  width: 100%;
+}
+
+.css-table-row.deletable .delete-button {
+  visibility: hidden;
+}
+
+.css-table-row.deletable:hover .delete-button {
+  cursor: pointer;
+  visibility: visible;
+}
