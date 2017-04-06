@@ -181,9 +181,7 @@
       <div class="css-table-row padded-element">
         <div class="css-table-cell">地址</div>
         <div class="css-table-cell">
-          <div>{{user.street}}</div>
-          <div>{{user.city}}, {{user.stateLabel}} {{user.zip}}</div>
-          <div>{{user.countryLabel}}</div>
+          <address-editor user="user"></address-editor>
         </div>
         <div class="css-table-cell">
           <iron-icon class="selectable" icon="chevron-right" ng-click="editing = 'address'">
@@ -264,7 +262,7 @@
           <input type="password" ng-model="user.confirm" autofocus>
           <div ng-if="user.password != user.confirm" class="error">两次输入的密码不匹配</div>
         </div>
-        <address-editor ng-switch-when="address" user="user"></address-editor>
+        <address-editor ng-switch-when="address" editing="true" user="user"></address-editor>
         <user-picker ng-switch-when="mentor_id" user-id="user.mentor_id" user-list="classMates">
         </user-picker>
         <select ng-switch-when="education" ng-model="user.education"

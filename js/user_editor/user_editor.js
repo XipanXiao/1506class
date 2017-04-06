@@ -31,7 +31,6 @@ define('user_editor/user_editor',
 
         $scope.$watch('user', function() {
           $scope.editing = null;
-          if ($scope.user) $scope.setupAddressLists($scope.user);
           if (!$scope.user || $scope.user.classInfo) return;
 
           var classId = $scope.user.classId;
@@ -82,40 +81,6 @@ define('user_editor/user_editor',
         };
         
         $scope.admining = window.location.href.indexOf('admin.html') > 0;
-        
-        $scope.setupAddressLists = function(user) {
-          $scope.countries = utils.keys($scope.countryLabels);
-          
-          $scope.onCountryChange(user);
-        };
-        
-        $scope.onCountryChange = function(user) {
-          var index = window.countryData.getCountryIndex(user.country);
-          $scope.stateMap = window.countryData.getStates(index);
-          $scope.states = utils.keys($scope.stateMap);
-
-          utils.setCountryLabels(user);
-        };
-        
-        $scope.lookup = function() {
-          var user = $scope.user;
-          rpc.lookup(user.zip).then(function(results) {
-            if (!results) return;
-
-            var address = 
-                window.countryData.fromGoogleResults(user.zip, results);            
-            user.city = address.city;
-            user.country = address.countryCode;
-            user.state = address.stateIndex; 
-          });
-        };
-        
-        $scope.$watch('user.country', function() {
-          if ($scope.user) $scope.onCountryChange($scope.user);
-        });
-        $scope.$watch('user.state', function() {
-          if ($scope.user) utils.setCountryLabels($scope.user);
-        });
       },
 
       templateUrl : 'js/user_editor/user_editor.html'
