@@ -1,0 +1,31 @@
+<div class="css-table">
+  <div class="css-table-row">
+    <div class="css-table-cell"><label for="zip">Zip code</label></div>
+    <div class="css-table-cell"><input type="text" id="zip" ng-model="user.zip"
+        ng-blur="lookup()">
+    </div>
+  </div>
+  <div class="css-table-row">
+    <div class="css-table-cell"><label for="street">Street number</label></div>
+    <div class="css-table-cell"><input type="text" id="street" ng-model="user.street">
+    </div>
+  </div>
+  <div class="css-table-row">
+    <div class="css-table-cell"><label for="city">City</label></div>
+    <div class="css-table-cell"><input type="text" id="city" ng-model="user.city"></div>
+  </div>
+  <div class="css-table-row">
+    <div class="css-table-cell"><label for="state">State</label></div>
+    <div class="css-table-cell">
+      <select id="state" ng-options="stateMap[value] for value in states"
+          ng-model="user.state"></select>
+    </div>
+  </div>
+  <div class="css-table-row">
+    <div class="css-table-cell"><label for="country">Country</label></div>
+    <div class="css-table-cell">
+      <select id="state" ng-options="countryLabels[value] for value in countries"
+          ng-model="user.country"></select>
+    </div>
+  </div>
+</div>

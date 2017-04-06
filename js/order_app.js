@@ -71,8 +71,11 @@ define('order_app', [
                     count: item.count
                   });
                 }
+                var cart = this;
                 rpc.update_order(order).then(function(response) {
                   if (response.data.updated) {
+                    cart.items = {};
+                    cart.update();
                     scope.selectTab(1);
                   }
                 });

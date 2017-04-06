@@ -1,11 +1,25 @@
-define('shopping_cart/shopping_cart', ['services'], function() {
-	return angular.module('ShoppingCartModule', ['ServicesModule'])
-		.directive('shoppingCart', function(rpc) {
-			return {
-			  scope: {
-			    cart: '='
-			  },
-				templateUrl : 'js/shopping_cart/shopping_cart.html'
-			};
-		});
+define('shopping_cart/shopping_cart', [
+    'address_editor/address_editor',
+    'services'], function() {
+  return angular.module('ShoppingCartModule', [
+      'AddressEditorModule', 'ServicesModule'])
+    .directive('shoppingCart', function(rpc) {
+      return {
+        scope: {
+          cart: '=',
+          user: '='
+        },
+        link: function(scope) {
+          scope.confirming = false;
+          
+          scope.checkOut = function() {
+            if (scope.confirming) {
+              scope.cart.checkOut();
+            }
+            scope.confirming = !scope.confirming;
+          };
+        },
+        templateUrl : 'js/shopping_cart/shopping_cart.html'
+      };
+    });
 });

@@ -1,3 +1,32 @@
+<div ng-if="confirming">
+  <h2>确认收货地址和联系方式</h2>
+  <div class="flex">
+    <div>
+        <div class="h-padded-element">
+          <label>
+            姓名
+            <input ng-model="user.name" type="text" autofocus>
+          </label>
+        </div>
+        <div class="h-padded-element">
+          <label>
+            电话
+            <input ng-model="user.phone" type="tel">
+          </label>
+        </div>
+        <div class="h-padded-element">
+          <label>
+            邮件
+            <input ng-model="user.email" type="email">
+          </label>
+        </div>
+    </div>
+    <div class="h-padded-element">
+      <label>地址</label>
+      <address-editor user="user"></address-editor>
+    </div>
+  </div>
+</div>
 <div class="css-table shopping-cart-list">
   <div class="css-table-row">
     <div class="css-table-cell"></div>
@@ -30,8 +59,8 @@
     <div class="h-padded-element">
       总价 ({{cart.items.length}} items): ${{cart.subTotal}}
     </div>
-    <div class="yellow-button check-out-button center-align" ng-click="cart.checkOut()">
-      提交订单
+    <div class="yellow-button check-out-button center-align" ng-click="checkOut()">
+      {{confirming ? '提交订单' : '结账'}}
     </div>
   </div>
 </div>

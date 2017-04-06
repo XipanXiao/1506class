@@ -1,7 +1,10 @@
 define('user_editor/user_editor',
-    ['services', 'utils', 'bit_editor/bit_editor', 'classes/classes',
+    ['services', 'utils',
+     'address_editor/address_editor',
+     'bit_editor/bit_editor', 'classes/classes',
      'permission'], function() {
   return angular.module('UserEditorModule', ['ServicesModule',
+      'AddressEditorModule',
       'BitEditorModule', 'ClassesModule',
       'PermissionModule', 'UtilsModule']).directive('userEditor',
           function($rootScope, perm, rpc, utils) {
