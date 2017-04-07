@@ -4,7 +4,8 @@ define('address_editor/address_editor', ['services', 'utils'], function() {
     return {
       scope: {
         editing: '@',
-        user: '='
+        user: '=',
+        withContact: '@',
       },
       link: function(scope) {
         scope.countryLabels = window.countryData.getCountryMap();

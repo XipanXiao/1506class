@@ -80,7 +80,6 @@ function create_shop_tables() {
         extra_cost DECIMAL,
         sub_total DECIMAL NOT NULL DEFAULT 0,
         paid DECIMAL,
-        `email` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
         `phone` varchar(16) COLLATE utf8_unicode_ci DEFAULT NULL,
         `street` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
         `city` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,

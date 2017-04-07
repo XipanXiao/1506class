@@ -1,30 +1,18 @@
 <div ng-if="confirming">
   <h2>确认收货地址和联系方式</h2>
-  <div class="flex">
-    <div>
-        <div class="h-padded-element">
-          <label>
-            姓名
-            <input ng-model="user.name" type="text" autofocus>
-          </label>
-        </div>
-        <div class="h-padded-element">
-          <label>
-            电话
-            <input ng-model="user.phone" type="tel">
-          </label>
-        </div>
-        <div class="h-padded-element">
-          <label>
-            邮件
-            <input ng-model="user.email" type="email">
-          </label>
-        </div>
-    </div>
-    <div class="h-padded-element">
-      <label>地址</label>
-      <address-editor user="user"></address-editor>
-    </div>
+  <hr>
+  <div class="padded-element">
+    <address-editor user="user" with-contact="true"></address-editor>
+  </div>
+  <div class="padded-element">
+    <label>
+      <input type="checkbox" ng-model="editingAddress">
+      输入别的送货地址
+    </label>
+  </div>
+  <div ng-if="editingAddress" class="padded-element">
+    <address-editor editing="true" user="user" with-contact="true">
+    </address-editor>
   </div>
 </div>
 <div class="css-table shopping-cart-list">
