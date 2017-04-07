@@ -2,6 +2,7 @@
 /// 订书模块
 include_once 'config.php';
 include_once "connection.php";
+include_once "datatype.php";
 include_once 'permission.php';
 include_once "util.php";
 
@@ -159,7 +160,7 @@ function get_orders($user_id, $start_timestamp, $end_timestamp) {
   }
 }
 
-function place_oder($order) {
+function place_order($order) {
   global $medoo;
 
   $items = [];
@@ -272,6 +273,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 
   if ($resource_id == "orders") {
     $order = $_POST;
+  	unset($order["rid"]);
+
     if ($order["user_id"] != $user->id && !isOrderManager($user)) {
       $response = permision_denied_error();
     } elseif (empty($order["id"])) {
@@ -307,7 +310,7 @@ if (is_array($response) && empty($response)) {
 if ($response) {
   if (is_array($response) && isset($response["updated"]) &&
       intval($response["updated"]) == 0) {
-        $response["error"] = get_db_error();
+        $response["error"] = get_db_error2($medoo);
       }
 
   echo json_encode($response);

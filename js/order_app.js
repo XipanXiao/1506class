@@ -49,6 +49,10 @@ define('order_app', [
                   this.subTotal += item.price * item.count;
                 }
               },
+              clear: function() {
+                this.items = {};
+                this.update();
+              },
               checkOut: function() {
                 var user = scope.user;
                 var order = {
@@ -73,9 +77,8 @@ define('order_app', [
                 var cart = this;
                 rpc.update_order(order).then(function(response) {
                   if (response.data.updated) {
-                    cart.items = {};
-                    cart.update();
-                    scope.selectTab(1);
+                    cart.clear();
+                    scope.selectTab(2);
                   }
                 });
               }
