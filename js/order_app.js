@@ -54,7 +54,6 @@ define('order_app', [
                 var order = {
                   user_id: user.id,
                   sub_total: this.subTotal,
-                  email: user.email,
                   phone: user.phone,
                   street: user.street,
                   city: user.city,
