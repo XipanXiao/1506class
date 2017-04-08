@@ -10,6 +10,8 @@ define('orders/orders', [
         },
         link: function(scope) {
           scope.reload = function() {
+            if (!scope.user) return;
+
             rpc.get_orders(scope.user.id, true).then(function(response) {
               var orders = response.data;
               if (!orders) return;
@@ -36,8 +38,7 @@ define('orders/orders', [
           };
 
           $rootScope.$on('reload-orders', scope.reload);
-
-          scope.reload();
+          scope.$watch('user', scope.reload);
         },
         templateUrl : 'js/orders/orders.html'
       };

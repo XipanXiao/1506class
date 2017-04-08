@@ -35,6 +35,9 @@
     <div class="css-table-cell">
       <h3>{{item.name}}</h3> by {{item.producer}}
     </div>
-    <div class="css-table-cell">${{item.price}}</div>
+    <div class="css-table-cell">
+      ${{item.price}}
+      <span ng-if="item.count > 1">(x {{item.count}})</span>
+    </div>
   </div>
 </div>
