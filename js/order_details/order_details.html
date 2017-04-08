@@ -1,0 +1,40 @@
+<div class="css-table order-details-header">
+  <div class="css-table-row" ng-class="{'deletable': !order.status}">
+    <div class="css-table-cell">
+      <div>订单日期</div>
+      <div>{{order.created_time}}</div>
+    </div>
+    <div class="css-table-cell">
+      <div>金额</div>
+      <div>${{order.sub_total}}</div>
+    </div>
+    <div class="css-table-cell">
+      <div>收货地址和联系方式</div>
+      <address-editor user="order" with-contact="true"></address-editor>
+    </div>
+    <div class="css-table-cell">
+      <div ng-if="order.shipping_date">发货：{{order.shipping_date}}</div>
+      <div ng-if="order.deliver_date">送达：{{order.deliver_date}}</div>
+    </div>
+    <div class="css-table-cell">
+      <div>订单号</div>
+      <div>{{order.id}}</div>
+    </div>
+    <div class="css-table-cell">
+      <iron-icon icon="delete" ng-click="onCancel()" class="delete-button"
+          title="取消订单">
+      </iron-icon>
+    </div>
+  </div>
+</div>
+<div class="css-table shopping-cart-list">
+  <div ng-repeat="item in order.items" class="css-table-row top-border">
+    <div class="css-table-cell">
+      <img src="{{item.image}}" class="item-image small">
+    </div>
+    <div class="css-table-cell">
+      <h3>{{item.name}}</h3> by {{item.producer}}
+    </div>
+    <div class="css-table-cell">${{item.price}}</div>
+  </div>
+</div>

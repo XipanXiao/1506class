@@ -561,10 +561,14 @@ body.white {
   vertical-align: top;
 }
 
+.order-details-header.css-table,
 .shopping-cart-list.css-table {
   width: 100%;
 }
 
+.order-details-header {
+  background-color: lightgray;
+}
 .css-table-row.deletable .delete-button {
   visibility: hidden;
 }

@@ -13,17 +13,28 @@ function client_redirect($url, $delay, $message = "") {
 
 /// Returns true if the [$table] exists in the database.
 function table_exists($medoo, $table) {
-	$result = $medoo->query("SELECT 1 FROM ". $table. " LIMIT 1");
-	return !empty($result);
+  $result = $medoo->query("SELECT 1 FROM ". $table. " LIMIT 1");
+  return !empty($result);
 }
 
 function permision_denied_error() {
-	return ["error" => "permission denied"];
+  return ["error" => "permission denied"];
 }
 
 function get_db_error2($medoo) {
-	$errors = $medoo->error();
-	return (empty($errors) ? '' : $errors[2]). ": ". $medoo->last_query();
+  $errors = $medoo->error();
+  return (empty($errors) ? '' : $errors[2]). ": ". $medoo->last_query();
 }
 
+function keyed_by_id($rows, $id_key = "id") {
+  $result = [];
+
+  if (!is_array($rows) || empty($rows)) return $result;
+
+  foreach ($rows as $row) {
+    $result[$row[$id_key]] = $row;
+  }
+
+  return $result;
+}
 ?>

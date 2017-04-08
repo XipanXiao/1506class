@@ -87,6 +87,8 @@ function create_shop_tables() {
         `state` tinyint(4) DEFAULT NULL,
         `country` char(2) COLLATE utf8_unicode_ci DEFAULT NULL,
         `zip` char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+      	shipping_date DATE,
+      	deliver_date DATE,
         created_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
           ON UPDATE CURRENT_TIMESTAMP
@@ -148,16 +150,24 @@ function get_order($id) {
   return $order;
 }
 
-function get_orders($user_id, $start_timestamp, $end_timestamp) {
+function get_orders($user_id, $start_timestamp, $end_timestamp, $items) {
   global $medoo;
   
   $timeFilter = ["created_time[><]" => [$start_timestamp, $end_timestamp]];
   if ($user_id) {
-    return $medoo->select("orders", "*", ["AND" => 
+    $orders = $medoo->select("orders", "*", ["AND" => 
         array_merge(["user_id" => $user_id], $timeFilter)]); 
   } else {
-    return $medoo->select("orders", "*", $timeFilter);
+    $orders = $medoo->select("orders", "*", $timeFilter);
   }
+  if (!$items) return $orders;
+
+  foreach ($orders as $index => $order) {
+  	$order["items"] = $medoo->select("order_details", "*", 
+  			["order_id" => $order["id"]]);
+  	$orders[$index] = $order;
+  }
+  return $orders;
 }
 
 function place_order($order) {
@@ -200,11 +210,6 @@ function close_order($id) {
 function delete_order($id) {
   global $medoo;
   
-  $order = get_order($id);
-  if (!$order) return false;
-  
-  if (intval($order["status"]) != OrderStatus::CREATED) return false;
-  
   $medoo->delete("order_details", ["order_id" => $id]);
   return $medoo->delete("orders", ["id" => $id]);
 }
@@ -228,11 +233,11 @@ function update_order($order) {
   return $updated;
 }
 
-function get_shop_items() {
+function get_shop_items($id) {
   global $medoo;
 
   create_shop_tables();
-  return $medoo->select("items", "*");
+  return keyed_by_id($medoo->select("items", "*", $id ? ["id" => $id] : null));
 }
 
 $response = null;
@@ -262,11 +267,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       : permision_denied_error();
     } else {
       $response = $_GET["student_id"] == $user->id
-      ? get_orders($user->id, $_GET["start"], $_GET["end"])
+      ? get_orders($user->id, $_GET["start"], $_GET["end"], $_GET["items"])
       : permision_denied_error();
     }
   } elseif ($resource_id == "items") {
-    $response = get_shop_items();
+    $response = get_shop_items($_GET["id"]);
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];
@@ -295,7 +300,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       $order = get_order($_REQUEST["id"]);
       if (!$order || $order["user_id"] != $user->id) {
         $response = permision_denied_error();
-      } else {
+      } elseif ($order["status"] == OrderStatus::CREATED) {
         $response = ["deleted" => delete_order($_REQUEST["id"])];
       }
     }

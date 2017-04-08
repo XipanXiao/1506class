@@ -8,5 +8,7 @@ js/address_editor/address_editor.js
 js/search_bar/search_bar.js
 js/app_bar/app_bar.js
 js/item_list/item_list.js
+js/order_details/order_details.js
+js/orders/orders.js
 js/shopping_cart/shopping_cart.js
 js/order_app.js

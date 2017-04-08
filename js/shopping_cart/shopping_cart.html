@@ -7,7 +7,7 @@
   <div class="padded-element">
     <label>
       <input type="checkbox" ng-model="editingAddress">
-      输入别的送货地址
+      修改送货地址
     </label>
   </div>
   <div ng-if="editingAddress" class="padded-element">
@@ -15,7 +15,7 @@
     </address-editor>
   </div>
 </div>
-<div class="css-table shopping-cart-list">
+<div ng-if="cart.size" class="css-table shopping-cart-list">
   <div class="css-table-row">
     <div class="css-table-cell"></div>
     <div class="css-table-cell"></div>
@@ -41,8 +41,8 @@
     </div>
   </div>
 </div>
-<hr>
-<div class="right">
+<div ng-if="cart.size" class="right">
+  <hr>
   <div class="center-align flex">
     <div class="h-padded-element">
       总价 ({{cart.items.length}} items): ${{cart.subTotal}}

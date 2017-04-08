@@ -498,18 +498,6 @@ function report_schedule_task($user_id, $schedule) {
   return $rows;
 }
 
-function keyed_by_id($rows, $id_key = "id") {
-  $result = [];
-
-  if (!is_array($rows) || empty($rows)) return $result;
-  
-  foreach ($rows as $row) {
-    $result[$row[$id_key]] = $row;
-  }
-  
-  return $result;
-}
-
 function get_schedules($classId, $term, $records, $user_id) {
   global $medoo;
   

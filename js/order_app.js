@@ -2,6 +2,7 @@ define('order_app', [
     'app_bar/app_bar',
     'item_list/item_list',
     'shopping_cart/shopping_cart',
+    'orders/orders',
     'services',
     'permission',
     'utils'],
@@ -11,11 +12,12 @@ define('order_app', [
       'AppBarModule',
       'ItemListModule',
       'ShoppingCartModule',
+      'OrdersModule',
       'ServicesModule',
       'PermissionModule',
       'UtilsModule',
       ])
-      .directive('body', function(rpc, perm, utils) {
+      .directive('body', function($rootScope, rpc, perm, utils) {
         return {
           link: function(scope) {
             scope.pageLoaded = [];
@@ -78,6 +80,7 @@ define('order_app', [
                 rpc.update_order(order).then(function(response) {
                   if (response.data.updated) {
                     cart.clear();
+                    $rootScope.$broadcast('reload-orders');
                     scope.selectTab(2);
                   }
                 });
