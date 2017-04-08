@@ -12,6 +12,7 @@ define('orders/orders', [
           scope.reload = function() {
             rpc.get_orders(scope.user.id, true).then(function(response) {
               var orders = response.data;
+              if (!orders) return;
               rpc.get_items().then(function(response) {
                 var items = response.data;
                 orders.forEach(function(order) {

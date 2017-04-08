@@ -89,9 +89,7 @@ function create_shop_tables() {
         `zip` char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
       	shipping_date DATE,
       	deliver_date DATE,
-        created_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        updated_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-          ON UPDATE CURRENT_TIMESTAMP
+        created_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
         )");
     if (empty($result)) {
       error_log(get_db_error2($medoo));
