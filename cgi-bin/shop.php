@@ -79,6 +79,8 @@ function create_shop_tables() {
         FOREIGN KEY (user_id) REFERENCES users(id),
         status TINYINT NOT NULL DEFAULT ". OrderStatus::CREATED. ",
         sub_total DECIMAL NOT NULL DEFAULT 0,
+      	paid DECIMAL,
+      	shipping DECIMAL,
         `phone` varchar(16) COLLATE utf8_unicode_ci DEFAULT NULL,
         `street` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
         `city` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -212,9 +214,9 @@ function delete_order($id) {
 
 function update_order($order) {
   global $medoo;
-  
-  return $medoo->update("orders", ["status" => $order["status"]], 
-      ["id" => $order["id"]]);
+
+  $data = build_update_data(["status", "paid", "shipping"], $order);
+  return $medoo->update("orders", $data, ["id" => $order["id"]]);
 }
 
 function get_shop_items($id) {

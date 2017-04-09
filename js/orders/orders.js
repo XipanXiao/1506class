@@ -11,6 +11,9 @@ define('orders/orders', [
         var end = Math.floor(Date.UTC(year+1, 0)/1000.0);
         return {start: start, end: end};
       }
+      function parseMoney(value) {
+        return value && parseFloat(value) || 0.00;
+      }
       return {
         scope: {
           admin: '@',
@@ -36,6 +39,11 @@ define('orders/orders', [
                 var items = response.data;
                 orders.forEach(function(order) {
                   order.status = parseInt(order.status);
+
+                  order.sub_total = parseMoney(order.sub_total);
+                  order.shipping = parseMoney(order.shipping);
+                  order.paid = parseMoney(order.paid);
+
                   order.items.forEach(function(item) {
                     utils.mix_in(item, items[item.item_id]);
                   });

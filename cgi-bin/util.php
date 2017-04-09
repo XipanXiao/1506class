@@ -37,4 +37,14 @@ function keyed_by_id($rows, $id_key = "id") {
 
   return $result;
 }
+
+function build_update_data($fields, $source) {
+  $datas = [];
+  foreach ($fields as $field) {
+    if (isset($source[$field])) {
+      $datas[$field] = $source[$field];
+    }
+  }
+  return $datas;
+}
 ?>
