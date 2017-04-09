@@ -5,8 +5,13 @@ define('order_details/order_details', [
     .directive('orderDetails', function() {
       return {
         scope: {
+          editable: '=',
           onCancel: '&',
+          onUpdate: '&',
           order: '=',
+        },
+        link: function(scope) {
+          scope.statusLabels = {0: '待发货', 1: '已发货', 3: '钱货两清'};
         },
         templateUrl : 'js/order_details/order_details.html'
       };

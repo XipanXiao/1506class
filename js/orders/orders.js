@@ -40,6 +40,14 @@ define('orders/orders', [
               }
             });
           };
+          
+          scope.update = function(order) {
+            rpc.update_order(order).then(function(response) {
+              if (response.data.updated) {
+                $rootScope.$broadcast('reload-orders');
+              }
+            });
+          };
 
           $rootScope.$on('reload-orders', scope.reload);
           scope.$watch('user', scope.reload);

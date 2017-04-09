@@ -18,7 +18,7 @@ abstract class OrderStatus
   const COMPLETED = 3;
   
   static function fromString($value) {
-  	return ["CREATED" => 0, "SHIPPED" => 1, "COMPLETED" => 3][$value];
+    return ["CREATED" => 0, "SHIPPED" => 1, "COMPLETED" => 3][$value];
   }
 }
 
@@ -78,17 +78,15 @@ function create_shop_tables() {
         user_id INT,
         FOREIGN KEY (user_id) REFERENCES users(id),
         status TINYINT NOT NULL DEFAULT ". OrderStatus::CREATED. ",
-        extra_cost DECIMAL,
         sub_total DECIMAL NOT NULL DEFAULT 0,
-        paid DECIMAL,
         `phone` varchar(16) COLLATE utf8_unicode_ci DEFAULT NULL,
         `street` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
         `city` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
         `state` tinyint(4) DEFAULT NULL,
         `country` char(2) COLLATE utf8_unicode_ci DEFAULT NULL,
         `zip` char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
-      	shipping_date DATE,
-      	deliver_date DATE,
+        shipping_date DATE,
+        deliver_date DATE,
         created_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
         )");
     if (empty($result)) {
@@ -161,9 +159,9 @@ function get_orders($user_id, $filters, $withItems) {
   if (!$withItems) return $orders;
 
   foreach ($orders as $index => $order) {
-  	$order["items"] = $medoo->select("order_details", "*", 
-  			["order_id" => $order["id"]]);
-  	$orders[$index] = $order;
+    $order["items"] = $medoo->select("order_details", "*", 
+        ["order_id" => $order["id"]]);
+    $orders[$index] = $order;
   }
   return $orders;
 }
@@ -173,7 +171,7 @@ function place_order($order) {
 
   $items = [];
   foreach ($order["items"] as $item) {
-  	array_push($items, $item);
+    array_push($items, $item);
   }
   unset($order["items"]);
 
@@ -215,20 +213,8 @@ function delete_order($id) {
 function update_order($order) {
   global $medoo;
   
-  $data = [];
-  foreach (["status", "extra_cost"] as $key) {
-    if (isset($order[$key])) $data[$key] = $order[$key];
-  }
-  
-  $updated = $medoo->update("orders", $data, ["id" => $order["id"]]);
-
-  $medoo->delete("order_details", ["order_id" => $order["id"]]);
-  foreach ($order["items"] as $item) {
-    $item["order_id"] = $id;
-    $medoo->insert("order_details", $item);
-  }
-
-  return $updated;
+  return $medoo->update("orders", ["status" => $order["status"]], 
+      ["id" => $order["id"]]);
 }
 
 function get_shop_items($id) {
@@ -276,7 +262,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 
   if ($resource_id == "orders") {
     $order = $_POST;
-  	unset($order["rid"]);
+    unset($order["rid"]);
 
     if ($order["user_id"] != $user->id && !isOrderManager($user)) {
       $response = permision_denied_error();

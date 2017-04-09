@@ -1,3 +1,5 @@
 <div ng-repeat="order in orders" class="section">
-  <order-details order="order" on-cancel="remove(order)"></order-details>
+  <order-details order="order" editable="admin" on-cancel="remove(order)"
+      on-update="update(order)">
+  </order-details>
 </div>

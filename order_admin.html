@@ -28,11 +28,13 @@
     <div>
       <orders user="user" admin="true" status="CREATED"></orders>
     </div>
-    <div ng-if="pageLoaded[1]">
-      <orders user="user" admin="true" status="SHIPPED"></orders>
+    <div>
+      <orders ng-if="pageLoaded[1]" user="user" admin="true" status="SHIPPED">
+      </orders>
     </div>
-    <div ng-if="pageLoaded[2]">
-      <orders user="user" admin="true" status="COMPLETED"></orders>
+    <div>
+      <orders ng-if="pageLoaded[2]" user="user" admin="true" status="COMPLETED">
+      </orders>
     </div>
     <div>
       输入姓名、订单号等查询。
