@@ -23,6 +23,9 @@ define('orders/orders', [
         },
         link: function(scope) {
           scope.years = [];
+          scope.orderIds = [];
+          scope.phones = [];
+
           for (var year = 2017; year <= (scope.year || 0); year++) {
             scope.years.push(year);
           }
@@ -44,6 +47,10 @@ define('orders/orders', [
                   order.shipping = parseMoney(order.shipping);
                   order.paid = parseMoney(order.paid);
 
+                  scope.orderIds.push(order.id);
+                  if (scope.phones.indexOf(order.phone) < 0) {
+                    scope.phones.push(order.phone);
+                  }
                   order.items.forEach(function(item) {
                     utils.mix_in(item, items[item.item_id]);
                   });
