@@ -78,7 +78,9 @@
           <label class="css-table-cell" for="email">Email:
             <span class="required-asterisk">*</span>
           </label>
-          <div class="css-table-cell"><input type="email" name="email" id="email" required></div>
+          <div class="css-table-cell">
+            <input type="email" name="email" id="email" placeholder="name@example.com" required>
+          </div>
         </div>
         <div class="css-table-row">
           <label class="css-table-cell" for="password">密码:</label>
@@ -122,7 +124,7 @@
             <span class="required-asterisk">*</span>
           </label>
           <div class="css-table-cell">
-            <input type="text" name="im" required>
+            <input type="text" name="im" placeholder="微信或QQ号" required>
           </div>
         </div>
         <div class="css-table-row">
@@ -130,7 +132,7 @@
             <label for="zip">邮编 <span class="required-asterisk">*</span></label>
           </div>
           <div class="css-table-cell">
-            <input type="text" id="zip" name="zip" onblur="lookup()" required>
+            <input type="text" id="zip" name="zip" onblur="lookup()" placeholder="12345" required>
             <span id="address-error" class="error"></span>
           </div>
         </div>
@@ -139,14 +141,16 @@
             <label for="street">街道地址(仅号码和街道，邮寄法本用) </label>
           </div>
           <div class="css-table-cell">
-            <input type="text" id="street" name="street">
+            <input type="text" id="street" placeholder="123 Main St" name="street">
           </div>
         </div>
         <div class="css-table-row">
           <div class="css-table-cell">
             <label for="city">城市 <span class="required-asterisk">*</span></label>
           </div>
-          <div class="css-table-cell"><input type="text" id="city" name="city" required></div>
+          <div class="css-table-cell">
+            <input type="text" id="city" name="city" placeholder="Schenectady" required>
+          </div>
         </div>
         <div class="css-table-row">
           <div class="css-table-cell">
@@ -276,6 +280,9 @@
     for (var sIndex in states) {
       var state = states[sIndex];
       stateSelect.add(new Option(state, sIndex));
+    }
+    if (countrySelect.selectedIndex == usIndex) {
+      stateSelect.selectedIndex = 32;
     }
   };
 
