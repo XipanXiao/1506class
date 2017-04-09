@@ -1,8 +1,18 @@
-<label ng-if="year">订单年份：
-  <select ng-options="value for value in years" ng-model="year"
-      ng-change="reload()"></select>
-</label>
-<div ng-repeat="order in orders" class="section">
+<div class="css-table">
+  <div class="css-table-row">
+  <label class="css-table-cell" ng-if="year">订单年份：
+    <select ng-options="value for value in years" ng-model="year"
+        ng-change="reload()"></select>
+  </label>
+  <label class="css-table-cell" ng-show="orders.length">输入订单号过滤：
+    <input ng-model="orderId"></select>
+  </label>
+  <label class="css-table-cell" ng-show="orders.length">输入电话过滤：
+    <input ng-model="tel"></select>
+  </label>
+  </div>
+</div>
+<div ng-repeat="order in orders | filter: {id: orderId, phone: tel}" class="section">
   <order-details order="order" editable="admin" on-cancel="remove(order)"
       on-update="update(order)">
   </order-details>

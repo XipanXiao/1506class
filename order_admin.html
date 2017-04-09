@@ -21,7 +21,6 @@
     <paper-tab>待发货订单</paper-tab>
     <paper-tab>待付款订单</paper-tab>
     <paper-tab>已完成订单</paper-tab>
-    <paper-tab>查询</paper-tab>
   </paper-tabs>
   
   <iron-pages selected="0">
@@ -36,9 +35,6 @@
       <orders ng-if="pageLoaded[2]" user="user" admin="true" status="COMPLETED"
           year="year">
       </orders>
-    </div>
-    <div>
-      输入姓名、订单号等查询。
     </div>
   </iron-pages>
 </div>
