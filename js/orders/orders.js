@@ -4,17 +4,30 @@ define('orders/orders', [
   return angular.module('OrdersModule', [
       'OrderDetailsModule', 'ServicesModule', 'UtilsModule'])
     .directive('orders', function($rootScope, rpc, utils) {
+      function getTimestampRange(year) {
+        if (!year) return {};
+
+        var start = Math.floor(Date.UTC(year, 0)/1000.0);
+        var end = Math.floor(Date.UTC(year+1, 0)/1000.0);
+        return {start: start, end: end};
+      }
       return {
         scope: {
           admin: '@',
           status: '@',
-          user: '='
+          user: '=',
+          year: '='
         },
         link: function(scope) {
+          scope.years = [];
+          for (var year = 2017; year <= (scope.year || 0); year++) {
+            scope.years.push(year);
+          }
           scope.reload = function() {
             if (!scope.user) return;
 
             var filters = {items: true, status: scope.status};
+            utils.mix_in(filters, getTimestampRange(scope.year));
             var user_id = !scope.admin && scope.user.id;
             rpc.get_orders(user_id, filters).then(function(response) {
               var orders = response.data;
