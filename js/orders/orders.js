@@ -6,13 +6,17 @@ define('orders/orders', [
     .directive('orders', function($rootScope, rpc, utils) {
       return {
         scope: {
-          user: '=',
+          admin: '@',
+          status: '@',
+          user: '='
         },
         link: function(scope) {
           scope.reload = function() {
             if (!scope.user) return;
 
-            rpc.get_orders(scope.user.id, true).then(function(response) {
+            var filters = {items: true, status: scope.status};
+            var user_id = !scope.admin && scope.user.id;
+            rpc.get_orders(user_id, filters).then(function(response) {
               var orders = response.data;
               if (!orders) return;
               rpc.get_items().then(function(response) {

@@ -12,19 +12,19 @@ abstract class OrderStatus
 {
   /// Only new created orders can be cancelled (deleted) by the buyer.
   const CREATED = 0;
-  /// When an order manager starts to work (e.g. inform the fulfil department)
-  /// on an order, the order is being processed, and can cannot be cancelled 
-  /// by the buyer. It can still be deleted by an order manager, if nothing is
-  /// paid by the buyer.
-  const PROCESSING = 1;
   /// Shipped.
-  const SHIPPED = 3;
+  const SHIPPED = 1;
+  /// Shipped and paid, no further actions are needed.
+  const COMPLETED = 3;
+  
+  static function fromString($value) {
+  	return ["CREATED" => 0, "SHIPPED" => 1, "COMPLETED" => 3][$value];
+  }
 }
 
 /// Checks whether we can close an order (shipped and paided).
 function _canClose($order) {
-  return $order["status"] == OrderStatus::SHIPPED &&
-      $order["paid"] == $order["sub_total"];
+  return $order["status"] == OrderStatus::COMPLETED;
 }
 
 function create_shop_tables() {
@@ -148,17 +148,17 @@ function get_order($id) {
   return $order;
 }
 
-function get_orders($user_id, $start_timestamp, $end_timestamp, $items) {
+function get_orders($user_id, $filters, $withItems) {
   global $medoo;
   
-  $timeFilter = ["created_time[><]" => [$start_timestamp, $end_timestamp]];
-  if ($user_id) {
-    $orders = $medoo->select("orders", "*", ["AND" => 
-        array_merge(["user_id" => $user_id], $timeFilter)]); 
-  } else {
-    $orders = $medoo->select("orders", "*", $timeFilter);
-  }
-  if (!$items) return $orders;
+  $timeFilter = ["created_time[><]" => [$filters["start"], $filters["end"]]];
+  $statusFilter = $filters["status"]
+      ? ["status" => OrderStatus::fromString($filters["status"])]
+      : [];
+  $userFilter = $user_id ? ["user_id" => $user_id] : [];
+  $orders = $medoo->select("orders", "*", ["AND" => 
+      array_merge($userFilter, $statusFilter, $timeFilter)]); 
+  if (!$withItems) return $orders;
 
   foreach ($orders as $index => $order) {
   	$order["items"] = $medoo->select("order_details", "*", 
@@ -261,11 +261,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       }
     } elseif (empty($_GET["student_id"])) {
       $response = isOrderManager($user)
-      ? get_orders(null, $_GET["start"], $_GET["end"])
+      ? get_orders(null, $_GET, $_GET["items"])
       : permision_denied_error();
     } else {
       $response = $_GET["student_id"] == $user->id
-      ? get_orders($user->id, $_GET["start"], $_GET["end"], $_GET["items"])
+      ? get_orders($user->id, $_GET, $_GET["items"])
       : permision_denied_error();
     }
   } elseif ($resource_id == "items") {

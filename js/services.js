@@ -171,10 +171,11 @@ define('services', [], function() {
         return $http.get(url);
       },
       
-      get_orders: function(student_id, items, start, end) {
+      get_orders: function(student_id, filters) {
         var url = ("cgi-bin/shop.php?rid=orders&student_id={0}&start={1}" + 
-            "&end={2}&items={3}").format(student_id || '', 
-                start || '', end || '', items || '');
+            "&end={2}&items={3}&status={4}").format(student_id || '', 
+                filters.start || '', filters.end || '', filters.items || '',
+                filters.status || '');
         return $http.get(url);
       },
       
