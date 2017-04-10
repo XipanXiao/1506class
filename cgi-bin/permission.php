@@ -1,6 +1,6 @@
 <?php
 function isSysAdmin($user) {
-  return ($user->permission & 0xFF) == 0xFF;
+  return ($user->permission & 0xFFFF) == 0xFFFF;
 }
 
 function isYearLeader($user) {
@@ -12,15 +12,15 @@ function isClassLeader($user, $classId) {
 }
 
 function isAdmin($user) {
-  return $user->permission > 7 && ($user->permission & 7) == 7;
+  return $user->permission >= 7 && ($user->permission & 7) == 7;
 }
 
 function isOrderManager($user) {
-  return ($user->permission & 0x107) == 0x107;
+  return ($user->permission & 0x103) == 0x103;
 }
 
 function canReadOrderAddress($user) {
-  return ($user->permission & 0x307) == 0x307;
+  return ($user->permission & 0x303) == 0x303;
 }
 
 function canRead($user, $classInfo) {
