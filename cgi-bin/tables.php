@@ -330,7 +330,7 @@ function update_user($user) {
       $datas["classId"] = 1;
     }
 
-    $datas["permission"] = 7;
+    $datas["permission"] = get_student_permission();
     if ($id = $medoo->insert("users", $datas)) {
       return current(get_users(null, null, intval($id)));
     }

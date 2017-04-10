@@ -23,6 +23,10 @@ function canReadOrderAddress($user) {
   return ($user->permission & 0x303) == 0x303;
 }
 
+function get_student_permission() {
+  return 3;
+}
+
 function canRead($user, $classInfo) {
   if (isSysAdmin($user)) return true;
 
