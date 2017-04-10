@@ -206,9 +206,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       if (!classInfo || !canWrite($user, $classInfo)) exit();
     }
     
-    if (!empty($_POST["permission"]) &&
-        intval($_POST["permission"]) > intval($user->permission)) {
-      exit();    
+    if (!empty($_POST["permission"])) {
+      $permission = intval($_POST["permission"]);
+      if ($permission < 0 || $permission > intval($user->permission)) {
+        exit();
+      }
     }
     
     if (isset($_POST["classId"]) && intval($_POST["classId"]) == 0) {
