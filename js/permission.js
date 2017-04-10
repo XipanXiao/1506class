@@ -9,14 +9,14 @@ define('permission', ['utils'], function() {
         LEADER: 0xF,
         YEAR_LEADER: 0x3F,
         INSPECTION: 0x55,
-        FINANCE: 0x307,
-        ORDER_MANAGER: 0x357,
+        FINANCE: 0x107,
+        ORDER_MANAGER: 0x307,
         ADMIN: 0xFFFF
       },
       permissions: {
         0xFFFF: '管理员',  //rw all data
-        0x307: '订单管理', //00 11 00 00 01 11 rw orders, read all user data
-        0x107: '财务',    //00 01 00 00 01 11 rw orders, no access to other data.
+        0x307: '订单管理', //00 11 00 00 01 11 rw orders.
+        0x107: '财务',    //00 01 00 00 01 11 rw orders, but sees no addresses.
         0x55: '学院督查', // 00 00 01 01 01 01 r
         0x3F: '年级组长', // 00 00 00 11 11 11 rw classes of the year
         0xF: '组长',    //  00 00 00 00 11 11 rw class data
@@ -87,6 +87,10 @@ define('permission', ['utils'], function() {
       },
       isSysAdmin: function() {
         return this.user && this.user.permission >= this.ROLES.ADMIN;
+      },
+      isOrderAdmin: function() {
+        return this.user && 
+            ((this.user.permission & this.ROLES.FINANCE) == this.ROLES.FINANCE);
       }
     };
   });

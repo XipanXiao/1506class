@@ -16,7 +16,7 @@ function isAdmin($user) {
 }
 
 function isOrderManager($user) {
-  return ($user->permission & 0x307) == 0x307;
+  return ($user->permission & 0x107) == 0x107;
 }
 
 function canRead($user, $classInfo) {
