@@ -13,18 +13,20 @@ define('shopping_cart/shopping_cart', [
           scope.confirming = false;
           
           scope.checkOut = function() {
-            if (scope.confirming) {
-              var response = scope.cart.checkOut();
-              if (!response) {
-                scope.editingAddress = true;
-              } else {
-                response.then(function(placed) {
-                  if (placed) scope.confirming = false;
-                });
-              }
-            } else {
+            if (!scope.confirming) {
               scope.confirming = true;
+              return;
             }
+            var user = scope.user;    
+            if (!user.name || !user.street || !user.city ||
+                !user.zip) {
+              alert('请输入完整收货信息.');
+              scope.editingAddress = true;
+              return;
+            }
+            scope.cart.checkOut().then(function(placed) {
+              if (placed) scope.confirming = false;
+            });
           };
         },
         templateUrl : 'js/shopping_cart/shopping_cart.html'

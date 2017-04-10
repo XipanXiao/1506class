@@ -62,10 +62,6 @@ define('order_app', [
               },
               checkOut: function() {
                 var user = scope.user;
-                if (!user.name || !user.street || !user.city || !user.zip) {
-                  alert('Please input complete name and address.');
-                  return false;
-                }
                 var order = {
                   user_id: user.id,
                   sub_total: this.subTotal,
