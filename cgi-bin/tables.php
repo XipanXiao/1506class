@@ -1,6 +1,7 @@
 <?php
 include_once "datatype.php";
 include_once "connection.php";
+include_once "permission.php";
 include_once "util.php";
 
 $medoo = get_medoo();
