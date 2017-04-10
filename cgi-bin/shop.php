@@ -222,7 +222,6 @@ function update_order($order) {
 function get_shop_items($id) {
   global $medoo;
 
-  create_shop_tables();
   return keyed_by_id($medoo->select("items", "*", $id ? ["id" => $id] : null));
 }
 
