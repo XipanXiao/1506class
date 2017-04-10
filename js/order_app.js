@@ -25,6 +25,7 @@ define('order_app', [
             scope.cart = {
               size: 0,
               subTotal: 0.0,
+              shipping: 0.0,
               items: {},
               add: function(item) {
                 var existing = this.items[item.id];
@@ -45,11 +46,15 @@ define('order_app', [
               update: function() {
                 this.size = 0;
                 this.subTotal = 0.0;
+                this.shipping = 0.0;
                 for (var id in this.items) {
                   var item = this.items[id];
                   this.size += item.count;
                   this.subTotal += item.price * item.count;
+                  this.shipping += item.shipping * item.count;
                 }
+                this.subTotal = this.subTotal.toFixed(2);
+                this.shipping = this.shipping.toFixed(2);
               },
               clear: function() {
                 this.items = {};
@@ -60,6 +65,7 @@ define('order_app', [
                 var order = {
                   user_id: user.id,
                   sub_total: this.subTotal,
+                  shipping: this.shipping,
                   phone: user.phone,
                   street: user.street,
                   city: user.city,
