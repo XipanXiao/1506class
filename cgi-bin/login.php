@@ -23,7 +23,7 @@ if(!empty($_POST["email"])) {
     $user->password = null;
     $_SESSION["user"] = serialize($user);
     
-    $page = isAdmin($user) ? "admin.html" : "index.html";
+    $page = getStartPage($user);
     client_redirect("../" . $page, 1,
         "Authenticated successfully, redirecting...");
     try_backup();

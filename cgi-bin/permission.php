@@ -60,4 +60,12 @@ function checkYear($user, $classInfo) {
   return $user->permission >= 0x3F &&
       $user->classInfo["start_year"] == $classInfo["start_year"];
 }
+
+function getStartPage($user) {
+  if ($user->permission == 3) return "index.html";
+  if ($user->permission == 0x103 || $user->permission == 0x303) {
+  	return "order_admin.html";
+  }
+  return "admin.html";
+}
 ?>
