@@ -66,6 +66,7 @@ define('order_app', [
                   user_id: user.id,
                   sub_total: this.subTotal,
                   shipping: this.shipping,
+                  name: user.name,
                   phone: user.phone,
                   street: user.street,
                   city: user.city,
