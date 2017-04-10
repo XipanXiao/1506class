@@ -6,6 +6,7 @@ define('shopping_cart/shopping_cart', [
     .directive('shoppingCart', function(rpc) {
       return {
         scope: {
+          editingAddress: '=',
           cart: '=',
           user: '='
         },
