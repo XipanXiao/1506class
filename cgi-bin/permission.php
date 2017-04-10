@@ -19,6 +19,10 @@ function isOrderManager($user) {
   return ($user->permission & 0x107) == 0x107;
 }
 
+function canReadOrderAddress($user) {
+  return ($user->permission & 0x307) == 0x307;
+}
+
 function canRead($user, $classInfo) {
   if (isSysAdmin($user)) return true;
 
@@ -27,7 +31,7 @@ function canRead($user, $classInfo) {
     return true;
   }
 
-  $perm = $user->permission >> (($level - 1) * 2);
+  $perm = ($user->permission >> (($level - 1) * 2)) & 1;
   if (!$perm) return false;
   
   return checkClass($user, $classInfo) || checkYear($user, $classInfo);
@@ -41,8 +45,8 @@ function canWrite($user, $classInfo) {
     return true;
   }
   
-  $perm = $user->permission >> (($level - 1) * 2);
-  if (!($perm & 2)) return false;
+  $perm = ($user->permission >> (($level - 1) * 2)) & 2;
+  if (!$perm) return false;
   
   return checkClass($user, $classInfo) || checkYear($user, $classInfo);
 }

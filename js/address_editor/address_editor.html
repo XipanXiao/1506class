@@ -45,7 +45,7 @@
   <div ng-switch-default>
     <h3 ng-if="withContact">{{user.name}}</h3>
     <div>{{user.street}}</div>
-    <div>{{user.city}}, {{user.stateLabel}} {{user.zip}}</div>
+    <div ng-if="user.city">{{user.city}}, {{user.stateLabel}} {{user.zip}}</div>
     <div>{{user.countryLabel}}</div>
     <div ng-if="withContact">Phone: {{user.phone}}</div>
   </div>
