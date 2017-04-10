@@ -93,6 +93,7 @@ define('order_app', [
                   if (response.data.updated) {
                     cart.clear();
                     $rootScope.$broadcast('reload-orders');
+                    scope.editingAddress = false;
                     scope.selectTab(2);
                   }
                 });
