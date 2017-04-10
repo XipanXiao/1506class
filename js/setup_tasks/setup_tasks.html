@@ -81,16 +81,11 @@
   <div class="padded-element">
     <div class="task" ng-class="{'completed-task': user.bookordered}">
       <div class="header section-header">订书</div>
-      <form action="http://www.izhenduan.com/bk/WF_SelectPerson.aspx" method="POST" target="_blank">
-	      您可以选择使用
-	      <a href="http://www.zhibeifw.com/cmsc/list.php?fid=812" target="_blank">
-	      在线教材</a>，也可以
-	      <input type="hidden" name="ctl00$ContentPlaceHolder1$TB_Email" value="{{user.email}}">
-	      <input type="hidden" name="ctl00$ContentPlaceHolder1$BT_Search" value="查找">
-	      <input type="submit" value="订书">（收取成本费）。参考
-	      <a href="https://docs.google.com/document/d/1CPBMEMw0ZqM_HdDyFWO1g64mHUVW2NfbMeco70-vzQM/edit?ts=589162f9"
-	        target="_blank">订书流程</a>。
-      </form>
+        您可以选择使用
+        <a href="cgi-bin/redirect.php?url=http://www.zhibeifw.com/cmsc/list.php?fid=812" target="_blank">
+          在线教材
+        </a>，也可以
+        <a href="order.html" target="_blank">订书</a>。
       <hr>
       <div class="check-complete">
         <label>
