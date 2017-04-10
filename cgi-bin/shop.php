@@ -18,7 +18,8 @@ abstract class OrderStatus
   const COMPLETED = 3;
   
   static function fromString($value) {
-    return ["CREATED" => 0, "SHIPPED" => 1, "COMPLETED" => 3][$value];
+    $map = ["CREATED" => 0, "SHIPPED" => 1, "COMPLETED" => 3];
+    return $map[$value];
   }
 }
 
