@@ -64,8 +64,7 @@ define('order_app', [
                 var user = scope.user;
                 if (!user.name || !user.street || !user.city || !user.zip) {
                   alert('Please input complete name and address.');
-                  scope.editingAddress = true;
-                  return;
+                  return false;
                 }
                 var order = {
                   user_id: user.id,
@@ -89,13 +88,14 @@ define('order_app', [
                   });
                 }
                 var cart = this;
-                rpc.update_order(order).then(function(response) {
+                return rpc.update_order(order).then(function(response) {
                   if (response.data.updated) {
                     cart.clear();
                     $rootScope.$broadcast('reload-orders');
-                    scope.editingAddress = false;
                     scope.selectTab(2);
+                    return true;
                   }
+                  return false;
                 });
               }
             };

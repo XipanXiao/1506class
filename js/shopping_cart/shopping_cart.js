@@ -6,7 +6,6 @@ define('shopping_cart/shopping_cart', [
     .directive('shoppingCart', function(rpc) {
       return {
         scope: {
-          editingAddress: '=',
           cart: '=',
           user: '='
         },
@@ -15,9 +14,17 @@ define('shopping_cart/shopping_cart', [
           
           scope.checkOut = function() {
             if (scope.confirming) {
-              scope.cart.checkOut();
+              var response = scope.cart.checkOut();
+              if (!response) {
+                scope.editingAddress = true;
+              } else {
+                response.then(function(placed) {
+                  if (placed) scope.confirming = false;
+                });
+              }
+            } else {
+              scope.confirming = true;
             }
-            scope.confirming = !scope.confirming;
           };
         },
         templateUrl : 'js/shopping_cart/shopping_cart.html'
