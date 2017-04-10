@@ -6,11 +6,11 @@
   </div>
   <div class="padded-element">
     <label>
-      <input type="checkbox" ng-model="editingAddress">
+      <input type="checkbox" ng-model="addrEditor.editing">
       修改送货地址
     </label>
   </div>
-  <div ng-if="editingAddress" class="padded-element">
+  <div ng-if="addrEditor.editing" class="padded-element">
     <address-editor editing="true" user="user" with-contact="true">
     </address-editor>
   </div>

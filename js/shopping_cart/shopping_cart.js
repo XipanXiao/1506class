@@ -11,6 +11,7 @@ define('shopping_cart/shopping_cart', [
         },
         link: function(scope) {
           scope.confirming = false;
+          scope.addrEditor = {};
           
           scope.checkOut = function() {
             if (!scope.confirming) {
@@ -21,7 +22,7 @@ define('shopping_cart/shopping_cart', [
             if (!user.name || !user.street || !user.city ||
                 !user.zip) {
               alert('请输入完整收货信息.');
-              scope.editingAddress = true;
+              scope.addrEditor.editing = true;
               return;
             }
             scope.cart.checkOut().then(function(placed) {
