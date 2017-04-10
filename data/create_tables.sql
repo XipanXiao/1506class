@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS items (
         id INT PRIMARY KEY AUTO_INCREMENT,
         category MEDIUMINT,
           FOREIGN KEY (category) REFERENCES item_categories(id),
-        price DECIMAL NOT NULL,
-        shipping DECIMAL,
+        price DECIMAL(10, 2) NOT NULL,
+        shipping DECIMAL(10, 2),
         name VARCHAR(64) COLLATE utf8_unicode_ci NOT NULL,
         image VARCHAR(256) COLLATE utf8_unicode_ci,
         producer VARCHAR(64) COLLATE utf8_unicode_ci,
@@ -51,9 +51,9 @@ CREATE TABLE IF NOT EXISTS orders (
         user_id INT,
         FOREIGN KEY (user_id) REFERENCES users(id),
         status TINYINT NOT NULL DEFAULT 0,
-        sub_total DECIMAL NOT NULL DEFAULT 0,
-        paid DECIMAL,
-        shipping DECIMAL,
+        sub_total DECIMAL(10, 2) NOT NULL DEFAULT 0,
+        paid DECIMAL(10, 2),
+        shipping DECIMAL(10, 2),
         `phone` varchar(16) COLLATE utf8_unicode_ci DEFAULT NULL,
         `street` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
         `city` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS order_details (
         FOREIGN KEY (order_id) REFERENCES orders(id),
         item_id INT,
         FOREIGN KEY (item_id) REFERENCES items(id),
-        price DECIMAL NOT NULL,
+        price DECIMAL(10, 2) NOT NULL,
         count MEDIUMINT NOT NULL DEFAULT 1
       );
 
