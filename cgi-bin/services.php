@@ -183,13 +183,13 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       $response = ["updated" => update_class($_POST)];
     }
   } elseif ($resource_id == "course_group") {
-    if (!isSysAdmin($user)) return;
+    if (!isYearLeader($user)) return;
     $response = ["group" => update_course_group($_POST)];
   } elseif ($resource_id == "department") {
     if (!isSysAdmin($user)) return;
     $response = ["updated" => update_department($_POST)];
   } elseif ($resource_id == "course") {
-    if (!isSysAdmin($user)) return;
+    if (!isYearLeader($user)) return;
     $response = update_course($_POST); 
   } elseif ($resource_id == "user") {
     if (!isset($_POST["id"])) {
