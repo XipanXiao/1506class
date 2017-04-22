@@ -9,9 +9,24 @@
   </div>
   <search-bar class="left" ng-if="admining && isYearLeader()"></search-bar>
   <div class="right">
-    <a ng-if="admining" class="app-bar-link" href="index.html">学员页面</a>
-    <a ng-if="isSysAdmin() && admining" class="app-bar-link" href="local.html">地方组</a>
-    <a ng-if="isAdmin() && !admining" class="app-bar-link" href="admin.html">管理页面</a>
+    <a ng-if="!isIn('/index.html')" class="app-bar-link" href="index.html">
+      考勤登记
+    </a>
+    <a ng-if="!isIn('/order.html')" class="app-bar-link" href="order.html">
+      法本订购
+    </a>
+    <a ng-if="!isIn('/location.html') && isSysAdmin()" class="app-bar-link" 
+        href="location.html">
+      地方小组
+    </a>
+    <a ng-if="!isIn('/admin.html') && isAdmin()" class="app-bar-link" 
+        href="admin.html">
+      管理页面
+    </a>
+    <a ng-if="!isIn('/order_admin.html') && isOrderAdmin()" class="app-bar-link"
+        href="order_admin.html">
+      订单管理
+    </a>
     <span>{{user.name}}</span>
     <a class="app-bar-link" href="cgi-bin/logout.php">Logout</a>
     <a ng-if="admining" class="app-bar-link" target="_blank"

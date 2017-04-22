@@ -52,7 +52,10 @@ define('orders/orders', [
                     scope.phones.push(order.phone);
                   }
                   order.items.forEach(function(item) {
-                    utils.mix_in(item, items[item.item_id]);
+                    var info = items[item.item_id];
+                    item.image = info.image;
+                    item.name = info.name;
+                    item.producer = info.producer;
                   });
                 });
                 scope.orders = orders;

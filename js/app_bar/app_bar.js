@@ -16,6 +16,12 @@ define('app_bar/app_bar', ['permission', 'search_bar/search_bar'], function() {
           scope.isYearLeader = function() {
             return perm.isYearLeader();
           };
+          scope.isOrderAdmin = function() {
+            return perm.isOrderAdmin();
+          };
+          scope.isIn = function(page) {
+            return location.pathname.endsWith(page);
+          };
         },
         templateUrl : 'js/app_bar/app_bar.html'
       };

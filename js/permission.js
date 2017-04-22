@@ -25,7 +25,8 @@ define('permission', ['utils'], function() {
       },
       isAdmin: function() {
         if (!this.user) return false;
-        return this.user.permission > this.ROLES.STUDENT;
+        return this.user.permission > this.ROLES.STUDENT && 
+            (this.user.permission & this.ROLES.LEADER) == this.ROLES.LEADER;
       },
       /// Class leaders (and below) should see only classes of the same year.
       checkClass: function(user, classInfo) {
