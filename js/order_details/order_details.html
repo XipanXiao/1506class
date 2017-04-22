@@ -27,7 +27,7 @@
           <div>已付: ${{order.paid || 0}}</div>
         </div>
         <div>
-          Balance: ${{order.sub_total + (order.shipping || 0) - order.paid}}
+          Balance: ${{(order.sub_total + (order.shipping || 0) - order.paid).toFixed(2)}}
         </div>
       </div>
     </div>
