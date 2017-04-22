@@ -12,7 +12,7 @@ function isClassLeader($user, $classId) {
 }
 
 function isAdmin($user) {
-  return $user->permission >= 7 && ($user->permission & 7) == 7;
+  return ($user->permission & 0xF) == 0xF;
 }
 
 function isOrderManager($user) {
@@ -66,10 +66,8 @@ function checkYear($user, $classInfo) {
 }
 
 function getStartPage($user) {
-  if ($user->permission == 3) return "index.html";
-  if ($user->permission == 0x103 || $user->permission == 0x303) {
-  	return "order_admin.html";
-  }
-  return "admin.html";
+  if (isAdmin($user)) return "admin.html";
+  if (isOrderManager($user)) return "order_admin.html";
+  return "index.html";
 }
 ?>
