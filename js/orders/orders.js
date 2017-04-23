@@ -64,6 +64,8 @@ define('orders/orders', [
           };
           
           scope.remove = function(order) {
+            if (!confirm('请确认您要删除订单#{0}'.format(order.id))) return;
+
             rpc.remove_order(order.id).then(function(response) {
               if (response.data.deleted) {
                 var index = scope.orders.indexOf(order);
