@@ -96,6 +96,14 @@ define('utils', [], function() {
         
         return result;
       },
+      values: function(map) {
+        var result = [];
+        for (var key in map) {
+          result.push(map[key]);
+        }
+        
+        return result;
+      },
       positiveKeys: function(map) {
         var result = [];
         for (var key in map) {

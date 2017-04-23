@@ -1,6 +1,7 @@
 define('order_admin_app', [
     'app_bar/app_bar',
     'orders/orders',
+    'order_stats/order_stats',
     'services',
     'permission',
     'utils'],
@@ -9,6 +10,7 @@ define('order_admin_app', [
   angular.module('AppModule', [
       'AppBarModule',
       'OrdersModule',
+      'OrderStatsModule',
       'ServicesModule',
       'PermissionModule',
       'UtilsModule',

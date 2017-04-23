@@ -50,11 +50,11 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
   $userFilter = $user_id ? ["user_id" => $user_id] : [];
   
   $fields = ["id", "user_id", "status", "sub_total", "paid", "shipping",
-  		"shipping_date", "deliver_date", "created_time", "name"];
+      "shipping_date", "deliver_date", "created_time", "name"];
   $address_fields = ["phone", "street", "city", "state", "country", "zip"];
   
   if ($withAddress) {
-  	$fields = array_merge($fields, $address_fields);
+    $fields = array_merge($fields, $address_fields);
   }
 
   $orders = $medoo->select("orders", $fields, ["AND" => 
@@ -126,6 +126,32 @@ function get_shop_items($id) {
   return keyed_by_id($medoo->select("items", "*", $id ? ["id" => $id] : null));
 }
 
+function get_order_stats($year) {
+  global $medoo;
+
+  $classes = keyed_by_id($medoo->select("classes", ["id", "name"], 
+      ["start_year" => $year]));
+  
+  if (empty($classes)) return [];
+  
+  foreach ($classes as $classId => $classInfo) {
+    $userIdSql = sprintf("SELECT id FROM users WHERE classId=%d", $classId); 
+    $orderIdSql = sprintf("SELECT id FROM orders WHERE user_id IN (%s)",
+        $userIdSql);
+    $sql = sprintf("SELECT item_id, price, sum(count) as group_count FROM ".
+        "order_details WHERE order_id IN (%s) GROUP BY item_id;", $orderIdSql);
+    $stats = $medoo->query($sql)->fetchAll();
+    
+    if (empty($stats)) {
+      unset($classes[$classId]);
+    } else {
+      $classInfo["stats"] = keyed_by_id($stats, "item_id");
+      $classes[$classId] = $classInfo;
+    }
+  }
+  return $classes;
+}
+
 $response = null;
 
 if (empty($_SESSION["user"])) {
@@ -158,6 +184,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     }
   } elseif ($resource_id == "items") {
     $response = get_shop_items($_GET["id"]);
+  } elseif ($resource_id == "order_stats") {
+    $response = get_order_stats($_GET["year"]);
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];

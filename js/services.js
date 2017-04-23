@@ -187,6 +187,11 @@ define('services', [], function() {
         return $http.get('cgi-bin/shop.php?rid=items');
       },
       
+      get_order_stats: function(year) {
+        var url = 'cgi-bin/shop.php?rid=order_stats&year={0}'.format(year);
+        return $http.get(url);
+      },
+      
       update_user: function(user) {
         user.rid = 'user';
         return http_form_post($http, $httpParamSerializerJQLike(user));
