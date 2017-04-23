@@ -6,26 +6,26 @@
   <div class="css-table-row header">
     <div class="css-table-cell">序号</div>
     <div class="css-table-cell">书名</div>
-    <div ng-repeat="classInfo in classes" class="css-table-cell center-align">
+    <div ng-repeat="classInfo in classes" class="center-align">
       <div>{{classInfo.name}}</div>
-      <span class="padded-element">数量</span>
-      <span class="padded-element">价格</span>
+      <div class="css-table-cell">数量</div>
+      <div class="css-table-cell">价格</div>
     </div>
   </div>
   <div ng-repeat="item in items" class="css-table-row">
     <div class="css-table-cell">{{$index + 1}}</div>
     <div class="css-table-cell">{{item.name}}</div>
-    <div ng-repeat="classInfo in classes" class="css-table-cell center-align">
-      <span class="padded-element">{{classInfo.stats[item.id].group_count}}</span>
-      <span class="padded-element">{{classInfo.stats[item.id].price}}</span>
+    <div ng-repeat="classInfo in classes">
+      <div class="css-table-cell">{{classInfo.stats[item.id].group_count}}</div>
+      <div class="css-table-cell">{{classInfo.stats[item.id].price}}</div>
     </div>
   </div>
   <div class="css-table-row">
     <div class="css-table-cell"></div>
     <div class="css-table-cell"></div>
-    <div ng-repeat="classInfo in classes" class="css-table-cell center-align">
-      <span class="padded-element">总计</span>
-      <span class="padded-element">{{classInfo.sub_total}}</span>
+    <div ng-repeat="classInfo in classes">
+      <div class="css-table-cell">总计</div>
+      <div class="css-table-cell">{{classInfo.sub_total}}</div>
     </div>
   </div>
 </div>
