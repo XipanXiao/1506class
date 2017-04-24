@@ -583,6 +583,7 @@ body.white {
   border: 2px solid;
 }
 
+.split-cell,
 .invoice-address {
   flex-grow: 1;
 }
