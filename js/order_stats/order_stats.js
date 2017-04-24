@@ -24,10 +24,14 @@ define('order_stats/order_stats', [
                 var items = response.data;
                 utils.forEach(classes, function(classInfo) {
                   classInfo.sub_total = 0.00;
+                  classInfo.total_count = 0;
+
                   utils.forEach(classInfo.stats, function(stat) {
                     scope.items[stat.item_id] = items[stat.item_id];
+                    var groupCount = parseInt(stat.group_count);
                     classInfo.sub_total += 
-                        stat.group_count * toMoney(stat.price);
+                        groupCount * toMoney(stat.price);
+                    classInfo.total_count += groupCount;
                   });
                   classInfo.sub_total = classInfo.sub_total.toFixed(2);
                 });
