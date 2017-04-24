@@ -42,6 +42,9 @@
     <div class="css-table-cell">
       <div>订单号</div>
       <div>{{order.id}}</div>
+      <a href="invoice_print.html?order_id={{order.id}}" target="_blank">
+        Invoice
+      </a>
     </div>
     <div class="css-table-cell">
       <iron-icon icon="delete" ng-click="onCancel()" class="delete-button"

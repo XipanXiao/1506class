@@ -578,3 +578,19 @@ body.white {
   cursor: pointer;
   visibility: visible;
 }
+
+.bold {
+  border: 2px solid;
+}
+
+.invoice-address {
+  flex-grow: 1;
+}
+
+.invoice-page {
+  width: 600px;
+}
+
+.invoice-table {
+  width: 100%;
+}
