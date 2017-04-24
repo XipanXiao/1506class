@@ -27,9 +27,11 @@
   <div class="css-table-row">
     <div class="css-table-cell"></div>
     <div class="css-table-cell"></div>
-    <div ng-repeat="classInfo in classes">
-      <div class="css-table-cell">总计</div>
-      <div class="css-table-cell">{{classInfo.sub_total}}</div>
+    <div ng-repeat="classInfo in classes" class="css-table-cell">
+      <div class="flex">
+        <div class="split-cell">总计</div>
+        <div>{{classInfo.sub_total}}</div>
+      </div>
     </div>
   </div>
 </div>
