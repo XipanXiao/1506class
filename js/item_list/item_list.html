@@ -1,22 +1,21 @@
 <div ng-repeat="item in items">
-  <hr>
-  <div class="flex top-border">
-	  <div ng-if="item.image" >
-	    <img src="{{item.image}}" class="item-image padded-element">
-	  </div>
-	  <div>
-		  <h2>{{item.name}}</h2>
-		  <div>by {{item.producer}}</div>
-      <div class="flex padded-element">
-        $<span class="item-price">{{item.price}}(含国际运费)</span>
+  <div ng-if="item.visible">
+    <hr>
+    <div class="flex top-border">
+      <div ng-if="item.image" >
+        <img src="{{item.image}}" class="item-image padded-element">
       </div>
-      <div ng-if="false" class="flex padded-element">
-        国际运费: $<span class="item-price">{{item.shipping}}</span>
+      <div>
+        <h2>{{item.name}}</h2>
+        <div>by {{item.producer}}</div>
+        <div class="flex padded-element">
+          $<span class="item-price">{{item.price}}(含国际运费)</span>
+        </div>
+        <span class="yellow-button" ng-click="addToCart(item)">
+          <iron-icon icon="add-shopping-cart"></iron-icon>
+          <span>加入购物车</span>
+        </span>
       </div>
-      <span class="yellow-button" ng-click="addToCart(item)">
-        <iron-icon icon="add-shopping-cart"></iron-icon>
-        <span>加入购物车</span>
-      </span>
-	  </div>
+    </div>
   </div>
 </div>
