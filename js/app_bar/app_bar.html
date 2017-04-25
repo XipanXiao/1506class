@@ -23,6 +23,10 @@
         href="admin.html">
       管理页面
     </a>
+    <a ng-if="!isIn('/assignment.html') && isAdmin()" class="app-bar-link" 
+        href="assignment.html">
+      分班意向
+    </a>
     <a ng-if="!isIn('/order_admin.html') && isOrderAdmin()" class="app-bar-link"
         href="order_admin.html">
       订单管理
