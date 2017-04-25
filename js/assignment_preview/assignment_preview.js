@@ -12,13 +12,6 @@ define('assignment_preview/assignment_preview', [
           departmentId: '='
         },
         link: function(scope) {
-          scope.getDepartments = function() {
-            if (scope.departments) return utils.truePromise();
-
-            return rpc.get_departments().then(function(response) {
-              return scope.departments = response.data;
-            });
-          };
           scope.mergeUsers = function(classId) {
             return rpc.get_users(null, classId).then(function(response) {
               return utils.mix_in(scope.users, response.data);
@@ -85,7 +78,6 @@ define('assignment_preview/assignment_preview', [
           };
           scope.$watch("departmentId", function() {
             utils.requestOneByOne([
-                scope.getDepartments,
                 scope.getClasses, 
                 scope.getAllUsers,
                 scope.getClassPrefs,
@@ -97,7 +89,7 @@ define('assignment_preview/assignment_preview', [
             if (!candidate) return '';
 
             var classInfo = candidate.classInfo;
-            return utils.getClassLabel(classInfo, scope.departments);
+            return utils.getClassLabel(classInfo);
           };
           
           scope.doAssign = function() {

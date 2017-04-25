@@ -16,9 +16,6 @@ define('setup_tasks/setup_tasks',
             scope.classes = response.data;
             scope.classIds = utils.keys(scope.classes);
           });
-          rpc.get_departments().then(function(response) {
-            scope.departments = response.data;
-          });
           rpc.get_class_prefs('').then(function(response) {
             scope.class_pref = response.data[scope.user.id];
             if (utils.isEmpty(scope.class_pref)) {
@@ -32,7 +29,7 @@ define('setup_tasks/setup_tasks',
             rpc.update_class_prefs(prefs);
           };
           scope.getClassLabel = function(id) {
-            return utils.getClassLabel(scope.classes[id], scope.departments);
+            return utils.getClassLabel(scope.classes[id]);
           };
           
         },

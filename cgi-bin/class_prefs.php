@@ -88,7 +88,7 @@ function get_class_candidates($user) {
 		$where = array_merge($where, ["department_id[!]" => 1]);
 	}
 	return keyed_by_id($medoo->select("classes", 
-			["id", "department_id", "weekday", "time"], ["AND" => $where]));
+			["id", "department_id", "name", "weekday", "time"], ["AND" => $where]));
 }
 
 function random_assign_prefs($user) {
