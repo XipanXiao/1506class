@@ -372,9 +372,7 @@ define('utils', [], function() {
         return this[key+'Labels'][user[key]] || '';
       },
       getClassLabel: function(classInfo) {
-        return '{0}{1}({2})'.format(
-            this.weekDayLabels[classInfo.weekday] || '', classInfo.time || '',
-                classInfo.name);
+        return (classInfo.name || '') + (classInfo.time || '');
       },
       getNextName: function(name) {
         var match = /([^0-9]*)([0-9]+)(.*)/.exec(name);
