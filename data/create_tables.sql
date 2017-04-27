@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS orders (
         `country` char(2) COLLATE utf8_unicode_ci NOT NULL,
         `zip` char(6) COLLATE utf8_unicode_ci NOT NULL,
         shipping_date DATE,
-        deliver_date DATE,
+        paid_date DATE,
         created_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
         );
   

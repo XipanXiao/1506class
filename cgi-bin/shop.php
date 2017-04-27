@@ -50,7 +50,7 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
   $userFilter = $user_id ? ["user_id" => $user_id] : [];
   
   $fields = ["id", "user_id", "status", "sub_total", "paid", "shipping",
-      "shipping_date", "deliver_date", "created_time", "name"];
+      "shipping_date", "paid_date", "created_time", "name"];
   $address_fields = 
       ["phone", "email", "street", "city", "state", "country", "zip"];
   
