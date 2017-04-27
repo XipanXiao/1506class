@@ -1,11 +1,20 @@
-<div ng-repeat="item in items">
-  <div ng-if="item.visible">
+<div class="padded-element">
+  <label>输入书名查找: <input type="text" ng-model="namePrefix"></label>
+</div>
+<div class="padded-element">
+  <label ng-repeat="category in categories">
+    <input type="checkbox" ng-model="category.selected">
+    {{category.name}}
+  </label>
+</div>
+<div ng-repeat="item in items | filter: {name: namePrefix}">
+  <div ng-if="categories[item.category].selected">
     <hr>
     <div class="flex top-border">
       <div ng-if="item.image" >
         <img src="{{item.image}}" class="item-image padded-element">
       </div>
-      <div>
+      <div class="item-info-cell">
         <h2>{{item.name}}</h2>
         <div>by {{item.producer}}</div>
         <div class="flex padded-element">
@@ -16,6 +25,7 @@
           <span>加入购物车</span>
         </span>
       </div>
+      <div class="right">{{categories[item.category].name}}</div>
     </div>
   </div>
 </div>

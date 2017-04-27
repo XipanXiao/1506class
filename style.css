@@ -581,6 +581,7 @@ body.white {
 }
 
 .split-cell,
+.item-info-cell,
 .invoice-address {
   flex-grow: 1;
 }

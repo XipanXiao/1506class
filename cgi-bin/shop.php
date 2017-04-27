@@ -121,16 +121,17 @@ function update_order($order) {
   return $medoo->update("orders", $data, ["id" => $order["id"]]);
 }
 
-function get_shop_items($id, $depId) {
+function get_shop_items($category) {
   global $medoo;
 
-  $items = 
-      keyed_by_id($medoo->select("items", "*", $id ? ["id" => $id] : null));
-  foreach ($items as $id => $item) {
-    $item["visible"] = (intval($item["dep_mask"]) & (1 << ($depId-1))) != 0;
-    $items[$id] = $item;
-  }
-  return $items;
+  return keyed_by_id($medoo->select("items", "*", 
+      $category ? ["category" => $category] : null));
+}
+
+function get_item_categories() {
+  global $medoo;
+
+  return keyed_by_id($medoo->select("item_categories", "*"));
 }
 
 function get_order_stats($year) {
@@ -190,8 +191,9 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       : permision_denied_error();
     }
   } elseif ($resource_id == "items") {
-    $response = get_shop_items($_GET["id"], 
-    		intval($user->classInfo["department_id"]));
+    $response = get_shop_items($_GET["id"], $_GET["category"]);
+  } elseif ($resource_id == "item_categories") {
+    $response = get_item_categories();
   } elseif ($resource_id == "order_stats") {
     $response = get_order_stats($_GET["year"]);
   }

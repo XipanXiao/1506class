@@ -179,12 +179,13 @@ define('services', [], function() {
         return $http.get(url);
       },
       
-      get_item: function(id) {
-        return $http.get('cgi-bin/shop.php?rid=items&item_id={0}'.format(id));
+      get_items: function(category) {
+        return $http.get('cgi-bin/shop.php?rid=items&category=' + 
+            (category || ''));
       },
       
-      get_items: function() {
-        return $http.get('cgi-bin/shop.php?rid=items');
+      get_item_categories: function() {
+        return $http.get('cgi-bin/shop.php?rid=item_categories');
       },
       
       get_order_stats: function(year) {
