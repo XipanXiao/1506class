@@ -23,6 +23,10 @@
       <div class="css-table-cell">Order Date</div>
       <div class="css-table-cell">{{order.created_time}}</div>
     </div>
+    <div ng-if="order.paid_date" class="css-table-row">
+      <div class="css-table-cell">Paid on</div>
+      <div class="css-table-cell">{{order.paid_date}}</div>
+    </div>
   </div>
 </div>
 <hr class="bold">

@@ -1,4 +1,4 @@
-<div class="css-table order-details-header">
+<div class="css-table">
   <div class="css-table-row" ng-class="{'deletable': !order.status}">
     <div class="css-table-cell">
       <div>订单日期</div>
@@ -26,13 +26,12 @@
           <div>总价: ${{order.sub_total + (order.shipping || 0)}}</div>
           <div>已付: ${{order.paid || 0}}</div>
         </div>
-        <div>
+        <strong>
           Balance: ${{(order.sub_total + (order.shipping || 0) - order.paid).toFixed(2)}}
-        </div>
+        </strong>
       </div>
     </div>
     <div class="css-table-cell">
-      <div>收货地址和联系方式</div>
       <address-editor user="order" with-contact="true"></address-editor>
     </div>
     <div class="css-table-cell">
@@ -53,17 +52,10 @@
     </div>
   </div>
 </div>
-<div class="css-table shopping-cart-list">
+<div class="css-table shopping-cart-list odd-even">
   <div ng-repeat="item in order.items" class="css-table-row top-border">
-    <div class="css-table-cell">
-      <img src="{{item.image}}" class="item-image small">
-    </div>
-    <div class="css-table-cell">
-      <h3>{{item.name}}</h3> by {{item.producer}}
-    </div>
-    <div class="css-table-cell">
-      ${{item.price}}
-      <span ng-if="item.count > 1">(x {{item.count}})</span>
-    </div>
+    <div class="css-table-cell">{{item.name}}</div>
+    <div class="css-table-cell">{{item.count}}</div>
+    <div class="css-table-cell">${{item.price}}</div>
   </div>
 </div>
