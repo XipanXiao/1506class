@@ -68,6 +68,7 @@ define('order_app', [
                   shipping: this.shipping,
                   name: user.name,
                   phone: user.phone,
+                  email: user.email,
                   street: user.street,
                   city: user.city,
                   state: user.state,
