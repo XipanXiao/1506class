@@ -567,9 +567,6 @@ body.white {
   width: 100%;
 }
 
-.order-details-header {
-  background-color: lightgray;
-}
 .css-table-row.deletable .delete-button {
   visibility: hidden;
 }
@@ -594,4 +591,9 @@ body.white {
 
 .invoice-table {
   width: 100%;
+}
+
+.order-details-line.section {
+  width: 800px;
+  margin: 16px auto;
 }
