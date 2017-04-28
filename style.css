@@ -73,6 +73,7 @@ tasks {
   display: table;
 }
 
+.order-details-header,
 .css-table.odd-even > div:nth-child(odd) {
   background-color: #CCC;
 }

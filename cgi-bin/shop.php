@@ -124,8 +124,11 @@ function update_order($order) {
 function get_shop_items($category) {
   global $medoo;
 
-  return keyed_by_id($medoo->select("items", "*", 
-      $category ? ["category" => $category] : null));
+  $where = ["deleted[!]" => 1];
+  if ($category) {
+  	$where = ["AND" => ["deleted[!]" => 1, "category" => $category]];
+  }
+  return keyed_by_id($medoo->select("items", "*", $where));
 }
 
 function get_item_categories() {

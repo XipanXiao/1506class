@@ -8,7 +8,7 @@
   </label>
 </div>
 <div ng-repeat="item in items | filter: {name: namePrefix}">
-  <div ng-hide="!categories[item.category].selected && !namePrefix">
+  <div ng-if="categories[item.category].selected || namePrefix">
     <hr>
     <div class="flex top-border">
       <div ng-if="item.image" >
