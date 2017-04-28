@@ -7,25 +7,26 @@
     {{category.name}}
   </label>
 </div>
-<div ng-repeat="item in items | filter: {name: namePrefix}">
-  <div ng-if="categories[item.category].selected || namePrefix">
-    <hr>
-    <div class="flex top-border">
-      <div ng-if="item.image" >
-        <img src="{{item.image}}" class="item-image padded-element">
+<div class="items css-table">
+  <div ng-repeat="item in items | filter: {name: namePrefix}"
+      ng-if="categories[item.category].selected || namePrefix"
+      class="css-table-row">
+      <div class="css-table-cell top-border item-image-container">
+        <img src="{{item.image}}" class="item-image">
       </div>
-      <div class="item-info-cell">
-        <h2>{{item.name}}</h2>
-        <div>by {{item.producer}}</div>
-        <div class="flex padded-element">
-          $<span class="item-price">{{item.price}}(含国际运费)</span>
-        </div>
+      <div class="css-table-cell top-border">
+        <h3>{{item.name}}</h3>
+        <div class="padded-element">${{item.price}}(含国际运费)</div>
         <span class="yellow-button" ng-click="addToCart(item)">
           <iron-icon icon="add-shopping-cart"></iron-icon>
           <span>加入购物车</span>
         </span>
       </div>
-      <div class="right">{{categories[item.category].name}}</div>
-    </div>
+      <div class="css-table-cell top-border item-description">
+        {{item.description}}
+      </div>
+      <div class="css-table-cell top-border item-category">
+        {{categories[item.category].name}}
+      </div>
   </div>
 </div>

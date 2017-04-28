@@ -513,17 +513,19 @@ google-chart {
   max-width: 200px;
 }
 
+.item-image-container {
+  height: 160px;
+  overflow: hidden;
+  width: 100px;
+}
+
 .item-image {
-  height: 160px;  
+  position: absolute;
+  width: 100px;
 }
 
 .item-image.small {
   height: 100px;  
-}
-
-.item-price {
-	font-size: 21px;
-	line-height: 21px;
 }
 
 body.white {
@@ -582,7 +584,6 @@ body.white {
 }
 
 .split-cell,
-.item-info-cell,
 .invoice-address {
   flex-grow: 1;
 }
@@ -598,4 +599,20 @@ body.white {
 .order-details-line.section {
   width: 800px;
   margin: 16px auto;
+}
+
+.items.css-table {
+  width: 800px;
+}
+
+.item-description {
+  width: 360px;
+}
+
+.item-category {
+  width: 100px;
+}
+
+.top-border {
+  border-top: 1px solid;
 }
