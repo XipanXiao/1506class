@@ -21,7 +21,7 @@ define('item_list/item_list', ['services'], function() {
             scope.cart.add(item);
           };
         },
-        templateUrl : 'js/item_list/item_list.html'
+        templateUrl : 'js/item_list/item_list.html?tag=201704282222'
       };
     });
 });

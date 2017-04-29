@@ -1,6 +1,11 @@
 define('app_bar/app_bar', ['permission', 'search_bar/search_bar'], function() {
   return angular.module('AppBarModule', ['PermissionModule', 'SearchBarModule'])
     .directive('appBar', function(perm) {
+      if (!String.prototype.endsWith) {
+        String.prototype.endsWith = function(suffix) {
+          return this.indexOf(suffix, this.length - suffix.length) !== -1;
+        };
+      }
       return {
         scope: {
           admining: '@',
