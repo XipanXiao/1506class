@@ -519,17 +519,17 @@ google-chart {
   width: 100px;
 }
 
-.item-image {
+.item-image-container .item-image {
   position: absolute;
   width: 100px;
 }
 
 .item-image.small {
-  height: 100px;  
+  height: 100px;
 }
 
 body.white {
-	background: white;
+  background: white;
 }
 
 .yellow-button {
