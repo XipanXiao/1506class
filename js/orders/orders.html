@@ -21,6 +21,7 @@
 <div ng-repeat="order in orders | filter: {id: orderId, phone: tel}"
     class="section order-details-line">
   <order-details order="order" editable="admin && order.status != 3"
-      on-cancel="remove(order)" on-update="update(order)">
+      on-cancel="remove(order)" on-update="update(order)"
+      on-merge="merge(order)">
   </order-details>
 </div>

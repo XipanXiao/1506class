@@ -47,4 +47,12 @@ function build_update_data($fields, $source) {
   }
   return $datas;
 }
+
+function same_address($order1, $order2) {
+  return $order1["zipcode"] == $order2["zipcode"] &&
+    $order1["street"] == $order2["street"] &&
+    $order1["city"] == $order2["city"] &&
+    $order1["state"] == $order2["state"] &&
+    $order1["country"] == $order2["country"];
+}
 ?>

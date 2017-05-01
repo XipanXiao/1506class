@@ -1,3 +1,4 @@
+<link rel="import" href="bower_components/iron-icons/editor-icons.html">
 <div class="css-table order-details-header">
   <div class="css-table-row" ng-class="{'deletable': !order.status}">
     <div class="css-table-cell">
@@ -12,6 +13,7 @@
         </label>
         <span ng-switch-default>订单状态: {{statusLabels[order.status]}}</span>
       </div>
+      <div>总数: {{order.count}}</div>
     </div>
     <div class="css-table-cell">
       <div>金额: ${{order.sub_total}}</div>
@@ -47,7 +49,13 @@
     </div>
     <div class="css-table-cell">
       <iron-icon icon="delete" ng-click="onCancel()" class="delete-button"
-          title="取消订单" ng-show="order.status == 0">
+          title="取消订单" ng-show="editable">
+      </iron-icon>
+    </div>
+    <div class="css-table-cell">
+      <iron-icon icon="editor:merge-type" ng-click="onMerge()"
+          title="合并{{order.name}}的所有订单" class="clickable"
+          ng-show="editable && order.mergeable">
       </iron-icon>
     </div>
   </div>

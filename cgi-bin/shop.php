@@ -73,16 +73,14 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
 function place_order($order) {
   global $medoo;
 
-  $items = [];
-  foreach ($order["items"] as $item) {
-    array_push($items, $item);
-  }
+  $items = $order["items"];
   unset($order["items"]);
 
   $id = $medoo->insert("orders", $order);
   if (!$id) return false;
 
   foreach ($items as $item) {
+    unset($item["id"]);
     $item["order_id"] = $id;
     $medoo->insert("order_details", $item);
   }
@@ -126,7 +124,7 @@ function get_shop_items($category) {
 
   $where = ["deleted[!]" => 1];
   if ($category) {
-  	$where = ["AND" => ["deleted[!]" => 1, "category" => $category]];
+    $where = ["AND" => ["deleted[!]" => 1, "category" => $category]];
   }
   return keyed_by_id($medoo->select("items", "*", $where));
 }
@@ -161,6 +159,36 @@ function get_order_stats($year) {
     }
   }
   return $classes;
+}
+
+function merge_orders($order_ids) {
+  global $medoo;
+
+  $orders = $medoo->select("orders", "*", ["id" => $order_ids]);
+  if (sizeof($orders) < 2) return;
+  
+  $first_order = array_shift($orders);
+  $id = $first_order["id"];
+  $user_id = $first_order["user_id"];
+  $status = $first_order["status"];
+  
+  foreach ($orders as $index => $order) {
+    if ($order["user_id"] != $user_id || $order["status"] != $status ||
+        !same_address($first_order, $order)) continue;
+    
+    $first_order["sub_total"] += $order["sub_total"];
+    $first_order["paid"] += $order["paid"];
+    $first_order["shipping"] += $order["shipping"];
+    
+    if ($medoo->update("order_details", ["order_id" => $id], 
+        ["order_id" => $order["id"]])) {
+      $medoo->delete("orders", ["id" => $order["id"]]);    
+    }
+  }
+
+  $data = ["sub_total" => $first_order["sub_total"], 
+      "paid" => $first_order["paid"], "shipping" => $first_order["shipping"]];
+  return ["updated" => $medoo->update("orders", $data, ["id" => $id])];
 }
 
 $response = null;
@@ -214,23 +242,18 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     } else {
       $response = ["updated" => update_order($order)];
     }
-  }
+  } elseif ($resource_id == "merge_orders" && !empty($_POST["order_ids"])) {
+    $response = canReadOrderAddress($user) 
+        ? merge_orders($_POST["order_ids"])
+        : permision_denied_error();
+  } 
 } elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE" &&
     isset ( $_REQUEST["rid"] )) {
 
   $resource_id = $_REQUEST["rid"];
 
-  if ($resource_id == "orders") {
-    if (isOrderManager($user)) {
-      $response = ["deleted" => delete_order($_REQUEST["id"])];
-    } else {
-      $order = get_order($_REQUEST["id"]);
-      if (!$order || $order["user_id"] != $user->id) {
-        $response = permision_denied_error();
-      } elseif ($order["status"] == OrderStatus::CREATED) {
-        $response = ["deleted" => delete_order($_REQUEST["id"])];
-      }
-    }
+  if ($resource_id == "orders" && isOrderManager($user)) {
+    $response = ["deleted" => delete_order($_REQUEST["id"])];
   }
 }
 

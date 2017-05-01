@@ -7,13 +7,14 @@ define('order_details/order_details', [
         scope: {
           editable: '=',
           onCancel: '&',
+          onMerge: '&',
           onUpdate: '&',
           order: '=',
         },
         link: function(scope) {
           scope.statusLabels = {0: '待发货', 1: '已发货', 3: '钱货两清'};
         },
-        templateUrl : 'js/order_details/order_details.html'
+        templateUrl : 'js/order_details/order_details.html?tag=201705010035'
       };
     });
 });

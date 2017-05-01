@@ -219,6 +219,15 @@ define('services', [], function() {
             'cgi-bin/shop.php');
       },
       
+      merge_orders: function(order_ids) {
+        var request = {
+            rid: 'merge_orders',
+            order_ids: order_ids
+        };
+        return http_form_post($http, $httpParamSerializerJQLike(request),
+            'cgi-bin/shop.php');
+      },
+      
       remove_course: function(course_id) {
         var url = '{0}?rid=course&id={1}'.format(serviceUrl, course_id);
         return $http.delete(url);

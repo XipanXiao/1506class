@@ -23,14 +23,15 @@ define('orders/orders', [
         },
         link: function(scope) {
           scope.years = [];
-          scope.orderIds = [];
-          scope.phones = [];
 
           for (var year = 2017; year <= (scope.year || 0); year++) {
             scope.years.push(year);
           }
           scope.reload = function() {
             if (!scope.user) return;
+
+            scope.orderIds = [];
+            scope.phones = [];
 
             var filters = {items: true, status: scope.status};
             utils.mix_in(filters, getTimestampRange(scope.year));
@@ -40,8 +41,14 @@ define('orders/orders', [
               if (!orders) return;
               rpc.get_items().then(function(response) {
                 var items = response.data;
+
+                // How many orders a user has.
+                var orders_of_users = {};
+
                 orders.forEach(function(order) {
                   order.status = parseInt(order.status);
+                  orders_of_users[order.user_id] = 
+                      (orders_of_users[order.user_id] || 0) + 1;
 
                   order.sub_total = parseMoney(order.sub_total);
                   order.shipping = parseMoney(order.shipping);
@@ -51,12 +58,21 @@ define('orders/orders', [
                   if (scope.phones.indexOf(order.phone) < 0) {
                     scope.phones.push(order.phone);
                   }
+
+                  order.count = 0;
                   order.items.forEach(function(item) {
                     var info = items[item.item_id];
                     item.image = info.image;
                     item.name = info.name;
                     item.producer = info.producer;
+                    order.count += parseInt(item.count);
                   });
+                });
+                
+                orders.forEach(function(order) {
+                  if (orders_of_users[order.user_id] > 1) {
+                    order.mergeable = true;
+                  }
                 });
                 scope.orders = orders;
               });
@@ -76,6 +92,22 @@ define('orders/orders', [
           
           scope.update = function(order) {
             rpc.update_order(order).then(function(response) {
+              if (response.data.updated) {
+                $rootScope.$broadcast('reload-orders');
+              }
+            });
+          };
+          
+          scope.merge = function(order) {
+            var message = '请确认要合并"{0}"的所有相同地址新订单'.format(order.name); 
+            if (!confirm(message)) return;
+
+            var user_id = order.user_id;
+            var orders = utils.where(scope.orders, function(order) {
+              return order.user_id == user_id;
+            });
+            var orderIds = utils.map(orders, function(order) {return order.id});
+            rpc.merge_orders(orderIds).then(function(response) {
               if (response.data.updated) {
                 $rootScope.$broadcast('reload-orders');
               }
