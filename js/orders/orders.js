@@ -54,6 +54,10 @@ define('orders/orders', [
                   order.int_shipping = parseMoney(order.int_shipping);
                   order.shipping = parseMoney(order.shipping);
                   order.paid = parseMoney(order.paid);
+                  
+                  order.grand_total = (order.sub_total + order.int_shipping +
+                      order.shipping).toFixed(2);
+                  order.balance = (order.grand_total - order.paid).toFixed(2);
 
                   scope.orderIds.push(order.id);
                   if (scope.phones.indexOf(order.phone) < 0) {

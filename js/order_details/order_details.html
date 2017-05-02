@@ -25,11 +25,11 @@
         </div>
         <div ng-switch-default>
           <div>运费: ${{order.shipping || 0}}</div>
-          <div>总价: ${{order.sub_total + (order.shipping || 0)}}</div>
+          <div>总价: ${{order.grand_total}}</div>
           <div>已付: ${{order.paid || 0}}</div>
         </div>
         <strong>
-          Balance: ${{(order.sub_total + (order.shipping || 0) - order.paid).toFixed(2)}}
+          Balance: ${{order.balance}}
         </strong>
       </div>
     </div>
