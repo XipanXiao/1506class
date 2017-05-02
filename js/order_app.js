@@ -34,6 +34,7 @@ define('order_app', [
                 } else {
                   item.count = 1;
                   item.price = parseFloat(item.price);
+                  item.int_shipping = parseFloat(item.int_shipping);
                   this.items[item.id] = item;
                 }
                 this.update();
@@ -46,14 +47,17 @@ define('order_app', [
               update: function() {
                 this.size = 0;
                 this.subTotal = 0.0;
+                this.int_shipping = 0.0;
                 this.shipping = 0.0;
                 for (var id in this.items) {
                   var item = this.items[id];
                   this.size += item.count;
                   this.subTotal += item.price * item.count;
+                  this.int_shipping += item.int_shipping * item.count;
                   this.shipping += item.shipping * item.count;
                 }
                 this.subTotal = this.subTotal.toFixed(2);
+                this.int_shipping = this.int_shipping.toFixed(2);
                 this.shipping = this.shipping.toFixed(2);
               },
               clear: function() {
@@ -65,6 +69,7 @@ define('order_app', [
                 var order = {
                   user_id: user.id,
                   sub_total: this.subTotal,
+                  int_shipping: this.int_shipping,
                   shipping: this.shipping,
                   name: user.name,
                   phone: user.phone,

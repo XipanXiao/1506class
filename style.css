@@ -537,7 +537,7 @@ body.white {
   border-radius: 3px;
   border: 1px solid;
   cursor: pointer;
-  padding: 4px;	
+  padding: 4px;
 }
 
 .shopping-cart {
@@ -615,4 +615,8 @@ body.white {
 
 .top-border {
   border-top: 1px solid;
+}
+
+.int-shipping {
+  padding-bottom: 16px;
 }

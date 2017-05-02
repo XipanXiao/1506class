@@ -16,7 +16,7 @@
       <div>总数: {{order.count}}</div>
     </div>
     <div class="css-table-cell">
-      <div>金额: ${{order.sub_total}}</div>
+      <div>金额: ${{order.sub_total}} 国际运费: ${{order.int_shipping}}</div>
       <div ng-switch="editable">
         <div ng-switch-when="true">
           <div><label>运费: $<input ng-model="order.shipping"></label></div>

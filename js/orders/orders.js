@@ -51,6 +51,7 @@ define('orders/orders', [
                       (orders_of_users[order.user_id] || 0) + 1;
 
                   order.sub_total = parseMoney(order.sub_total);
+                  order.int_shipping = parseMoney(order.int_shipping);
                   order.shipping = parseMoney(order.shipping);
                   order.paid = parseMoney(order.paid);
 
