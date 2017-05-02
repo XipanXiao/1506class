@@ -122,5 +122,5 @@ UPDATE items SET price = price - int_shipping;
 ALTER TABLE orders ADD `int_shipping` DECIMAL(10, 2) NOT NULL DEFAULT 0.00 AFTER shipping;
 UPDATE order_details SET price=(SELECT price from items WHERE items.id=order_details.item_id);
 UPDATE orders SET int_shipping=(orders.sub_total - (SELECT SUM(`price` * `count`) FROM order_details WHERE order_id=orders.id));
-
+UPDATE orders SET sub_total = sub_total - int_shipping;
 
