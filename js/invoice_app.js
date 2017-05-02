@@ -29,6 +29,7 @@ define('invoice_app', [
 
                 order.sub_total = parseMoney(order.sub_total);
                 order.shipping = parseMoney(order.shipping);
+                order.int_shipping = parseMoney(order.int_shipping);
                 order.paid = parseMoney(order.paid);
 
                 order.items.forEach(function(item) {

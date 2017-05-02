@@ -70,6 +70,7 @@ define('orders/orders', [
                     item.image = info.image;
                     item.name = info.name;
                     item.producer = info.producer;
+                    item.int_shipping = parseMoney(info.int_shipping);
                     order.count += parseInt(item.count);
                   });
                 });
