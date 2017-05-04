@@ -27,66 +27,73 @@ define('orders/orders', [
           for (var year = 2017; year <= (scope.year || 0); year++) {
             scope.years.push(year);
           }
+          
+          function get_items() {
+            return rpc.get_items().then(function(response) {
+              return scope.items = response.data;
+            });
+          }
+          
+          function get_orders() {
+            var filters = {items: true, status: scope.status};
+            utils.mix_in(filters, getTimestampRange(scope.year));
+            var user_id = !scope.admin && scope.user.id;
+            return rpc.get_orders(user_id, filters).then(function(response) {
+              var orders = response.data || [];
+              orders.forEach(function(order) {
+                calculate_order_values(order);
+                init_item_labels(order);
+              });
+              orders.forEach(function(order) {
+                order.mergeable = scope.orders_of_users[order.user_id] > 1;
+              });
+              return scope.orders = orders;
+            });
+          }
+          
+          function calculate_order_values(order) {
+            order.status = parseInt(order.status);
+            scope.orders_of_users[order.user_id] = 
+                (scope.orders_of_users[order.user_id] || 0) + 1;
+
+            order.grand_total = parseMoney(order.sub_total) + 
+                parseMoney(order.int_shipping) + parseMoney(order.shipping);
+            order.grand_total = order.grand_total.toFixed(2);
+            order.balance = 
+                parseMoney(order.grand_total) - parseMoney(order.paid);
+            order.balance = order.balance.toFixed(2);
+
+            scope.orderIds.push(order.id);
+            if (scope.phones.indexOf(order.phone) < 0) {
+              scope.phones.push(order.phone);
+            }
+          }
+
+          function init_item_labels(order) {
+            order.count = 0;
+            order.int_shipping_estmt = 0.0;
+            order.items.forEach(function(item) {
+              var info = scope.items[item.item_id];
+              item.image = info.image;
+              item.name = info.name;
+              item.producer = info.producer;
+              item.int_shipping = info.int_shipping;
+              order.count += parseInt(item.count);
+              order.int_shipping_estmt += 
+                  parseInt(item.count) * parseMoney(item.int_shipping);
+            });
+            order.int_shipping_estmt = order.int_shipping_estmt.toFixed(2);
+          }
+          
           scope.reload = function() {
             if (!scope.user) return;
 
             scope.orderIds = [];
             scope.phones = [];
+            // How many orders each user has.
+            scope.orders_of_users = {};
 
-            var filters = {items: true, status: scope.status};
-            utils.mix_in(filters, getTimestampRange(scope.year));
-            var user_id = !scope.admin && scope.user.id;
-            rpc.get_orders(user_id, filters).then(function(response) {
-              var orders = response.data;
-              if (!orders) return;
-              rpc.get_items().then(function(response) {
-                var items = response.data;
-
-                // How many orders a user has.
-                var orders_of_users = {};
-
-                orders.forEach(function(order) {
-                  order.status = parseInt(order.status);
-                  orders_of_users[order.user_id] = 
-                      (orders_of_users[order.user_id] || 0) + 1;
-
-                  order.sub_total = parseMoney(order.sub_total);
-                  order.int_shipping = parseMoney(order.int_shipping);
-                  order.shipping = parseMoney(order.shipping);
-                  order.paid = parseMoney(order.paid);
-                  
-                  order.grand_total = (order.sub_total + order.int_shipping +
-                      order.shipping).toFixed(2);
-                  order.balance = (order.grand_total - order.paid).toFixed(2);
-
-                  scope.orderIds.push(order.id);
-                  if (scope.phones.indexOf(order.phone) < 0) {
-                    scope.phones.push(order.phone);
-                  }
-
-                  order.count = 0;
-                  order.int_shipping_estmt = 0.0;
-                  order.items.forEach(function(item) {
-                    var info = items[item.item_id];
-                    item.image = info.image;
-                    item.name = info.name;
-                    item.producer = info.producer;
-                    item.int_shipping = info.int_shipping;
-                    order.count += parseInt(item.count);
-                    order.int_shipping_estmt += order.count * item.int_shipping;
-                  });
-                  order.int_shipping_estmt = 
-                      order.int_shipping_estmt.toFixed(2);
-                });
-                
-                orders.forEach(function(order) {
-                  if (orders_of_users[order.user_id] > 1) {
-                    order.mergeable = true;
-                  }
-                });
-                scope.orders = orders;
-              });
-            });
+            utils.requestOneByOne([get_items, get_orders]);
           };
           
           scope.remove = function(order) {
