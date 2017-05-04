@@ -4,7 +4,7 @@ define('order_stats/order_stats', [
       'ServicesModule', 'UtilsModule'])
     .directive('orderStats', function($rootScope, rpc, utils) {
       function toMoney(num) {
-        return parseFloat(num).toFixed(2);
+        return Math.round( parseFloat(num) * 1e2 ) / 1e2;
       }
       return {
         link: function(scope) {

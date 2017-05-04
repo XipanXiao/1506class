@@ -16,17 +16,20 @@
       <div>总数: {{order.count}}</div>
     </div>
     <div class="css-table-cell">
-      <div>金额: ${{order.sub_total}} 国际运费: ${{order.int_shipping}}</div>
+      <div>金额: ${{order.sub_total}}</div>
+      <div>预计国际运费: ${{order.int_shipping_estmt}}</div>
+      <div>实际国际运费: ${{order.int_shipping}}</div>
       <div ng-switch="editable">
         <div ng-switch-when="true">
           <div><label>运费: $<input ng-model="order.shipping"></label></div>
+          <div>总价: ${{order.grand_total}}</div>
           <div><label>已付: $<input ng-model="order.paid"></label></div>
           <input type="button" value="确认修改" ng-click="onUpdate()">
         </div>
         <div ng-switch-default>
-          <div>运费: ${{order.shipping || 0}}</div>
+          <div>运费: ${{order.shipping}}</div>
           <div>总价: ${{order.grand_total}}</div>
-          <div>已付: ${{order.paid || 0}}</div>
+          <div>已付: ${{order.paid}}</div>
         </div>
         <strong>
           Balance: ${{order.balance}}

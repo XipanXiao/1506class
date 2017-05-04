@@ -65,14 +65,18 @@ define('orders/orders', [
                   }
 
                   order.count = 0;
+                  order.int_shipping_estmt = 0.0;
                   order.items.forEach(function(item) {
                     var info = items[item.item_id];
                     item.image = info.image;
                     item.name = info.name;
                     item.producer = info.producer;
-                    item.int_shipping = parseMoney(info.int_shipping);
+                    item.int_shipping = info.int_shipping;
                     order.count += parseInt(item.count);
+                    order.int_shipping_estmt += order.count * item.int_shipping;
                   });
+                  order.int_shipping_estmt = 
+                      order.int_shipping_estmt.toFixed(2);
                 });
                 
                 orders.forEach(function(order) {
