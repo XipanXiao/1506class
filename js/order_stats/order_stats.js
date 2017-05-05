@@ -8,15 +8,17 @@ define('order_stats/order_stats', [
       }
       return {
         link: function(scope) {
+          scope.years = [];
+          scope.selectedYear = {value: new Date().getFullYear()};
+          for (var year = 2013; year <= scope.selectedYear.value; year++) {
+            scope.years.push(year);
+          }
+          
           scope.reload = function() {
-            scope.years = [];
             scope.items = {};
-            scope.year = new Date().getFullYear();
-            for (var year = 2017; year <= scope.year; year++) {
-              scope.years.push(year);
-            }
 
-            rpc.get_order_stats(scope.year).then(function(response) {
+            var year = scope.selectedYear.value;
+            rpc.get_order_stats(year).then(function(response) {
               var classes = response.data;
               if (!classes) return;
 
