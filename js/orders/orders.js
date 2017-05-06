@@ -47,6 +47,7 @@ define('orders/orders', [
               orders.forEach(function(order) {
                 order.mergeable = scope.orders_of_users[order.user_id] > 1;
               });
+              calculate_stats(orders);
               return scope.orders = orders;
             });
           }
@@ -83,6 +84,55 @@ define('orders/orders', [
                   parseInt(item.count) * parseMoney(item.int_shipping);
             });
             order.int_shipping_estmt = order.int_shipping_estmt.toFixed(2);
+          }
+          
+          function calculate_stats(orders) {
+            var stats = scope.stats = {
+              count: 0,
+              sub_total: 0.00,
+              grand_total: 0.00,
+              int_shipping: 0.00,
+              int_shipping_estmt: 0.00,
+              items: {},
+            };
+            orders.forEach(function(order) {
+              order.items.forEach(function(info) {
+                var item_id = info.item_id;
+                var item = stats.items[item_id]; 
+                if (!item) {
+                  item = stats.items[item_id] = {};
+                  item.name = scope.items[item_id].name;
+                  item.price = scope.items[item_id].price;
+                }
+                var price = parseMoney(info.price);
+                var int_shipping = parseMoney(info.int_shipping);
+                item.count = (item.count || 0) + parseInt(info.count);
+                item.sub_total = (item.sub_total || 0.00) + price * info.count;
+                item.grand_total = (item.grand_total || 0.00) + 
+                    (price + int_shipping) * info.count;
+                item.int_shipping = (item.int_shipping || 0) + 
+                    int_shipping * info.count;
+                item.int_shipping_estmt = (item.int_shipping_estmt || 0) + 
+                    parseMoney(scope.items[item_id].int_shipping) * 
+                    info.count;
+              });
+            });
+            utils.forEach(stats.items, function(item) {
+              stats.count += item.count;
+              stats.sub_total += item.sub_total;
+              stats.grand_total += item.grand_total;
+              stats.int_shipping += item.int_shipping;
+              stats.int_shipping_estmt += item.int_shipping_estmt;
+
+              item.sub_total = item.sub_total.toFixed(2);
+              item.grand_total = item.grand_total.toFixed(2);
+              item.int_shipping = item.int_shipping.toFixed(2);
+              item.int_shipping_estmt = item.int_shipping_estmt.toFixed(2);
+            });
+            stats.sub_total = stats.sub_total.toFixed(2);
+            stats.grand_total = stats.grand_total.toFixed(2);
+            stats.int_shipping = stats.int_shipping.toFixed(2);
+            stats.int_shipping_estmt = stats.int_shipping_estmt.toFixed(2);
           }
           
           scope.reload = function() {
@@ -130,11 +180,19 @@ define('orders/orders', [
               }
             });
           };
+          
+          scope.breakUp = function() {
+            if (!scope.actual_int_shipping) return;
+          };
+          
+          scope.save = function() {
+            
+          };
 
           $rootScope.$on('reload-orders', scope.reload);
           scope.$watch('user', scope.reload);
         },
-        templateUrl : 'js/orders/orders.html'
+        templateUrl : 'js/orders/orders.html?tag=201705052255'
       };
     });
 });
