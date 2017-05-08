@@ -115,7 +115,8 @@ function delete_order($id) {
 function update_order($order) {
   global $medoo;
 
-  $data = build_update_data(["status", "paid", "shipping"], $order);
+  $data = build_update_data(["status", "paid", "shipping", "int_shipping"],
+      $order);
   return $medoo->update("orders", $data, ["id" => $order["id"]]);
 }
 
@@ -246,7 +247,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = canReadOrderAddress($user) 
         ? merge_orders($_POST["order_ids"])
         : permision_denied_error();
-  } 
+  }
 } elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE" &&
     isset ( $_REQUEST["rid"] )) {
 

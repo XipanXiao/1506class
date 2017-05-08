@@ -41,6 +41,7 @@ define('orders/orders', [
             return rpc.get_orders(user_id, filters).then(function(response) {
               var orders = response.data || [];
               orders.forEach(function(order) {
+                collect_order_info(order);
                 calculate_order_values(order);
                 init_item_labels(order);
               });
@@ -52,10 +53,17 @@ define('orders/orders', [
             });
           }
           
+          function collect_order_info(order) {
+            scope.orders_of_users[order.user_id] = 
+              (scope.orders_of_users[order.user_id] || 0) + 1;
+            scope.orderIds.push(order.id);
+            if (scope.phones.indexOf(order.phone) < 0) {
+              scope.phones.push(order.phone);
+            }
+          }
+          
           function calculate_order_values(order) {
             order.status = parseInt(order.status);
-            scope.orders_of_users[order.user_id] = 
-                (scope.orders_of_users[order.user_id] || 0) + 1;
 
             order.grand_total = parseMoney(order.sub_total) + 
                 parseMoney(order.int_shipping) + parseMoney(order.shipping);
@@ -63,11 +71,6 @@ define('orders/orders', [
             order.balance = 
                 parseMoney(order.grand_total) - parseMoney(order.paid);
             order.balance = order.balance.toFixed(2);
-
-            scope.orderIds.push(order.id);
-            if (scope.phones.indexOf(order.phone) < 0) {
-              scope.phones.push(order.phone);
-            }
           }
 
           function init_item_labels(order) {
@@ -105,13 +108,8 @@ define('orders/orders', [
                   item.price = scope.items[item_id].price;
                 }
                 var price = parseMoney(info.price);
-                var int_shipping = parseMoney(info.int_shipping);
                 item.count = (item.count || 0) + parseInt(info.count);
                 item.sub_total = (item.sub_total || 0.00) + price * info.count;
-                item.grand_total = (item.grand_total || 0.00) + 
-                    (price + int_shipping) * info.count;
-                item.int_shipping = (item.int_shipping || 0) + 
-                    int_shipping * info.count;
                 item.int_shipping_estmt = (item.int_shipping_estmt || 0) + 
                     parseMoney(scope.items[item_id].int_shipping) * 
                     info.count;
@@ -120,18 +118,12 @@ define('orders/orders', [
             utils.forEach(stats.items, function(item) {
               stats.count += item.count;
               stats.sub_total += item.sub_total;
-              stats.grand_total += item.grand_total;
-              stats.int_shipping += item.int_shipping;
               stats.int_shipping_estmt += item.int_shipping_estmt;
 
               item.sub_total = item.sub_total.toFixed(2);
-              item.grand_total = item.grand_total.toFixed(2);
-              item.int_shipping = item.int_shipping.toFixed(2);
               item.int_shipping_estmt = item.int_shipping_estmt.toFixed(2);
             });
             stats.sub_total = stats.sub_total.toFixed(2);
-            stats.grand_total = stats.grand_total.toFixed(2);
-            stats.int_shipping = stats.int_shipping.toFixed(2);
             stats.int_shipping_estmt = stats.int_shipping_estmt.toFixed(2);
           }
           
@@ -182,17 +174,41 @@ define('orders/orders', [
           };
           
           scope.breakUp = function() {
-            if (!scope.actual_int_shipping) return;
+            var stats = scope.stats;
+            if (!stats.actual_int_shipping || !stats.int_shipping_estmt) return;
+
+            var actualShipping = 0.0;
+            var ratio = stats.actual_int_shipping / stats.int_shipping_estmt;
+            scope.orders.forEach(function(order) {
+              order.int_shipping = (Math.floor(order.int_shipping_estmt * 
+                  ratio * 1e2 + 0.5) / 1e2).toFixed(2);
+              actualShipping += parseMoney(order.int_shipping); 
+            });
+            scope.orders[0].int_shipping = 
+                (parseMoney(scope.orders[0].int_shipping) + 
+                stats.actual_int_shipping - actualShipping).toFixed(2);  
           };
           
           scope.save = function() {
-            
+            function toRequest(order) {
+              return function() {
+                return rpc.update_order({
+                  id: order.id, 
+                  int_shipping: order.int_shipping
+                }).then(function(response) {
+                  if (response.data.updated) return true;
+                  alert(response.data.error);
+                });
+              };
+            }
+            var requests = scope.orders.map(toRequest);
+            utils.requestOneByOne(requests).then(scope.reload);
           };
 
           $rootScope.$on('reload-orders', scope.reload);
           scope.$watch('user', scope.reload);
         },
-        templateUrl : 'js/orders/orders.html?tag=201705061330'
+        templateUrl : 'js/orders/orders.html?tag=201705071553'
       };
     });
 });
