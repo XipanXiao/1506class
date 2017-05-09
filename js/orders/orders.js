@@ -1,9 +1,9 @@
 define('orders/orders', [
     'order_details/order_details',
-    'services', 'utils'], function() {
+    'services', 'permission', 'utils'], function() {
   return angular.module('OrdersModule', [
       'OrderDetailsModule', 'ServicesModule', 'UtilsModule'])
-    .directive('orders', function($rootScope, rpc, utils) {
+    .directive('orders', function($rootScope, rpc, perm, utils) {
       function getTimestampRange(year) {
         if (!year) return {};
 
@@ -38,6 +38,9 @@ define('orders/orders', [
             var filters = {items: true, status: scope.status};
             utils.mix_in(filters, getTimestampRange(scope.year));
             var user_id = !scope.admin && scope.user.id;
+            if (!perm.isOrderAdmin()) {
+              filters.class_id = scope.user.classId;
+            }
             return rpc.get_orders(user_id, filters).then(function(response) {
               var orders = response.data || [];
               orders.forEach(function(order) {

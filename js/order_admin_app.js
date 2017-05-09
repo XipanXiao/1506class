@@ -21,10 +21,14 @@ define('order_admin_app', [
             rpc.get_user().then(function(user) {
               perm.user = user;
               scope.user = user;
-              if (!perm.isOrderAdmin()) {
+              if (!perm.isOrderAdmin() && !perm.isAdmin()) {
                 utils.redirect('login.html');
               }
             });
+            
+            scope.isOrderAdmin = function() {
+              return perm.isOrderAdmin();
+            };
 
             scope.year = new Date().getFullYear();
             scope.pageLoaded = [];

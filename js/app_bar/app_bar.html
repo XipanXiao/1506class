@@ -9,13 +9,14 @@
   </div>
   <search-bar class="left" ng-if="admining && isYearLeader()"></search-bar>
   <div class="right">
-    <a ng-if="!isIn('/index.html')" class="app-bar-link" href="index.html">
+    <a ng-if="!isIn('/index.html') && !isIn('/')" class="app-bar-link"
+        href="index.html">
       考勤登记
     </a>
     <a ng-if="!isIn('/order.html')" class="app-bar-link" href="order.html">
       法本订购
     </a>
-    <a ng-if="!isIn('local.html') && isSysAdmin()" class="app-bar-link" 
+    <a ng-if="!isIn('/local.html') && isSysAdmin()" class="app-bar-link" 
         href="local.html">
       地方小组
     </a>
@@ -27,8 +28,8 @@
         href="assignment.html">
       分班意向
     </a>
-    <a ng-if="!isIn('/order_admin.html') && isOrderAdmin()" class="app-bar-link"
-        href="order_admin.html">
+    <a ng-if="!isIn('/order_admin.html') && (isOrderAdmin() || isAdmin())"
+        class="app-bar-link" href="order_admin.html">
       订单管理
     </a>
     <span>{{user.name}}</span>

@@ -48,6 +48,12 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
       ? ["status" => OrderStatus::fromString($filters["status"])]
       : [];
   $userFilter = $user_id ? ["user_id" => $user_id] : [];
+  $classFilter = [];
+  if (empty($userFilter) && !empty($filters["class_id"])) {
+    $userIds = $medoo->select("users", "id", 
+        ["classId" => $filters["class_id"]]);
+    $classFilter = ["user_id" => $userIds];
+  }
   
   $fields = ["id", "user_id", "status", "sub_total", "paid", "shipping",
       "int_shipping", "shipping_date", "paid_date", "created_time", "name"];
@@ -59,7 +65,7 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
   }
 
   $orders = $medoo->select("orders", $fields, ["AND" => 
-      array_merge($userFilter, $statusFilter, $timeFilter)]); 
+      array_merge($userFilter, $statusFilter, $timeFilter, $classFilter)]); 
   if (!$withItems) return $orders;
 
   foreach ($orders as $index => $order) {
@@ -214,9 +220,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         $response = permision_denied_error();
       }
     } elseif (empty($_GET["student_id"])) {
-      $response = isOrderManager($user)
-      ? get_orders(null, $_GET, $_GET["items"], canReadOrderAddress($user))
-      : permision_denied_error();
+      $granted = isOrderManager($user) || 
+          isClassLeader($user, $user->classId) && !empty($_GET["class_id"]); 
+      $response = $granted 
+          ? get_orders(null, $_GET, $_GET["items"], canReadOrderAddress($user))
+          : permision_denied_error();
     } else {
       $response = $_GET["student_id"] == $user->id
       ? get_orders($user->id, $_GET, $_GET["items"], canReadOrderAddress($user))
@@ -227,7 +235,9 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "item_categories") {
     $response = get_item_categories();
   } elseif ($resource_id == "order_stats") {
-    $response = get_order_stats($_GET["year"]);
+    $response = isOrderManager($user) 
+        ? get_order_stats($_GET["year"]) 
+        : permision_denied_error();
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];
@@ -240,7 +250,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       $response = permision_denied_error();
     } elseif (empty($order["id"])) {
       $response = ["updated" => place_order($order)];
-    } else {
+    } elseif (isOrderManager($user)) {
       $response = ["updated" => update_order($order)];
     }
   } elseif ($resource_id == "merge_orders" && !empty($_POST["order_ids"])) {
