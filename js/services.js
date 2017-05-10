@@ -194,6 +194,11 @@ define('services', [], function() {
         return $http.get(url);
       },
       
+      get_scores: function(classId) {
+        var url = 'cgi-bin/score.php?rid=scores&class_id={0}'.format(classId);
+        return $http.get(url);
+      },
+      
       update_user: function(user) {
         user.rid = 'user';
         return http_form_post($http, $httpParamSerializerJQLike(user));
@@ -227,6 +232,12 @@ define('services', [], function() {
         };
         return http_form_post($http, $httpParamSerializerJQLike(request),
             'cgi-bin/shop.php');
+      },
+      
+      update_scores: function(scores) {
+        scores.rid = 'scores';
+        return http_form_post($http, $httpParamSerializerJQLike(user),
+            'cgi-bin/score.php');
       },
       
       remove_course: function(course_id) {

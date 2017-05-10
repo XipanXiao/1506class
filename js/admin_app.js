@@ -1,6 +1,7 @@
 define('admin_app',
     ['app_bar/app_bar', 'classes/classes', 'class_info/class_info',
     'task_stats/task_stats', 'learning_records/learning_records',
+    'scores/scores',
     'schedule_editor/schedule_editor', 'services', 'permission', 'utils',
     'zb_login_dialog/zb_login_dialog',
     'zb_choose_root_dialog/zb_choose_root_dialog'],
@@ -8,7 +9,9 @@ define('admin_app',
 
   angular.module('AppModule', ['AppBarModule', 'ClassesModule',
       'ClassInfoModule', 'TaskStatsModule',
-      'LearningRecordsModule', 'PermissionModule', 'ScheduleEditorModule',
+      'LearningRecordsModule', 'PermissionModule',
+      'ScoresModule',
+      'ScheduleEditorModule',
       'ServicesModule', 'UtilsModule', 'ZBLoginDialogModule',
       'ZBChooseRootDialogModule'])
       .directive('body', function(rpc, perm, utils) {

@@ -7,6 +7,7 @@ js/services.js
 js/permission.js
 js/importers.js
 js/zb_services.js
+js/scores/scores.js
 js/search_bar/search_bar.js
 js/app_bar/app_bar.js
 js/import_dialog/import_dialog.js

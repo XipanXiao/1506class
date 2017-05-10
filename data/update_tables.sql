@@ -124,3 +124,11 @@ UPDATE order_details SET price=(SELECT price from items WHERE items.id=order_det
 UPDATE orders SET int_shipping=(orders.sub_total - (SELECT SUM(`price` * `count`) FROM order_details WHERE order_id=orders.id));
 UPDATE orders SET sub_total = sub_total - int_shipping;
 
+CREATE TABLE IF NOT EXISTS scores (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        user_id INT,
+          FOREIGN KEY (user_id) REFERENCES users(id),
+        type1 TINYINT,
+        score1 TINYINT,
+        type2 TINYINT,
+        score2 TINYINT);

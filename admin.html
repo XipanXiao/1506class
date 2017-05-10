@@ -27,6 +27,7 @@
       <paper-tab>考勤</paper-tab>
       <paper-tab>学修记录</paper-tab>
       <paper-tab>任务进度</paper-tab>
+      <paper-tab>考试成绩</paper-tab>
     </paper-tabs>
     
     <iron-pages selected="0">
@@ -45,6 +46,9 @@
       </div>
       <div>
         <task-stats ng-if="pageLoaded[4]" class-id="{{classId}}" admining="true"></task-stats>
+      </div>
+      <div>
+        <scores ng-if="pageLoaded[5]" class-id="{{classId}}"></scores>
       </div>
     </iron-pages>
   </div>
