@@ -102,6 +102,7 @@ define('orders/orders', [
               items: {},
             };
             orders.forEach(function(order) {
+              stats.int_shipping += parseMoney(order.int_shipping);
               order.items.forEach(function(info) {
                 var item_id = info.item_id;
                 var item = stats.items[item_id]; 
@@ -127,6 +128,7 @@ define('orders/orders', [
               item.int_shipping_estmt = item.int_shipping_estmt.toFixed(2);
             });
             stats.sub_total = stats.sub_total.toFixed(2);
+            stats.int_shipping = stats.int_shipping.toFixed(2);
             stats.int_shipping_estmt = stats.int_shipping_estmt.toFixed(2);
           }
           
@@ -189,7 +191,8 @@ define('orders/orders', [
             });
             scope.orders[0].int_shipping = 
                 (parseMoney(scope.orders[0].int_shipping) + 
-                stats.actual_int_shipping - actualShipping).toFixed(2);  
+                stats.actual_int_shipping - actualShipping).toFixed(2);
+            stats.int_shipping = stats.actual_int_shipping.toFixed(2);
           };
           
           scope.save = function() {
@@ -198,14 +201,15 @@ define('orders/orders', [
                 return rpc.update_order({
                   id: order.id, 
                   int_shipping: order.int_shipping
-                }).then(function(response) {
-                  if (response.data.updated) return true;
-                  alert(response.data.error);
                 });
               };
             }
             var requests = scope.orders.map(toRequest);
             utils.requestOneByOne(requests).then(scope.reload);
+          };
+          
+          scope.isOrderAdmin = function() {
+            return perm.isOrderAdmin();
           };
 
           $rootScope.$on('reload-orders', scope.reload);
