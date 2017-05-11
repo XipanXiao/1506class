@@ -187,6 +187,7 @@ hr {
   width: 400px;
 }
 
+.user-score-editor,
 .user-info-editor {
   background: white;
   border: 1px solid rgba(0,0,0,0.25);

@@ -236,7 +236,7 @@ define('services', [], function() {
       
       update_scores: function(scores) {
         scores.rid = 'scores';
-        return http_form_post($http, $httpParamSerializerJQLike(user),
+        return http_form_post($http, $httpParamSerializerJQLike(scores),
             'cgi-bin/score.php');
       },
       

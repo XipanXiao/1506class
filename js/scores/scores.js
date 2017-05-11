@@ -8,7 +8,7 @@ define('scores/scores', ['services', 'utils'], function() {
         },
         restrict: 'E',
         link: function(scope) {
-          scope.types = ['', '闭卷', '开卷'];
+          scope.types = ['尚未参加', '闭卷', '开卷'];
           scope.$watch('classId', function(classId) {
             if (!classId) return;
 
@@ -17,12 +17,36 @@ define('scores/scores', ['services', 'utils'], function() {
 
               rpc.get_scores(classId).then(function(response) {
                 utils.forEach(scope.users, function(user) {
-                  var score = response.data[user.id];
-                  if (score) utils.mix_in(user, score);
+                  var score = response.data[user.id] || {
+                    type1: 0,
+                    type2: 0
+                  };
+                  utils.mix_in(user, score);
                 });
               });
             });
           });
+          scope.save = function(user) {
+            var score = {
+              user_id: user.id,
+              type1: user.type1 || 0,
+              score1: user.score1 || '',
+              type2: user.type2 || 0,
+              score2: user.score2 || ''
+            };
+            rpc.update_scores(score).then(function(response) {
+              if (!response.data.updated) {
+                alert(response.data.error);
+              } else {
+                scope.selectedUser = null;
+              }
+            });
+          };
+          scope.select = function(user, $index) {
+            scope.selectedUser = user;
+            scope.selectedTop = $index * 28;
+          };
+          scope.selectedTop = 0;
         },
         templateUrl : 'js/scores/scores.html'
       };
