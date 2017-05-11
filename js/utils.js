@@ -367,6 +367,7 @@ define('utils', [], function() {
           '美国智悲菩提讲修', '本地招生材料', '微信', '微博或论坛', '朋友介绍'],
       entranceLabels: ['本站', '微信', 'zbfw'], 
       weekDayLabels: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+      examLabels: ['无️', '闭卷', '开卷'],
 
       getDisplayLabel: function(user, key) {
         return this[key+'Labels'][user[key]] || '';

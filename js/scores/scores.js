@@ -8,7 +8,7 @@ define('scores/scores', ['services', 'utils'], function() {
         },
         restrict: 'E',
         link: function(scope) {
-          scope.types = ['尚未参加', '闭卷', '开卷'];
+          scope.types = utils.examLabels;
           scope.$watch('classId', function(classId) {
             if (!classId) return;
 

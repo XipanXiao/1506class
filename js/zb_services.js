@@ -235,6 +235,25 @@ define('zb_services', ['utils'], function() {
       },
       is_normal_user: function(user) {
         return parseInt(user.status) == 0;
+      },
+      get_scores: function(pre_classID) {
+        var url = '{0}/pre/report_ajax?type=exam_grid&pre_classID={1}'.
+            format(serviceUrl, pre_classID);
+        return $http.get(get_proxied_url(url));
+      },
+      report_score: function(userID, pre_classID, type1, score1, type2, 
+          score2) {
+        var data = {
+            url: '{0}/pre/report_ajax'.format(serviceUrl),
+            userID: userID,
+            pre_classID: pre_classID,
+            type: 'exam_grid',
+            exam1_open: utils.examLabels[type1] || '无',
+            exam1_score: score1 || '不合格',
+            exam2_open: utils.examLabels[type2] || '无',
+            exam2_score: score2 || '不合格'
+        };
+        return http_form_post($http, $httpParamSerializerJQLike(data));
       }
     };
   });
