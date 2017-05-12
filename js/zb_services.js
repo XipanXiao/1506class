@@ -241,18 +241,9 @@ define('zb_services', ['utils'], function() {
             format(serviceUrl, pre_classID);
         return $http.get(get_proxied_url(url));
       },
-      report_score: function(userID, pre_classID, type1, score1, type2, 
-          score2) {
-        var data = {
-            url: '{0}/pre/report_ajax'.format(serviceUrl),
-            userID: userID,
-            pre_classID: pre_classID,
-            type: 'exam_grid',
-            exam1_open: utils.examLabels[type1] || '无',
-            exam1_score: score1 || '不合格',
-            exam2_open: utils.examLabels[type2] || '无',
-            exam2_score: score2 || '不合格'
-        };
+      report_score: function(score) {
+        score.url = '{0}/pre/report_ajax'.format(serviceUrl);
+        score.type = 'exam_grid';
         return http_form_post($http, $httpParamSerializerJQLike(data));
       }
     };

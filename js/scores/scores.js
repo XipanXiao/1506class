@@ -1,6 +1,9 @@
-define('scores/scores', ['services', 'utils'], function() {
+define('scores/scores', ['services', 
+    'utils',
+    'zb_sync_button/zb_sync_button'], function() {
 
-  return angular.module('ScoresModule', ['ServicesModule', 'UtilsModule'])
+  return angular.module('ScoresModule', ['ServicesModule',
+      'UtilsModule', 'ZBSyncButtonModule'])
         .directive('scores', function(rpc, utils) {
       return {
         scope: {
@@ -48,7 +51,7 @@ define('scores/scores', ['services', 'utils'], function() {
           };
           scope.selectedTop = 0;
         },
-        templateUrl : 'js/scores/scores.html'
+        templateUrl : 'js/scores/scores.html?tag=201705112157'
       };
     });
 });

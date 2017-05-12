@@ -76,6 +76,15 @@ define('zb_sync_button/zb_sync_button',
                   scope.sync_class
               ]).then(done);
               break;
+            case 'score':
+              utils.requestOneByOne([
+                  scope.ensure_authenticated,
+                  scope.fetch_zb_scores,
+                  scope.fetch_scores,
+                  scope.update_scores,
+                  scope.update_zb_scores
+              ]).then(done);
+              break;
             }
           };
           scope.getCourseRecord = function(user, course_id, audio, book) {
@@ -873,6 +882,56 @@ define('zb_sync_button/zb_sync_button',
             return tm ?
                 '(上报时间' + utils.toDateTime(tm).toLocaleString() + ')' : '';
           };
+          scope.fetch_zb_scores = function() {
+            var preclass_ID = scope.classInfo.zb_id;
+            return zbrpc.get_scores(preclass_ID).then(function(response) {
+              return scope.scores = response.data;
+            });
+          };
+          function merge_from_local(localScore, score) {
+            score.preclass_ID = scope.classInfo.zb_id;
+
+            if (localScore.type1) {
+              score.exam1_open = utils.examLabels[localScore.type1];
+              score.exam1_score = localScore.score1 || score.exam1_score; 
+            }
+            if (localScore.type2) {
+              score.exam2_open = utils.examLabels[localScore.type2];
+              score.exam2_score = localScore.score2 || score.exam2_score; 
+            }
+          }
+          function merge_from_zb(localScore, score) {
+            localScore.type1 = utils.examLabels.indexOf(score.exam1_open);
+            localScore.score1 = score.exam1_score;
+            localScore.type2 = utils.examLabels.indexOf(score.exam2_open);
+            localScore.score2 = score.exam2_score;
+          }
+          function merge_scores(scores) {
+            utils.forEach(scope.users, function(user) {
+              var localScore = scores[user.id];
+              var score = scope.scores[user.zb_id];
+              if (localScore) {
+                merge_from_local(localScore, score);
+              } else {
+                localScore = scores[user.id] = {user_id: user.id};
+                merge_from_zb(localScore, score);
+              }
+            });
+            return scope.local_scores = scores;
+          }
+          scope.fetch_scores = function() {
+            return rpc.get_scores(scope.classId).then(function(response) {
+              merge_scores(response.data);
+              return scope.local_scores = response.data;
+            });
+          };
+          scope.update_scores = function() {
+            return scope.local_scores.forEach(rpc.update_scores);
+          };
+          scope.update_zb_scores = function() {
+            return scope.scores.forEach(zbrpc.report_score);
+          };
+
           scope.totalTasks = 0;
           scope.finished = 0;
           scope.results = {};

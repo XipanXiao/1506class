@@ -7,7 +7,6 @@ js/services.js
 js/permission.js
 js/importers.js
 js/zb_services.js
-js/scores/scores.js
 js/search_bar/search_bar.js
 js/app_bar/app_bar.js
 js/import_dialog/import_dialog.js
@@ -26,6 +25,7 @@ js/new_user_dialog/new_user_dialog.js
 js/address_editor/address_editor.js
 js/user_editor/user_editor.js
 js/zb_sync_button/zb_sync_button.js
+js/scores/scores.js
 js/users/users.js
 js/class_info/class_info.js
 js/navigate_bar/navigate_bar.js
