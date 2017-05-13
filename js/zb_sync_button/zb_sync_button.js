@@ -883,13 +883,25 @@ define('zb_sync_button/zb_sync_button',
                 '(上报时间' + utils.toDateTime(tm).toLocaleString() + ')' : '';
           };
           scope.fetch_zb_scores = function() {
-            var preclass_ID = scope.classInfo.zb_id;
-            return zbrpc.get_scores(preclass_ID).then(function(response) {
-              return scope.scores = response.data;
+            var pre_classID = scope.classInfo.zb_id;
+            return zbrpc.get_scores(pre_classID).then(function(response) {
+              var scores = response.data.data;
+              if (!scores) {
+                alert('Failed to fetch scores from zhibei.info');
+                return false;
+              }
+              scope.scores = {};
+              scores.forEach(function(score) {
+                scope.scores[score.userID] = score;
+              });
+              return scope.scores;
             });
           };
           function merge_from_local(localScore, score) {
-            score.preclass_ID = scope.classInfo.zb_id;
+            score.pre_classID = scope.classInfo.zb_id;
+
+            var old = {};
+            utils.mix_in(old, score);
 
             if (localScore.type1) {
               score.exam1_open = utils.examLabels[localScore.type1];
@@ -899,12 +911,18 @@ define('zb_sync_button/zb_sync_button',
               score.exam2_open = utils.examLabels[localScore.type2];
               score.exam2_score = localScore.score2 || score.exam2_score; 
             }
+            score.changed = utils.diff(old, score);
           }
           function merge_from_zb(localScore, score) {
+            var old = {};
+            utils.mix_in(old, localScore);
             localScore.type1 = utils.examLabels.indexOf(score.exam1_open);
-            localScore.score1 = score.exam1_score;
+            if (localScore.type1 < 0) localScore.type1 = 0;
+            localScore.score1 = parseInt(score.exam1_score) || 0;
             localScore.type2 = utils.examLabels.indexOf(score.exam2_open);
-            localScore.score2 = score.exam2_score;
+            if (localScore.type2 < 0) localScore.type2 = 0;
+            localScore.score2 = parseInt(score.exam2_score) || 0;
+            localScore.changed = localScore.type1 > 0 || localScore.type2 > 0;
           }
           function merge_scores(scores) {
             utils.forEach(scope.users, function(user) {
@@ -913,7 +931,8 @@ define('zb_sync_button/zb_sync_button',
               if (localScore) {
                 merge_from_local(localScore, score);
               } else {
-                localScore = scores[user.id] = {user_id: user.id};
+                localScore = user;
+                localScore.user_id = user.id;
                 merge_from_zb(localScore, score);
               }
             });
@@ -926,10 +945,22 @@ define('zb_sync_button/zb_sync_button',
             });
           };
           scope.update_scores = function() {
-            return scope.local_scores.forEach(rpc.update_scores);
+            function changed(score) { return score.changed; }
+            function toRequest(score) { 
+              return function() { return rpc.update_scores(score);}
+            }
+            var requests = utils.map(utils.where(scope.users, changed), 
+                toRequest);
+            return utils.requestOneByOne(requests);
           };
           scope.update_zb_scores = function() {
-            return scope.scores.forEach(zbrpc.report_score);
+            function changed(score) { return score.changed; }
+            function toRequest(score) {
+              return function() { return zbrpc.report_score(score);}
+            }
+            var requests = utils.map(utils.where(scope.scores, changed), 
+                toRequest);
+            return utils.requestOneByOne(requests);
           };
 
           scope.totalTasks = 0;

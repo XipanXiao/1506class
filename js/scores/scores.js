@@ -20,10 +20,14 @@ define('scores/scores', ['services',
 
               rpc.get_scores(classId).then(function(response) {
                 utils.forEach(scope.users, function(user) {
-                  var score = response.data[user.id] || {
-                    type1: 0,
-                    type2: 0
-                  };
+                  var score = response.data[user.id];
+                  if (!score) return;
+
+                  score.type1 = parseInt(score.type1) || 0;
+                  score.type2 = parseInt(score.type2) || 0;
+                  score.score1 = parseInt(score.score1) || 0;
+                  score.score2 = parseInt(score.score2) || 0;
+                  
                   utils.mix_in(user, score);
                 });
               });
@@ -51,7 +55,7 @@ define('scores/scores', ['services',
           };
           scope.selectedTop = 0;
         },
-        templateUrl : 'js/scores/scores.html?tag=201705112157'
+        templateUrl : 'js/scores/scores.html?tag=201705122003'
       };
     });
 });

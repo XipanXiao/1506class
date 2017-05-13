@@ -242,8 +242,16 @@ define('zb_services', ['utils'], function() {
         return $http.get(get_proxied_url(url));
       },
       report_score: function(score) {
-        score.url = '{0}/pre/report_ajax'.format(serviceUrl);
-        score.type = 'exam_grid';
+        var data = {
+          url: '{0}/pre/report_ajax'.format(serviceUrl),
+          type: 'exam_grid',
+          userID: score.userID,
+          pre_classID: score.pre_classID,
+          exam1_open: score.exam1_open,
+          exam1_score: score.exam1_score,
+          exam2_open: score.exam2_open,
+          exam2_score: score.exam2_score
+        };
         return http_form_post($http, $httpParamSerializerJQLike(data));
       }
     };

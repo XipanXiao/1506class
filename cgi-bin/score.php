@@ -12,8 +12,9 @@ function get_scores($classId) {
   global $medoo;
 
   $userIds = $medoo->select("users", "id", ["classId" => $classId]);
-  return keyed_by_id($medoo->select("scores", "*", ["user_id" => $userIds]),
-  		"user_id");	
+  return keyed_by_id($medoo->select("scores", 
+  		["user_id", "type1", "score1", "type2", "score2"], 
+  		["user_id" => $userIds]), "user_id");	
 }
 
 function update_scores($score) {
