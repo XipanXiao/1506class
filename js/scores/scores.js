@@ -12,6 +12,7 @@ define('scores/scores', ['services',
         restrict: 'E',
         link: function(scope) {
           scope.types = utils.examLabels;
+
           scope.$watch('classId', function(classId) {
             if (!classId) return;
 
