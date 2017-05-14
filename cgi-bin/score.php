@@ -55,7 +55,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   	
   	unset($_POST["rid"]);
   	$targetUser = current($users);
-  	$response = canWrite($user, $targetUser)
+  	$response = canWrite($user, $targetUser->classInfo)
   	    ? ["updated" => update_scores($_POST)]
   	    : permision_denied_error();
   }
