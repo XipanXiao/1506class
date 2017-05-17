@@ -13,10 +13,16 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
           classId: '@'
         },
         link: function(scope) {
-          var pageSize = 8;
+          scope.pageSize = 8;
           scope.refreshStats = function() {
             if (!scope.selectedTask) return;
-            
+
+            scope.pages = [];
+            var totalPages = scope.selectedTask.sub_tasks / scope.pageSize;
+            for (var i = 0;i < totalPages; i++) {
+              scope.pages.push(i);
+            }
+
             rpc.get_class_task_stats(scope.classId, scope.selectedTask.id)
                 .then(function(response) {
                   scope.task_stats = response.data;
@@ -51,13 +57,13 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
           });
           scope.range = function() {
             var arr = [];
-            var start = scope.currentPage, end = start + pageSize;
+            var start = scope.currentPage, end = start + scope.pageSize;
             for (var i = start; i < end; i++) arr[i-start] = i;
             return arr;
           };
           scope.page = function(delta) {
-            scope.currentPage += delta * pageSize;
-            var max = scope.selectedTask.sub_tasks - pageSize;
+            scope.currentPage += delta * scope.pageSize;
+            var max = scope.selectedTask.sub_tasks - scope.pageSize;
             if (scope.currentPage > max) scope.currentPage = max;
             else if (scope.currentPage < 0) scope.currentPage = 0;
           };
@@ -82,9 +88,12 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
           scope.selected = function(user) {
             return scope.selectedUser && scope.selectedUser.id == user.id;
           };
+          scope.gotoPage = function(page) {
+            scope.currentPage = page * scope.pageSize;
+          };
           scope.currentPage = 0;
         },
-        templateUrl: 'js/task_stats/task_stats.html'
+        templateUrl: 'js/task_stats/task_stats.html?tag=201705162201'
       };
     });
 });
