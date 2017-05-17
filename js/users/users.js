@@ -72,7 +72,7 @@ define('users/users', ['bit_editor/bit_editor',
                 });
           };
         },
-        templateUrl : 'js/users/users.html'
+        templateUrl : 'js/users/users.html?tag=201705162307'
       };
     });
 });

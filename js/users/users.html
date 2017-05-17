@@ -15,7 +15,7 @@
       <div class="css-table-cell"><strong>备注</strong></div>
       <div class="css-table-cell"></div>
     </div>
-    <div ng-repeat="user in users" class="css-table-row selectable users"
+    <div ng-repeat="user in users" class="css-table-row selectable users deletable"
         ng-click="showInfo(user, $index)"
         ng-class="{'selected': selected(user), 'admin': isAdmin(user)}">
       <div class="css-table-cell compact-name-field">{{user.name}}</div>
@@ -37,7 +37,8 @@
       </div>
       <div class="css-table-cell comments">{{user.comments}}</div>
       <div class="css-table-cell">
-        <iron-icon icon="icons:delete" title="删除" ng-click="remove(user)" class="selectable">
+        <iron-icon ng-if="isSysAdmin()" icon="icons:delete" title="删除"
+            ng-click="remove(user)" class="selectable delete-button">
         </iron-icon>
       </div>
     </div>
