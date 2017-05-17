@@ -6,6 +6,15 @@ include_once "util.php";
 include_once 'permission.php';
 include_once 'backup.php';
 
+/// Moves a user from a deleted class to the new class 1.
+function undelete($user) {
+  if (!empty($user->classInfo) && empty($user->classInfo["deleted"])) {
+  	return $user;
+  }
+
+  return update_user(["id" => $user->id, "classId" => 1]);
+}
+
 if(!empty($_POST["email"])) {
   $password = 
       empty($_POST["password"]) ? NULL : md5($_POST["password"]);  
@@ -19,7 +28,8 @@ if(!empty($_POST["email"])) {
       echo "<p>Password does not match.</p>";
       exit();
     }
-    
+
+    $user = undelete($user);
     $user->password = null;
     $_SESSION["user"] = serialize($user);
     

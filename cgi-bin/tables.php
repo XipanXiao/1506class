@@ -298,7 +298,12 @@ function remove_user($id) {
   global $medoo;
 
   $medoo->delete("class_prefs", ["user_id" => $id]);
-  return $medoo->delete("users", ["id" => $id]);
+  if ($medoo->delete("users", ["id" => $id])) return 1;
+
+  $deletedClass = current($medoo->select("classes", ["id"],
+      ["deleted" => 1, "LIMIT" => 1]));
+  update_user(["id" => $id, "classId" => $deletedClass["id"]]);
+  return 1;
 }
 
 function update_user($user) {
