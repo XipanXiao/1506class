@@ -50,11 +50,13 @@ define('users/users', ['bit_editor/bit_editor',
             $scope.editingUser = editingUser;
           });
           $scope.remove = function(user) {
-            if (confirm('Are you sure to remove ' + user.email + '?')) {
-              rpc.remove_user(user.id).then(function(response) {
-                if (response.data.deleted) $scope.onDelete();
-              });
-            }
+            var message = '请确认删除用户"{0}"({1}).'.format(user.name, 
+                user.email);
+            if (!confirm(message)) return;
+
+            rpc.remove_user(user.id).then(function(response) {
+              if (response.data.deleted) $scope.onDelete();
+            });
           };
           $scope.selected = function(user) {
             return $scope.editingUser && $scope.editingUser.id === user.id;
