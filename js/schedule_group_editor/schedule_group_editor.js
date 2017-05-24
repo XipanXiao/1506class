@@ -44,7 +44,7 @@ define('schedule_group_editor/schedule_group_editor',
                 var appending = scope.isSameName(
                     group.courses[course_ids1[0]].name,
                     group.courses[course_ids2[0]].name);
-                if (appending) {
+                if (appending || scope.sequential) {
                   return course_ids1.concat(course_ids2);
                 } else {
                   var alternate = [];
@@ -136,6 +136,41 @@ define('schedule_group_editor/schedule_group_editor',
 
                 return utils.truePromise();
               };
+              scope.mergeTypeChanged = function() {
+                var group = scope.group;
+
+                if (!parseInt(group.course_group) ||
+                    !parseInt(group.course_group2)) {
+                  return;
+                }
+                
+                var courseGroupIds = [group.course_group, group.course_group2];
+                scope.courseIds = [];
+                function toIdRequest(index) {
+                  var course_group = courseGroupIds[index]; 
+                  return function() {
+                    return scope.getCourseIds(course_group)
+                        .then(function(courseIds) {
+                      return scope.courseIds[index] = courseIds;
+                    });
+                  };
+                }
+                
+                var requests = [0, 1].map(toIdRequest);
+                utils.requestOneByOne(requests).then(function() {
+                  var course_ids1 = scope.courseIds[0];
+                  var course_ids2 = scope.courseIds[1];
+                
+                  if (course_ids2.length != course_ids1.length) {
+                    alert('Secondary course should have same lessons as the' +
+                        ' primary one.');
+                    return;
+                  }
+
+                  var courseIds = scope.merge_courses(course_ids1, course_ids2);
+                  scope.arrange_schedules(courseIds, true);
+                });
+              };
               scope.limitedGroupChange = function(courses) {
                 scope.group.limited_courses = courses;
               };
@@ -146,7 +181,7 @@ define('schedule_group_editor/schedule_group_editor',
                 return terms;
               })();
             },
-            templateUrl : 'js/schedule_group_editor/schedule_group_editor.html'
+            templateUrl : 'js/schedule_group_editor/schedule_group_editor.html?tag=201705232243'
           };
         });
 });
