@@ -104,7 +104,7 @@ define('learning_records/learning_records', [
                 });
               };
             },
-            templateUrl : 'js/learning_records/learning_records.html'
+            templateUrl : 'js/learning_records/learning_records.html?tag=201705242138'
           };
         });
 });

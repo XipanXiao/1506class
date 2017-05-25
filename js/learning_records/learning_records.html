@@ -75,9 +75,9 @@
             </div>
           </div>
         </div>
-        <div class="css-table odd-even">
+        <div ng-if="group.limited_course_group" class="css-table odd-even">
           <div class="css-table-row header">
-            <div ng-if="group.limited_courses" class="css-table-cell name-field"></div>
+            <div class="css-table-cell name-field"></div>
             <div ng-repeat="course in group.limited_courses" class="css-table-cell">
               {{course.name}}
             </div>
