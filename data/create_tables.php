@@ -1,3 +1,5 @@
+-- <?php /* This SQL file is named as PHP to avoid accidental web access.
+
 CREATE TABLE IF NOT EXISTS item_categories(
         id MEDIUMINT PRIMARY KEY AUTO_INCREMENT,
         parent_id MEDIUMINT,
@@ -80,3 +82,5 @@ CREATE TABLE IF NOT EXISTS order_details (
 
 CREATE TABLE IF NOT EXISTS closed_order_details 
     SELECT * FROM order_details LIMIT 0;
+
+-- */ ?>

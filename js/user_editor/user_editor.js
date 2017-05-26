@@ -75,6 +75,7 @@ define('user_editor/user_editor',
               $scope.editing = null;
             } else {
               utils.mix_in($scope.user, $scope.originalUser);
+              $scope.user.confirm = null;
               $scope.error = response.data.error;
             }
           });

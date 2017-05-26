@@ -1,7 +1,10 @@
-define('course_groups/course_groups', ['services', 'utils'], function() {
-	return angular.module('CourseGroupsModule', ['ServicesModule', 'UtilsModule'])
+define('course_groups/course_groups',
+    ['services', 'permission', 'utils'], function() {
+	return angular.module('CourseGroupsModule', ['ServicesModule',
+      'PermissionModule',
+      'UtilsModule'])
 		.directive('courseGroups',
-				function(rpc, utils) {
+				function(rpc, perm, utils) {
 					return {
 					  scope: {
 					    groupId: '=',
@@ -9,6 +12,10 @@ define('course_groups/course_groups', ['services', 'utils'], function() {
 					  },
 					  link: function($scope) {
 					    $scope.selected = {id: 0};
+					    
+					    $scope.isSysAdmin = function() {
+					      return perm.isSysAdmin();
+					    };
 
               rpc.get_course_groups().then(function(response) {
                 $scope.course_groups = response.data;
@@ -45,7 +52,7 @@ define('course_groups/course_groups', ['services', 'utils'], function() {
                 }
               };
 					  },
-						templateUrl : 'js/course_groups/course_groups.html'
+						templateUrl : 'js/course_groups/course_groups.html?tag=201705252126'
 					};
 				});
 });

@@ -1,3 +1,5 @@
+-- <?php /* This SQL file is named as PHP to avoid accidental web access.
+
 UPDATE item_categories SET name='基础班教材' where id=1;
 INSERT INTO item_categories (id, name) VALUES
 (2, '大学演讲'),
@@ -132,3 +134,6 @@ CREATE TABLE IF NOT EXISTS scores (
         score1 TINYINT,
         type2 TINYINT,
         score2 TINYINT);
+
+        
+-- */ ?>
