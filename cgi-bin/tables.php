@@ -570,6 +570,9 @@ function update_schedule($schedule) {
       $datas[$field] = intval($schedule[$field]);
     }
   }
+  if (isset($schedule["notes"])) {
+    $datas["notes"] = $schedule["notes"];
+  }
   if (intval($datas["course_id"]) == 0) {
     $datas["course_id2"] = NULL;
   }

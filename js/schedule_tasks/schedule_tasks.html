@@ -27,7 +27,7 @@
       <div class="css-table-cell">
         <a href="https://www.youtube.com/results?search_query={{group.courses[schedule.course_id].name}}"
             target="_blank" title="Click to search in YouTube">
-          {{group.courses[schedule.course_id].name}}
+          {{group.courses[schedule.course_id].name || schedule.notes}}
         </a>
       </div>
       <div class="css-table-cell">{{users[schedule.review].name}}</div>
