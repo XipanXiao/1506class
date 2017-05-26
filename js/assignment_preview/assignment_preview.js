@@ -89,6 +89,8 @@ define('assignment_preview/assignment_preview', [
             if (!candidate) return '';
 
             var classInfo = candidate.classInfo;
+            if (!classInfo) return '请重新选择';
+
             return utils.getClassLabel(classInfo);
           };
           
