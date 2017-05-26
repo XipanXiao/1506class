@@ -27,7 +27,7 @@
       <div class="css-table-cell"><strong>上课内容</strong></div>
       <div class="css-table-cell"><strong>{{group.course_group2 ? '串讲' : '总结'}}</strong></div>
       <div class="css-table-cell"><strong>串讲</strong></div>
-      <div class="css-table-cell"><strong>备注</strong></div>
+      <div class="css-table-cell"><strong>放假备注</strong></div>
     </div>
   
     <div ng-repeat="schedule in group.schedules" class="css-table-row" id="{{schedule.id}}"
@@ -51,8 +51,9 @@
         </user-picker>
       </div>
       <div class="css-table-cell">
-        <editable-label value="schedule.notes" class="padded-element"
-            on-change="update(schedule, 'notes', schedule.notes)">
+        <editable-label ng-if="vacation(schedule)" value="schedule.notes"
+            on-change="update(schedule, 'notes', schedule.notes)"
+            class="padded-element">
         </editable-label>
       </div>
     </div>
