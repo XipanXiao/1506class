@@ -29,11 +29,14 @@ define('setup_tasks/setup_tasks',
             rpc.update_class_prefs(prefs);
           };
           scope.getClassLabel = function(id) {
-            return utils.getClassLabel(scope.classes[id]);
+            var classInfo = scope.classes[id];
+            if (!classInfo) return '请重新选择';
+
+            return utils.getClassLabel(classInfo);
           };
           
         },
-        templateUrl: 'js/setup_tasks/setup_tasks.html?tag=201705232148'
+        templateUrl: 'js/setup_tasks/setup_tasks.html?tag=201705261302'
       };
     });
 });
