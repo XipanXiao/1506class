@@ -85,7 +85,7 @@ function get_class_candidates($user) {
 		$where = array_merge($where, ["department_id" => 1]);
 	} else {
 		// For first year students, give their second year candidates.
-		$where = array_merge($where, ["department_id[!]" => 1]);
+		$where = array_merge($where, ["department_id" => [2, 3, 4]]);
 	}
 	return keyed_by_id($medoo->select("classes", 
 			["id", "department_id", "name", "weekday", "time"], ["AND" => $where]));
