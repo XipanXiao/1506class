@@ -316,7 +316,7 @@ define('zb_sync_button/zb_sync_button',
             indexes.forEach(function(index) {
               var record = stats[index - 1];
               count.push(record && record.sum || 0);
-              time.push((record && record.duration || 0) / 60.0);
+              time.push(utils.toGuanxiuHour(record && record.duration || 0));
             });
             
             return {
@@ -480,7 +480,8 @@ define('zb_sync_button/zb_sync_button',
                       taskStats[task.zb_name + '_count'] = stat.sum;
                     }
                     if (task.duration) {
-                      taskStats[task.zb_name + '_time'] = stat.duration / 60.0;
+                      taskStats[task.zb_name + '_time'] =
+                          utils.toGuanxiuHour(stat.duration);
                     }
                     scope.users[user.id].taskStats = taskStats;
                   });

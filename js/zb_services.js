@@ -209,7 +209,7 @@ define('zb_services', ['utils'], function() {
           type: 'guanxiu_grid',
           half_term: half_term,
           count: count,
-          time: Math.min(time, utils.maxGuanxiuTime).toFixed(1)
+          time: time
         };
         return http_form_post($http, $httpParamSerializerJQLike(data));
       },
