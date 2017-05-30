@@ -91,6 +91,10 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
           scope.gotoPage = function(page) {
             scope.currentPage = page * scope.pageSize;
           };
+          scope.expand = function() {
+            var dialog = document.querySelector('#task-editor-dlg');
+            dialog.open();
+          };
           scope.currentPage = 0;
         },
         templateUrl: 'js/task_stats/task_stats.html?tag=201705162201'

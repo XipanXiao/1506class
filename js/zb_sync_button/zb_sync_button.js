@@ -538,8 +538,9 @@ define('zb_sync_button/zb_sync_button',
                 // Is this the first time to report the [task]?
                 // For first time reporting, do not skip the first 15 days.
                 var isFirstTime = task.starting_half_term == scope.half_term;
-                var start_cut_time = scope.lastReportTime ||
-                    (isFirstTime ? startTerm : (start_time + extraReportTime));
+                var start_cut_time = isFirstTime
+                    ? startTerm 
+                    : (scope.lastReportTime || (start_time + extraReportTime));
                 var start_time = fistHalf ? start_cut_time : midTerm;
                 var end_time = fistHalf ? midTerm : end_cut_time;
                 return scope.getTaskStats(task, start_time, end_time);
