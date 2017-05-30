@@ -472,6 +472,8 @@ define('utils', [], function() {
       
       weeksOfTerm: 26,
       totalTerms: 12,
+      // The zb system enforce a cap of the maximum guanxiu hours. 
+      maxGuanxiuTime: 25.5,
       // A lot of people were not able to report their tasks
       // in time. Add this extra 15 days to avoid a zero number.
       extraReportTime: 3600 * 24 * 15
