@@ -56,7 +56,8 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
   }
   
   $fields = ["id", "user_id", "status", "sub_total", "paid", "shipping",
-      "int_shipping", "shipping_date", "paid_date", "created_time", "name"];
+      "int_shipping", "shipping_date", "paid_date", "created_time", "name",
+  		"paypal_trans_id", "usps_track_id"];
   $address_fields = 
       ["phone", "email", "street", "city", "state", "country", "zip"];
   
@@ -119,11 +120,26 @@ function delete_order($id) {
   return $medoo->delete("orders", ["id" => $id]);
 }
 
-function update_order($order) {
+function update_order($order, $is_manager) {
   global $medoo;
 
-  $data = build_update_data(["status", "paid", "shipping", "int_shipping"],
-      $order);
+  $data = [];
+  if ($is_manager) {
+    $data = build_update_data(["status", "paid", "shipping", "int_shipping"],
+        $order);
+    if (isset($order["usps_track_id"])) {
+      $data["usps_track_id"] = filter_input(INPUT_POST, "usps_track_id", 
+          FILTER_VALIDATE_REGEXP, 
+          ["options" => ["regexp" => "/\b[\dA-Z]+\b/"]]);
+    }
+  } else {
+  	if (isset($order["paypal_trans_id"])) {
+  		$data["paypal_trans_id"] = filter_input(INPUT_POST, "paypal_trans_id",
+  				FILTER_VALIDATE_REGEXP,
+  				["options" => ["regexp" => "/\b[\dA-Z]{17}\b/"]]);
+  	}
+  }
+
   return $medoo->update("orders", $data, ["id" => $order["id"]]);
 }
 
@@ -264,8 +280,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       $response = permision_denied_error();
     } elseif (empty($order["id"])) {
       $response = ["updated" => place_order($order)];
-    } elseif (isOrderManager($user)) {
-      $response = ["updated" => update_order($order)];
+    } else {
+      $response = ["updated" => update_order($order, isOrderManager($user))];
     }
   } elseif ($resource_id == "merge_orders" && !empty($_POST["order_ids"])) {
     $response = canReadOrderAddress($user) 
