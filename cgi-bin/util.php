@@ -23,7 +23,7 @@ function permision_denied_error() {
 
 function get_db_error2($medoo) {
   $errors = $medoo->error();
-  return (empty($errors) ? '' : $errors[2]). ": ". $medoo->last_query();
+  return empty($errors) ? '' : $errors[2];
 }
 
 function keyed_by_id($rows, $id_key = "id") {
