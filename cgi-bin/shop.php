@@ -151,7 +151,8 @@ function get_order_stats($year) {
   if (empty($classes)) return [];
   
   foreach ($classes as $classId => $classInfo) {
-    $userIdSql = sprintf("SELECT id FROM users WHERE classId=%d", $classId); 
+    $userIdSql = sprintf("SELECT id FROM users WHERE classId=%d",
+        intval($classId)); 
     $orderIdSql = sprintf("SELECT id FROM orders WHERE user_id IN (%s)",
         $userIdSql);
     $sql = sprintf("SELECT item_id, price, sum(count) as group_count FROM ".

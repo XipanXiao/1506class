@@ -375,7 +375,7 @@ function get_last_task_record($user_id, $task_id, $sub_index) {
 
   $sql = sprintf("SELECT SUM(count), SUM(duration) FROM task_records
       WHERE student_id=%d AND task_id=%d AND sub_index=%d;",
-      intval($user_id), intval($task_id), $record["sub_index"]);
+      intval($user_id), intval($task_id), intval($record["sub_index"]));
   $sums = current($medoo->query($sql)->fetchAll());
 
   return [
@@ -420,17 +420,18 @@ function get_class_task_stats($classId, $task_id, $startTime, $endTime,
   if (!empty($startTime) && !empty($endTime)) {
     if ($isIndex) {
       $timeFilter = sprintf(" AND sub_index >= %d AND sub_index <= %d",
-          $startTime - 1, $endTime - 1);
+          intval($startTime - 1), intval($endTime - 1));
     } else {
       $timeFilter = sprintf(" AND ts BETWEEN FROM_UNIXTIME(%d) and " .
-          "FROM_UNIXTIME(%d)", $startTime, $endTime);
+          "FROM_UNIXTIME(%d)", intval($startTime), intval($endTime));
     }
   }
   
   foreach ($users as $key => $user) {
     $sql = sprintf("select sub_index, SUM(count) as sum, SUM(duration)".
         " as duration from task_records where task_id=%d and ".
-        " student_id=%d %s group by sub_index", $task_id, $user["id"],
+        " student_id=%d %s group by sub_index", intval($task_id), 
+    		intval($user["id"]),
         $timeFilter);
 
     $result = $medoo->query($sql)->fetchAll();
@@ -675,7 +676,11 @@ function search($prefix) {
 /// Returns a map like ["1" => 32, "2" => 48, ..., "8" => 26];
 function get_state_stats($countryCode) {
   global $medoo;
-  
+
+  if (strlen($countryCode) != 2 || !is_uppercase($countryCode[0]) ||
+      !is_uppercase($countryCode[1])) {
+    return [];
+  }
   $sql = sprintf("SELECT COUNT(id) as sum, state FROM users WHERE country='%s' ".
       " GROUP BY state", $countryCode);
   $result = $medoo->query($sql)->fetchAll();

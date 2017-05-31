@@ -55,4 +55,8 @@ function same_address($order1, $order2) {
     $order1["state"] == $order2["state"] &&
     $order1["country"] == $order2["country"];
 }
+
+function is_uppercase($char) {
+  return 'A' <= $char && $char <= 'Z';
+}
 ?>
