@@ -82,6 +82,7 @@ function place_order($order) {
   $items = $order["items"];
   unset($order["items"]);
 
+  $order = array_merge($order, sanitize_address());
   $id = $medoo->insert("orders", $order);
   if (!$id) return false;
 
@@ -124,6 +125,18 @@ function update_order($order) {
   $data = build_update_data(["status", "paid", "shipping", "int_shipping"],
       $order);
   return $medoo->update("orders", $data, ["id" => $order["id"]]);
+}
+
+function sanitize_address() {
+  if (!is_country_code($_POST["country"])) return null;
+
+  $data = [];
+  foreach (["name", "phone", "street", "city", "zip"] as $key) {
+    $data[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_STRING,
+        FILTER_REQUIRE_SCALAR);
+    if (empty($data[$key])) exit();
+  }
+  return $data;
 }
 
 function get_shop_items($category) {

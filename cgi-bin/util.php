@@ -59,4 +59,16 @@ function same_address($order1, $order2) {
 function is_uppercase($char) {
   return 'A' <= $char && $char <= 'Z';
 }
+
+function is_country_code($countryCode) {
+  return strlen($countryCode) == 2 && is_uppercase($countryCode[0]) &&
+      is_uppercase($countryCode[1]);
+}
+
+function is_email_blocked($email) {
+  foreach(["sharklasers"] as $blocked) {
+    if (strstr(strtolower($email), $blocked)) return true;
+  }
+  return false;
+}
 ?>

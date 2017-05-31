@@ -273,7 +273,7 @@ function get_users($email, $classId = null, $user_id = null, $sn = null) {
   }
 
   $classes = ($email || $user_id) ? 
-  		get_classes(["id" => $result[0]["classId"]]) : null;
+      get_classes(["id" => $result[0]["classId"]]) : null;
   $users = array();
 
   foreach ($result as $index => $row) {
@@ -313,7 +313,7 @@ function update_user($user) {
   
   $fields = ["internal_id", "name", "nickname", "email",
       "phone", "street", "city", "country", "zip",
-      "im", "occupation", "birthyear", "comments", "skills", "bio"];
+      "im", "occupation", "comments", "skills", "bio"];
 
   foreach ($user as $key => $value) {
     if ($key == "password") {
@@ -323,7 +323,10 @@ function update_user($user) {
         $datas[$key] = intval($value);
       }
     } elseif (in_array($key, $fields)) {
-      $datas[$key] = trim($value);
+    	if ($key == "email" && is_email_blocked($value)) exit();
+      $filter = 
+          $key == "email" ? FILTER_SANITIZE_EMAIL : FILTER_SANITIZE_STRING; 
+      $datas[$key] = filter_input(INPUT_POST, $key, $filter);
     }
   }
 
@@ -431,7 +434,7 @@ function get_class_task_stats($classId, $task_id, $startTime, $endTime,
     $sql = sprintf("select sub_index, SUM(count) as sum, SUM(duration)".
         " as duration from task_records where task_id=%d and ".
         " student_id=%d %s group by sub_index", intval($task_id), 
-    		intval($user["id"]),
+        intval($user["id"]),
         $timeFilter);
 
     $result = $medoo->query($sql)->fetchAll();
@@ -677,10 +680,8 @@ function search($prefix) {
 function get_state_stats($countryCode) {
   global $medoo;
 
-  if (strlen($countryCode) != 2 || !is_uppercase($countryCode[0]) ||
-      !is_uppercase($countryCode[1])) {
-    return [];
-  }
+  if (!is_country_code($countryCode)) return [];
+
   $sql = sprintf("SELECT COUNT(id) as sum, state FROM users WHERE country='%s' ".
       " GROUP BY state", $countryCode);
   $result = $medoo->query($sql)->fetchAll();
