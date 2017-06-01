@@ -136,7 +136,7 @@ function update_order($order, $is_manager) {
   if (isset($order["paypal_trans_id"])) {
     $data["paypal_trans_id"] = filter_input(INPUT_POST, "paypal_trans_id",
         FILTER_VALIDATE_REGEXP,
-        "options" => ["regexp" => "/\b[\dA-Z]{17}\b/"]]);
+        ["options" => ["regexp" => "/\b[\dA-Z]{17}\b/"]]);
   }
 
   return $medoo->update("orders", $data, ["id" => $order["id"]]);
