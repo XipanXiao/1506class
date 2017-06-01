@@ -4,7 +4,7 @@
     <div class="css-table-cell">
       <div>订单日期</div>
       <div>{{order.created_time}}</div>
-      <div ng-switch="editable" class="padded-element">
+      <div ng-switch="admin" class="padded-element">
         <label ng-switch-when="true">订单状态: 
           <select ng-model="order.status"
               ng-options="statusLabels[value] for value in [0, 1, 3]"
@@ -19,45 +19,45 @@
       <div>金额: ${{order.sub_total}}</div>
       <div>预计国际运费: ${{order.int_shipping_estmt}}</div>
       <div>实际国际运费: ${{order.int_shipping}}</div>
-      <div ng-switch="editable">
-        <div ng-switch-when="true">
+      <div>美国国内运费: ${{order.shipping}}</div>
+      <div>合计: ${{order.grand_total}}</div>
+      <div>已付: ${{order.paid}}</div>
+      <div>
+        <strong>Balance: ${{order.balance}}</strong>
+        <a ng-if="!admin" href="https://www.paypal.me/BICWNY/{{order.balance}}" 
+            target="_blank">
+          付款
+        </a>
+      </div>
+      <div ng-if="order.paypal_trans_id">
+        <a href="https://www.paypal.com/myaccount/transaction/details/inline/{{order.paypal_trans_id}}"
+            target="_blank">
+          PayPal transaction
+        </a>
+      </div>
+      <div ng-if="order.usps_track_id">
+        <a href="https://tools.usps.com/go/TrackConfirmAction?tLabels={{order.usps_track_id}}"
+            target="_blank">
+          USPS tracking ID
+        </a>
+      </div>
+      <label>修改<input type="checkbox" ng-model="editing"></label>
+      <div ng-if="editing" ng-switch="admin">
+        <div ng-switch-when="true">          
           <div><label>运费: $<input ng-model="order.shipping"></label></div>
           <div>
             <label>USPS tracking ID:
               <input ng-model="order.usps_track_id">
             </label>
           </div>
-          <div>总价: ${{order.grand_total}}</div>
-          <div><label>已付: $<input ng-model="order.paid"></label></div>
-          <input type="button" value="确认修改" ng-click="onUpdate()">
         </div>
         <div ng-switch-default>
-          <div>运费: ${{order.shipping}}</div>
-          <div>总价: ${{order.grand_total}}</div>
-          <div>已付: ${{order.paid}}</div>
+          <label>PayPal transaction ID: 
+            <input ng-model="order.paypal_trans_id">
+          </label>
         </div>
-        <strong>
-          Balance: ${{order.balance}}
-          <a href="https://www.paypal.com/us/cgi-bin/webscr?cmd=_send-money&nav=1&email=weing221@yahoo.com"
-              target="_blank" ng-if="isMyOrder()">
-            付款
-          </a>
-          <a href="https://www.paypal.com/myaccount/transaction/details/inline/{{order.paypal_trans_id}}"
-              target="_blank" ng-if="isOrderAdmin() && order.paypal_trans_id">
-            PayPal transaction
-          </a>
-        </strong>
-        <div ng-if="isMyOrder()">
-          <div><label>PayPal transaction ID: </label></div>
-          <input ng-model="order.paypal_trans_id">
-          <input type="button" value="确认修改" ng-click="onUpdate()">
-          <div ng-if="order.usps_track_id">
-            <a href="https://tools.usps.com/go/TrackConfirmAction?tLabels={{order.usps_track_id}}"
-                target="_blank">
-              USPS tracking ID
-            </a>
-          </div>
-        </div>
+        <div><label>已付: $<input ng-model="order.paid"></label></div>
+        <input type="button" value="确认修改" ng-click="onUpdate()">
       </div>
     </div>
     <div class="css-table-cell">
@@ -76,13 +76,13 @@
     </div>
     <div class="css-table-cell">
       <iron-icon icon="delete" ng-click="onCancel()" class="delete-button"
-          title="取消订单" ng-show="editable">
+          title="取消订单" ng-show="admin">
       </iron-icon>
     </div>
     <div class="css-table-cell">
       <iron-icon icon="editor:merge-type" ng-click="onMerge()"
           title="合并{{order.name}}的所有订单" class="clickable"
-          ng-show="editable && order.mergeable">
+          ng-show="admin && order.mergeable">
       </iron-icon>
     </div>
   </div>

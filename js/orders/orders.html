@@ -81,7 +81,7 @@
 <h3>订单列表</h3>
 <div ng-repeat="order in orders | filter: {id: orderId, phone: tel}"
     class="section order-details-line">
-  <order-details order="order" editable="admin && order.status != 3"
+  <order-details order="order" admin="{{admin}}"
       on-cancel="remove(order)" on-update="update(order)" user="user"
       on-merge="merge(order)">
   </order-details>

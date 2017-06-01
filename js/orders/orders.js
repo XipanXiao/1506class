@@ -67,6 +67,8 @@ define('orders/orders', [
           
           function calculate_order_values(order) {
             order.status = parseInt(order.status);
+            order.shipping = parseMoney(order.shipping).toFixed(2);
+            order.paid = parseMoney(order.paid).toFixed(2);
 
             order.grand_total = parseMoney(order.sub_total) + 
                 parseMoney(order.int_shipping) + parseMoney(order.shipping);
