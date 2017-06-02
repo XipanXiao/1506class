@@ -1,7 +1,7 @@
 <h1>美国智悲讲修菩提学会</h1>
-<address-editor user="{name: 'BICW - Seattle', zip: '98040', country: 'US',
-    street: '8055 West Mercer Way', city: 'Mercer Island', state: 47,
-    phone: '(206)310-4853', email: 'bicwseattle@gmail.com'}"
+<address-editor user="{name: 'BICW - NY', zip: '11377', country: 'US',
+    street: '48-32 58th Lane', city: 'Woodside', state: 32,
+    email: 'weing221@yahoo.com'}"
     with-contact="true"></address-editor>
 <a class="right" href="javascript:window.print()">Print</a>
 <hr>
@@ -26,6 +26,15 @@
     <div ng-if="order.paid_date" class="css-table-row">
       <div class="css-table-cell">Paid on</div>
       <div class="css-table-cell">{{order.paid_date}}</div>
+    </div>
+    <div ng-if="order.paypal_trans_id" class="css-table-row">
+      <div class="css-table-cell">Transaction</div>
+      <div class="css-table-cell">
+        <a href="https://www.paypal.com/myaccount/transaction/details/inline/{{order.paypal_trans_id}}"
+            target="_blank">
+          {{order.paypal_trans_id}}
+        </a>
+      </div>
     </div>
   </div>
 </div>
