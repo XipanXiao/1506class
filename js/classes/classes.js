@@ -19,17 +19,17 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
           $scope.reload = function() {
             return rpc.get_classes().then(function(response) {
               $scope.showImportDialog = false;
-              var classes = utils.where(response.data, function(info) {
-                return perm.canRead(info);
-              });
+              var classes = response.data;
+              if (utils.isEmpty(classes)) return;
+
               $scope.alumnis = utils.groupBy(classes, 'start_year');
               $scope.years =
                   utils.map(utils.positiveKeys($scope.alumnis), parseInt);
+              var classInfo = classes[$scope.classId] || utils.first(classes);
+              $scope.classId = classInfo.id;
   
               $scope.currentClass = {
-                  year: classes[$scope.classId] ?
-                      parseInt(classes[$scope.classId].start_year, 10) :
-                      (new Date()).getFullYear(),
+                  year: parseInt(classInfo.start_year),
                   id: $scope.classId
               };
               

@@ -28,7 +28,9 @@ define('class_info/class_info', ['bit_editor/bit_editor',
               $scope.users = [];
             } else {
               rpc.get_users(null, classId).then(function(response) {
-                $scope.users = response.data;
+                if (!utils.isEmpty(response.data)) {
+                  $scope.users = response.data;
+                }
               });
             }
           };

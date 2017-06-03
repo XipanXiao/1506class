@@ -6,6 +6,7 @@ define('permission', ['utils'], function() {
       user: null,
       ROLES: {
         STUDENT: 0x3,
+        TEACHER: 0x7,
         LEADER: 0xF,
         YEAR_LEADER: 0x3F,
         INSPECTION: 0x55,
@@ -20,24 +21,25 @@ define('permission', ['utils'], function() {
         0x55: '学院督查', // 00 00 01 01 01 01 r
         0x3F: '年级组长', // 00 00 00 11 11 11 rw classes of the year
         0xF: '组长',    //  00 00 00 00 11 11 rw class data
+        0x7: '辅导员',    //00 00 00 00 01 11 rw own data, read classes.
         0x3: '学员',    //  00 00 00 00 00 11 rw own data
         0: '所有人'
       },
       isAdmin: function() {
-        if (!this.user) return false;
-        return (this.user.permission & this.ROLES.LEADER) == this.ROLES.LEADER;
+        return this.user && (this.user.permission & 5) == 5;
       },
       /// Class leaders (and below) should see only classes of the same year.
       checkClass: function(user, classInfo) {
-        return user.permission >= this.ROLES.LEADER &&
+        return (user.permission & this.ROLES.LEADER) == this.ROLES.LEADER &&
             user.classInfo.id == classInfo.id;
       },
       checkYear: function(user, classInfo) {
-        return user.permission >= this.ROLES.YEAR_LEADER &&
-            user.classInfo.start_year == classInfo.start_year;
+        return (user.permission & this.ROLES.YEAR_LEADER) == 
+          this.ROLES.YEAR_LEADER &&
+          user.classInfo.start_year == classInfo.start_year;
       },
       canRead: function(classInfo) {
-        if (!this.user) return false;
+        if (!this.user || !classInfo) return false;
         if (this.isSysAdmin()) return true;
 
         if (classInfo.teacher_id == this.user.id || !classInfo.perm_level) {
@@ -51,10 +53,10 @@ define('permission', ['utils'], function() {
             this.checkYear(this.user, classInfo);
       },
       canWrite: function(classInfo) {
-        if (!this.user) return false;
+        if (!this.user || !classInfo) return false;
         if (this.isSysAdmin()) return true;
 
-        if (classInfo.teacher_id == this.user.id || !classInfo.perm_level) {
+        if (!classInfo.perm_level) {
           return true;
         }
 

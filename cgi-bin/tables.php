@@ -195,7 +195,7 @@ function update_class($classInfo) {
   
   $datas = [];
   $fields = ["department_id", "name", "class_room", "email", "start_year", 
-      "perm_level", "weekday", "time", "zb_id"];
+      "perm_level", "weekday", "time", "zb_id", "teacher_id"];
 
   foreach ($fields as $field) {
     if (isset($classInfo[$field])) {
@@ -290,7 +290,7 @@ function get_users($email, $classId = null, $user_id = null, $sn = null) {
 function get_admins($permission) {
   global $medoo;
 
-  return keyed_by_id($medoo->select("users", "*",
+  return keyed_by_id($medoo->select("users", ["id", "name"],
       ["permission" => $permission]));
 }
 
@@ -498,14 +498,14 @@ function report_schedule_task($user_id, $schedule) {
   }
 
   $rows = $medoo->update($table, $datas, $where);
+  if ($rows) return $rows;
 
-  if ($rows == 0) {
-    $datas["student_id"] = $user_id;
-    $datas["course_id"] = $course_id;
-    $rows = $medoo->insert($table, $datas);
-  }
-  
-  return $rows;
+  $datas["student_id"] = $user_id;
+  $datas["course_id"] = $course_id;
+  $medoo->insert($table, $datas);
+  // schedule_records does not have AUTO_INC primary key, 
+  // insert always returns 0.
+  return 1;
 }
 
 function get_schedules($classId, $term, $records, $user_id) {

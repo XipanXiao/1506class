@@ -76,6 +76,8 @@ define('class_editor/class_editor', ['departments/departments',
                 } else if (classId) {
                   rpc.get_classes(classId).then(function(response) {
                     scope.classInfo = response.data[classId];
+                    if (!scope.classInfo) return;
+
                     scope.oldInfo = angular.copy(scope.classInfo);
                     scope.setupPermissionEditor(scope.classInfo);
                     scope.zbUrl = zbrpc.getClassUrl(scope.classInfo.zb_id);

@@ -45,23 +45,20 @@ function canWrite($user, $classInfo) {
   if (isSysAdmin($user)) return true;
 
   $level = $classInfo["perm_level"];
-  if (intval($classInfo["teacher_id"]) == $user->id || !$level) {
-    return true;
-  }
+  if (!$level) return true;
   
   $perm = ($user->permission >> (($level - 1) * 2)) & 2;
   if (!$perm) return false;
-  
+
   return checkClass($user, $classInfo) || checkYear($user, $classInfo);
 }
 
 function checkClass($user, $classInfo) {
-  return $user->permission >= 0xF &&
-      $user->classInfo["id"] == $classInfo["id"];
+  return isClassLeader($user, $classInfo["id"]);
 }
 
 function checkYear($user, $classInfo) {
-  return $user->permission >= 0x3F &&
+  return isYearLeader($user) &&
       $user->classInfo["start_year"] == $classInfo["start_year"];
 }
 

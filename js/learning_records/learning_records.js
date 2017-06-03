@@ -38,7 +38,11 @@ define('learning_records/learning_records', [
                 var record = user.records[course_id];
                 record.student_id = user.id;
                 record.course_id = course_id;
-                rpc.report_schedule_task(record);
+                rpc.report_schedule_task(record).then(function(response) {
+                  if (!parseInt(response.data.updated)) {
+                    $scope.reload($scope.term);
+                  }
+                });
               };
 
               $scope.navigate = function(direction) {
