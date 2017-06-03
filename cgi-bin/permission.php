@@ -19,6 +19,10 @@ function isOrderManager($user) {
   return ($user->permission & 0x103) == 0x103;
 }
 
+function canGrant($user, $perm) {
+  return ($user->permission & $perm) == $perm;	
+}
+
 function canReadOrderAddress($user) {
   return ($user->permission & 0x303) == 0x303;
 }

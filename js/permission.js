@@ -82,7 +82,7 @@ define('permission', ['utils'], function() {
       },
       canGrant: function(perm) {
         if (!this.user) return false;
-        return perm <= this.user.permission;
+        return (this.user.permission & perm) == perm;
       },
       isYearLeader: function() {
         return this.user && this.user.permission >= this.ROLES.YEAR_LEADER;
