@@ -17,9 +17,10 @@ define('user_picker/user_picker', ['services'], function() {
         },
         link: function($scope) {
           $scope.showPicker = false;
+          $scope.selectedUser = {};
           
           function initSelection() {
-            if (!$scope.userList || !$scope.userId) return;
+            if (!$scope.userList) return;
             $scope.userList[0] = '';
             $scope.selectedUser = {name: $scope.userList[$scope.userId]};
           }
