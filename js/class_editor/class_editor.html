@@ -32,7 +32,8 @@
   </div>
   <div class="padded-element">
     辅导员：
-    <user-picker class="inline" user-id="classInfo.teacher_id" user-list="teachers">
+    <user-picker class="inline" user-id="classInfo.teacher_id" user-list="teachers"
+        user-picked="teacherChanged(userId)">
     </user-picker>
   </div>
 	<div ng-if="showPermEditor" class="padded-element">

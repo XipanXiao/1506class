@@ -101,6 +101,10 @@ define('class_editor/class_editor', ['departments/departments',
                 return scope.classId == 1 || 
                     scope.classInfo && scope.classInfo.department_id == 1;
               };
+              
+              scope.teacherChanged = function(userId) {
+                scope.classInfo.teacher_id = userId;
+              };
             },
             templateUrl : 'js/class_editor/class_editor.html'
           };
