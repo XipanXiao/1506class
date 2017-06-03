@@ -85,10 +85,13 @@ define('permission', ['utils'], function() {
         return (this.user.permission & perm) == perm;
       },
       isYearLeader: function() {
-        return this.user && this.user.permission >= this.ROLES.YEAR_LEADER;
+        return this.user && 
+            (this.user.permission & this.ROLES.YEAR_LEADER) == 
+                this.ROLES.YEAR_LEADER;
       },
       isSysAdmin: function() {
-        return this.user && this.user.permission >= this.ROLES.ADMIN;
+        return this.user && 
+            (this.user.permission & this.ROLES.ADMIN) == this.ROLES.ADMIN;
       },
       isOrderAdmin: function() {
         return this.user && 
