@@ -64,7 +64,8 @@ define('class_editor/class_editor', ['departments/departments',
               scope.teachers = {};
               rpc.get_admins(perm.ROLES.TEACHER).then(function(response) {
                 for (var id in response.data) {
-                  scope.teachers[id] = response.data[id].name;
+                  var teacher = response.data[id];
+                  scope.teachers[id] = teacher.nickname || teacher.name;
                 };
               });
               

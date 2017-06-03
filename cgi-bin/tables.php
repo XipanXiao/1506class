@@ -290,7 +290,7 @@ function get_users($email, $classId = null, $user_id = null, $sn = null) {
 function get_admins($permission) {
   global $medoo;
 
-  return keyed_by_id($medoo->select("users", ["id", "name"],
+  return keyed_by_id($medoo->select("users", ["id", "name", "nickname"],
       ["permission" => $permission]));
 }
 
