@@ -53,7 +53,7 @@
     <div>{{user.street}}</div>
     <div ng-if="user.city">{{user.city}}, {{user.stateLabel}} {{user.zip}}</div>
     <div>{{user.countryLabel}}</div>
-    <div ng-if="withContact">Phone: {{user.phone}}</div>
-    <div ng-if="withContact">Email: {{user.email}}</div>
+    <div ng-if="withContact && user.phone">Phone: {{user.phone}}</div>
+    <div ng-if="withContact && user.email">Email: {{user.email}}</div>
   </div>
 </div>
