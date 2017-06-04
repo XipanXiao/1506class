@@ -61,13 +61,17 @@ street: '48-32 58th Lane', city: 'Woodside', state: 32}"
     <div class="css-table-cell"></div>
     <div class="css-table-cell"></div>
     <div class="css-table-cell">Tax and shipping</div>
-    <div class="css-table-cell">{{order.int_shipping + order.shipping}}</div>
+    <div class="css-table-cell">
+      {{(order.int_shipping + order.shipping).toFixed(2)}}
+    </div>
   </div>
   <div class="css-table-row">
     <div class="css-table-cell"></div>
     <div class="css-table-cell"></div>
     <div class="css-table-cell"><h2>Invoice total</h2></div>
-    <div class="css-table-cell">{{order.sub_total + order.int_shipping + order.shipping}}</div>
+    <div class="css-table-cell">
+      {{(order.sub_total + order.int_shipping + order.shipping).toFixed(2)}}
+    </div>
   </div>
 </div>
 <hr class="bold">

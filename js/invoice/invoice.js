@@ -5,7 +5,7 @@ define('invoice/invoice', ['address_editor/address_editor'], function() {
         scope: {
           order: '='
         },
-        templateUrl : 'js/invoice/invoice.html?tag=201705012257'
+        templateUrl : 'js/invoice/invoice.html?tag=201706041104'
       };
     });
 });

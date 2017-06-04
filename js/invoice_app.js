@@ -1,13 +1,15 @@
 define('invoice_app', [
     'invoice/invoice',
-    'services'],
+    'services',
+    'utils'],
     function() {
 
   angular.module('AppModule', [
       'InvoiceModule',
-      'ServicesModule'
+      'ServicesModule',
+      'UtilsModule'
       ])
-      .directive('body', function(rpc) {
+      .directive('body', function(rpc, utils) {
         function parseMoney(value) {
           return value && parseFloat(value) || 0.00;
         }
@@ -23,6 +25,10 @@ define('invoice_app', [
               }
             }
             rpc.get_order(order_id).then(function(response) {
+              if (response.data.error == 'login needed') {
+                utils.redirect('login.html');
+                return;
+              }
               var order = response.data;
               rpc.get_items().then(function(response) {
                 var items = response.data;
