@@ -24,11 +24,14 @@ define('app_bar/app_bar', ['permission', 'search_bar/search_bar'], function() {
           scope.isOrderAdmin = function() {
             return perm.isOrderAdmin();
           };
+          scope.showAssignments = function() {
+            return perm.isSysAdmin() || perm.isYearLeader();
+          };
           scope.isIn = function(page) {
             return location.pathname.endsWith(page);
           };
         },
-        templateUrl : 'js/app_bar/app_bar.html'
+        templateUrl : 'js/app_bar/app_bar.html?tag=201706041057'
       };
     });
 });
