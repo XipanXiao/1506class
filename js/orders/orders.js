@@ -157,9 +157,14 @@ define('orders/orders', [
           };
           
           scope.update = function(order) {
+            var statusChanged = order.status != scope.status;
             rpc.update_order(order).then(function(response) {
-              if (response.data.updated) {
+              if (!response.data.updated) return;
+              if (statusChanged) {
                 $rootScope.$broadcast('reload-orders');
+              } else {
+                order.editing = false;
+                calculate_order_values(order);
               }
             });
           };

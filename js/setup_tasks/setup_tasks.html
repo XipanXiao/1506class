@@ -21,10 +21,10 @@
       </div>
 	  </div>
   </div>
-  <div class="padded-element">
+  <div ng-if="classIds.length" class="padded-element">
     <div class="task" ng-class="{'completed-task': user.yyed}">
       <div class="header section-header">选择共修时间</div>
-      <label>如果没有地点，以下均为美国东部时间
+      <label>如果没有指明地点，以下均为美国东部时间
         <select ng-options="getClassLabel(id) for id in classIds"
             ng-model="class_pref.pref1" ng-change="update_pref()"></select>
       </label>

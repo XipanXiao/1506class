@@ -41,8 +41,8 @@
           USPS tracking ID
         </a>
       </div>
-      <label>修改<input type="checkbox" ng-model="editing"></label>
-      <div ng-if="editing" ng-switch="admin">
+      <label>修改<input type="checkbox" ng-model="order.editing"></label>
+      <div ng-if="order.editing" ng-switch="admin">
         <div ng-switch-when="true">          
           <div><label>运费: $<input ng-model="order.shipping"></label></div>
           <div>

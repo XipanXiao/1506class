@@ -44,8 +44,8 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
   global $medoo;
   
   $timeFilter = ["created_time[><]" => [$filters["start"], $filters["end"]]];
-  $statusFilter = $filters["status"]
-      ? ["status" => OrderStatus::fromString($filters["status"])]
+  $statusFilter = isset($filters["status"])
+      ? ["status" => intval($filters["status"])]
       : [];
   $userFilter = $user_id ? ["user_id" => $user_id] : [];
   $classFilter = [];
@@ -57,7 +57,7 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
   
   $fields = ["id", "user_id", "status", "sub_total", "paid", "shipping",
       "int_shipping", "shipping_date", "paid_date", "created_time", "name",
-  		"paypal_trans_id", "usps_track_id"];
+      "paypal_trans_id", "usps_track_id"];
   $address_fields = 
       ["phone", "email", "street", "city", "state", "country", "zip"];
   
@@ -215,6 +215,7 @@ function merge_orders($order_ids) {
     $first_order["sub_total"] += $order["sub_total"];
     $first_order["paid"] += $order["paid"];
     $first_order["shipping"] += $order["shipping"];
+    $first_order["int_shipping"] += $order["int_shipping"];
     
     if ($medoo->update("order_details", ["order_id" => $id], 
         ["order_id" => $order["id"]])) {
@@ -223,7 +224,10 @@ function merge_orders($order_ids) {
   }
 
   $data = ["sub_total" => $first_order["sub_total"], 
-      "paid" => $first_order["paid"], "shipping" => $first_order["shipping"]];
+      "paid" => $first_order["paid"], 
+      "shipping" => $first_order["shipping"],
+      "int_shipping" => $first_order["int_shipping"]
+  ];
   return ["updated" => $medoo->update("orders", $data, ["id" => $id])];
 }
 
