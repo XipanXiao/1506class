@@ -222,7 +222,7 @@ define('orders/orders', [
           $rootScope.$on('reload-orders', scope.reload);
           scope.$watch('user', scope.reload);
         },
-        templateUrl : 'js/orders/orders.html?tag=201705071553'
+        templateUrl : 'js/orders/orders.html?tag=201706042211'
       };
     });
 });
