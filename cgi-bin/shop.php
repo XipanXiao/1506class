@@ -125,13 +125,18 @@ function update_order($order, $is_manager) {
 
   $data = [];
   if ($is_manager) {
-    $data = build_update_data(["status", "paid", "shipping", "int_shipping"],
+    $data = build_update_data(["status", "shipping", "int_shipping"],
         $order);
     if (isset($order["usps_track_id"])) {
       $data["usps_track_id"] = filter_input(INPUT_POST, "usps_track_id", 
           FILTER_VALIDATE_REGEXP, 
           ["options" => ["regexp" => "/\b[\dA-Z]+\b/"]]);
     }
+  }
+  
+  if (isset($order["paid"])) {
+    $data["paid"] = filter_input(INPUT_POST, "paid", FILTER_VALIDATE_FLOAT);
+    $data["#paid_date"] = "CURDATE()";
   }
   if (isset($order["paypal_trans_id"])) {
     $data["paypal_trans_id"] = filter_input(INPUT_POST, "paypal_trans_id",
