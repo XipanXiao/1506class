@@ -134,11 +134,11 @@ function update_order($order, $is_manager) {
     }
   }
   
-  if (isset($order["paid"])) {
+  if (!empty($order["paid"])) {
     $data["paid"] = filter_input(INPUT_POST, "paid", FILTER_VALIDATE_FLOAT);
-    $data["#paid_date"] = "CURDATE()";
+    if (!empty($data["paid"])) $data["#paid_date"] = "CURDATE()";
   }
-  if (isset($order["paypal_trans_id"])) {
+  if (!empty($order["paypal_trans_id"])) {
     $data["paypal_trans_id"] = filter_input(INPUT_POST, "paypal_trans_id",
         FILTER_VALIDATE_REGEXP,
         ["options" => ["regexp" => "/\b[\dA-Z]{17}\b/"]]);
