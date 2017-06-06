@@ -3,6 +3,10 @@ function isSysAdmin($user) {
   return ($user->permission & 0xFFFF) == 0xFFFF;
 }
 
+function isInspector($user) {
+  return ($user->permission & 0x57) == 0x57;	
+}
+
 function isYearLeader($user) {
   return ($user->permission & 0x3F) == 0x3F;
 }
@@ -32,7 +36,7 @@ function get_student_permission() {
 }
 
 function canRead($user, $classInfo) {
-  if (isSysAdmin($user)) return true;
+  if (isSysAdmin($user) || isInspector($user)) return true;
 
   $level = $classInfo["perm_level"];
   if (intval($classInfo["teacher_id"]) == $user->id || !$level) {

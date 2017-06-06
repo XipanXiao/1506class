@@ -9,7 +9,7 @@ define('permission', ['utils'], function() {
         TEACHER: 0x7,
         LEADER: 0xF,
         YEAR_LEADER: 0x3F,
-        INSPECTION: 0x55,
+        INSPECTION: 0x57,
         FINANCE: 0x103,
         ORDER_MANAGER: 0x303,
         ADMIN: 0xFFFF
@@ -18,7 +18,7 @@ define('permission', ['utils'], function() {
         0xFFFF: '管理员',  //rw all data
         0x303: '订单管理', //00 11 00 00 00 11 rw orders.
         0x103: '财务',    //00 01 00 00 00 11 rw orders, but sees no addresses.
-        0x55: '学院督查', // 00 00 01 01 01 01 r
+        0x57: '理事会', // 00 00 01 01 01 11 r
         0x3F: '年级组长', // 00 00 00 11 11 11 rw classes of the year
         0xF: '组长',    //  00 00 00 00 11 11 rw class data
         0x7: '辅导员',    //00 00 00 00 01 11 rw own data, read classes.
