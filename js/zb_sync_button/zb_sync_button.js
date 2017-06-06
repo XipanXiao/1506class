@@ -464,14 +464,18 @@ define('zb_sync_button/zb_sync_button',
                 start_time, end_time).then(function(response) {
                   var users = response.data || [];
                   users.forEach(function(user) {
-                    if (!user.stats[0]) return;
-
                     var taskStats = scope.users[user.id].taskStats || {};
                     var parts = (task.zb_name || '').split('_');
-                    var stat = user.stats[0];
+                    var stat = user.stats[0] || {sum: 0, duration: 0};
                     if (parts.length == 2) {
                       var countKey = parts[0] + '_count';
                       if (!taskStats[countKey]) {
+                        // !!!! This is important do not change !!!!
+                        // We stores 藏文 and 汉文 佛号 separately but when
+                        // reporting we only report one of them. So suppose
+                        // someone did 汉文 佛号 100 and 藏文 0, taskStats will
+                        // become '藏文 0' eventually if we remove the above
+                        // if check.
                         // Do not overwrite the existing value written with
                         // a different type (e.g. if fohao_count has value with
                         // fohao_type 0, do not reset it with fohao_type 1.
