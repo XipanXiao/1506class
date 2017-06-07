@@ -33,12 +33,9 @@ define('order_app', [
                   existing.count++;
                 } else {
                   item.count = 1;
-                  item.price = parseFloat(item.price);
-                  item.int_shipping = parseFloat(item.int_shipping);
                   this.items[item.id] = item;
                 }
                 this.update();
-                scope.selectTab(1);
               },
               remove: function(id) {
                 delete this.items[id];
@@ -52,9 +49,9 @@ define('order_app', [
                 for (var id in this.items) {
                   var item = this.items[id];
                   this.size += item.count;
-                  this.subTotal += item.price * item.count;
-                  this.int_shipping += item.int_shipping * item.count;
-                  this.shipping += item.shipping * item.count;
+                  this.subTotal += item.count * item.price;
+                  this.int_shipping += item.count * item.int_shipping;
+                  this.shipping += item.count * item.shipping;
                 }
                 this.subTotal = this.subTotal.toFixed(2);
                 this.int_shipping = this.int_shipping.toFixed(2);

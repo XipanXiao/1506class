@@ -1,5 +1,5 @@
-define('item_list/item_list', ['services'], function() {
-  return angular.module('ItemListModule', ['ServicesModule'])
+define('item_list/item_list', ['flying/flying', 'services'], function() {
+  return angular.module('ItemListModule', ['FlyingModule', 'ServicesModule'])
     .directive('itemList', function(rpc) {
       return {
         scope: {
@@ -21,7 +21,7 @@ define('item_list/item_list', ['services'], function() {
             scope.cart.add(item);
           };
         },
-        templateUrl : 'js/item_list/item_list.html?tag=201704282222'
+        templateUrl : 'js/item_list/item_list.html?tag=201706062300'
       };
     });
 });
