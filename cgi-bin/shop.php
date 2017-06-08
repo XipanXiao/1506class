@@ -28,6 +28,17 @@ function _canClose($order) {
   return $order["status"] == OrderStatus::COMPLETED;
 }
 
+/// Returns an array of class ID's managed by [$user].
+function _getManagedClasses($user) {
+  if (isYearLeader($user)) {
+    global $medoo;
+    return $medoo->select("classes", "id",
+        ["start_year" => $user->classInfo["start_year"]]);
+  }
+  if (isClassLeader($user, $user->classId)) return $user->classId;
+  return null;
+}
+
 function get_order($id) {
   global $medoo;
   
@@ -258,11 +269,16 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         $response = permision_denied_error();
       }
     } elseif (empty($_GET["student_id"])) {
-      $granted = isOrderManager($user) || 
-          isClassLeader($user, $user->classId) && !empty($_GET["class_id"]); 
-      $response = $granted 
-          ? get_orders(null, $_GET, $_GET["items"], canReadOrderAddress($user))
-          : permision_denied_error();
+      if (isOrderManager($user)) {
+        $response = get_orders(null, $_GET, $_GET["items"], 
+            canReadOrderAddress($user));
+      } else {
+        $classIds = _getManagedClasses($user);
+        $response = $classIds ? get_orders(null, 
+            array_merge($_GET, ["class_id" => $classIds]), 
+            $_GET["items"],
+            TRUE) : permision_denied_error();
+      }
     } else {
       $response = $_GET["student_id"] == $user->id
       ? get_orders($user->id, $_GET, $_GET["items"], canReadOrderAddress($user))
