@@ -68,7 +68,7 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
   
   $fields = ["id", "user_id", "status", "sub_total", "paid", "shipping",
       "int_shipping", "shipping_date", "paid_date", "created_time", "name",
-      "paypal_trans_id", "usps_track_id"];
+      "paypal_trans_id", "usps_track_id", "class_name"];
   $address_fields = 
       ["phone", "email", "street", "city", "state", "country", "zip"];
   
@@ -303,7 +303,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     if ($order["user_id"] != $user->id && !isOrderManager($user)) {
       $response = permision_denied_error();
     } elseif (empty($order["id"])) {
-      $response = ["updated" => place_order($order)];
+      $className = ["class_name" => $user->classInfo["name"]];
+      $response = ["updated" => place_order(array_merge($order, $className))];
     } else {
       $response = ["updated" => update_order($order, isOrderManager($user))];
     }
