@@ -247,6 +247,12 @@ function merge_orders($order_ids) {
   return ["updated" => $medoo->update("orders", $data, ["id" => $id])];
 }
 
+function delete_order_item($id) {
+  global $medoo;
+  
+  return $medoo->delete("order_details", ["id" => $id]);
+}
+
 $response = null;
 
 if (empty($_SESSION["user"])) {
@@ -318,8 +324,12 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 
   $resource_id = $_REQUEST["rid"];
 
-  if ($resource_id == "orders" && isOrderManager($user)) {
+  if (!isOrderManager($user)) {
+    $response = permision_denied_error();
+  } elseif ($resource_id == "orders") {
     $response = ["deleted" => delete_order($_REQUEST["id"])];
+  } elseif ($resource_id == "order_details") {
+    $response = ["deleted" => delete_order_item($_REQUEST["id"])];
   }
 }
 

@@ -297,6 +297,11 @@ define('services', [], function() {
         return $http.delete(url);
       },
 
+      remove_order_item: function(id) {
+        var url = '{0}?rid=order_details&id={1}'.format('cgi-bin/shop.php', id);
+        return $http.delete(url);
+      },
+
       update_course: function(course) {
         course.rid = 'course';
         return http_form_post($http, $httpParamSerializerJQLike(course));

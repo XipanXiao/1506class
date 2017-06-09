@@ -219,6 +219,65 @@ define('orders/orders', [
             return perm.isOrderAdmin();
           };
 
+          /// Creates a new order and moves selected items from [order] to
+          /// the created order.
+          scope.split = function(order) {
+            function itemSelected(item) { return item.selected; }
+            var items = utils.toList(utils.where(order.items, itemSelected)); 
+            function toItem(item) {
+              return {
+                item_id: item.item_id, 
+                price: item.price, 
+                count: item.count};
+            }
+            var splitOrder = {
+              user_id: order.user_id,
+              name: order.name,
+              phone: order.phone,
+              email: order.email,
+              street: order.street,
+              city: order.city,
+              state: order.state,
+              country: order.country,
+              zip: order.zip,
+              items: items.map(toItem)
+            };
+            var requests = [];
+            requests.push(function() {
+              return rpc.update_order(splitOrder).then(function(response) {
+                return response.data.updated;
+              });
+            });
+            items.forEach(function(item) {
+              item.selected = false;
+              var request = function() {
+                return rpc.remove_order_item(item.id).then(function(response) {
+                  if (!response.data.deleted) return false;
+                  var index = order.items.indexOf(item);
+                  order.items.splice(index, 1);
+                  return true;
+                });
+              };
+              requests.push(request);
+            });
+            requests.push(function() {
+              var index = scope.orders.indexOf(order);
+              splitOrder = utils.mix_in(splitOrder, {
+                status: 0,
+                sub_total: '0.00',
+                int_shipping: '0.00',
+                shipping: '0.00',
+                int_shipping_estmt: '0.00',
+                paid: '0.00',
+                grand_total: '0.00',
+                balance: '0.00',
+                items: items
+              });
+              scope.orders.splice(index + 1, 0, splitOrder);
+            });
+            utils.requestOneByOne(requests);
+          };
+          
           $rootScope.$on('reload-orders', scope.reload);
           scope.$watch('user', scope.reload);
         },

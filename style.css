@@ -163,6 +163,10 @@ schedule-tasks {
   cursor: pointer;
 }
 
+.selectable:hover {
+  background-color: lightcyan;
+}
+
 .selected {
   background-color: gray;
   color: white;

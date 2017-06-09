@@ -14,6 +14,9 @@
         <span ng-switch-default>订单状态: {{statusLabels[order.status]}}</span>
       </div>
       <div>总数: {{order.count}}</div>
+      <div ng-if="!order.status && hasSelection()" class="padded-element">
+        <input type="button" value="将所选项拆分到新订单" ng-click="onSplit()">
+      </div>
     </div>
     <div class="css-table-cell">
       <div>金额: ${{order.sub_total}}</div>
@@ -91,7 +94,9 @@
   </div>
 </div>
 <div class="css-table shopping-cart-list">
-  <div ng-repeat="item in order.items" class="css-table-row top-border">
+  <div ng-repeat="item in order.items" class="css-table-row selectable"
+      ng-class="{'selected': item.selected}"
+      ng-click="item.selected = !item.selected">
     <div class="css-table-cell">{{item.name}}</div>
     <div class="css-table-cell">{{item.count}}</div>
     <div class="css-table-cell">${{item.price}}</div>
