@@ -245,7 +245,7 @@ define('orders/orders', [
             var requests = [];
             requests.push(function() {
               return rpc.update_order(splitOrder).then(function(response) {
-                return response.data.updated;
+                return splitOrder.id = response.data.updated;
               });
             });
             items.forEach(function(item) {
