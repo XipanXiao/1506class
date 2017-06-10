@@ -10,6 +10,7 @@ define('services', [], function() {
   }
 
   var serviceUrl = 'cgi-bin/services.php';
+  var departmentsPromise;
   
   function http_form_post($http, data, url) {
     return $http({
@@ -24,7 +25,8 @@ define('services', [], function() {
       $httpParamSerializerJQLike) {
     return {
       get_departments: function() {
-        return $http.get(serviceUrl + '?rid=departments');
+        return departmentsPromise ||
+            (departmentsPromise = $http.get(serviceUrl + '?rid=departments'));
       },
     
       get_classes: function(classId, department_id) {

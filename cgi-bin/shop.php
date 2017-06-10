@@ -39,6 +39,15 @@ function _getManagedClasses($user) {
   return null;
 }
 
+/// Returns department level.
+function _getDepartmentLevel($user) {
+  global $medoo;
+  
+  $departments = keyed_by_id($medoo->select("departments", ["id", "level"]));
+  $department = $departments[$user->classInfo["department_id"]];
+  return $department ? $department["level"] : 0;
+}
+
 function get_order($id) {
   global $medoo;
   
@@ -170,20 +179,27 @@ function sanitize_address() {
   return $data;
 }
 
-function get_shop_items($category) {
+function get_shop_items($category, $level) {
   global $medoo;
 
-  $where = ["deleted[!]" => 1];
+  $categories = $medoo->select("item_categories", "id", 
+      ["level[<=]" => intval($level)]);
+  if ($category && !array_search($category, $categories)) return [];
+
+  $filters = ["deleted[!]" => 1];
   if ($category) {
-    $where = ["AND" => ["deleted[!]" => 1, "category" => $category]];
+    $filters["category"] = $category; 
+  } else {
+    $filters["category"] = $categories;
   }
-  return keyed_by_id($medoo->select("items", "*", $where));
+  return keyed_by_id($medoo->select("items", "*", ["AND" => $filters]));
 }
 
-function get_item_categories() {
+function get_item_categories($level) {
   global $medoo;
 
-  return keyed_by_id($medoo->select("item_categories", "*"));
+  return keyed_by_id($medoo->select("item_categories", "*",
+      ["level[<=]" => $level]));
 }
 
 function get_order_stats($year) {
@@ -291,9 +307,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       : permision_denied_error();
     }
   } elseif ($resource_id == "items") {
-    $response = get_shop_items($_GET["id"], $_GET["category"]);
+    $level = _getDepartmentLevel($user);
+    $response = get_shop_items($_GET["category"], $level);
   } elseif ($resource_id == "item_categories") {
-    $response = get_item_categories();
+    $level = _getDepartmentLevel($user);
+    $response = get_item_categories($level);
   } elseif ($resource_id == "order_stats") {
     $response = isOrderManager($user) 
         ? get_order_stats($_GET["year"]) 
