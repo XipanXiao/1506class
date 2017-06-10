@@ -83,10 +83,12 @@ define('orders/orders', [
             order.int_shipping_estmt = 0.0;
             order.items.forEach(function(item) {
               var info = scope.items[item.item_id];
-              item.image = info.image;
-              item.name = info.name;
-              item.producer = info.producer;
-              item.int_shipping = info.int_shipping;
+              if (info) {
+                item.image = info.image;
+                item.name = info.name;
+                item.producer = info.producer;
+                item.int_shipping = info.int_shipping;
+              }
               order.count += parseInt(item.count);
               order.int_shipping_estmt += 
                   parseInt(item.count) * parseMoney(item.int_shipping);
@@ -105,20 +107,22 @@ define('orders/orders', [
             };
             orders.forEach(function(order) {
               stats.int_shipping += parseMoney(order.int_shipping);
-              order.items.forEach(function(info) {
-                var item_id = info.item_id;
-                var item = stats.items[item_id]; 
-                if (!item) {
-                  item = stats.items[item_id] = {};
-                  item.name = scope.items[item_id].name;
-                  item.price = scope.items[item_id].price;
+              order.items.forEach(function(item) {
+                var item_id = item.item_id;
+                /// The items in the items db.
+                var info = scope.items[item_id];
+                var stat = stats.items[item_id]; 
+                if (!stat) {
+                  stat = stats.items[item_id] = {};
+                  stat.name = info && info.name;
+                  stat.price = info && info.price || 0.0;
                 }
-                var price = parseMoney(info.price);
-                item.count = (item.count || 0) + parseInt(info.count);
-                item.sub_total = (item.sub_total || 0.00) + price * info.count;
-                item.int_shipping_estmt = (item.int_shipping_estmt || 0) + 
-                    parseMoney(scope.items[item_id].int_shipping) * 
-                    info.count;
+                var price = parseMoney(item.price);
+                stat.count = (stat.count || 0) + parseInt(item.count);
+                stat.sub_total = (stat.sub_total || 0.00) + price * item.count;
+                stat.int_shipping_estmt = (stat.int_shipping_estmt || 0) + 
+                    parseMoney(info && info.int_shipping || 0.0) * 
+                    item.count;
               });
             });
             utils.forEach(stats.items, function(item) {

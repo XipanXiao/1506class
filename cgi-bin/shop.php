@@ -307,7 +307,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       : permision_denied_error();
     }
   } elseif ($resource_id == "items") {
-    $level = _getDepartmentLevel($user);
+    $level = isOrderManager($user) ? 99 : _getDepartmentLevel($user);
     $response = get_shop_items($_GET["category"], $level);
   } elseif ($resource_id == "item_categories") {
     $level = _getDepartmentLevel($user);
