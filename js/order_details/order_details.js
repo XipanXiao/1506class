@@ -8,6 +8,7 @@ define('order_details/order_details', [
           admin: '@',
           onCancel: '&',
           onMerge: '&',
+          onRemoveItem: '&',
           onSplit: '&',
           onUpdate: '&',
           order: '='

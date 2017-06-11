@@ -281,7 +281,47 @@ define('orders/orders', [
             });
             utils.requestOneByOne(requests);
           };
-          
+
+          /// Removes [item] from order, updates order valeus.
+          scope.removeOrderItem = function(order, item) {
+            if (parseMoney(order.balance) < 0.01) {
+              alert('不能删除已经付清的条目');
+              return;
+            }
+            if (order.count == 1) {
+              alert('请删除整个订单');
+              return;
+            }
+            if (!confirm('请确认删除"{0}"'.format(item.name))) return;
+            var removeItem = function() {
+              return rpc.remove_order_item(item.id).then(function(response) {
+                return response.data.deleted;
+              });
+            };
+            var updateOrder = function() {
+              order.sub_total = (parseMoney(order.sub_total) - 
+                  item.count * item.price).toFixed(2);
+              order.int_shipping = (parseMoney(order.int_shipping) - 
+                  item.count * item.int_shipping).toFixed(2);
+
+              var index = order.items.indexOf(item);
+              order.items.splice(index, 1);
+
+              calculate_order_values(order);
+              init_item_labels(order);
+
+              var data = {
+                id: order.id,
+                sub_total: order.sub_total,
+                int_shipping: order.int_shipping
+              };
+              return rpc.update_order(order).then(function(response) {
+                return response.data.updated;
+              });
+            };
+            return utils.requestOneByOne([removeItem, updateOrder]);
+          };
+
           $rootScope.$on('reload-orders', scope.reload);
           scope.$watch('user', scope.reload);
         },

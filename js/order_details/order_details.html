@@ -94,12 +94,18 @@
   </div>
 </div>
 <div class="css-table shopping-cart-list">
-  <div ng-repeat="item in order.items" class="css-table-row selectable"
+  <div ng-repeat="item in order.items"
+      class="css-table-row selectable deletable"
       ng-class="{'selected': item.selected}"
       ng-click="item.selected = !item.selected">
     <div class="css-table-cell">{{item.name}}</div>
     <div class="css-table-cell">{{item.count}}</div>
     <div class="css-table-cell">${{item.price}}</div>
     <div class="css-table-cell">${{item.int_shipping}}</div>
+    <div class="css-table-cell" ng-if="admin">
+      <iron-icon icon="delete" class="delete-button"
+          ng-click="onRemoveItem({'order': order, 'item': item})">
+      </iron-icon>
+    </div>
   </div>
 </div>
