@@ -67,7 +67,9 @@ define('orders/orders', [
           
           function calculate_order_values(order) {
             order.status = parseInt(order.status);
+            order.sub_total = parseMoney(order.sub_total).toFixed(2);
             order.shipping = parseMoney(order.shipping).toFixed(2);
+            order.int_shipping = parseMoney(order.int_shipping).toFixed(2);
             order.paid = parseMoney(order.paid).toFixed(2);
 
             order.grand_total = parseMoney(order.sub_total) + 
@@ -223,18 +225,14 @@ define('orders/orders', [
             return perm.isOrderAdmin();
           };
 
+          
           /// Creates a new order and moves selected items from [order] to
           /// the created order.
-          scope.split = function(order) {
-            function itemSelected(item) { return item.selected; }
-            var items = utils.toList(utils.where(order.items, itemSelected)); 
-            function toItem(item) {
-              return {
-                item_id: item.item_id, 
-                price: item.price, 
-                count: item.count};
-            }
+          function _createSplitOrder(order) {
             var splitOrder = {
+              sub_total: 0.0,
+              int_shipping: 0.0,
+              status: 0,
               user_id: order.user_id,
               name: order.name,
               phone: order.phone,
@@ -244,41 +242,51 @@ define('orders/orders', [
               state: order.state,
               country: order.country,
               zip: order.zip,
-              items: items.map(toItem)
+              items: []
             };
-            var requests = [];
-            requests.push(function() {
+            order.items.forEach(function(item) {
+              if (!item.selected) return;
+            
+              splitOrder.sub_total += item.count * item.price;
+              splitOrder.int_shipping += item.count * item.int_shipping;
+              splitOrder.items.push({
+                item_id: item.item_id, 
+                price: item.price, 
+                count: item.count
+              });
+            });
+            return splitOrder;
+          }
+
+          scope.split = function(order) {
+            var placeSplitOrder = function() {
+              var splitOrder = _createSplitOrder(order);
               return rpc.update_order(splitOrder).then(function(response) {
-                return splitOrder.id = response.data.updated;
+                splitOrder.id = response.data.updated;
+                if (!splitOrder.id) return false;
+
+                order.mergeable = true;
+                splitOrder.mergeable = true;
+                calculate_order_values(splitOrder);
+                init_item_labels(splitOrder);
+
+                var index = scope.orders.indexOf(order);
+                scope.orders.splice(index + 1, 0, splitOrder);
+                return true;
               });
-            });
-            items.forEach(function(item) {
-              item.selected = false;
-              var request = function() {
-                return rpc.remove_order_item(item.id).then(function(response) {
-                  if (!response.data.deleted) return false;
-                  var index = order.items.indexOf(item);
-                  order.items.splice(index, 1);
-                  return true;
-                });
+            };
+
+            var requests = [placeSplitOrder];
+            order.items.forEach(function(item) {
+              if (!item.selected) return;
+              
+              var removeItem = function() {
+                item.selected = false;
+                return _removeOrderItem(order, item);
               };
-              requests.push(request);
+              requests.push(removeItem);
             });
-            requests.push(function() {
-              var index = scope.orders.indexOf(order);
-              splitOrder = utils.mix_in(splitOrder, {
-                status: 0,
-                sub_total: '0.00',
-                int_shipping: '0.00',
-                shipping: '0.00',
-                int_shipping_estmt: '0.00',
-                paid: '0.00',
-                grand_total: '0.00',
-                balance: '0.00',
-                items: items
-              });
-              scope.orders.splice(index + 1, 0, splitOrder);
-            });
+
             utils.requestOneByOne(requests);
           };
 
@@ -293,6 +301,11 @@ define('orders/orders', [
               return;
             }
             if (!confirm('请确认删除"{0}"'.format(item.name))) return;
+            
+            _removeOrderItem(order, item);
+          };
+          
+          function _removeOrderItem(order, item) {
             var removeItem = function() {
               return rpc.remove_order_item(item.id).then(function(response) {
                 return response.data.deleted;
@@ -315,12 +328,10 @@ define('orders/orders', [
                 sub_total: order.sub_total,
                 int_shipping: order.int_shipping
               };
-              return rpc.update_order(order).then(function(response) {
-                return response.data.updated;
-              });
+              return rpc.update_order(data);
             };
             return utils.requestOneByOne([removeItem, updateOrder]);
-          };
+          }
 
           $rootScope.$on('reload-orders', scope.reload);
           scope.$watch('user', scope.reload);
