@@ -253,6 +253,11 @@ define('zb_services', ['utils'], function() {
           exam2_score: score.exam2_score
         };
         return http_form_post($http, $httpParamSerializerJQLike(data));
+      },
+      get_task_records: function(gridType, pre_classID, halfTerm) {
+        var url = '{0}/pre/report_ajax?type={1}&pre_classID={2}&half_term={3}'.
+            format(serviceUrl, gridType, pre_classID, halfTerm);
+        return $http.get(get_proxied_url(url));
       }
     };
   });

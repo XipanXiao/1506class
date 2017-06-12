@@ -441,7 +441,7 @@ define('utils', [], function() {
         return this.unixTimestamp(midTerm);
       },
       toGuanxiuHour: function(minutes) {
-        return Math.min(minutes/60.0, this.maxGuanxiuTime).toFixed(1)
+        return Math.min(minutes/60.0, this.maxGuanxiuTime).toFixed(1);
       },
       /// Given a string [data], creates a data url.
       ///

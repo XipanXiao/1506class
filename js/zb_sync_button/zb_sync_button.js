@@ -54,6 +54,7 @@ define('zb_sync_button/zb_sync_button',
                   switch (scope.classInfo.department_id) {
                   case JIA_XING: 
                     return utils.requestOneByOne([
+                      scope.getZBTaskStats(WORK_GRID),
                       scope.report_attendance,
                       scope.report_schedule_task,
                       scope.report_jx_task,
@@ -62,6 +63,7 @@ define('zb_sync_button/zb_sync_button',
                     break;
                   default:
                     return utils.requestOneByOne([
+                      scope.getZBTaskStats(ATT_LIMIT_GRID),
                       scope.report_attendance,
                       scope.report_schedule_task,
                     ]);
@@ -466,9 +468,13 @@ define('zb_sync_button/zb_sync_button',
                   users.forEach(function(user) {
                     var taskStats = scope.users[user.id].taskStats || {};
                     var parts = (task.zb_name || '').split('_');
+                    var zbStat = scope.zbTaskStats[user.zb_id];
                     var stat = user.stats[0] || {sum: 0, duration: 0};
                     if (parts.length == 2) {
                       var countKey = parts[0] + '_count';
+                      // Do not erase data of transferred students.
+                      var existingValue = parseInt(zbStat[countKey]);
+
                       if (!taskStats[countKey]) {
                         // !!!! This is important do not change !!!!
                         // We stores 藏文 and 汉文 佛号 separately but when
@@ -479,15 +485,22 @@ define('zb_sync_button/zb_sync_button',
                         // Do not overwrite the existing value written with
                         // a different type (e.g. if fohao_count has value with
                         // fohao_type 0, do not reset it with fohao_type 1.
-                        taskStats[countKey] = stat.sum;
+                        taskStats[countKey] = stat.sum || existingValue;
                         taskStats[parts[0] + '_type'] = parts[1];
                       }
                     } else {
-                      taskStats[task.zb_name + '_count'] = stat.sum;
+                      var countKey = task.zb_name + '_count'; 
+                      // Do not erase data of transferred students.
+                      var existingValue = parseInt(zbStat[countKey]);
+                      taskStats[countKey] = stat.sum || existingValue;
                     }
                     if (task.duration) {
-                      taskStats[task.zb_name + '_time'] =
-                          utils.toGuanxiuHour(stat.duration);
+                      var timeKey = task.zb_name + '_time'; 
+                      var hour = utils.toGuanxiuHour(stat.duration);
+                      // Do not erase data of transferred students.
+                      var existingValue = zbStat[timeKey];
+                      taskStats[timeKey] = 
+                          parseInt(10 * hour) ? hour : existingValue;
                     }
                     scope.users[user.id].taskStats = taskStats;
                   });
@@ -556,6 +569,23 @@ define('zb_sync_button/zb_sync_button',
             return utils.requestOneByOne(requests);
           };
           
+          scope.getZBTaskStats = function(gridIndex) {
+            return function() {
+              var grid = scope.get_report_type(gridIndex);
+              var pre_classID = scope.classInfo.zb_id;
+              var halfTerm = scope.half_term;
+              return zbrpc.get_task_records(grid, pre_classID, halfTerm)
+                  .then(function(response) {
+                var stats = response.data.data;
+                scope.zbTaskStats = {};
+                (stats || []).forEach(function(stat) {
+                  scope.zbTaskStats[stat.userID] = stat;
+                });
+                return scope.zbTaskStats;
+              });
+            };
+          };
+
           scope.report_attendance = function() {
             scope.totalTasks = 0;
             scope.finished = 0;
