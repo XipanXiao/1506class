@@ -327,8 +327,10 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     if ($order["user_id"] != $user->id && !isOrderManager($user)) {
       $response = permision_denied_error();
     } elseif (empty($order["id"])) {
-      $className = ["class_name" => $user->classInfo["name"]];
-      $response = ["updated" => place_order(array_merge($order, $className))];
+      if (empty($order["class_name"])) {
+        $order["class_name"] = $user->classInfo["name"];
+      }
+      $response = ["updated" => place_order($order)];
     } else {
       $response = ["updated" => update_order($order, isOrderManager($user))];
     }

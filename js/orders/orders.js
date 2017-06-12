@@ -235,6 +235,7 @@ define('orders/orders', [
               status: 0,
               user_id: order.user_id,
               name: order.name,
+              class_name: order.class_name,
               phone: order.phone,
               email: order.email,
               street: order.street,
