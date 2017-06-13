@@ -236,6 +236,17 @@ define('services', [], function() {
             'cgi-bin/shop.php');
       },
       
+      move_order_items: function(fromOrder, toOrder, items) {
+        var request = {
+            rid: 'move_items',
+            from_order: fromOrder,
+            to_order: toOrder,
+            items: items
+        };
+        return http_form_post($http, $httpParamSerializerJQLike(request),
+            'cgi-bin/shop.php');
+      },
+      
       update_scores: function(scores) {
         var data = {
           rid: 'scores',

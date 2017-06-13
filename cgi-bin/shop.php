@@ -145,7 +145,8 @@ function update_order($order, $is_manager) {
 
   $data = [];
   if ($is_manager) {
-    $data = build_update_data(["status", "shipping", "int_shipping"],
+    $data = build_update_data(["status", "shipping", "int_shipping",
+        "sub_total"],
         $order);
     if (isset($order["usps_track_id"])) {
       $data["usps_track_id"] = filter_input(INPUT_POST, "usps_track_id", 
@@ -263,6 +264,40 @@ function merge_orders($order_ids) {
   return ["updated" => $medoo->update("orders", $data, ["id" => $id])];
 }
 
+/// Moves [$items] from [$fromOrder] to [$toOrder].
+///
+/// "id", "sub_total", "int_shipping" of both orders are required.
+/// id, price, count, int_shipping of each item are required.  
+function move_order_items($fromOrder, $toOrder, $items) {
+  global $medoo;
+
+  if (!$fromOrder["id"] || !$toOrder["id"] || empty($items)) return 0;
+  
+  $updated = 0;
+  function get_id($item) { return $item["id"]; }
+  $updated = $medoo->update("order_details", ["order_id" => $toOrder["id"]],
+      ["id" => array_map("get_id", $items)]);
+  if (!$updated) return 0;
+  
+  function get_total($item) { 
+    return intval($item["count"]) * floatval($item["price"]); 
+  }
+  function get_int_shipping($item) { 
+    return intval($item["count"]) * floatval($item["int_shipping"]); 
+  }
+  $sub_total = array_reduce($items, "get_total", 0.0);
+  $int_shipping = array_reduce($items, "get_int_shipping", 0.0);
+
+  $fromOrder["sub_total"] = $fromOrder["sub_total"] - $sub_total;
+  $fromOrder["int_shipping"] = $fromOrder["int_shipping"] - $sub_total;
+  $toOrder["sub_total"] = $toOrder["sub_total"] + $sub_total;
+  $toOrder["int_shipping"] = $toOrder["int_shipping"] + $sub_total;
+  
+  $updated += update_order($fromOrder, TRUE);
+  $updated += update_order($toOrder, TRUE);
+  return $updated;
+}
+
 function delete_order_item($id) {
   global $medoo;
   
@@ -338,6 +373,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = canReadOrderAddress($user) 
         ? merge_orders($_POST["order_ids"])
         : permision_denied_error();
+  } elseif ($resource_id == "move_items") {
+    $response = isOrderManager($user)
+      ? move_order_items($_POST["from_order"], $_POST["to_order"], 
+          $_POST["items"])
+      : permision_denied_error();
   }
 } elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE" &&
     isset ( $_REQUEST["rid"] )) {
