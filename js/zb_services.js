@@ -258,6 +258,9 @@ define('zb_services', ['utils'], function() {
         var url = '{0}/pre/report_ajax?type={1}&pre_classID={2}&half_term={3}'.
             format(serviceUrl, gridType, pre_classID, halfTerm);
         return $http.get(get_proxied_url(url));
+      },
+      get_schedule_tasks: function(pre_classID, halfTerm) {
+        return this.get_task_records('main_course_grid', pre_classID, halfTerm);
       }
     };
   });

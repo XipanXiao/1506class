@@ -56,6 +56,7 @@ define('zb_sync_button/zb_sync_button',
                     return utils.requestOneByOne([
                       scope.getZBTaskStats(WORK_GRID),
                       scope.report_attendance,
+                      scope.getZBScheduleTaskStats,
                       scope.report_schedule_task,
                       scope.report_jx_task,
                       scope.report_guanxiu_task
@@ -65,6 +66,7 @@ define('zb_sync_button/zb_sync_button',
                     return utils.requestOneByOne([
                       scope.getZBTaskStats(ATT_LIMIT_GRID),
                       scope.report_attendance,
+                      scope.getZBScheduleTaskStats,
                       scope.report_schedule_task,
                     ]);
                     break;
@@ -584,6 +586,20 @@ define('zb_sync_button/zb_sync_button',
                 return scope.zbTaskStats;
               });
             };
+          };
+          
+          scope.getZBScheduleTaskStats = function() {
+            var pre_classID = scope.classInfo.zb_id;
+            var halfTerm = scope.half_term;
+            return zbrpc.get_schedule_tasks(pre_classID, halfTerm)
+                .then(function(response) {
+              var stats = response.data.data;
+              scope.zbTaskScheduleStats = {};
+              (stats || []).forEach(function(stat) {
+                scope.zbTaskScheduleStats[stat.userID] = stat;
+              });
+              return scope.zbTaskScheduleStats;
+            });
           };
 
           scope.report_attendance = function() {
