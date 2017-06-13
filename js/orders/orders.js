@@ -256,6 +256,13 @@ define('orders/orders', [
                 count: item.count
               });
             });
+
+            var grandTotal = splitOrder.sub_total + splitOrder.int_shipping;
+            if (parseMoney(order.paid) >= grandTotal) {
+              order.paid = (parseMoney(order.paid) - grandTotal).toFixed(2);
+              splitOrder.paid = grandTotal;
+              splitOrder.paypal_trans_id = order.paypal_trans_id;
+            }
             return splitOrder;
           }
 
