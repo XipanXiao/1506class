@@ -64,7 +64,7 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
   global $medoo;
   
   $timeFilter = ["created_time[><]" => [$filters["start"], $filters["end"]]];
-  $statusFilter = isset($filters["status"])
+  $statusFilter = isset($filters["status"]) && $filters["status"] != ""
       ? ["status" => intval($filters["status"])]
       : [];
   $userFilter = $user_id ? ["user_id" => $user_id] : [];
