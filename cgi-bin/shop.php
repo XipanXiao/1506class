@@ -105,7 +105,7 @@ function place_order($order) {
 
   $order = array_merge($order, sanitize_address());
   $id = $medoo->insert("orders", $order);
-  if (!$id) return false;
+  if (!$id || empty($items)) return $id;
 
   foreach ($items as $item) {
     unset($item["id"]);
@@ -140,29 +140,33 @@ function delete_order($id) {
   return $medoo->delete("orders", ["id" => $id]);
 }
 
+function validate_order_post() {
+  if (isset($_POST["usps_track_id"])) {
+    $_POST["usps_track_id"] = filter_input(INPUT_POST, "usps_track_id",
+        FILTER_VALIDATE_REGEXP,
+        ["options" => ["regexp" => "/\b[\dA-Z]+\b/"]]);
+  }
+  if (isset($_POST["paid"])) {
+    $_POST["paid"] = filter_input(INPUT_POST, "paid", FILTER_VALIDATE_FLOAT);
+  }
+  if (isset($_POST["paypal_trans_id"])) {
+    $_POST["paypal_trans_id"] = filter_input(INPUT_POST, "paypal_trans_id",
+        FILTER_VALIDATE_REGEXP,
+        ["options" => ["regexp" => "/\b[\dA-Z]{17}\b/"]]);
+  }
+}
+
 function update_order($order, $is_manager) {
   global $medoo;
 
-  $data = [];
+  $data = build_update_data(["paid", "paypal_trans_id", "paid_date"], $order);
   if ($is_manager) {
-    $data = build_update_data(["status", "shipping", "int_shipping",
-        "sub_total"],
-        $order);
-    if (isset($order["usps_track_id"])) {
-      $data["usps_track_id"] = filter_input(INPUT_POST, "usps_track_id", 
-          FILTER_VALIDATE_REGEXP, 
-          ["options" => ["regexp" => "/\b[\dA-Z]+\b/"]]);
-    }
+    $data = array_merge($data, build_update_data(["status", "shipping",
+        "int_shipping", "sub_total"], $order));
   }
   
-  if (!empty($order["paid"])) {
-    $data["paid"] = filter_input(INPUT_POST, "paid", FILTER_VALIDATE_FLOAT);
-    if (!empty($data["paid"])) $data["#paid_date"] = "CURDATE()";
-  }
-  if (!empty($order["paypal_trans_id"])) {
-    $data["paypal_trans_id"] = filter_input(INPUT_POST, "paypal_trans_id",
-        FILTER_VALIDATE_REGEXP,
-        ["options" => ["regexp" => "/\b[\dA-Z]{17}\b/"]]);
+  if (!empty($data["paid"]) && empty($data["paid_date"])) {
+    $data["#paid_date"] = "CURDATE()";
   }
 
   return $medoo->update("orders", $data, ["id" => $order["id"]]);
@@ -264,14 +268,18 @@ function merge_orders($order_ids) {
   return ["updated" => $medoo->update("orders", $data, ["id" => $id])];
 }
 
-/// Moves [$items] from [$fromOrder] to [$toOrder].
+/// Moves selected items from [$fromOrder] to [$toOrder].
 ///
 /// "id", "sub_total", "int_shipping" of both orders are required.
 /// id, price, count, int_shipping of each item are required.  
-function move_order_items($fromOrder, $toOrder, $items) {
+function move_order_items($fromOrder, $toOrder) {
   global $medoo;
 
-  if (!$fromOrder["id"] || !$toOrder["id"] || empty($items)) return 0;
+  if (!$fromOrder["id"] || !$toOrder["id"]) return 0;
+  
+  function selected($item) { return $item["selected"]; }
+  $items = array_filter($fromOrder["items"], "selected");
+  if (empty($items)) return 0;
   
   $updated = 0;
   function get_id($item) { return $item["id"]; }
@@ -279,20 +287,31 @@ function move_order_items($fromOrder, $toOrder, $items) {
       ["id" => array_map("get_id", $items)]);
   if (!$updated) return 0;
   
-  function get_total($item) { 
-    return intval($item["count"]) * floatval($item["price"]); 
+  function get_total($total, $item) { 
+    $total += intval($item["count"]) * floatval($item["price"]);
+    return $total;
   }
-  function get_int_shipping($item) { 
-    return intval($item["count"]) * floatval($item["int_shipping"]); 
+  function get_int_shipping($shipping, $item) { 
+    $shipping += intval($item["count"]) * floatval($item["int_shipping"]);
+    return $shipping;
   }
   $sub_total = array_reduce($items, "get_total", 0.0);
   $int_shipping = array_reduce($items, "get_int_shipping", 0.0);
-
-  $fromOrder["sub_total"] = $fromOrder["sub_total"] - $sub_total;
-  $fromOrder["int_shipping"] = $fromOrder["int_shipping"] - $sub_total;
-  $toOrder["sub_total"] = $toOrder["sub_total"] + $sub_total;
-  $toOrder["int_shipping"] = $toOrder["int_shipping"] + $sub_total;
   
+  $fromOrder["sub_total"] = floatval($fromOrder["sub_total"]) - $sub_total;
+  $fromOrder["int_shipping"] = 
+      floatval($fromOrder["int_shipping"]) - $int_shipping;
+  $toOrder["sub_total"] = floatval($toOrder["sub_total"]) + $sub_total;
+  $toOrder["int_shipping"] =
+      floatval($toOrder["int_shipping"]) + $int_shipping;
+  
+  $grand = $sub_total + $int_shipping;
+  if (floatval($fromOrder["paid"]) >= $grand) {
+    $fromOrder["paid"] = floatval($fromOrder["paid"]) - $grand;
+    $toOrder["paid"] = floatval($toOrder["paid"]) + $grand;
+    $toOrder["paid_date"] = $fromOrder["paid_date"];
+  }
+
   $updated += update_order($fromOrder, TRUE);
   $updated += update_order($toOrder, TRUE);
   return $updated;
@@ -358,7 +377,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   if ($resource_id == "orders") {
     $order = $_POST;
     unset($order["rid"]);
-
+    validate_order_post();
     if ($order["user_id"] != $user->id && !isOrderManager($user)) {
       $response = permision_denied_error();
     } elseif (empty($order["id"])) {
@@ -375,8 +394,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         : permision_denied_error();
   } elseif ($resource_id == "move_items") {
     $response = isOrderManager($user)
-      ? move_order_items($_POST["from_order"], $_POST["to_order"], 
-          $_POST["items"])
+      ? ["updated" => 
+          move_order_items($_POST["from_order"], $_POST["to_order"])]
       : permision_denied_error();
   }
 } elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE" &&

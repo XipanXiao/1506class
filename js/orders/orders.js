@@ -226,13 +226,13 @@ define('orders/orders', [
           };
 
           
-          /// Creates a new order and moves selected items from [order] to
-          /// the created order.
-          function _createSplitOrder(order) {
+          /// Creates a new order of same information of order without no items.
+          function _createOrderFrom(order) {
             var splitOrder = {
               sub_total: 0.0,
               int_shipping: 0.0,
-              status: 0,
+              paid: 0.0,
+              status: order.status,
               user_id: order.user_id,
               name: order.name,
               class_name: order.class_name,
@@ -243,58 +243,47 @@ define('orders/orders', [
               state: order.state,
               country: order.country,
               zip: order.zip,
+              paypal_trans_id: order.paypal_trans_id,
               items: []
             };
-            order.items.forEach(function(item) {
-              if (!item.selected) return;
-            
-              splitOrder.sub_total += item.count * item.price;
-              splitOrder.int_shipping += item.count * item.int_shipping;
-              splitOrder.items.push({
-                item_id: item.item_id, 
-                price: item.price, 
-                count: item.count
-              });
-            });
-
-            var grandTotal = splitOrder.sub_total + splitOrder.int_shipping;
-            if (parseMoney(order.paid) >= grandTotal) {
-              order.paid = (parseMoney(order.paid) - grandTotal).toFixed(2);
-              splitOrder.paid = grandTotal;
-              splitOrder.paypal_trans_id = order.paypal_trans_id;
-            }
             return splitOrder;
           }
 
           scope.split = function(order) {
+            var splitOrder = _createOrderFrom(order);
+
             var placeSplitOrder = function() {
-              var splitOrder = _createSplitOrder(order);
               return rpc.update_order(splitOrder).then(function(response) {
                 splitOrder.id = response.data.updated;
                 if (!splitOrder.id) return false;
-
-                order.mergeable = true;
-                splitOrder.mergeable = true;
-                calculate_order_values(splitOrder);
-                init_item_labels(splitOrder);
 
                 var index = scope.orders.indexOf(order);
                 scope.orders.splice(index + 1, 0, splitOrder);
                 return true;
               });
             };
+            
+            var moveItems = function() {
+              return rpc.move_order_items(order, splitOrder)
+                  .then(function(response) {
+                return response.data.updated;
+              });
+            };
+            
+            var reloadOrder = function(order) {
+              return function() {
+                return rpc.get_order(order.id).then(function(response) {
+                  utils.mix_in(order, response.data);
+                  order.mergeable = true;
+                  calculate_order_values(order);
+                  init_item_labels(order);
+                  return order;
+                });
+              }
+            };
 
-            var requests = [placeSplitOrder];
-            order.items.forEach(function(item) {
-              if (!item.selected) return;
-              
-              var removeItem = function() {
-                item.selected = false;
-                return _removeOrderItem(order, item);
-              };
-              requests.push(removeItem);
-            });
-
+            var requests = [placeSplitOrder, moveItems, reloadOrder(order), 
+                reloadOrder(splitOrder)];
             utils.requestOneByOne(requests);
           };
 

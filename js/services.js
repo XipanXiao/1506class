@@ -236,12 +236,11 @@ define('services', [], function() {
             'cgi-bin/shop.php');
       },
       
-      move_order_items: function(fromOrder, toOrder, items) {
+      move_order_items: function(fromOrder, toOrder) {
         var request = {
             rid: 'move_items',
             from_order: fromOrder,
-            to_order: toOrder,
-            items: items
+            to_order: toOrder
         };
         return http_form_post($http, $httpParamSerializerJQLike(request),
             'cgi-bin/shop.php');
