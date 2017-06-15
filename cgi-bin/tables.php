@@ -240,6 +240,12 @@ function get_courses($course_group_id) {
       ["group_id" => $course_group_id]));
 }
 
+function get_user_by_id($id) {
+  global $medoo;
+
+  return get_single_record($medoo, "users", $id);
+}
+
 function get_user($email) {
   global $medoo;
     

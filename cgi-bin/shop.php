@@ -403,6 +403,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 
   $resource_id = $_REQUEST["rid"];
 
+  $record = get_single_record($medoo, $resource_id, $_REQUEST["id"]);
+  error_log($user->email ." DELETE ". json_encode($record));
   if (!isOrderManager($user)) {
     $response = permision_denied_error();
   } elseif ($resource_id == "orders") {

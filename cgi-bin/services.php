@@ -302,7 +302,13 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       ];
     }
   } elseif ($resource_id == "user") {
-    $response = ["deleted" => remove_user($_REQUEST["id"])];
+    $userId = $_REQUEST["id"];
+
+    $userToDelete = get_user_by_id($userId);
+    error_log($user->email. " DELETE ". $userToDelete["email"]. " " . $userId);
+    error_log(json_encode($userToDelete));
+
+    $response = ["deleted" => remove_user($userId)];
   } elseif ($resource_id == "department") {
     $response = ["deleted" => remove_department($_REQUEST["id"])];
   }

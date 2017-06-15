@@ -71,4 +71,9 @@ function is_email_blocked($email) {
   }
   return false;
 }
+
+function get_single_record($medoo, $table, $id) {
+  $results = $medoo->select($table, "*", ["id" => $id]);
+  return empty($results) ? null : current($results);
+}
 ?>
