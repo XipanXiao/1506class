@@ -162,7 +162,7 @@ function update_order($order, $is_manager) {
   $data = build_update_data(["paid", "paypal_trans_id", "paid_date"], $order);
   if ($is_manager) {
     $data = array_merge($data, build_update_data(["status", "shipping",
-        "int_shipping", "sub_total"], $order));
+        "int_shipping", "sub_total", "usps_track_id"], $order));
   }
   
   if (!empty($data["paid"]) && empty($data["paid_date"])) {
