@@ -152,6 +152,12 @@ define('orders/orders', [
           };
           
           scope.remove = function(order) {
+            if (parseMoney(order.paid) > 0.009 ||
+                order.usps_track_id ||
+                order.paypal_trans_id) {
+              alert('不能删除已经付款或发货的订单');
+              return;
+            }
             if (!confirm('请确认您要删除订单#{0}'.format(order.id))) return;
 
             rpc.remove_order(order.id).then(function(response) {

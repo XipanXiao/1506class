@@ -408,7 +408,13 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   if (!isOrderManager($user)) {
     $response = permision_denied_error();
   } elseif ($resource_id == "orders") {
-    $response = ["deleted" => delete_order($_REQUEST["id"])];
+    if (floatval($record["paid"]) >= 0.01 || 
+        !empty($record["paypal_trans_id"]) || 
+        !empty($record["usps_track_id"])) {
+      $response = ["error" => "order is paid or shipped"];
+    } else {
+      $response = ["deleted" => delete_order($_REQUEST["id"])];
+    }
   } elseif ($resource_id == "order_details") {
     $response = ["deleted" => delete_order_item($_REQUEST["id"])];
   }
