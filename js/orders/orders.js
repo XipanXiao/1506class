@@ -160,12 +160,7 @@ define('orders/orders', [
             }
             if (!confirm('请确认您要删除订单#{0}'.format(order.id))) return;
 
-            rpc.remove_order(order.id).then(function(response) {
-              if (response.data.deleted) {
-                var index = scope.orders.indexOf(order);
-                scope.orders.splice(index, 1);
-              }
-            });
+            utils.requestOneByOne([deleteOrderRequest(order)]);
           };
           
           scope.update = function(order) {
@@ -181,20 +176,49 @@ define('orders/orders', [
             });
           };
           
+          function reloadOrderRequest(order) {
+            return function() {
+              return rpc.get_order(order.id).then(function(response) {
+                utils.mix_in(order, response.data);
+                calculate_order_values(order);
+                init_item_labels(order);
+                return order;
+              });
+            }
+          }
+          function moveItemsRequest(fromOrder, toOrder) {
+            return function() {
+              return rpc.move_order_items(fromOrder, toOrder)
+                  .then(function(response) {
+                return response.data.updated;
+              });
+            }
+          };
+          function deleteOrderRequest(order) {
+            return function() {
+              return rpc.remove_order(order.id).then(function(response) {
+                if (!response.data.deleted) return false;
+                var index = scope.orders.indexOf(order);
+                scope.orders.splice(index, 1);
+                return true;
+              });
+            }
+          };
           scope.merge = function(order) {
-            var message = '请确认要合并"{0}"的所有相同地址新订单'.format(order.name); 
+            var message = '请确认把"{0}"的所有其他订单合并到本订单'.format(order.name); 
             if (!confirm(message)) return;
 
-            var user_id = order.user_id;
-            var orders = utils.where(scope.orders, function(order) {
-              return order.user_id == user_id;
+            var requests = [];
+            scope.orders.forEach(function(another) {
+              if (another.user_id != order.user_id || another.id == order.id ||
+                  another.zip != order.zip) return;
+
+              another.items.forEach(function(item) { item.selected = true; });
+              requests.push(moveItemsRequest(another, order));
+              requests.push(deleteOrderRequest(another));
             });
-            var orderIds = utils.map(orders, function(order) {return order.id});
-            rpc.merge_orders(orderIds).then(function(response) {
-              if (response.data.updated) {
-                $rootScope.$broadcast('reload-orders');
-              }
-            });
+            requests.push(reloadOrderRequest(order));
+            utils.requestOneByOne(requests);
           };
           
           scope.breakUp = function() {
@@ -256,6 +280,11 @@ define('orders/orders', [
           }
 
           scope.split = function(order) {
+            if (order.status || order.usps_track_id) {
+              alert('不能拆分已经发货的订单');
+              return;
+            }
+
             var splitOrder = _createOrderFrom(order);
 
             var placeSplitOrder = function() {
@@ -263,33 +292,18 @@ define('orders/orders', [
                 splitOrder.id = response.data.updated;
                 if (!splitOrder.id) return false;
 
+                splitOrder.mergeable = true;
+                order.mergeable = true;
                 var index = scope.orders.indexOf(order);
                 scope.orders.splice(index + 1, 0, splitOrder);
                 return true;
               });
             };
             
-            var moveItems = function() {
-              return rpc.move_order_items(order, splitOrder)
-                  .then(function(response) {
-                return response.data.updated;
-              });
-            };
-            
-            var reloadOrder = function(order) {
-              return function() {
-                return rpc.get_order(order.id).then(function(response) {
-                  utils.mix_in(order, response.data);
-                  order.mergeable = true;
-                  calculate_order_values(order);
-                  init_item_labels(order);
-                  return order;
-                });
-              }
-            };
-
-            var requests = [placeSplitOrder, moveItems, reloadOrder(order), 
-                reloadOrder(splitOrder)];
+            var requests = [placeSplitOrder,
+                moveItemsRequest(order, splitOrder),
+                reloadOrderRequest(order),
+                reloadOrderRequest(splitOrder)];
             utils.requestOneByOne(requests);
           };
 
