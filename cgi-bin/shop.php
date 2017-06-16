@@ -388,10 +388,6 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     } else {
       $response = ["updated" => update_order($order, isOrderManager($user))];
     }
-  } elseif ($resource_id == "merge_orders" && !empty($_POST["order_ids"])) {
-    $response = canReadOrderAddress($user) 
-        ? merge_orders($_POST["order_ids"])
-        : permision_denied_error();
   } elseif ($resource_id == "move_items") {
     $response = isOrderManager($user)
       ? ["updated" => 
