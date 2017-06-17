@@ -66,7 +66,7 @@ function is_country_code($countryCode) {
 }
 
 function is_email_blocked($email) {
-  foreach(["sharklasers"] as $blocked) {
+  foreach(["sharklasers", "try-rx"] as $blocked) {
     if (strstr(strtolower($email), $blocked)) return true;
   }
   return false;
