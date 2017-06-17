@@ -7,6 +7,8 @@ define('zb_sync_button/zb_sync_button',
   var WORK_GRID = 1;
   var ATT_LIMIT_GRID = 2;
   var GUANXIU_GRID = 3;
+  var MAIN_COURSE_GRID_NAME = 'main_course_grid';
+  var ATT_LIMIT_GRID_NAME = 'att_limit_grid';
   return angular.module('ZBSyncButtonModule', ['ProgressBarModule',
       'ServicesModule', 'UtilsModule', 'ZBServicesModule'])
       .directive('zbSyncButton', function($q, $rootScope, rpc, utils, zbrpc) {
@@ -55,8 +57,9 @@ define('zb_sync_button/zb_sync_button',
                   case JIA_XING: 
                     return utils.requestOneByOne([
                       scope.getZBTaskStats(WORK_GRID),
+                      scope.getZBScheduleTaskStats(MAIN_COURSE_GRID_NAME),
+                      scope.getZBScheduleTaskStats(ATT_LIMIT_GRID_NAME),
                       scope.report_attendance,
-                      scope.getZBScheduleTaskStats,
                       scope.report_schedule_task,
                       scope.report_jx_task,
                       scope.report_guanxiu_task
@@ -65,8 +68,9 @@ define('zb_sync_button/zb_sync_button',
                   default:
                     return utils.requestOneByOne([
                       scope.getZBTaskStats(ATT_LIMIT_GRID),
+                      scope.getZBScheduleTaskStats(MAIN_COURSE_GRID_NAME),
+                      scope.getZBScheduleTaskStats(ATT_LIMIT_GRID_NAME),
                       scope.report_attendance,
-                      scope.getZBScheduleTaskStats,
                       scope.report_schedule_task,
                     ]);
                     break;
@@ -119,7 +123,22 @@ define('zb_sync_button/zb_sync_button',
               });
             }
 
-            var schedules = lessons.length;
+            function hasRecord(entry) { return entry; }
+
+            var zbRecords = scope.zbScheduleStats[user.zb_id];
+            var zbBookAudio = limited ? zbRecords.limit : zbRecords.main;
+            var reported = utils.any(audio, hasRecord) || 
+                utils.any(book, hasRecord);
+            // Do not overwrite server records if user has no report at all
+            // (transferred students).
+            if (!reported) {
+              return {
+                audio: zbBookAudio.audio,
+                book: zbBookAudio.book
+              };
+            }
+
+            var schedules = zbBookAudio.audio.length;
             audio = (scope.half_term % 2) == 0 ? audio.slice(0, schedules) :
                 audio.slice(audio.length - schedules);
             book = (scope.half_term % 2) == 0 ? book.slice(0, schedules) :
@@ -435,11 +454,16 @@ define('zb_sync_button/zb_sync_button',
               return utils.truePromise();
             }
 
+            var half_term = scope.half_term;
             var atts = scope.get_attendance(user);
+            // If there is no attendance record, might be transferred users.
+            if (!atts[0] && !atts[1]) {
+              var index = half_term % 2;              
+              atts[index] = scope.zbScheduleStats[user.zb_id].att;
+            }
             var records = scope.getBookAudioRecords(scope.lessons, user, true);
             var otherTasks = scope.classInfo.department_id == JIA_XING ?
               {} : (scope.users[user.id].taskStats || {});
-            var half_term = scope.half_term;
             scope.statusText = '正在为"{0}"提交{1}半学期{2}记录...'.format(
                 user.name, ['上', '下'][scope.half_term % 2], taskKey);
             return zbrpc.report_limited_schedule_task(
@@ -588,18 +612,43 @@ define('zb_sync_button/zb_sync_button',
             };
           };
           
-          scope.getZBScheduleTaskStats = function() {
-            var pre_classID = scope.classInfo.zb_id;
-            var halfTerm = scope.half_term;
-            return zbrpc.get_schedule_tasks(pre_classID, halfTerm)
-                .then(function(response) {
-              var stats = response.data.data;
-              scope.zbTaskScheduleStats = {};
-              (stats || []).forEach(function(stat) {
-                scope.zbTaskScheduleStats[stat.userID] = stat;
+          scope.getZBScheduleTaskStats = function(grid) {
+            return function() {
+              var pre_classID = scope.classInfo.zb_id;
+              var halfTerm = scope.half_term;
+              return zbrpc.get_task_records(grid, pre_classID, halfTerm)
+                  .then(function(response) {
+                var stats = response.data.data;
+                scope.zbScheduleStats = scope.zbScheduleStats || {};
+                (stats || []).forEach(function(stat) {
+                  var userStat = scope.zbScheduleStats[stat.userID] || {
+                    name: stat.name,
+                    main: {},
+                    limit: {}
+                  };
+                  scope.zbScheduleStats[stat.userID] = userStat;
+                  var bookAudio = {
+                    audio: [],
+                    book: [],
+                  };
+                  for (var key in stat) {
+                    if (!key) continue;
+                    if (key.startsWith('audio')) {
+                      bookAudio.audio.push(parseInt(stat[key]));
+                    } else if (key.startsWith('book')) {
+                      bookAudio.book.push(parseInt(stat[key]));
+                    }
+                  }
+                  if (grid == MAIN_COURSE_GRID_NAME) {
+                    userStat.main = bookAudio;
+                  } else {
+                    userStat.limit = bookAudio;
+                    userStat.att = stat.att;
+                  }
+                });
+                return scope.zbScheduleStats;
               });
-              return scope.zbTaskScheduleStats;
-            });
+            };
           };
 
           scope.report_attendance = function() {
