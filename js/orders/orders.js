@@ -150,11 +150,16 @@ define('orders/orders', [
 
             utils.requestOneByOne([get_items, get_orders]);
           };
+
+          /// Returns true if an order has neither paid or shipped.
+          function canRemove(order) {
+            return parseMoney(order.paid) < 0.01 &&
+                !order.usps_track_id &&
+                !order.paypal_trans_id;
+          }
           
           scope.remove = function(order) {
-            if (parseMoney(order.paid) > 0.009 ||
-                order.usps_track_id ||
-                order.paypal_trans_id) {
+            if (!canRemove(order)) {
               alert('不能删除已经付款或发货的订单');
               return;
             }
@@ -208,11 +213,17 @@ define('orders/orders', [
             var message = '请确认把"{0}"的所有其他订单合并到本订单'.format(order.name); 
             if (!confirm(message)) return;
 
+            order.mergeable = false;
             var requests = [];
             scope.orders.forEach(function(another) {
               if (another.user_id != order.user_id || another.id == order.id ||
                   another.zip != order.zip) return;
+              if (!canRemove(another)) {
+                alert('将跳过#{0}订单，因为已经付款或者发货'.format(another.id));
+                return;
+              }
 
+              another.mergeable = false;
               another.items.forEach(function(item) { item.selected = true; });
               requests.push(moveItemsRequest(another, order));
               requests.push(deleteOrderRequest(another));
