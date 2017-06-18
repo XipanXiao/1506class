@@ -53,12 +53,6 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
           utils.requestOneByOne([$scope.initUser, $scope.reload]);
 
           $scope.select = function (id) {
-            var classInfo = $scope.classes[id];
-            if (!perm.canRead(classInfo)) {
-              alert('Permission denied');
-              return;
-            }
-            
             $scope.lastClassId = $scope.classId;
             $scope.classId = id;
             $scope.currentClass.id = id;

@@ -38,20 +38,6 @@ define('permission', ['utils'], function() {
           this.ROLES.YEAR_LEADER &&
           user.classInfo.start_year == classInfo.start_year;
       },
-      canRead: function(classInfo) {
-        if (!this.user || !classInfo) return false;
-        if (this.isSysAdmin()) return true;
-
-        if (classInfo.teacher_id == this.user.id || !classInfo.perm_level) {
-          return true;
-        }
-
-        var perm = this.user.permission >> ((classInfo.perm_level - 1) * 2);
-        if (!perm) return false;
-        
-        return this.checkClass(this.user, classInfo) ||
-            this.checkYear(this.user, classInfo);
-      },
       canWrite: function(classInfo) {
         if (!this.user || !classInfo) return false;
         if (this.isSysAdmin()) return true;

@@ -27,8 +27,6 @@ define('class_editor/class_editor', ['departments/departments',
                 }
                 
                 scope.permissions = utils.keys(scope.permissionLabel);
-
-                scope.showPermEditor = perm.canWrite(scope.classInfo);
               };
               
               scope.save = function() {
