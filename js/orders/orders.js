@@ -49,7 +49,8 @@ define('orders/orders', [
                 init_item_labels(order);
               });
               orders.forEach(function(order) {
-                order.mergeable = scope.orders_of_users[order.user_id] > 1;
+                order.mergeable = !order.usps_track_id && 
+                    scope.orders_of_users[order.user_id] > 1;
               });
               calculate_stats(orders);
               return scope.orders = orders;
