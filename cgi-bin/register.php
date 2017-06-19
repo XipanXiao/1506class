@@ -27,7 +27,9 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
     
   $_SESSION['user'] = serialize($user);
   random_assign_prefs($user);
-    
-  client_redirect('../index.html', 1, 'Registered, redirecting...');
+ 
+  $url = sprintf("../registered.html?name=%s&email=%s", $user->name,
+      $user->email);
+  client_redirect($url, 1, 'Registered, redirecting...');
 }
 ?>
