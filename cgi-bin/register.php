@@ -12,6 +12,7 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
   
   if (empty($_POST["g-recaptcha-response"]) ||
       !checkCaptcha($_POST["g-recaptcha-response"])) {
+    header('Content-Type: text/html; charset=utf-8');
     echo "请通过验证码测试，确认您不是机器人。";
     exit();
   }
@@ -20,7 +21,8 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
   $users = get_users($_POST['email']);
   
   if (sizeof($users) > 0) {
-    echo "<h1>Error</h1>";
+    header('Content-Type: text/html; charset=utf-8');
+  	echo "<h1>Error</h1>";
     echo "该地址". $_POST["email"]. "已经注册，请勿重复注册。如忘记密码请联系组长。";
     exit();
   }
