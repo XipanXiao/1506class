@@ -76,4 +76,50 @@ function get_single_record($medoo, $table, $id) {
   $results = $medoo->select($table, "*", ["id" => $id]);
   return empty($results) ? null : current($results);
 }
+
+function send_post_request($url, $data) {
+  try {
+    $ch = curl_init();
+
+    if (FALSE === $ch) {
+      return null;
+    }
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+    $ch = null;
+
+    return $response;
+  } catch(Exception $e) {
+    if ($ch) {
+      curl_close($ch);
+    }
+    $message = sprintf("Curl failed with error #%d: %s",
+  	    $e->getCode(), $e->getMessage());
+    error_log($message);
+    echo "<div>". $message. "</div>\n";
+  }
+  return null;
+}
+
+// Check whether the user input a correct captcha.
+function checkCaptcha($captcha) {
+  $url = "https://www.google.com/recaptcha/api/siteverify";
+  $captchaResponse = send_post_request($url, 
+      ["secret" => "6Lf7GyYUAAAAAD3Ccinx7AU-MWBW8gEagp1hOo-L",
+      "response" => $captcha]);
+
+  if (!$captchaResponse) return false;
+
+  $result = json_decode($captchaResponse);
+  return $result->success;
+}
 ?>

@@ -50,6 +50,7 @@
     });
   }
 </script>
+<script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
 
 <body class="center register-back">
@@ -251,6 +252,14 @@
             </label>
           </div>
           <div class="css-table-cell"><input type="checkbox" name="agreement" required></div>
+        </div>
+        <div class="css-table-row">
+          <div class="css-table-cell">请勾上右图中的选择框，以确认您不是机器人。
+            <span class="required-asterisk">*</span>
+          </div>
+          <div class="css-table-cell g-recaptcha"
+              data-sitekey="6Lf7GyYUAAAAAHYv0Ko3CQVChnU7911nSkv6F2Lo">
+          </div>
         </div>
         <div class="css-table-row">
           <div class="css-table-cell"><input type="submit" value="注册"/></div>
