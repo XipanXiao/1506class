@@ -12,7 +12,8 @@ define('schedule_editor/schedule_editor',
        'UtilsModule']).directive('scheduleEditor', function(rpc, utils) {
           return {
             scope: {
-              classId: '='
+              classId: '=',
+              user: '='
             },
             link: function($scope) {
               $scope.week = 1000*3600*24*7;
@@ -226,6 +227,8 @@ define('schedule_editor/schedule_editor',
                       email: $scope.email,
                       className: $scope.classInfo.name,
                       course: courseName,
+                      sender: $scope.user.email,
+                      sender_name: $scope.user.name,
                       yy: $scope.classInfo.class_room,
                       time: $scope.getWeeklyTime(group, index),
                       review: $scope.users[schedule.review] || '',
