@@ -584,6 +584,15 @@ body.white {
   visibility: visible;
 }
 
+.mail-icon {
+  visibility: hidden;
+}
+
+.css-table-row:hover .mail-icon {
+  cursor: pointer;
+  visibility: visible;
+}
+
 .bold {
   border: 2px solid;
 }

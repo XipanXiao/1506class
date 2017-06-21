@@ -197,6 +197,51 @@ define('schedule_editor/schedule_editor',
                     utils.extraReportTime;
                 return utils.toDateTime(end_time).toLocaleString();
               };
+              $scope.notify = function(group, schedule, index) {
+                if ($scope.sending) return;
+
+                $scope.sending = true;
+                function getClassInfo() {
+                  return rpc.get_classes($scope.classId)
+                      .then(function(response) {
+                    return $scope.classInfo = response.data[$scope.classId];
+                  });
+                }
+                function getUserEmail(user) { return user.email; }
+                function getEmail() {
+                  if ($scope.classInfo.email) {
+                    $scope.email = $scope.classInfo.email;
+                    return utils.truePromise();
+                  }
+                  var id = $scope.classInfo.id;
+                  return rpc.get_users(null, id).then(function(response) {
+                    return $scope.email = 
+                        utils.map(response.data, getUserEmail).join(',');
+                  });
+                }
+                function sendMail() {
+                  var courseName = group.courses[schedule.course_id].name;
+                  return emailjs.send("bicw_notifcation", "class_notification",
+                    {
+                      email: $scope.email,
+                      className: $scope.classInfo.name,
+                      course: courseName,
+                      yy: $scope.classInfo.class_room,
+                      time: $scope.getWeeklyTime(group, index),
+                      review: $scope.users[schedule.review] || '',
+                      open: $scope.users[schedule.open] || ''
+                    }).then(function(response) {
+                      $scope.sending = false;
+                      alert('sent');
+                    }, 
+                    function(error) {
+                      $scope.sending = false;
+                      alert('failed');
+                    }
+                  );
+                }
+                utils.requestOneByOne([getClassInfo, getEmail, sendMail]);
+              };
             },
             templateUrl : 'js/schedule_editor/schedule_editor.html'
           };

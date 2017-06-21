@@ -49,6 +49,8 @@ define('admin_app',
             $scope.$on('select-page', function(event, index) {
               tabs.select(index);
             });
+
+            emailjs.init("user_AZIJ32nwn6RJmV7EzdJy8");
           }
         };
       }).config( ['$compileProvider', function( $compileProvider ) {

@@ -28,6 +28,7 @@
       <div class="css-table-cell"><strong>{{group.course_group2 ? '串讲' : '总结'}}</strong></div>
       <div class="css-table-cell"><strong>串讲</strong></div>
       <div class="css-table-cell"><strong>放假备注</strong></div>
+      <div class="css-table-cell"></div>
     </div>
   
     <div ng-repeat="schedule in group.schedules" class="css-table-row" id="{{schedule.id}}"
@@ -55,6 +56,11 @@
             on-change="update(schedule, 'notes', schedule.notes)"
             class="padded-element">
         </editable-label>
+      </div>
+      <div class="css-table-cell">
+        <iron-icon class="mail-icon" icon="mail" ng-if="!vacation(schedule)"
+            ng-click="notify(group, schedule, $index)" title="发送上课通知">
+        </iron-icon>
       </div>
     </div>
   </div>
