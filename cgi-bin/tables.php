@@ -591,6 +591,9 @@ function update_schedule($schedule) {
     return $medoo->insert("schedules", $datas);
   }
 
+  if (!empty($schedule["notified"])) {
+    $datas["#notified"] = "NOW()";
+  }
   return $medoo->update("schedules", $datas, ["id" => $id]);
 }
 

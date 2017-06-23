@@ -20,7 +20,7 @@
     </div>
   </div>
   <schedule-group-editor ng-if="group.editing" group="group"></schedule-group-editor>
-  <div class="css-table odd-even schedule-tasks">
+  <div class="css-table odd-even schedule-tasks" ng-class="{'busy': sending}">
     <div class="css-table-row header">
       <div class="css-table-cell"><strong>周数</strong></div>
       <div class="css-table-cell"><strong>时间</strong></div>
@@ -61,7 +61,8 @@
       </div>
       <div class="css-table-cell">
         <iron-icon class="mail-icon" icon="mail" ng-if="!vacation(schedule)"
-            ng-click="notify(group, schedule, $index)" title="发送上课通知">
+            ng-click="notify(group, schedule, $index)"
+            title="{{schedule.notified ? '上次发送' + schedule.notified : '发送上课通知'}}">
         </iron-icon>
       </div>
     </div>

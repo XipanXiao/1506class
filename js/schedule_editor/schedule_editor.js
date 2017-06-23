@@ -254,15 +254,23 @@ define('schedule_editor/schedule_editor',
                       open: $scope.users[schedule.open] || ''
                     }).then(function(response) {
                       $scope.sending = false;
-                      alert('sent');
+                      return true;
                     }, 
                     function(error) {
                       $scope.sending = false;
-                      alert('failed');
+                      alert('发送邮件失败: ' + error);
+                      return false;
                     }
                   );
                 }
-                utils.requestOneByOne([getClassInfo, getEmail, sendMail]);
+                function update_notified_timestamp() {
+                  schedule.notified = (new Date()).toLocaleString();
+                  return rpc.update_schedule(schedule).then(function(response) {
+                    return response.data.updated;
+                  });
+                }
+                utils.requestOneByOne([getClassInfo, getEmail, sendMail, 
+                    update_notified_timestamp]);
               };
             },
             templateUrl : 'js/schedule_editor/schedule_editor.html'
