@@ -1,6 +1,7 @@
-define('item_list/item_list', ['flying/flying', 'services'], function() {
-  return angular.module('ItemListModule', ['FlyingModule', 'ServicesModule'])
-    .directive('itemList', function(rpc) {
+define('item_list/item_list', ['flying/flying', 'services', 'utils'], function() {
+  return angular.module('ItemListModule', ['FlyingModule', 'ServicesModule',
+        'UtilsModule'])
+    .directive('itemList', function(rpc, utils) {
       return {
         scope: {
           cart: '='
@@ -9,7 +10,10 @@ define('item_list/item_list', ['flying/flying', 'services'], function() {
           scope.items = [];
           rpc.get_item_categories().then(function(response) {
             scope.categories = response.data;
-            scope.categories[1].selected = true;
+            if (utils.isEmpty(scope.categories)) return;
+            utils.forEach(scope.categories, function(category) {
+              if (!category.shared) category.selected = true;
+            });
 
             rpc.get_items().then(function(response) {
               for (var id in response.data) {

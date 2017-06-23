@@ -187,24 +187,30 @@ function sanitize_address() {
 function get_shop_items($category, $level) {
   global $medoo;
 
-  $categories = $medoo->select("item_categories", "id", 
-      ["level[<=]" => intval($level)]);
-  if ($category && !array_search($category, $categories)) return [];
-
   $filters = ["deleted[!]" => 1];
   if ($category) {
     $filters["category"] = $category; 
-  } else {
-    $filters["category"] = $categories;
   }
+
+  if ($level) {
+    $categories = array_keys(get_item_categories($level));
+    if ($category) {
+    	if (!array_search($category, $categories)) return [];
+    } else {
+      $filters["category"] = $categories;
+    }
+  }
+  
   return keyed_by_id($medoo->select("items", "*", ["AND" => $filters]));
 }
 
 function get_item_categories($level) {
   global $medoo;
 
-  return keyed_by_id($medoo->select("item_categories", "*",
-      ["level[<=]" => $level]));
+  return keyed_by_id($medoo->select("item_categories", "*", ["OR" => [
+          "level" => $level, 
+          "AND" => ["level[<=]" => $level, "shared" => 1]
+      ]]));
 }
 
 function get_order_stats($year) {
@@ -361,7 +367,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       : permision_denied_error();
     }
   } elseif ($resource_id == "items") {
-    $level = isOrderManager($user) ? 99 : _getDepartmentLevel($user);
+    $level = isOrderManager($user) ? null : _getDepartmentLevel($user);
     $response = get_shop_items($_GET["category"], $level);
   } elseif ($resource_id == "item_categories") {
     $level = _getDepartmentLevel($user);
