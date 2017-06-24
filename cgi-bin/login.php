@@ -39,7 +39,7 @@ if(!empty($_POST["email"])) {
     $validPages = ["admin.html", "index.html", "local.html", "order.html",
         "order_admin.html", "assignment.html"];
     if (!in_array($page, $validPages)) {
-      exit();
+      $page = "index.html";
     }
 
     header("Location: ../" . $page);
