@@ -130,7 +130,9 @@ define('services', [], function() {
       get_user: function(email) {
         return this.get_users(email).then(function(response) {
           if (response.data.error == "login needed") {
-            location.href = "./login.html?redirect=" + location.href;
+            var index = location.pathname.lastIndexOf("/") + 1;
+            var filename = location.pathname.substr(index);
+            location.href = 'login.html?redirect=' + filename;
           } else {
             return response.data;
           }

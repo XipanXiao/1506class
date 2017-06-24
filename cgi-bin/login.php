@@ -9,7 +9,7 @@ include_once 'backup.php';
 /// Moves a user from a deleted class to the new class 1.
 function undelete($user) {
   if (!empty($user->classInfo) && empty($user->classInfo["deleted"])) {
-  	return $user;
+    return $user;
   }
 
   return update_user(["id" => $user->id, "classId" => 1]);
@@ -36,7 +36,13 @@ if(!empty($_POST["email"])) {
     $page = empty($_POST["redirect-url"]) 
         ? getStartPage($user) 
         : $_POST["redirect-url"];
-    header("Location: " . $page);
+    $validPages = ["admin.html", "index.html", "local.html", "order.html",
+        "order_admin.html", "assignment.html"];
+    if (!in_array($page, $validPages)) {
+      exit();
+    }
+
+    header("Location: ../" . $page);
     try_backup();
   } else {
     echo "<h1>Error</h1>";

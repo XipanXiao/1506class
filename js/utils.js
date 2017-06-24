@@ -246,7 +246,9 @@ define('utils', [], function() {
         window.location.href = url;
       },
       login: function() {
-        location.href = 'login.html?redirect=' + location.href;
+        var index = location.pathname.lastIndexOf("/") + 1;
+        var filename = location.pathname.substr(index);
+        location.href = 'login.html?redirect=' + filename;
       },
       refresh: function() {
         window.location.reload();
