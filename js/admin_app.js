@@ -21,7 +21,7 @@ define('admin_app',
             rpc.get_user().then(function(user) {
               perm.user = user;
               if (!perm.isAdmin()) {
-                utils.redirect('login.html');
+                utils.login();
                 return;
               }
 

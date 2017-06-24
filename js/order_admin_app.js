@@ -22,7 +22,7 @@ define('order_admin_app', [
               perm.user = user;
               scope.user = user;
               if (!perm.isOrderAdmin() && !perm.isAdmin()) {
-                utils.redirect('login.html');
+                utils.login();
               }
             });
             

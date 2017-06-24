@@ -33,9 +33,10 @@ if(!empty($_POST["email"])) {
     $user->password = null;
     $_SESSION["user"] = serialize($user);
     
-    $page = getStartPage($user);
-    client_redirect("../" . $page, 1,
-        "Authenticated successfully, redirecting...");
+    $page = empty($_POST["redirect-url"]) 
+        ? getStartPage($user) 
+        : $_POST["redirect-url"];
+    header("Location: " . $page);
     try_backup();
   } else {
     echo "<h1>Error</h1>";

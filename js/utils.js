@@ -245,6 +245,9 @@ define('utils', [], function() {
       redirect: function(url) {
         window.location.href = url;
       },
+      login: function() {
+        location.href = 'login.html?redirect=' + location.href;
+      },
       refresh: function() {
         window.location.reload();
       },

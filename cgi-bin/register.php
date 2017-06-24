@@ -41,6 +41,6 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
  
   $url = sprintf("../registered.html?name=%s&email=%s", $user->name,
       $user->email);
-  client_redirect($url, 0, 'Registered, redirecting...');
+  header("Location: ". $url);
 }
 ?>

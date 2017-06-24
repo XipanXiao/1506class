@@ -26,7 +26,7 @@ define('invoice_app', [
             }
             rpc.get_order(order_id).then(function(response) {
               if (response.data.error == 'login needed') {
-                utils.redirect('login.html');
+                utils.login();
                 return;
               }
               var order = response.data;
