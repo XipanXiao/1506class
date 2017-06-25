@@ -174,7 +174,12 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];
-  
+
+  if (isSysAdmin($user) || isYearLeader($user)) {
+    error_log($user->email. " UPDATES ". $resource_id. ":". 
+        (empty($_POST["id"]) ? "" : $_POST["id"]));
+  }
+
   if ($resource_id == "tasks") {
     $task_id = $_POST["task_id"];
     $task_user_id = 
