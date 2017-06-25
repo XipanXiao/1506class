@@ -10,7 +10,7 @@ define('order_stats/order_stats', [
         link: function(scope) {
           scope.years = [];
           scope.selectedYear = {value: new Date().getFullYear()};
-          for (var year = 2013; year <= scope.selectedYear.value; year++) {
+          for (var year = 2011; year <= scope.selectedYear.value; year++) {
             scope.years.push(year);
           }
           

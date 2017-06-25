@@ -16,6 +16,12 @@
       <option ng-repeat="phone in phones" value="{{phone}}"></option>
     </datalist>
   </label>
+  <label class="css-table-cell" ng-show="orders.length">输入班级过滤：
+    <input ng-model="className" list="class-names">
+    <datalist id="class-names">
+      <option ng-repeat="name in classNames" value="{{name}}"></option>
+    </datalist>
+  </label>
   </div>
 </div>
 <div ng-if="admin && isOrderAdmin() && orders.length" class="css-table">
@@ -83,7 +89,7 @@
     target="_blank" class="right">
     付款流程
 </a>
-<div ng-repeat="order in orders | filter: {id: orderId, phone: tel}"
+<div ng-repeat="order in orders | filter: {id: orderId, phone: tel, class_name: className}"
     class="section order-details-line">
   <order-details order="order" admin="{{admin}}"
       on-cancel="remove(order)" on-update="update(order)" user="user"
