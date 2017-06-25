@@ -56,7 +56,7 @@ define('class_editor/class_editor', ['departments/departments',
               
               scope.years = [''];
               for (var index = 1; index < 25; index++) {
-                scope.years[index] = 2011 + index;
+                scope.years[index] = 2010 + index;
               }
               
               scope.teachers = {};
