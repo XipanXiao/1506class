@@ -90,13 +90,4 @@ function get_class_candidates($user) {
 	return keyed_by_id($medoo->select("classes", 
 			["id", "department_id", "name", "weekday", "time"], ["AND" => $where]));
 }
-
-function random_assign_prefs($user) {
-	$classes = array_keys(get_classes(["department_id" => 1, "id[!]" => 1]));
-
-	$pref1 = $classes[rand(0, count($classes) - 1)];
-	$pref2 = $classes[rand(0, count($classes) - 1)];
-	update_class_pref($user->id, ["pref1" => $pref1, "pref2" => $pref2, 
-			"department_id" => 0]);
-}
 ?>

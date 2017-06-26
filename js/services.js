@@ -41,7 +41,7 @@ define('services', [], function() {
       
       get_class_prefs: function(department_id) {
         var url = '{0}?rid=class_prefs&department_id={1}'.
-            format(serviceUrl, department_id);
+            format(serviceUrl, department_id || '');
         return $http.get(url);
       },
       

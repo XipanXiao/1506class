@@ -37,7 +37,6 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
     
   session_start();
   $_SESSION['user'] = serialize($user);
-  random_assign_prefs($user);
  
   $url = sprintf("../registered.html?name=%s&email=%s", $user->name,
       $user->email);
