@@ -2,14 +2,16 @@ define('schedule_editor/schedule_editor',
     ['course_editor_dialog/course_editor_dialog',
      'editable_label/editable_label',
      'navigate_bar/navigate_bar',
+     'permission',
     'schedule_group_editor/schedule_group_editor', 'services',
     'user_picker/user_picker', 'utils'], function() {
 
   return angular.module('ScheduleEditorModule',
       ['CourseEditorDialogModule', 'EditableLabelModule',
        'NavigateBarModule',
+       'PermissionModule',
        'ScheduleGroupEditorModule', 'ServicesModule', 'UserPickerModule',
-       'UtilsModule']).directive('scheduleEditor', function(rpc, utils) {
+       'UtilsModule']).directive('scheduleEditor', function(perm, rpc, utils) {
           return {
             scope: {
               classId: '=',
@@ -239,11 +241,22 @@ define('schedule_editor/schedule_editor',
                         utils.map(response.data, getUserEmail).join(',');
                   });
                 }
+                function getTeacherEmail() {
+                  if (!$scope.classInfo.teacher_id) return utils.truePromise();
+                  
+                  var level = perm.ROLES.TEACHER;
+                  return rpc.get_admins(level).then(function(response) {
+                    var teacher = response.data[$scope.classInfo.teacher_id];
+                    $scope.teacherEmail = teacher && teacher.email;
+                    return true;
+                  });
+                }
                 function sendMail() {
                   var courseName = group.courses[schedule.course_id].name;
                   return emailjs.send("bicw_notifcation", "class_notification",
                     {
                       email: $scope.email,
+                      teacher: $scope.teacherEmail || '',
                       className: $scope.classInfo.name,
                       course: courseName,
                       sender: $scope.user.email,
@@ -258,7 +271,7 @@ define('schedule_editor/schedule_editor',
                     }, 
                     function(error) {
                       $scope.sending = false;
-                      alert('发送邮件失败: ' + error);
+                      alert('发送邮件失败(一般因为发的人太多，用完了名额，只好麻烦您自己动手了): ' + error);
                       return false;
                     }
                   );
@@ -269,8 +282,8 @@ define('schedule_editor/schedule_editor',
                     return response.data.updated;
                   });
                 }
-                utils.requestOneByOne([getClassInfo, getEmail, sendMail, 
-                    update_notified_timestamp]);
+                utils.requestOneByOne([getClassInfo, getEmail, getTeacherEmail,
+                    sendMail, update_notified_timestamp]);
               };
             },
             templateUrl : 'js/schedule_editor/schedule_editor.html'

@@ -296,7 +296,8 @@ function get_users($email, $classId = null, $user_id = null, $sn = null) {
 function get_admins($permission) {
   global $medoo;
 
-  return keyed_by_id($medoo->select("users", ["id", "name", "nickname"],
+  return keyed_by_id($medoo->select("users",
+      ["id", "name", "nickname", "email"],
       ["permission" => $permission]));
 }
 
@@ -329,7 +330,7 @@ function update_user($user) {
         $datas[$key] = intval($value);
       }
     } elseif (in_array($key, $fields)) {
-    	if ($key == "email" && is_email_blocked($value)) exit();
+      if ($key == "email" && is_email_blocked($value)) exit();
       $filter = 
           $key == "email" ? FILTER_SANITIZE_EMAIL : FILTER_SANITIZE_STRING; 
       $datas[$key] = filter_input(INPUT_POST, $key, $filter);
