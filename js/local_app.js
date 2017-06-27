@@ -23,7 +23,7 @@ define('local_app', [
             rpc.get_user().then(function(user) {
               perm.user = user;
               if (!perm.isSysAdmin()) {
-                utils.login();
+                utils.redirect('./index.html');
                 return;
               }
 

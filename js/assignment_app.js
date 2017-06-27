@@ -29,7 +29,7 @@ define('assignment_app', [
             rpc.get_user().then(function(user) {
               perm.user = user;
               if (!perm.isSysAdmin() && !perm.isYearLeader()) {
-                utils.login();
+                utils.redirect('./index.html');
                 return;
               }
 
