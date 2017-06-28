@@ -198,6 +198,22 @@ define('services', [], function() {
         return $http.get(url);
       },
       
+      get_book_lists: function() {
+        return $http.get('cgi-bin/shop.php?rid=book_lists');
+      },
+      
+      get_book_list_details: function(list_id) {
+        var url = 'cgi-bin/shop.php?rid=book_list_details&list_id={0}'
+            .format(list_id || '');
+        return $http.get(url);
+      },
+      
+      get_class_book_lists: function(year) {
+        var url = 'cgi-bin/shop.php?rid=class_book_lists&year={0}'
+            .format(year || (new Date()).getFullYear());
+        return $http.get(url);
+      },
+      
       get_scores: function(classId) {
         var url = 'cgi-bin/score.php?rid=scores&class_id={0}'.format(classId);
         return $http.get(url);
@@ -245,6 +261,28 @@ define('services', [], function() {
             to_order: toOrder
         };
         return http_form_post($http, $httpParamSerializerJQLike(request),
+            'cgi-bin/shop.php');
+      },
+      
+      update_book_list: function(bookList) {
+        bookList.rid = 'book_lists';
+        return http_form_post($http, $httpParamSerializerJQLike(bookList),
+            'cgi-bin/shop.php');
+      },
+
+      update_book_list_details: function(bookListId, books) {
+        var data = {
+          rid: 'book_list_details',
+          book_list_id: bookListId,
+          books: books
+        };
+        return http_form_post($http, $httpParamSerializerJQLike(data),
+            'cgi-bin/shop.php');
+      },
+      
+      update_class_books: function(classInfo) {
+        classInfo.rid = 'class_book_lists';
+        return http_form_post($http, $httpParamSerializerJQLike(classInfo),
             'cgi-bin/shop.php');
       },
       
@@ -313,6 +351,23 @@ define('services', [], function() {
 
       remove_order_item: function(id) {
         var url = '{0}?rid=order_details&id={1}'.format('cgi-bin/shop.php', id);
+        return $http.delete(url);
+      },
+      
+      remove_book_lists: function(id) {
+        var url = '{0}?rid=book_lists&id={1}'.format('cgi-bin/shop.php', id);
+        return $http.delete(url);
+      },
+
+      remove_book_list_detail: function(id) {
+        var url = '{0}?rid=book_list_details&id={1}'
+            .format('cgi-bin/shop.php', id);
+        return $http.delete(url);
+      },
+
+      remove_class_books: function(id) {
+        var url = '{0}?rid=class_book_lists&id={1}'
+            .format('cgi-bin/shop.php', id);
         return $http.delete(url);
       },
 

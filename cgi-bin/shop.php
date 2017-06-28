@@ -456,7 +456,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         : permision_denied_error();
   } elseif ($resource_id == "book_list_details") {
     $response = isOrderManager($user) 
-        ? get_list_details($_GET["id"]) 
+        ? get_list_details($_GET["list_id"]) 
         : permision_denied_error();
   } elseif ($resource_id == "class_book_lists") {
     $response = isOrderManager($user) 
@@ -497,8 +497,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       : permision_denied_error();
   } elseif ($resource_id == "class_book_lists") {
     $response = isOrderManager($user)
-      ? ["updated" => 
-          update_class_book_list($_POST["class_book_list"])]
+      ? ["updated" => update_class_book_list($_POST)]
       : permision_denied_error();
   }
 } elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE" &&
