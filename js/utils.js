@@ -373,6 +373,9 @@ define('utils', [], function() {
           user.stateLabel = this.getUSStateCode(user.stateLabel);
         }
       },
+      getBookListName: function(bookList) {
+        return '{0}第{1}学期'.format(bookList.department, bookList.term);
+      },
       sexLabels: ['女', '男'],
       educationLabels: ['', '高中及以下', '大专', '本科', '硕士', '博士'],
       examLabels: ['无', '闭卷', '开卷'],
