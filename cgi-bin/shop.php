@@ -195,7 +195,7 @@ function get_shop_items($category, $level) {
   if ($level) {
     $categories = array_keys(get_item_categories($level));
     if ($category) {
-    	if (!array_search($category, $categories)) return [];
+      if (!array_search($category, $categories)) return [];
     } else {
       $filters["category"] = $categories;
     }
@@ -329,6 +329,80 @@ function delete_order_item($id) {
   return $medoo->delete("order_details", ["id" => $id]);
 }
 
+function get_book_lists() {
+  global $medoo;
+  
+  return keyed_by_id($medoo->select("book_lists", "*"));
+}
+
+function update_book_list($bookList) {
+  global $medoo;
+  
+  if (empty($bookList["id"])) {
+    return $medoo->insert("book_lists", $bookList);
+  } else {
+    $data = build_update_data(["department_id", "term"], $bookList);
+    return $medoo->update("book_lists", $data, ["id" => $bookList["id"]]);
+  }
+}
+
+function remove_book_list($id) {
+  return $medoo->delete("book_lists", ["id" => $id]);
+}
+
+function get_list_details($id) {
+  global $medoo;
+  
+  return $medoo->select("book_list_details", "*", ["book_list_id" => $id]);
+}
+
+function update_list_details($bookListId, $books) {
+  global $medoo;
+
+  $updated = 0;
+  foreach ($books as $book) {
+    if (empty($book["id"])) {
+      $updated += $medoo->insert("book_list_details", $book) ? 1 : 0;
+    } else {
+      $updated += 
+          $medoo->update("book_list_details", $book, ["id" => $book["id"]]);
+    }
+  }
+  return $updated;
+}
+
+function remove_list_detail($id) {
+  global $medoo;
+  
+  $medoo->delete("book_list_details", ["id" => $id]);
+}
+
+function get_class_book_lists($year) {
+  global $medoo;
+  
+  $classIds = $medoo->select("classes", "id", ["start_year" => $year]);
+  if (empty($classId)) return [];
+  
+  return $medoo->select("class_book_lists", "*", ["class_id" => $classIds]);
+}
+
+function update_class_book_list($classInfo) {
+  global $medoo;
+
+  if (empty($classInfo["id"])) {
+    return $medoo->insert("class_book_lists", $classInfo);
+  } else {
+    return $medoo->update("class_book_lists", $classInfo,
+        ["id" => $classInfo["id"]]);
+  }
+}
+
+function remove_class_book_list($id) {
+  global $medoo;
+  
+  return $medoo->delete("class_book_lists", ["id" => $id]);
+}
+
 $response = null;
 
 if (empty($_SESSION["user"])) {
@@ -376,6 +450,18 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = isOrderManager($user) 
         ? get_order_stats($_GET["year"]) 
         : permision_denied_error();
+  } elseif ($resource_id == "book_lists") {
+    $response = isOrderManager($user) 
+        ? get_book_lists() 
+        : permision_denied_error();
+  } elseif ($resource_id == "book_list_details") {
+    $response = isOrderManager($user) 
+        ? get_list_details($_GET["id"]) 
+        : permision_denied_error();
+  } elseif ($resource_id == "class_book_lists") {
+    $response = isOrderManager($user) 
+        ? get_class_book_lists($_GET["year"]) 
+        : permision_denied_error();
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];
@@ -399,6 +485,21 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       ? ["updated" => 
           move_order_items($_POST["from_order"], $_POST["to_order"])]
       : permision_denied_error();
+  } elseif ($resource_id == "book_lists") {
+    $response = isOrderManager($user)
+      ? ["updated" => 
+          update_book_list($_POST["book_list"])]
+      : permision_denied_error();
+  } elseif ($resource_id == "book_list_details") {
+    $response = isOrderManager($user)
+      ? ["updated" => 
+          update_list_details($_POST["book_list_id"], $_POST["books"])]
+      : permision_denied_error();
+  } elseif ($resource_id == "class_book_lists") {
+    $response = isOrderManager($user)
+      ? ["updated" => 
+          update_class_book_list($_POST["class_book_list"])]
+      : permision_denied_error();
   }
 } elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE" &&
     isset ( $_REQUEST["rid"] )) {
@@ -419,6 +520,12 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     }
   } elseif ($resource_id == "order_details") {
     $response = ["deleted" => delete_order_item($_REQUEST["id"])];
+  } elseif ($resource_id == "book_lists") {
+    $response = ["deleted" => remove_book_list($_REQUEST["id"])];
+  } elseif ($resource_id == "book_list_details") {
+    $response = ["deleted" => remove_list_detail($_REQUEST["id"])];
+  } elseif ($resource_id == "class_book_lists") {
+    $response = ["deleted" => remove_class_book_list($_REQUEST["id"])];
   }
 }
 

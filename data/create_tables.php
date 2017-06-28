@@ -83,4 +83,27 @@ CREATE TABLE IF NOT EXISTS order_details (
 CREATE TABLE IF NOT EXISTS closed_order_details 
     SELECT * FROM order_details LIMIT 0;
 
+CREATE TABLE book_lists (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  department_id TINYINT NOT NULL,
+          FOREIGN KEY (department_id) REFERENCES departments(id),
+  term TINYINT
+);
+
+CREATE TABLE book_list_details (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  book_list_id INT NOT NULL,
+          FOREIGN KEY (book_list_id) REFERENCES book_lists(id),
+  item_id INT NOT NULL,
+          FOREIGN KEY (item_id) REFERENCES items(id)
+);
+
+CREATE TABLE class_book_lists (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  book_list_id INT NOT NULL,
+          FOREIGN KEY (book_list_id) REFERENCES book_lists(id),
+  class_id INT NOT NULL,
+          FOREIGN KEY (class_id) REFERENCES classes(id)
+);
+
 -- */ ?>
