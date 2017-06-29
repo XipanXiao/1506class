@@ -338,10 +338,10 @@ function get_book_lists() {
 function update_book_list($bookList) {
   global $medoo;
   
+  $data = build_update_data(["department_id", "term"], $bookList);
   if (empty($bookList["id"])) {
-    return $medoo->insert("book_lists", $bookList);
+    return $medoo->insert("book_lists", $data);
   } else {
-    $data = build_update_data(["department_id", "term"], $bookList);
     return $medoo->update("book_lists", $data, ["id" => $bookList["id"]]);
   }
 }
@@ -380,10 +380,20 @@ function remove_list_detail($id) {
 function get_class_book_lists($year) {
   global $medoo;
   
-  $classIds = $medoo->select("classes", "id", ["start_year" => $year]);
-  if (empty($classId)) return [];
+  $classes = keyed_by_id($medoo->select("classes", ["id", "name"], 
+      ["start_year" => $year]));
+  if (empty($classes)) return [];
   
-  return $medoo->select("class_book_lists", "*", ["class_id" => $classIds]);
+  $classList = keyed_by_id($medoo->select("class_book_lists", "*", 
+  		["class_id" => array_keys($classes)]), "class_id");
+  foreach ($classes as $classId => $classInfo) {
+  	$record = $classList[$classId];
+  	if ($record) {
+  	  $classInfo["book_list_id"] = $record["id"];
+  	  $classes[$classId] = $classInfo;
+  	}
+  }
+  return $classes;
 }
 
 function update_class_book_list($classInfo) {

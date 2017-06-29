@@ -1,2 +1,23 @@
-<div>
+<h1>所有书单</h1>
+<div ng-repeat="list in booklists" ng-click="selected = list">
+  {{list.name}}
+</div>
+<input type="button" value="添加新书单" ng-click="addBookList()">
+<book-list-details ng-if="selected" book-list="selected"></book-list-details>
+<hr>
+<h1>为班级指定书单</h1>
+<select ng-options="year for year in years" ng-model="currentClass.year"
+    ng-change="yearChanged()">
+</select>
+<div class="css-table odd-even">
+  <div class="header css-table-row">
+    <div class="css-table-cell">班级</div>
+    <div class="css-table-cell">书单</div>
+  </div>
+  <div ng-repeat="classInfo in classes" class="css-table-row">
+    <div class="css-table-cell">{{classInfo.name}}</div>
+    <div class="css-table-cell">
+      {{booklists[classInfo.book_list_id].name || '未指定书单，将显示本系所有法本'}}
+    </div>
+  </div>
 </div>
