@@ -2,11 +2,20 @@
 <select ng-options="departments[id].name for id in depIds" 
     ng-model="currentDep.id">
 </select>
-<div ng-repeat="list in booklists[currentDep.id]" ng-click="selected = list">
-  第{{list.term}}学期书单
+<div class="flex">
+  <div class="css-table">
+    <div ng-repeat="list in booklists[currentDep.id]" ng-click="selected = list"
+        ng-class="{'selected': selected == list}" class="css-table-row">
+      <div class="css-table-cell">第{{list.term}}学期书单</div>
+      <div class="css-table-cell">
+        <div ng-repeat="book in list.books">{{book.name}}</div>
+      </div>
+    </div>
+  </div>
+  <book-list-details ng-if="selected" book-list="selected">
+  </book-list-details>
 </div>
 <input type="button" value="添加新书单" ng-click="addBookList()">
-<book-list-details ng-if="selected" book-list="selected"></book-list-details>
 <hr>
 <h1>为班级指定学期</h1>
 <select ng-options="year for year in years" ng-model="currentClass.year"

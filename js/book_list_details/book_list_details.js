@@ -11,22 +11,15 @@ define('book_list_details/book_list_details',
         scope.$watch('bookList', function(bookList) {
           if (bookList) {
             scope.savedList = angular.copy(bookList);
+            utils.requestOneByOne([getDepartments, getDepartmentBooks]);
           }
         });
-        rpc.get_departments().then(function(response) {
-          scope.departments = response.data;
-        });
+        
         scope.isDirty = function() {
           return !angular.equals(scope.bookList, scope.savedList);
         };
-        scope.add = function() {
-          // TODO: Add a book chooser to pick a book.
-          var book = {};
-          scope.bookList.books.push(book);
-        };
         scope.remove = function(book) {
-          var index = scope.bookList.books.indexOf(book);
-          scope.bookList.books.splice(index, 1);
+          delete scope.bookList.books[book.id];
         };
         scope.save = function() {
           rpc.update_book_list(scope.bookList).then(function(response) {
@@ -38,6 +31,26 @@ define('book_list_details/book_list_details',
         scope.cancel = function() {
           scope.bookList = angular.copy(scope.savedList);
         };
+        scope.toggleBook = function(item) {
+          var books = scope.bookList.books;
+          if (books[item.id]) {
+            delete books[item.id];
+          } else {
+            books[item.id] = item;
+          }
+        };
+
+        function getDepartments() {
+          return rpc.get_departments().then(function(response) {
+            return scope.departments = response.data;
+          });
+        }
+        function getDepartmentBooks() {
+          var dep = scope.departments[scope.bookList.department_id];
+          return rpc.get_items(null, dep.level).then(function(response) {
+            return scope.items = response.data;
+          });
+        }
       },
       templateUrl : 'js/book_list_details/book_list_details.html?tag=201706062300'
     };

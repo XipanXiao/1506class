@@ -184,9 +184,10 @@ define('services', [], function() {
         return $http.get(url);
       },
       
-      get_items: function(category) {
-        return $http.get('cgi-bin/shop.php?rid=items&category=' + 
-            (category || ''));
+      get_items: function(category, level) {
+        var url = 'cgi-bin/shop.php?rid=items&category={0}&level={1}'
+            .format(category || '', level || '');
+        return $http.get(url);
       },
       
       get_item_categories: function() {

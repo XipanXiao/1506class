@@ -643,7 +643,6 @@ body.white {
   cursor: wait;
 }
 
-.add-book {
-  position: absolute;
-  left: -12px;
+.book-selection {
+  height: 100%;
 }

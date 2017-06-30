@@ -1,24 +1,36 @@
-<div class="header">
-  <div>{{departments[bookList.department_id].name}}第{{bookList.term}}学期</div>
-  <label>学期: <input type="number" ng-model="bookList.term"></label>
-  <paper-fab icon="add" class="add-book clickable" ng-click="add()"></paper-fab>
-  <div class="css-table">
-    <div class="css-table-row header">
-      <div class="css-table-cell">书名</div>
-      <div class="css-table-cell">价格</div>
-      <div class="css-table-cell">国际运费</div>
-      <div class="css-table-cell"></div>
-    </div>
-    <div ng-repeat="book in bookList.books" class="css-table-row deletable">
-      <div class="css-table-cell">{{book.name}}</div>
-      <div class="css-table-cell">{{book.price}}</div>
-      <div class="css-table-cell">{{book.int_price}}</div>
-      <div class="css-table-cell">
-        <iron-icon icon="delete" class="delete-button" ng-click="remove(book)">
-        </iron-icon>
+<div class="flex">
+  <div class="section">
+    <div>{{departments[bookList.department_id].name}}第{{bookList.term}}学期</div>
+    <label>学期: <input type="number" ng-model="bookList.term"></label>
+    <iron-icon icon="add" class="clickable" ng-click="adding = true"
+        title="添加法本...">
+    </iron-icon>
+    <div class="css-table">
+      <div class="css-table-row header">
+        <div class="css-table-cell">书名</div>
+        <div class="css-table-cell">价格</div>
+        <div class="css-table-cell">国际运费</div>
+        <div class="css-table-cell"></div>
+      </div>
+      <div ng-repeat="book in bookList.books" class="css-table-row deletable">
+        <div class="css-table-cell">{{book.name}}</div>
+        <div class="css-table-cell">{{book.price}}</div>
+        <div class="css-table-cell">{{book.int_shipping}}</div>
+        <div class="css-table-cell">
+          <iron-icon icon="delete" class="delete-button" ng-click="remove(book)">
+          </iron-icon>
+        </div>
       </div>
     </div>
+    <input type="button" value="取消" ng-click="cancel()" ng-disabled="!isDirty()"> 
+    <input type="submit" value="保存" ng-click="save()" ng-disabled="!isDirty()">
   </div>
-  <input type="button" value="Cancel" ng-click="cancel()" ng-disabled="!isDirty()"> 
-  <input type="submit" value="Save" ng-click="save()" ng-disabled="!isDirty()"> 
+  <div class="section" ng-if="adding">
+    <select multiple="true" class="book-selection">
+      <option ng-repeat="item in items" value="{{item.id}}"
+          ng-click="toggleBook(item)">
+        {{item.name}}
+      </option>
+    </select>
+  </div> 
 </div>

@@ -25,11 +25,23 @@ define('book_lists/book_lists',
               });
         };
         scope.addBookList = function() {
-          var id = utils.maxKey(scope.booklists) + 1;
-          scope.selected = scope.booklists[id] = {
+          var lists = scope.booklists[scope.currentDep.id] || {};
+          scope.booklists[scope.currentDep.id] = lists;
+          var maxId = 0;
+          var term = 0;
+          for (var id in lists) {
+            if (parseInt(id) > maxId) {
+              maxId = parseInt(id);
+            }
+            if (lists[id].term > term) {
+              term = lists[id].term;
+            }
+          }
+          lists[maxId + 1] = scope.selected = {
             department_id: scope.currentDep.id,
-            term: 1
-          };
+            term: term + 1,
+            books: {}
+          }; 
         };
         scope.updateClassTerm = function(classInfo) {
           rpc.update_class_term(classInfo);

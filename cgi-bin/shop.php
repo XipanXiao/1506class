@@ -340,8 +340,8 @@ function update_book_list($bookList) {
   
   $data = build_update_data(["department_id", "term"], $bookList);
   if (empty($bookList["id"])) {
-  	$records = $medoo->select("book_lists", "*", $data);
-  	if (!empty($records)) return 0;
+    $records = $medoo->select("book_lists", "*", $data);
+    if (!empty($records)) return 0;
 
     return $medoo->insert("book_lists", $data);
   } else {
@@ -433,6 +433,12 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     }
   } elseif ($resource_id == "items") {
     $level = isOrderManager($user) ? null : _getDepartmentLevel($user);
+    if (!empty($_GET["level"])) {
+      $requestedLevel = intval($_GET["level"]);
+      $level = $level == null 
+          ? $requestedLevel 
+          : min([$level, $requestedLevel]); 
+    }
     $response = get_shop_items($_GET["category"], $level);
   } elseif ($resource_id == "item_categories") {
     $level = _getDepartmentLevel($user);
