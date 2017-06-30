@@ -45,8 +45,8 @@
         </a>
       </div>
       <label>修改<input type="checkbox" ng-model="order.editing"></label>
-      <div ng-if="order.editing" ng-switch="admin">
-        <div ng-switch-when="true">          
+      <div ng-if="order.editing">
+        <div ng-if="admin">          
           <div><label>运费: $<input ng-model="order.shipping"></label></div>
           <div>
             <label>USPS tracking ID:
@@ -54,11 +54,9 @@
             </label>
           </div>
         </div>
-        <div ng-switch-default>
-          <label>PayPal transaction ID: 
-            <input ng-model="order.paypal_trans_id">
-          </label>
-        </div>
+        <label>PayPal transaction ID: 
+          <input ng-model="order.paypal_trans_id">
+        </label>
         <div><label>已付: $<input ng-model="order.paid"></label></div>
         <input type="button" value="确认修改" ng-click="onUpdate()">
       </div>
