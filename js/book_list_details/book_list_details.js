@@ -1,7 +1,6 @@
 define('book_list_details/book_list_details', 
-    ['departments/departments', 'services', 'utils'], function() {
+    ['services', 'utils'], function() {
   return angular.module('BookListDetailsModule', [
-      'DepartmentsModule',
       'ServicesModule',
       'UtilsModule']).directive('bookListDetails', function(rpc, utils) {
     return {
@@ -10,17 +9,15 @@ define('book_list_details/book_list_details',
       },
       link: function(scope) {
         scope.$watch('bookList', function(bookList) {
-          if (!bookList) return;
-          scope.savedList = angular.copy(bookList);
-          rpc.get_departments().then(function(response) {
-            bookList.department = response.data[bookList.department_id];
-          });
+          if (bookList) {
+            scope.savedList = angular.copy(bookList);
+          }
+        });
+        rpc.get_departments().then(function(response) {
+          scope.departments = response.data;
         });
         scope.isDirty = function() {
           return !angular.equals(scope.bookList, scope.savedList);
-        };
-        scope.getBookListName = function() {
-          return utils.getBookListName(scope.bookList);
         };
         scope.add = function() {
           // TODO: Add a book chooser to pick a book.
@@ -32,7 +29,11 @@ define('book_list_details/book_list_details',
           scope.bookList.books.splice(index, 1);
         };
         scope.save = function() {
-          rpc.update_book_list(scope.bookList);
+          rpc.update_book_list(scope.bookList).then(function(response) {
+            if (!response.data.updated) {
+              alert('保存失败，请检查该学期书单是否已经存在，请勿重复输入。');
+            }
+          });
         };
         scope.cancel = function() {
           scope.bookList = angular.copy(scope.savedList);

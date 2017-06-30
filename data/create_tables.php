@@ -98,12 +98,5 @@ CREATE TABLE book_list_details (
           FOREIGN KEY (item_id) REFERENCES items(id)
 );
 
-CREATE TABLE class_book_lists (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  book_list_id INT NOT NULL,
-          FOREIGN KEY (book_list_id) REFERENCES book_lists(id),
-  class_id INT NOT NULL,
-          FOREIGN KEY (class_id) REFERENCES classes(id)
-);
-
+ALTER TABLE classes ADD COLUMN term TINYINT;
 -- */ ?>

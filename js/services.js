@@ -280,7 +280,7 @@ define('services', [], function() {
             'cgi-bin/shop.php');
       },
       
-      update_class_books: function(classInfo) {
+      update_class_term: function(classInfo) {
         classInfo.rid = 'class_book_lists';
         return http_form_post($http, $httpParamSerializerJQLike(classInfo),
             'cgi-bin/shop.php');
@@ -361,12 +361,6 @@ define('services', [], function() {
 
       remove_book_list_detail: function(id) {
         var url = '{0}?rid=book_list_details&id={1}'
-            .format('cgi-bin/shop.php', id);
-        return $http.delete(url);
-      },
-
-      remove_class_books: function(id) {
-        var url = '{0}?rid=class_book_lists&id={1}'
             .format('cgi-bin/shop.php', id);
         return $http.delete(url);
       },

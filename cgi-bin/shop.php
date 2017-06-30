@@ -340,6 +340,9 @@ function update_book_list($bookList) {
   
   $data = build_update_data(["department_id", "term"], $bookList);
   if (empty($bookList["id"])) {
+  	$records = $medoo->select("book_lists", "*", $data);
+  	if (!empty($records)) return 0;
+
     return $medoo->insert("book_lists", $data);
   } else {
     return $medoo->update("book_lists", $data, ["id" => $bookList["id"]]);
@@ -380,37 +383,15 @@ function remove_list_detail($id) {
 function get_class_book_lists($year) {
   global $medoo;
   
-  $classes = keyed_by_id($medoo->select("classes", ["id", "name"], 
-      ["start_year" => $year]));
-  if (empty($classes)) return [];
-  
-  $classList = keyed_by_id($medoo->select("class_book_lists", "*", 
-  		["class_id" => array_keys($classes)]), "class_id");
-  foreach ($classes as $classId => $classInfo) {
-  	$record = $classList[$classId];
-  	if ($record) {
-  	  $classInfo["book_list_id"] = $record["id"];
-  	  $classes[$classId] = $classInfo;
-  	}
-  }
-  return $classes;
+  return keyed_by_id($medoo->select("classes", ["id", "name",
+      "department_id", "term"], ["start_year" => $year]));
 }
 
-function update_class_book_list($classInfo) {
+function update_class_term($classInfo) {
   global $medoo;
 
-  if (empty($classInfo["id"])) {
-    return $medoo->insert("class_book_lists", $classInfo);
-  } else {
-    return $medoo->update("class_book_lists", $classInfo,
-        ["id" => $classInfo["id"]]);
-  }
-}
-
-function remove_class_book_list($id) {
-  global $medoo;
-  
-  return $medoo->delete("class_book_lists", ["id" => $id]);
+  return $medoo->update("classes", ["term" => intval($classInfo["term"])],
+      ["id" => intval($classInfo["id"])]);
 }
 
 $response = null;
@@ -507,7 +488,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       : permision_denied_error();
   } elseif ($resource_id == "class_book_lists") {
     $response = isOrderManager($user)
-      ? ["updated" => update_class_book_list($_POST)]
+      ? ["updated" => update_class_term($_POST)]
       : permision_denied_error();
   }
 } elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE" &&

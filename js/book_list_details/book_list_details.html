@@ -1,6 +1,5 @@
 <div class="header">
-  <div>{{getBookListName()}}</div>
-  <departments department-id="bookList.department_id"></departments>
+  <div>{{departments[bookList.department_id].name}}第{{bookList.term}}学期</div>
   <label>学期: <input type="number" ng-model="bookList.term"></label>
   <paper-fab icon="add" class="add-book clickable" ng-click="add()"></paper-fab>
   <div class="css-table">
