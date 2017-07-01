@@ -1,19 +1,32 @@
 <div class="flex">
   <div class="section">
-    <div>{{departments[bookList.department_id].name}}第{{bookList.term}}学期</div>
-    <label>学期: <input type="number" ng-model="bookList.term"></label>
-    <iron-icon icon="add" class="clickable" ng-click="adding = true"
-        title="添加法本...">
-    </iron-icon>
-    <div class="css-table">
+    <div ng-switch="bookList.id > 0">
+      <div ng-switch-when="true">
+        <div>
+          {{departments[bookList.department_id].name}}第{{bookList.term}}学期
+        </div>
+        <label>学期: <input type="number" ng-model="bookList.term"></label>
+        <iron-icon icon="add" class="clickable" ng-click="adding = true"
+            title="添加法本...">
+        </iron-icon>
+      </div>
+      <div ng-switch-default>
+        "{{departments[bookList.department_id].name}}"学员能看到的所有法本
+      </div>
+    </div>
+    <div class="css-table odd-even">
       <div class="css-table-row header">
+        <div class="css-table-cell">序号</div>
         <div class="css-table-cell">书名</div>
+        <div class="css-table-cell">类别</div>
         <div class="css-table-cell">价格</div>
         <div class="css-table-cell">国际运费</div>
         <div class="css-table-cell"></div>
       </div>
       <div ng-repeat="book in bookList.books" class="css-table-row deletable">
+        <div class="css-table-cell">{{$index + 1}}</div>
         <div class="css-table-cell">{{book.name}}</div>
+        <div class="css-table-cell">{{categories[book.category].name}}</div>
         <div class="css-table-cell">{{book.price}}</div>
         <div class="css-table-cell">{{book.int_shipping}}</div>
         <div class="css-table-cell">

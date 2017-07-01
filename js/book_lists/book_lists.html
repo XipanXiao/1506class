@@ -17,25 +17,31 @@
 </div>
 <input type="button" value="添加新书单" ng-click="addBookList()">
 <hr>
-<h1>为班级指定学期</h1>
+<h1>班级书单</h1>
 <select ng-options="year for year in years" ng-model="currentClass.year"
     ng-change="yearChanged()">
 </select>
-<div class="css-table odd-even">
-  <div class="header css-table-row">
-    <div class="css-table-cell">班级</div>
-    <div class="css-table-cell">科系</div>
-    <div class="css-table-cell">学期</div>
-  </div>
-  <div ng-repeat="classInfo in classes" class="css-table-row">
-    <div class="css-table-cell">{{classInfo.name}}</div>
-    <div class="css-table-cell">
-      {{departments[classInfo.department_id].name}}
+<div class="flex">
+  <div class="css-table odd-even">
+    <div class="header css-table-row">
+      <div class="css-table-cell">班级</div>
+      <div class="css-table-cell">科系</div>
+      <div class="css-table-cell">学期</div>
     </div>
-    <div class="css-table-cell">
-      <editable-label value="classInfo.term" type="number"
-          on-change="updateClassTerm(classInfo)">
-      </editable-label>
+    <div ng-repeat="classInfo in classes" class="css-table-row"
+        ng-click="selectClass(classInfo)"
+        ng-class="{'selected': selectedClass == classInfo}">
+      <div class="css-table-cell">{{classInfo.name}}</div>
+      <div class="css-table-cell">
+        {{departments[classInfo.department_id].name}}
+      </div>
+      <div class="css-table-cell">
+        <editable-label value="classInfo.term" type="number"
+            on-change="updateClassTerm(classInfo)">
+        </editable-label>
+      </div>
     </div>
   </div>
+  <book-list-details ng-if="selectedClass" book-list="selectedClass.booklist">
+  </book-list-details>
 </div>

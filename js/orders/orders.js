@@ -29,7 +29,7 @@ define('orders/orders', [
           }
           
           function get_items() {
-            return rpc.get_items().then(function(response) {
+            return rpc.get_items(null, 99).then(function(response) {
               return scope.items = response.data;
             });
           }

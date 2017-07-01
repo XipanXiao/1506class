@@ -186,12 +186,14 @@ define('services', [], function() {
       
       get_items: function(category, level) {
         var url = 'cgi-bin/shop.php?rid=items&category={0}&level={1}'
-            .format(category || '', level || '');
+            .format(category || '', parseInt(level) || (level === 0 ? 0 : ''));
         return $http.get(url);
       },
       
-      get_item_categories: function() {
-        return $http.get('cgi-bin/shop.php?rid=item_categories');
+      get_item_categories: function(level) {
+        var url = 'cgi-bin/shop.php?rid=item_categories&level={0}'
+            .format(parseInt(level) || (level === 0 ? 0 : ''));
+        return $http.get(url);
       },
       
       get_order_stats: function(year) {

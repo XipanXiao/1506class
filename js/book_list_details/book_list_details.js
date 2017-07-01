@@ -11,7 +11,8 @@ define('book_list_details/book_list_details',
         scope.$watch('bookList', function(bookList) {
           if (bookList) {
             scope.savedList = angular.copy(bookList);
-            utils.requestOneByOne([getDepartments, getDepartmentBooks]);
+            utils.requestOneByOne([getDepartments, getCategories, 
+                getDepartmentBooks]);
           }
         });
         
@@ -45,9 +46,17 @@ define('book_list_details/book_list_details',
             return scope.departments = response.data;
           });
         }
+        function getCategories() {
+          return rpc.get_item_categories(99).then(function(response) {
+            return scope.categories = response.data;
+          });
+        }
         function getDepartmentBooks() {
           var dep = scope.departments[scope.bookList.department_id];
-          return rpc.get_items(null, dep.level).then(function(response) {
+          return rpc.get_items(null, parseInt(dep.level)).then(function(response) {
+            if (!scope.bookList.books) {
+              scope.bookList.books = angular.copy(response.data);
+            }
             return scope.items = response.data;
           });
         }

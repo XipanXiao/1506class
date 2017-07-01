@@ -46,6 +46,25 @@ define('book_lists/book_lists',
         scope.updateClassTerm = function(classInfo) {
           rpc.update_class_term(classInfo);
         };
+        scope.selectClass = function(classInfo) {
+          scope.selectedClass = classInfo;
+          if (classInfo.booklist) return;
+          
+          var group = scope.booklists[classInfo.department_id];
+          if (group) {
+            for (var index = 0; index < group.length; index ++) {
+              var booklist = group[index];
+              if (parseInt(booklist.term) == parseInt(classInfo.term)) {
+                classInfo.booklist = booklist;
+                return;
+              }
+            }
+          }
+          classInfo.booklist = {
+            department_id: classInfo.department_id,
+            term: classInfo.term
+          }
+        };
         function getDepartments() {
           return rpc.get_departments().then(function(response) {
             scope.depIds = utils.keys(response.data);

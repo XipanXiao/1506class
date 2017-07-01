@@ -22,7 +22,7 @@ define('order_stats/order_stats', [
               var classes = response.data;
               if (!classes) return;
 
-              rpc.get_items().then(function(response) {
+              rpc.get_items(null, 99).then(function(response) {
                 var items = response.data;
                 utils.forEach(classes, function(classInfo) {
                   classInfo.sub_total = 0.00;
