@@ -10,7 +10,7 @@
     </div>
     <div ng-repeat="classInfo in classes" class="css-table-row"
         ng-click="selectClass(classInfo)"
-        ng-class="{'selected': selectedClass == classInfo}">
+        ng-class="{'selected': selectedClass && selectedClass.id == classInfo.id}">
       <div class="css-table-cell">{{classInfo.name}}</div>
       <div class="css-table-cell">
         {{departments[classInfo.department_id].name}}

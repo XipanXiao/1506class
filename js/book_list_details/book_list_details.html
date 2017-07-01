@@ -4,9 +4,6 @@
       <div ng-switch-when="true">
         <div>
           {{departments[classInfo.department_id].name}}第{{classInfo.term}}学期
-          <iron-icon icon="add" class="clickable inline" ng-click="adding = true"
-              title="添加法本...">
-          </iron-icon>
           <iron-icon icon="delete" class="clickable inline" ng-click="remove()"
               title="删除本书单...">
           </iron-icon>
@@ -19,7 +16,7 @@
         </iron-icon>
       </div>
     </div>
-    <div class="css-table odd-even">
+    <div class="css-table odd-even class-book-list">
       <div class="css-table-row header">
         <div class="css-table-cell">序号</div>
         <div class="css-table-cell">书名</div>
@@ -28,30 +25,34 @@
         <div class="css-table-cell">国际运费</div>
         <div class="css-table-cell"></div>
       </div>
-      <div ng-repeat="id in classInfo.bookIds" class="css-table-row deletable">
+      <div ng-repeat="(id, book) in classInfo.books"
+          class="css-table-row deletable">
         <div class="css-table-cell">{{$index + 1}}</div>
-        <div class="css-table-cell">{{items[id].name}}</div>
-        <div class="css-table-cell">{{categories[items[id].category].name}}</div>
-        <div class="css-table-cell">{{items[id].price}}</div>
-        <div class="css-table-cell">{{items[id].int_shipping}}</div>
+        <div class="css-table-cell">{{book.name}}</div>
+        <div class="css-table-cell">{{categories[book.category].name}}</div>
+        <div class="css-table-cell">{{book.price}}</div>
+        <div class="css-table-cell">{{book.int_shipping}}</div>
         <div class="css-table-cell">
-          <iron-icon icon="delete" class="delete-button" ng-click="removeItem(id)"
-              ng-if="classInfo.editing">
+          <iron-icon icon="delete" class="delete-button"
+              ng-click="removeItem(id)" ng-if="classInfo.editing">
           </iron-icon>
         </div>
       </div>
     </div>
     <div ng-if="classInfo.editing" class="padded-element right">
+      <iron-icon icon="add" class="clickable" ng-click="classInfo.adding = true"
+          title="添加法本...">
+      </iron-icon>
       <input type="button" value="取消" ng-click="restore()"
           ng-disabled="!dirty"> 
       <input type="submit" value="保存" ng-click="save()"
           ng-disabled="!dirty">
     </div>
   </div>
-  <div class="section" ng-if="adding">
+  <div class="section" ng-if="classInfo.adding">
     <select multiple="true" class="book-selection">
       <option ng-repeat="item in items" value="{{item.id}}"
-          ng-click="toggleBook(item)">
+          ng-click="addBook(item)" ng-if="!classInfo.books[item.id]">
         {{item.name}}
       </option>
     </select>

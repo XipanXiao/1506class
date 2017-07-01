@@ -645,4 +645,9 @@ body.white {
 
 .book-selection {
   height: 100%;
+  width: 200px;
+}
+
+.class-book-list {
+	width: 560px;
 }

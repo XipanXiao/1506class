@@ -15,8 +15,8 @@ define('book_list_details/book_list_details',
         });
         
         function reload() {
-          utils.requestOneByOne([getDepartments, getCategories, getBookList,
-              getDepartmentBooks]);
+          utils.requestOneByOne([getDepartments, getCategories,
+              getDepartmentBooks, getBookList]);
         };
         
         scope.convertToBookList = function() {
@@ -25,8 +25,7 @@ define('book_list_details/book_list_details',
         };
         
         scope.removeItem = function(id) {
-          var index = scope.classInfo.bookIds.indexOf(id);
-          scope.classInfo.bookIds.splice(index, 1);
+          delete scope.classInfo.books[id];
           scope.dirty = true;
         };
 
@@ -40,9 +39,9 @@ define('book_list_details/book_list_details',
           var data = {
             department_id: classInfo.department_id,
             term: scope.classInfo.term,
-            books: utils.map(classInfo.books, function(book) {return book.id;})
+            bookIds: utils.keys(classInfo.books)
           };
-          rpc.update_book_list(classInfo).then(function(response) {
+          rpc.update_book_list(data).then(function(response) {
             if (response.data.updated) {
               backup();
             }
@@ -61,13 +60,10 @@ define('book_list_details/book_list_details',
           scope.classInfo = angular.copy(scope.savedInfo);
           scope.dirty = false;
         };
-        scope.toggleBook = function(item) {
-          var books = scope.classInfo.books;
-          if (books[item.id]) {
-            delete books[item.id];
-          } else {
-            books[item.id] = item;
-          }
+
+        scope.addBook = function(item) {
+          scope.classInfo.books[item.id] = item;
+          scope.dirty = true;
         };
 
         function getDepartments() {
@@ -83,9 +79,7 @@ define('book_list_details/book_list_details',
         function getDepartmentBooks() {
           var dep = scope.departments[scope.classInfo.department_id];
           return rpc.get_items(null, parseInt(dep.level)).then(function(response) {
-            if (utils.isEmpty(scope.classInfo.bookIds)) {
-              scope.classInfo.bookIds = utils.keys(response.data);
-            }
+            scope.classInfo.books = response.data;
             return scope.items = response.data;
           });
         }
@@ -93,8 +87,14 @@ define('book_list_details/book_list_details',
           var term = scope.classInfo.term;
           var depId = scope.classInfo.department_id;
           return rpc.get_book_list(depId, term).then(function(response) {
-            scope.classInfo.editing = !utils.isEmpty(response.data);
-            scope.classInfo.bookIds = response.data;
+            var empty = utils.isEmpty(response.data);
+            scope.classInfo.editing = !empty;
+            if (!empty) {
+              scope.classInfo.books = {};
+              (response.data || []).forEach(function(id) {
+                scope.classInfo.books[id] = scope.items[id];
+              });
+            }
             backup();
             return true;
           });

@@ -22,7 +22,12 @@ define('book_lists/book_lists',
               });
         };
         scope.updateClassTerm = function(classInfo) {
-          rpc.update_class_term(classInfo);
+          rpc.update_class_term(classInfo).then(function(response) {
+            if (response.data.updated) {
+              // Make a copy to trigger a change.
+              scope.selectedClass = angular.copy(classInfo);
+            }
+          });
         };
         scope.selectClass = function(classInfo) {
           scope.selectedClass = classInfo;
