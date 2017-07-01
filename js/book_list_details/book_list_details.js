@@ -14,18 +14,22 @@ define('book_list_details/book_list_details',
           }
         });
         
-        function reload(classInfo) {
-          scope.savedInfo = angular.copy(classInfo);
+        function reload() {
           utils.requestOneByOne([getDepartments, getCategories, getBookList,
               getDepartmentBooks]);
         };
         
-        scope.isDirty = function() {
-          return !angular.equals(scope.classInfo, scope.savedInfo);
+        scope.convertToBookList = function() {
+          scope.classInfo.editing = true;
+          scope.dirty = true;
         };
+        
         scope.removeItem = function(id) {
-          delete scope.classInfo.bookIds[id];
+          var index = scope.classInfo.bookIds.indexOf(id);
+          scope.classInfo.bookIds.splice(index, 1);
+          scope.dirty = true;
         };
+
         scope.save = function() {
           var classInfo = scope.classInfo;
           if (!classInfo.term) {
@@ -40,7 +44,7 @@ define('book_list_details/book_list_details',
           };
           rpc.update_book_list(classInfo).then(function(response) {
             if (response.data.updated) {
-              scope.savedInfo = angular.copy(classInfo);
+              backup();
             }
           });
         };
@@ -49,12 +53,13 @@ define('book_list_details/book_list_details',
           var depId = scope.classInfo.department_id;
           rpc.remove_book_list(depId, term).then(function(response) {
             if (response.data.deleted) {
-              reload(scope.classInfo);
+              reload();
             }
           });
         };
-        scope.cancel = function() {
+        scope.restore = function() {
           scope.classInfo = angular.copy(scope.savedInfo);
+          scope.dirty = false;
         };
         scope.toggleBook = function(item) {
           var books = scope.classInfo.books;
@@ -78,7 +83,7 @@ define('book_list_details/book_list_details',
         function getDepartmentBooks() {
           var dep = scope.departments[scope.classInfo.department_id];
           return rpc.get_items(null, parseInt(dep.level)).then(function(response) {
-            if (utils.isEmpty(scope.bookIds)) {
+            if (utils.isEmpty(scope.classInfo.bookIds)) {
               scope.classInfo.bookIds = utils.keys(response.data);
             }
             return scope.items = response.data;
@@ -89,8 +94,14 @@ define('book_list_details/book_list_details',
           var depId = scope.classInfo.department_id;
           return rpc.get_book_list(depId, term).then(function(response) {
             scope.classInfo.editing = !utils.isEmpty(response.data);
-            return scope.classInfo.bookIds = response.data;
+            scope.classInfo.bookIds = response.data;
+            backup();
+            return true;
           });
+        }
+        function backup() {
+          scope.savedInfo = angular.copy(scope.classInfo);
+          scope.dirty = false;
         }
       },
       templateUrl : 'js/book_list_details/book_list_details.html?tag=201706062300'

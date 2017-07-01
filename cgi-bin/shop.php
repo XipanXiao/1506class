@@ -344,8 +344,7 @@ function update_book_list($bookList) {
   
   $where = build_update_data(["department_id", "term"], $bookList);
 
-  $medoo->delete("book_lists", $where);
-  $updated = 1;
+  $updated = $medoo->delete("book_lists", ["AND" => $where]);
   foreach ($bookList["bookIds"] as $bookId) {
     $data = array_merge([], $where, ["item_id" => $bookId]);
     $medoo->insert("book_lists", $data);
