@@ -5,15 +5,17 @@ define('book_list_details/book_list_details',
       'UtilsModule']).directive('bookListDetails', function(rpc, utils) {
     return {
       scope: {
-        bookList: '='
+        classInfo: '='
       },
       link: function(scope) {
-        scope.$watch('bookList', function(bookList) {
-          if (bookList) {
-            scope.savedList = angular.copy(bookList);
-            utils.requestOneByOne([getDepartments, getCategories, 
-                getDepartmentBooks]);
-          }
+        scope.$watch('classInfo', function(classInfo) {
+          if (!classInfo) return;
+
+          var bookList = scope.bookList = classInfo;
+          scope.savedList = angular.copy(bookList);
+          bookList.editing = parseInt(bookList.id) > 0;
+          utils.requestOneByOne([getDepartments, getCategories, 
+              getDepartmentBooks]);
         });
         
         scope.isDirty = function() {
@@ -23,6 +25,17 @@ define('book_list_details/book_list_details',
           delete scope.bookList.books[book.id];
         };
         scope.save = function() {
+          if (!scope.classInfo.term) {
+            alert('请在左边班级列表中指定本班订书学期');
+            return;
+          }
+
+          var bookList = scope.bookList;
+          var data = {
+            department_id: bookList.department_id,
+            term: scope.classInfo.term,
+            books: utils.map(bookList.books, function(book) {return book.id;})
+          };
           rpc.update_book_list(scope.bookList).then(function(response) {
             if (!response.data.updated) {
               alert('保存失败，请检查该学期书单是否已经存在，请勿重复输入。');
