@@ -201,13 +201,9 @@ define('services', [], function() {
         return $http.get(url);
       },
       
-      get_book_lists: function() {
-        return $http.get('cgi-bin/shop.php?rid=book_lists');
-      },
-      
-      get_book_list_details: function(list_id) {
-        var url = 'cgi-bin/shop.php?rid=book_list_details&list_id={0}'
-            .format(list_id || '');
+      get_book_list: function(dep_id, term) {
+        var url = 'cgi-bin/shop.php?rid=book_lists&dep_id={0}&term={1}'
+            .format(dep_id, term);
         return $http.get(url);
       },
       
@@ -216,7 +212,7 @@ define('services', [], function() {
             .format(year || (new Date()).getFullYear());
         return $http.get(url);
       },
-      
+
       get_scores: function(classId) {
         var url = 'cgi-bin/score.php?rid=scores&class_id={0}'.format(classId);
         return $http.get(url);

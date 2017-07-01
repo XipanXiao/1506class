@@ -10,38 +10,16 @@ define('book_lists/book_lists',
       'UtilsModule']).directive('bookLists', function(rpc, utils) {
     return {
       link: function(scope) {
-        scope.currentDep = {id: 1};
-        scope.currentClass = {
-          year: (new Date()).getFullYear()
-        };
         scope.years = [];
-        for (var year = 2011;year <= scope.currentClass.year; year++) {
+        scope.year = (new Date()).getFullYear();
+        for (var year = 2011;year <= scope.year; year++) {
           scope.years.push(year);
         }
         scope.yearChanged = function() {
-          return rpc.get_class_book_lists(scope.currentClass.year)
+          return rpc.get_class_book_lists(scope.year)
               .then(function(response) {
                 return scope.classes = response.data;
               });
-        };
-        scope.addBookList = function() {
-          var lists = scope.booklists[scope.currentDep.id] || {};
-          scope.booklists[scope.currentDep.id] = lists;
-          var maxId = 0;
-          var term = 0;
-          for (var id in lists) {
-            if (parseInt(id) > maxId) {
-              maxId = parseInt(id);
-            }
-            if (lists[id].term > term) {
-              term = lists[id].term;
-            }
-          }
-          lists[maxId + 1] = scope.selected = {
-            department_id: scope.currentDep.id,
-            term: term + 1,
-            books: {}
-          }; 
         };
         scope.updateClassTerm = function(classInfo) {
           rpc.update_class_term(classInfo);
@@ -55,14 +33,7 @@ define('book_lists/book_lists',
             return scope.departments = response.data;
           });
         }
-        function getBookLists() {
-          return rpc.get_book_lists().then(function(response) {
-            return scope.booklists = 
-                utils.groupBy(response.data, 'department_id');
-          });
-        }
-        utils.requestOneByOne([getDepartments, getBookLists,
-            scope.yearChanged]);
+        utils.requestOneByOne([getDepartments, scope.yearChanged]);
       },
       templateUrl : 'js/book_lists/book_lists.html?tag=201706062300'
     };

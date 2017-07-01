@@ -87,13 +87,7 @@ CREATE TABLE book_lists (
   id INT PRIMARY KEY AUTO_INCREMENT,
   department_id TINYINT NOT NULL,
           FOREIGN KEY (department_id) REFERENCES departments(id),
-  term TINYINT
-);
-
-CREATE TABLE book_list_details (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  book_list_id INT NOT NULL,
-          FOREIGN KEY (book_list_id) REFERENCES book_lists(id),
+  term TINYINT NOT NULL,
   item_id INT NOT NULL,
           FOREIGN KEY (item_id) REFERENCES items(id)
 );

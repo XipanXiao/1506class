@@ -14,7 +14,7 @@ define('book_list_details/book_list_details',
           var bookList = scope.bookList = classInfo;
           scope.savedList = angular.copy(bookList);
           bookList.editing = parseInt(bookList.id) > 0;
-          utils.requestOneByOne([getDepartments, getCategories, 
+          utils.requestOneByOne([getDepartments, getCategories, getBookList,
               getDepartmentBooks]);
         });
         
@@ -67,10 +67,17 @@ define('book_list_details/book_list_details',
         function getDepartmentBooks() {
           var dep = scope.departments[scope.bookList.department_id];
           return rpc.get_items(null, parseInt(dep.level)).then(function(response) {
-            if (!scope.bookList.books) {
-              scope.bookList.books = angular.copy(response.data);
+            if (utils.isEmpty(scope.bookIds)) {
+              scope.classInfo.bookIds = utils.keys(response.data);
             }
             return scope.items = response.data;
+          });
+        }
+        function getBookList() {
+          var term = scope.classInfo.term;
+          var depId = scope.classInfo.department_id;
+          return rpc.get_book_list(depId, term).then(function(response) {
+            return scope.classInfo.bookIds = response.data;
           });
         }
       },
