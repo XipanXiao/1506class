@@ -9,19 +9,23 @@ define('book_list_details/book_list_details',
       },
       link: function(scope) {
         scope.$watch('classInfo', function(classInfo) {
-          if (!classInfo) return;
-
+          if (classInfo) {
+            reload(classInfo);
+          }
+        });
+        
+        function reload(classInfo) {
           var bookList = scope.bookList = classInfo;
           scope.savedList = angular.copy(bookList);
           utils.requestOneByOne([getDepartments, getCategories, getBookList,
               getDepartmentBooks]);
-        });
+        };
         
         scope.isDirty = function() {
           return !angular.equals(scope.bookList, scope.savedList);
         };
-        scope.remove = function(book) {
-          delete scope.bookList.books[book.id];
+        scope.removeItem = function(id) {
+          delete scope.classInfo.bookIds[id];
         };
         scope.save = function() {
           if (!scope.classInfo.term) {
@@ -36,8 +40,19 @@ define('book_list_details/book_list_details',
             books: utils.map(bookList.books, function(book) {return book.id;})
           };
           rpc.update_book_list(scope.bookList).then(function(response) {
-            if (!response.data.updated) {
-              alert('保存失败，请检查该学期书单是否已经存在，请勿重复输入。');
+            if (response.data.updated) {
+              scope.savedList = angular.copy(scope.bookList);
+            } else {
+              alert('保存失败!');
+            }
+          });
+        };
+        scope.remove = function() {
+          var term = scope.classInfo.term;
+          var depId = scope.classInfo.department_id;
+          rpc.remove_book_list(depId, term).then(function(response) {
+            if (response.data.deleted) {
+              reload(scope.classInfo);
             }
           });
         };

@@ -7,6 +7,9 @@
           <iron-icon icon="add" class="clickable inline" ng-click="adding = true"
               title="添加法本...">
           </iron-icon>
+          <iron-icon icon="delete" class="clickable inline" ng-click="remove()"
+              title="删除本书单...">
+          </iron-icon>
         </div>
       </div>
       <div ng-switch-default>
@@ -32,7 +35,7 @@
         <div class="css-table-cell">{{items[id].price}}</div>
         <div class="css-table-cell">{{items[id].int_shipping}}</div>
         <div class="css-table-cell">
-          <iron-icon icon="delete" class="delete-button" ng-click="remove(id)"
+          <iron-icon icon="delete" class="delete-button" ng-click="removeItem(id)"
               ng-if="bookList.editing">
           </iron-icon>
         </div>

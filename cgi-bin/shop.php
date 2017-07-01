@@ -336,7 +336,7 @@ function get_book_list($dep_id, $term) {
   global $medoo;
   
   return $medoo->select("book_lists", "item_id", 
-  		["AND" => ["department_id" => intval($dep_id), "term" => intval($term)]]);
+      ["AND" => ["department_id" => intval($dep_id), "term" => intval($term)]]);
 }
 
 function update_book_list($bookList) {
@@ -344,38 +344,21 @@ function update_book_list($bookList) {
   
   $where = build_update_data(["department_id", "term"], $bookList);
 
-  $updated = $medoo->delete("book_lists", $where);
+  $medoo->delete("book_lists", $where);
+  $updated = 1;
   foreach ($bookList["bookIds"] as $bookId) {
-  	$data = array_merge([], $where, ["item_id" => $bookId]);
-  	$medoo->insert("book_lists", $data);
-  	$updated++;
+    $data = array_merge([], $where, ["item_id" => $bookId]);
+    $medoo->insert("book_lists", $data);
+    $updated++;
   }
   return $updated;
 }
 
-function remove_book_list($id) {
-  return $medoo->delete("book_lists", ["id" => $id]);
-}
-
-function update_list_details($bookListId, $books) {
-  global $medoo;
-
-  $updated = 0;
-  foreach ($books as $book) {
-    if (empty($book["id"])) {
-      $updated += $medoo->insert("book_list_details", $book) ? 1 : 0;
-    } else {
-      $updated += 
-          $medoo->update("book_list_details", $book, ["id" => $book["id"]]);
-    }
-  }
-  return $updated;
-}
-
-function remove_list_detail($id) {
+function remove_book_list($depId, $term) {
   global $medoo;
   
-  $medoo->delete("book_list_details", ["id" => $id]);
+  return $medoo->delete("book_lists", 
+      ["AND" => ["department_id" => $depId, "term" => $term]]);
 }
 
 function get_class_book_lists($year) {
@@ -507,7 +490,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "order_details") {
     $response = ["deleted" => delete_order_item($_REQUEST["id"])];
   } elseif ($resource_id == "book_lists") {
-    $response = ["deleted" => remove_book_list($_REQUEST["id"])];
+    $response = 
+        ["deleted" => remove_book_list($_REQUEST["dep_id"], $_REQUEST["term"])];
   } elseif ($resource_id == "book_list_details") {
     $response = ["deleted" => remove_list_detail($_REQUEST["id"])];
   } elseif ($resource_id == "class_book_lists") {

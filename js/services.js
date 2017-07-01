@@ -269,16 +269,6 @@ define('services', [], function() {
             'cgi-bin/shop.php');
       },
 
-      update_book_list_details: function(bookListId, books) {
-        var data = {
-          rid: 'book_list_details',
-          book_list_id: bookListId,
-          books: books
-        };
-        return http_form_post($http, $httpParamSerializerJQLike(data),
-            'cgi-bin/shop.php');
-      },
-      
       update_class_term: function(classInfo) {
         classInfo.rid = 'class_book_lists';
         return http_form_post($http, $httpParamSerializerJQLike(classInfo),
@@ -353,14 +343,9 @@ define('services', [], function() {
         return $http.delete(url);
       },
       
-      remove_book_lists: function(id) {
-        var url = '{0}?rid=book_lists&id={1}'.format('cgi-bin/shop.php', id);
-        return $http.delete(url);
-      },
-
-      remove_book_list_detail: function(id) {
-        var url = '{0}?rid=book_list_details&id={1}'
-            .format('cgi-bin/shop.php', id);
+      remove_book_list: function(depId, term) {
+        var url = '{0}?rid=book_lists&dep_id={1}&term={2}'
+            .format('cgi-bin/shop.php', depId, term);
         return $http.delete(url);
       },
 
