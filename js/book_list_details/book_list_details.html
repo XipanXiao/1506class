@@ -1,9 +1,9 @@
 <div class="flex">
   <div class="section">
-    <div ng-switch="bookList.editing">
+    <div ng-switch="classInfo.editing">
       <div ng-switch-when="true">
         <div>
-          {{departments[bookList.department_id].name}}第{{classInfo.term}}学期
+          {{departments[classInfo.department_id].name}}第{{classInfo.term}}学期
           <iron-icon icon="add" class="clickable inline" ng-click="adding = true"
               title="添加法本...">
           </iron-icon>
@@ -13,9 +13,9 @@
         </div>
       </div>
       <div ng-switch-default>
-        "{{departments[bookList.department_id].name}}"学员能看到的所有法本
-        <iron-icon ng-if="!bookList.editing" icon="editor:border-color"
-            class="inline clickable" ng-click="bookList.editing = true" title="定制">
+        "{{departments[classInfo.department_id].name}}"学员能看到的所有法本
+        <iron-icon ng-if="!classInfo.editing" icon="editor:border-color"
+            class="inline clickable" ng-click="classInfo.editing = true" title="定制">
         </iron-icon>
       </div>
     </div>
@@ -36,12 +36,12 @@
         <div class="css-table-cell">{{items[id].int_shipping}}</div>
         <div class="css-table-cell">
           <iron-icon icon="delete" class="delete-button" ng-click="removeItem(id)"
-              ng-if="bookList.editing">
+              ng-if="classInfo.editing">
           </iron-icon>
         </div>
       </div>
     </div>
-    <div ng-if="bookList.editing" class="padded-element right">
+    <div ng-if="classInfo.editing" class="padded-element right">
       <input type="button" value="取消" ng-click="cancel()"
           ng-disabled="!isDirty()"> 
       <input type="submit" value="保存" ng-click="save()"

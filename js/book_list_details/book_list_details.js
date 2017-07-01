@@ -15,35 +15,32 @@ define('book_list_details/book_list_details',
         });
         
         function reload(classInfo) {
-          var bookList = scope.bookList = classInfo;
-          scope.savedList = angular.copy(bookList);
+          scope.savedInfo = angular.copy(classInfo);
           utils.requestOneByOne([getDepartments, getCategories, getBookList,
               getDepartmentBooks]);
         };
         
         scope.isDirty = function() {
-          return !angular.equals(scope.bookList, scope.savedList);
+          return !angular.equals(scope.classInfo, scope.savedInfo);
         };
         scope.removeItem = function(id) {
           delete scope.classInfo.bookIds[id];
         };
         scope.save = function() {
-          if (!scope.classInfo.term) {
+          var classInfo = scope.classInfo;
+          if (!classInfo.term) {
             alert('请指定订书学期.');
             return;
           }
 
-          var bookList = scope.bookList;
           var data = {
-            department_id: bookList.department_id,
+            department_id: classInfo.department_id,
             term: scope.classInfo.term,
-            books: utils.map(bookList.books, function(book) {return book.id;})
+            books: utils.map(classInfo.books, function(book) {return book.id;})
           };
-          rpc.update_book_list(scope.bookList).then(function(response) {
+          rpc.update_book_list(classInfo).then(function(response) {
             if (response.data.updated) {
-              scope.savedList = angular.copy(scope.bookList);
-            } else {
-              alert('保存失败!');
+              scope.savedInfo = angular.copy(classInfo);
             }
           });
         };
@@ -57,10 +54,10 @@ define('book_list_details/book_list_details',
           });
         };
         scope.cancel = function() {
-          scope.bookList = angular.copy(scope.savedList);
+          scope.classInfo = angular.copy(scope.savedInfo);
         };
         scope.toggleBook = function(item) {
-          var books = scope.bookList.books;
+          var books = scope.classInfo.books;
           if (books[item.id]) {
             delete books[item.id];
           } else {
@@ -79,7 +76,7 @@ define('book_list_details/book_list_details',
           });
         }
         function getDepartmentBooks() {
-          var dep = scope.departments[scope.bookList.department_id];
+          var dep = scope.departments[scope.classInfo.department_id];
           return rpc.get_items(null, parseInt(dep.level)).then(function(response) {
             if (utils.isEmpty(scope.bookIds)) {
               scope.classInfo.bookIds = utils.keys(response.data);
@@ -91,7 +88,7 @@ define('book_list_details/book_list_details',
           var term = scope.classInfo.term;
           var depId = scope.classInfo.department_id;
           return rpc.get_book_list(depId, term).then(function(response) {
-            scope.bookList.editing = !utils.isEmpty(response.data);
+            scope.classInfo.editing = !utils.isEmpty(response.data);
             return scope.classInfo.bookIds = response.data;
           });
         }
