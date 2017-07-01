@@ -11,6 +11,7 @@ define('book_lists/book_lists',
     return {
       link: function(scope) {
         scope.years = [];
+        scope.selectedClass = {id: 0};
         scope.year = (new Date()).getFullYear();
         for (var year = 2011;year <= scope.year; year++) {
           scope.years.push(year);
@@ -28,9 +29,6 @@ define('book_lists/book_lists',
               scope.selectedClass = angular.copy(classInfo);
             }
           });
-        };
-        scope.selectClass = function(classInfo) {
-          scope.selectedClass = classInfo;
         };
         function getDepartments() {
           return rpc.get_departments().then(function(response) {

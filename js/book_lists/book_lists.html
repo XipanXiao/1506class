@@ -9,8 +9,8 @@
       <div class="css-table-cell">学期</div>
     </div>
     <div ng-repeat="classInfo in classes" class="css-table-row"
-        ng-click="selectClass(classInfo)"
-        ng-class="{'selected': selectedClass && selectedClass.id == classInfo.id}">
+        ng-click="selectedClass.id = classInfo.id"
+        ng-class="{'selected': selectedClass.id == classInfo.id}">
       <div class="css-table-cell">{{classInfo.name}}</div>
       <div class="css-table-cell">
         {{departments[classInfo.department_id].name}}
@@ -22,6 +22,7 @@
       </div>
     </div>
   </div>
-  <book-list-details ng-if="selectedClass" class-info="selectedClass">
+  <book-list-details ng-if="selectedClass.id"
+      class-info="classes[selectedClass.id]">
   </book-list-details>
 </div>
