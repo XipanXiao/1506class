@@ -342,15 +342,15 @@ function get_book_list($dep_id, $term) {
 function update_book_list($bookList) {
   global $medoo;
   
-  $data = build_update_data(["department_id", "term"], $bookList);
-  if (empty($bookList["id"])) {
-    $records = $medoo->select("book_lists", "*", $data);
-    if (!empty($records)) return 0;
+  $where = build_update_data(["department_id", "term"], $bookList);
 
-    return $medoo->insert("book_lists", $data);
-  } else {
-    return $medoo->update("book_lists", $data, ["id" => $bookList["id"]]);
+  $updated = $medoo->delete("book_lists", $where);
+  foreach ($bookList["bookIds"] as $bookId) {
+  	$data = array_merge([], $where, ["item_id" => $bookId]);
+  	$medoo->insert("book_lists", $data);
+  	$updated++;
   }
+  return $updated;
 }
 
 function remove_book_list($id) {
@@ -480,13 +480,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       : permision_denied_error();
   } elseif ($resource_id == "book_lists") {
     $response = isOrderManager($user)
-      ? ["updated" => 
-          update_book_list($_POST["book_list"])]
-      : permision_denied_error();
-  } elseif ($resource_id == "book_list_details") {
-    $response = isOrderManager($user)
-      ? ["updated" => 
-          update_list_details($_POST["book_list_id"], $_POST["books"])]
+      ? ["updated" => update_book_list($_POST)]
       : permision_denied_error();
   } elseif ($resource_id == "class_book_lists") {
     $response = isOrderManager($user)

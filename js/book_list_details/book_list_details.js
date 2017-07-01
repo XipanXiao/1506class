@@ -13,7 +13,6 @@ define('book_list_details/book_list_details',
 
           var bookList = scope.bookList = classInfo;
           scope.savedList = angular.copy(bookList);
-          bookList.editing = parseInt(bookList.id) > 0;
           utils.requestOneByOne([getDepartments, getCategories, getBookList,
               getDepartmentBooks]);
         });
@@ -26,7 +25,7 @@ define('book_list_details/book_list_details',
         };
         scope.save = function() {
           if (!scope.classInfo.term) {
-            alert('请在左边班级列表中指定本班订书学期');
+            alert('请指定订书学期.');
             return;
           }
 
@@ -77,6 +76,7 @@ define('book_list_details/book_list_details',
           var term = scope.classInfo.term;
           var depId = scope.classInfo.department_id;
           return rpc.get_book_list(depId, term).then(function(response) {
+            scope.bookList.editing = !utils.isEmpty(response.data);
             return scope.classInfo.bookIds = response.data;
           });
         }

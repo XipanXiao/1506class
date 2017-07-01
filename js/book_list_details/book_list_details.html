@@ -4,10 +4,10 @@
       <div ng-switch-when="true">
         <div>
           {{departments[bookList.department_id].name}}第{{classInfo.term}}学期
+          <iron-icon icon="add" class="clickable inline" ng-click="adding = true"
+              title="添加法本...">
+          </iron-icon>
         </div>
-        <iron-icon icon="add" class="clickable inline" ng-click="adding = true"
-            title="添加法本...">
-        </iron-icon>
       </div>
       <div ng-switch-default>
         "{{departments[bookList.department_id].name}}"学员能看到的所有法本
