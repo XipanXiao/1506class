@@ -203,7 +203,7 @@ define('services', [], function() {
       
       get_book_list: function(dep_id, term) {
         var url = 'cgi-bin/shop.php?rid=book_lists&dep_id={0}&term={1}'
-            .format(dep_id, term);
+            .format(dep_id || '', term || '');
         return $http.get(url);
       },
       

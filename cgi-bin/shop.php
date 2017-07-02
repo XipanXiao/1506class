@@ -332,11 +332,19 @@ function delete_order_item($id) {
   return $medoo->delete("order_details", ["id" => $id]);
 }
 
-function get_book_list($dep_id, $term) {
+function get_book_list($dep_id, $term, $classId) {
   global $medoo;
-  
-  return $medoo->select("book_lists", "item_id", 
-      ["AND" => ["department_id" => intval($dep_id), "term" => intval($term)]]);
+
+  if (!$dep_id && !$term) {
+  	$classes = $medoo->select("classes", "*", ["id" => intval($classId)]);
+  	if (empty($classes)) return [];
+
+  	$classInfo = current($classes);
+  	$dep_id = $classInfo["department_id"];
+  	$term = $classInfo["term"];
+  }
+  return $medoo->select("book_lists", "item_id", ["AND" =>
+      ["department_id" => intval($dep_id), "term" => intval($term)]]);
 }
 
 function update_book_list($bookList) {
@@ -430,9 +438,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         ? get_order_stats($_GET["year"]) 
         : permision_denied_error();
   } elseif ($resource_id == "book_lists") {
-    $response = isOrderManager($user) 
-        ? get_book_list($_GET["dep_id"], $_GET["term"]) 
-        : permision_denied_error();
+    $response = get_book_list($_GET["dep_id"], $_GET["term"], $user->classId); 
   } elseif ($resource_id == "class_book_lists") {
     $response = isOrderManager($user) 
         ? get_class_book_lists($_GET["year"]) 
