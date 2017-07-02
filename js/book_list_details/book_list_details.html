@@ -4,8 +4,8 @@
       <div ng-switch-when="true">
         <div>
           {{departments[classInfo.department_id].name}}第{{classInfo.term}}学期书单
-          <iron-icon icon="delete" class="clickable inline" ng-click="remove()"
-              title="删除本书单...">
+          <iron-icon icon="delete" class="clickable inline" ng-click="clear()"
+              title="清空书单列表，以便重新选取（适用于建立短书单）">
           </iron-icon>
         </div>
       </div>

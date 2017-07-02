@@ -47,16 +47,9 @@ define('book_list_details/book_list_details',
             }
           });
         };
-        scope.remove = function() {
-          if (!confirm('您确定要删除本书单吗？')) return;
-
-          var term = scope.classInfo.term;
-          var depId = scope.classInfo.department_id;
-          rpc.remove_book_list(depId, term).then(function(response) {
-            if (response.data.deleted) {
-              reload();
-            }
-          });
+        scope.clear = function() {
+          scope.classInfo.books = {};
+          scope.dirty = true;
         };
         scope.restore = function() {
           scope.classInfo = angular.copy(scope.savedInfo);
