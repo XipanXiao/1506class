@@ -3,7 +3,7 @@
     <div ng-switch="classInfo.editing">
       <div ng-switch-when="true">
         <div>
-          {{departments[classInfo.department_id].name}}第{{classInfo.term}}学期
+          {{departments[classInfo.department_id].name}}第{{classInfo.term}}学期书单
           <iron-icon icon="delete" class="clickable inline" ng-click="remove()"
               title="删除本书单...">
           </iron-icon>
@@ -12,7 +12,8 @@
       <div ng-switch-default>
         "{{departments[classInfo.department_id].name}}"学员能看到的所有法本
         <iron-icon ng-if="!classInfo.editing" icon="editor:border-color"
-            class="inline clickable" ng-click="convertToBookList()" title="定制">
+            class="inline clickable" ng-click="convertToBookList()"
+            title="定制书单">
         </iron-icon>
       </div>
     </div>
