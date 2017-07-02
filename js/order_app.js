@@ -91,7 +91,10 @@ define('order_app', [
                   if (response.data.updated) {
                     cart.clear();
                     $rootScope.$broadcast('reload-orders');
-                    scope.selectTab(2);
+                    document.querySelector('#toast0').open();
+                    setTimeout(function() {
+                      scope.selectTab(2);
+                    }, 3000);
                     return true;
                   }
                   return false;
