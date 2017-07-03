@@ -31,7 +31,7 @@
     </div>
     <div class="padded-element right">
       <iron-icon icon="add" class="clickable" ng-click="classInfo.adding = true"
-          title="添加法本...">
+          title="添加法本..." ng-show="!classInfo.adding">
       </iron-icon>
       <input type="button" value="取消" ng-click="restore()"
           ng-disabled="!dirty"> 

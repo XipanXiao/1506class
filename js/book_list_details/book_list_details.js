@@ -23,6 +23,12 @@ define('book_list_details/book_list_details',
           delete scope.classInfo.books[id];
           scope.dirty = true;
         };
+        
+        scope.clear = function() {
+          scope.classInfo.books = {};
+          scope.classInfo.adding = true;
+          scope.dirty = true;
+        };
 
         scope.save = function() {
           var classInfo = scope.classInfo;
@@ -87,7 +93,7 @@ define('book_list_details/book_list_details',
           scope.dirty = false;
         }
       },
-      templateUrl : 'js/book_list_details/book_list_details.html?tag=201707022232'
+      templateUrl : 'js/book_list_details/book_list_details.html?tag=201707022300'
     };
   });
 });
