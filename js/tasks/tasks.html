@@ -3,7 +3,13 @@
   <div ng-repeat="task in tasks" class="padded-element">
     <div class="task">
       <div class="header section-header">
-        {{task.name}}
+        <span ng-switch="task.subTaskNames != null">
+          <select ng-switch-when="true"
+              ng-options="task.subTaskNames[index] for index in task.sub_indexes"
+              ng-model="task.lastRecord.sub_index">
+          </select>
+          <span ng-switch-default>{{task.name}}</span>
+        </span>
         <span ng-if="task.sub_tasks">
           第
           <select ng-options="value+1 for value in task.sub_indexes"

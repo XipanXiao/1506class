@@ -28,7 +28,13 @@ define('tasks/tasks', ['progress_bar/progress_bar', 'services', 'utils'],
                 
                 task.lastRecord = null;
                 task.record = {count: 0};
-                task.sub_indexes = Array.apply(null, {length: task.sub_tasks})
+                
+                var subTasks = task.sub_tasks;
+                if (task.name.indexOf('/') > 0) {
+                  task.subTaskNames = task.name.split('/');
+                  subTasks = task.subTaskNames.length;
+                }
+                task.sub_indexes = Array.apply(null, {length: subTasks})
                     .map(Number.call, Number);
                 
                 $scope.tasks.push(task);
@@ -93,7 +99,7 @@ define('tasks/tasks', ['progress_bar/progress_bar', 'services', 'utils'],
           });
           $scope.tasks = [];
         },
-        templateUrl: 'js/tasks/tasks.html'
+        templateUrl: 'js/tasks/tasks.html?tag=201707031255'
       };
     });
 });
