@@ -186,8 +186,7 @@ define('zb_services', ['utils'], function() {
           userID: userID,
           pre_classID: pre_classID,
           type: 'jxWork_grid',
-          half_term: half_term,
-          dingli_type: 0,
+          half_term: half_term
         };
         for (var key in records) {
           data[key] = records[key];

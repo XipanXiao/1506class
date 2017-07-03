@@ -519,6 +519,9 @@ define('zb_sync_button/zb_sync_button',
                       // Do not erase data of transferred students.
                       var existingValue = parseInt(zbStat[countKey]);
                       taskStats[countKey] = stat.sum || existingValue;
+                      if (task.name.indexOf('/') >= 0) {
+                        taskStats[task.zb_name + '_type'] = stat.sub_index || 0;
+                      }
                     }
                     if (task.duration) {
                       var timeKey = task.zb_name + '_time'; 
