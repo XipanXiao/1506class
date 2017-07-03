@@ -13,8 +13,7 @@ define('item_list/item_list', ['flying/flying', 'services', 'utils'], function()
           function getCategories() {
             return rpc.get_item_categories().then(function(response) {
               utils.forEach(response.data, function(category) {
-                category.selected = 
-                    !utils.isEmpty(scope.bookIds) || !category.shared;
+                category.selected = true;
               });
               return scope.categories = response.data;
             });
@@ -22,11 +21,7 @@ define('item_list/item_list', ['flying/flying', 'services', 'utils'], function()
           
           function getItems() {
             return rpc.get_items().then(function(response) {
-              var ids = utils.isEmpty(scope.bookIds) 
-                  ? utils.keys(response.data)
-                  : scope.bookIds;
-
-              ids.forEach(function(id) {
+              scope.bookIds.forEach(function(id) {
                 scope.items[id] = response.data[id];
               });
               return scope.items;
@@ -49,7 +44,7 @@ define('item_list/item_list', ['flying/flying', 'services', 'utils'], function()
             }
           });
         },
-        templateUrl : 'js/item_list/item_list.html?tag=201706062300'
+        templateUrl : 'js/item_list/item_list.html?tag=201707022217'
       };
     });
 });

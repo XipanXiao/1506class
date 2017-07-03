@@ -7,6 +7,7 @@
     {{category.name}}
   </label>
 </div>
+<strong ng-if="items.length == 0" class="padded-element">暂未开放订书。</strong>
 <div class="items css-table">
   <div ng-repeat="item in items | filter: {name: namePrefix}"
       ng-if="categories[item.category].selected || namePrefix"
