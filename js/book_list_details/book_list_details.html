@@ -1,21 +1,10 @@
 <div class="flex">
   <div class="section">
-    <div ng-switch="classInfo.editing">
-      <div ng-switch-when="true">
-        <div>
-          {{departments[classInfo.department_id].name}}第{{classInfo.term}}学期书单
-          <iron-icon icon="delete" class="clickable inline" ng-click="clear()"
-              title="清空书单列表，以便重新选取（适用于建立短书单）">
-          </iron-icon>
-        </div>
-      </div>
-      <div ng-switch-default>
-        "{{departments[classInfo.department_id].name}}"学员能看到的所有法本
-        <iron-icon ng-if="!classInfo.editing" icon="editor:border-color"
-            class="inline clickable" ng-click="convertToBookList()"
-            title="定制书单">
-        </iron-icon>
-      </div>
+    <div>
+      {{departments[classInfo.department_id].name}}第{{classInfo.term}}学期书单
+      <iron-icon icon="delete" class="clickable inline" ng-click="clear()"
+          title="清空书单列表，以便重新选取（适用于建立短书单）">
+      </iron-icon>
     </div>
     <div class="css-table odd-even class-book-list">
       <div class="css-table-row header">
@@ -35,12 +24,12 @@
         <div class="css-table-cell">{{book.int_shipping}}</div>
         <div class="css-table-cell">
           <iron-icon icon="delete" class="delete-button"
-              ng-click="removeItem(id)" ng-if="classInfo.editing">
+              ng-click="removeItem(id)">
           </iron-icon>
         </div>
       </div>
     </div>
-    <div ng-if="classInfo.editing" class="padded-element right">
+    <div class="padded-element right">
       <iron-icon icon="add" class="clickable" ng-click="classInfo.adding = true"
           title="添加法本...">
       </iron-icon>

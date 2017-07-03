@@ -19,11 +19,6 @@ define('book_list_details/book_list_details',
               getDepartmentBooks, getBookList]);
         };
         
-        scope.convertToBookList = function() {
-          scope.classInfo.editing = true;
-          scope.dirty = true;
-        };
-        
         scope.removeItem = function(id) {
           delete scope.classInfo.books[id];
           scope.dirty = true;
@@ -47,10 +42,7 @@ define('book_list_details/book_list_details',
             }
           });
         };
-        scope.clear = function() {
-          scope.classInfo.books = {};
-          scope.dirty = true;
-        };
+
         scope.restore = function() {
           scope.classInfo = angular.copy(scope.savedInfo);
           scope.dirty = false;
@@ -82,14 +74,10 @@ define('book_list_details/book_list_details',
           var term = scope.classInfo.term;
           var depId = scope.classInfo.department_id;
           return rpc.get_book_list(depId, term).then(function(response) {
-            var empty = utils.isEmpty(response.data);
-            scope.classInfo.editing = !empty;
-            if (!empty) {
-              scope.classInfo.books = {};
-              (response.data || []).forEach(function(id) {
-                scope.classInfo.books[id] = scope.items[id];
-              });
-            }
+            scope.classInfo.books = {};
+            (response.data || []).forEach(function(id) {
+              scope.classInfo.books[id] = scope.items[id];
+            });
             backup();
             return true;
           });
@@ -99,7 +87,7 @@ define('book_list_details/book_list_details',
           scope.dirty = false;
         }
       },
-      templateUrl : 'js/book_list_details/book_list_details.html?tag=201706062300'
+      templateUrl : 'js/book_list_details/book_list_details.html?tag=201707022232'
     };
   });
 });
