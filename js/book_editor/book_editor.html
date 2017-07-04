@@ -1,4 +1,4 @@
-<form>
+<form name="bookEditorForm">
   <div class="css-table">
     <div class="css-table-row">
       <div class="css-table-cell">书名</div>
@@ -33,16 +33,16 @@
     <div class="css-table-row">
       <div class="css-table-cell">图片地址</div>
       <div class="css-table-cell">
-        <input type="url" ng-model="book.image" required>
+        <input type="url" ng-model="book.image">
       </div>
     </div>
     <div class="css-table-row">
       <div class="css-table-cell">简介</div>
       <div class="css-table-cell">
-        <input type="url" ng-model="book.description" required>
+        <input type="url" ng-model="book.description">
       </div>
     </div>
   </div>
   <input type="button" value="取消" ng-click="onCancel()">
-  <input type="submit" value="保存" ng-click="onSave()">
+  <input type="submit" value="保存" ng-click="bookEditorForm.$valid && onSave()">
 </form>

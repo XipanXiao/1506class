@@ -14,12 +14,11 @@ define('book_editor/book_editor',
       link: function(scope) {
         scope.$watch('categories', function(categories) {
           if (categories) {
-            console.log(categories);
             scope.categoryIds = utils.keys(categories);
           }
         });
       },
-      templateUrl : 'js/book_editor/book_editor.html?tag=201707022300'
+      templateUrl : 'js/book_editor/book_editor.html?tag=201707041052'
     };
   });
 });
