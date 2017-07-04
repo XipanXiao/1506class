@@ -91,7 +91,7 @@ function send_post_request($url, $data) {
       curl_close($ch);
     }
     $message = sprintf("Curl failed with error #%d: %s",
-  	    $e->getCode(), $e->getMessage());
+        $e->getCode(), $e->getMessage());
     error_log($message);
     echo "<div>". $message. "</div>\n";
   }
@@ -109,5 +109,20 @@ function checkCaptcha($captcha) {
 
   $result = json_decode($captchaResponse);
   return $result->success;
+}
+
+/// Inserts or updates [$table] for the [$record].
+///
+/// If [$record] has an non-zero "id", the record in [$table] with the id is
+/// updated. Otherwise a new record is inserted into the [$table] and a new id
+/// is returned.
+function insertOrUpdate($medoo, $table, $record) {
+  $id = intval($record["id"]);
+  if ($id) {
+    $medoo->update($table, $record, ["id" => $id]);
+    return $id;
+  } else {
+    return intval($medoo->insert($table, $record));
+  }
 }
 ?>

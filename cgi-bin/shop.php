@@ -187,7 +187,7 @@ function sanitize_address() {
 function get_shop_items($category, $level) {
   global $medoo;
 
-  $filters = ["deleted[!]" => 1];
+  $filters = [];
   if ($category) {
     $filters["category"] = $category; 
   }
@@ -214,6 +214,12 @@ function get_item_categories($level) {
           "level" => $level, 
           "AND" => ["level[<=]" => $level, "shared" => 1]
       ]]));
+}
+
+function update_item($item) {
+	global $medoo;
+
+  return insertOrUpdate($medoo, "items", $item);
 }
 
 function get_order_stats($year) {
@@ -448,10 +454,10 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];
-
+  unset($_POST["rid"]);
+  
   if ($resource_id == "orders") {
     $order = $_POST;
-    unset($order["rid"]);
     validate_order_post();
     if ($order["user_id"] != $user->id && !isOrderManager($user)) {
       $response = permision_denied_error();
@@ -476,6 +482,10 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = isOrderManager($user)
       ? ["updated" => update_class_term($_POST)]
       : permision_denied_error();
+  } elseif ($resource_id == "items") {
+    $response = isOrderManager($user)
+        ? ["updated" => update_item($_POST)]
+        : permision_denied_error();
   }
 } elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE" &&
     isset ( $_REQUEST["rid"] )) {

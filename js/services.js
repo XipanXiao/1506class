@@ -275,6 +275,12 @@ define('services', [], function() {
             'cgi-bin/shop.php');
       },
       
+      update_item: function(item) {
+        item.rid = 'items';
+        return http_form_post($http, $httpParamSerializerJQLike(item),
+            'cgi-bin/shop.php');
+      },
+      
       update_scores: function(scores) {
         var data = {
           rid: 'scores',

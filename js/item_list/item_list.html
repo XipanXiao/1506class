@@ -13,7 +13,7 @@
       ng-if="categories[item.category].selected || namePrefix"
       class="css-table-row">
       <div class="css-table-cell top-border item-image-container">
-        <img src="{{item.image}}" class="item-image">
+        <img src="{{item.image || 'images/shangshi.jpg'}}" class="item-image">
       </div>
       <div class="css-table-cell top-border">
         <h3>{{item.name}}</h3>

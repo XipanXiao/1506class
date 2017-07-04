@@ -1,6 +1,7 @@
 define('book_list_details/book_list_details', 
-    ['services', 'utils'], function() {
+    ['book_editor/book_editor', 'services', 'utils'], function() {
   return angular.module('BookListDetailsModule', [
+      'BookEditorModule',
       'ServicesModule',
       'UtilsModule']).directive('bookListDetails', function(rpc, utils) {
     return {
@@ -54,9 +55,24 @@ define('book_list_details/book_list_details',
           scope.dirty = false;
         };
 
+        /// Adds a book from the [items] to the book list.
         scope.addBook = function(item) {
           scope.classInfo.books[item.id] = item;
           scope.dirty = true;
+        };
+        
+        /// Creates a new book, adds it to [items].
+        scope.createBook = function() {
+          rpc.update_item(scope.classInfo.newBook).then(function(response) {
+            var id = response.data.updated;
+            if (id) {
+              scope.classInfo.newBook.id = id;
+              scope.items[id] = scope.classInfo.newBook;
+              scope.classInfo.newBook = null;
+            } else {
+              alert('新建法本失败，请检查是不是同名法本已经存在！');
+            }
+          });
         };
 
         function getDepartments() {
@@ -93,7 +109,7 @@ define('book_list_details/book_list_details',
           scope.dirty = false;
         }
       },
-      templateUrl : 'js/book_list_details/book_list_details.html?tag=201707022300'
+      templateUrl : 'js/book_list_details/book_list_details.html?tag=201707031806'
     };
   });
 });
