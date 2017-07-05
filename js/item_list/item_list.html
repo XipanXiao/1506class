@@ -8,7 +8,7 @@
   </label>
 </div>
 <input ng-if="items.length" type="button" value="全部加入购物车"
-    ng-click="items.forEach(addToCart)">
+    ng-click="cart.addAll(items)">
 <strong ng-if="items.length == 0" class="padded-element">暂未开放订书。</strong>
 <div class="items css-table">
   <div ng-repeat="item in items | filter: {name: namePrefix}"

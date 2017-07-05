@@ -37,6 +37,11 @@ define('order_app', [
                 }
                 this.update();
               },
+              addAll: function(items) {
+                var that = this;
+                items.forEach(function(item) {that.add(item);});
+                scope.selectTab(1);
+              },
               remove: function(id) {
                 delete this.items[id];
                 this.update();
