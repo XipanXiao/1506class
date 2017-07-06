@@ -187,9 +187,9 @@ function sanitize_address() {
 function get_shop_items($category, $level) {
   global $medoo;
 
-  $filters = [];
+  $filters = null;
   if ($category) {
-    $filters["category"] = $category; 
+    $filters = ["category" => $category]; 
   }
 
   if ($level != 99) {
@@ -197,11 +197,11 @@ function get_shop_items($category, $level) {
     if ($category) {
       if (!array_search($category, $categories)) return [];
     } else {
-      $filters["category"] = $categories;
+      $filters = ["category" => $categories]; 
     }
   }
   
-  return keyed_by_id($medoo->select("items", "*", ["AND" => $filters]));
+  return keyed_by_id($medoo->select("items", "*", $filters));
 }
 
 function get_item_categories($level) {
