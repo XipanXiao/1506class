@@ -2,6 +2,7 @@ define('zb_sync_button/zb_sync_button',
     ['progress_bar/progress_bar', 'services', 'utils',
      'zb_services'], function() {
   var JIA_XING = 3;
+  var JINGTU_DEPARTMENT = 4;
 
   var MAIN_GRID = 0;
   var WORK_GRID = 1;
@@ -464,10 +465,16 @@ define('zb_sync_button/zb_sync_button',
             var records = scope.getBookAudioRecords(scope.lessons, user, true);
             var otherTasks = scope.classInfo.department_id == JIA_XING ?
               {} : (scope.users[user.id].taskStats || {});
+
+            var gridName = scope.get_report_type(ATT_LIMIT_GRID);
+            // 净土第一学期只报出勤
+            if (scope.scheduleGroup.term == 1 &&
+                scope.classInfo.department_id == JINGTU_DEPARTMENT) {
+              gridName = 'att_grid';
+            }
             scope.statusText = '正在为"{0}"提交{1}半学期{2}记录...'.format(
                 user.name, ['上', '下'][scope.half_term % 2], taskKey);
-            return zbrpc.report_limited_schedule_task(
-                scope.get_report_type(ATT_LIMIT_GRID),
+            return zbrpc.report_limited_schedule_task(gridName,
                 scope.classInfo.zb_id, user.zb_id, half_term, records.book,
                 records.audio, atts[half_term % 2],
                 otherTasks).then(function(response) {
@@ -589,7 +596,7 @@ define('zb_sync_button/zb_sync_button',
                 var isFirstTime = task.starting_half_term == scope.half_term;
                 var start_cut_time = isFirstTime
                     ? startTerm 
-                    : (scope.lastReportTime || (start_time + extraReportTime));
+                    : (scope.lastReportTime || (startTerm + extraReportTime));
                 var start_time = fistHalf ? start_cut_time : midTerm;
                 var end_time = fistHalf ? midTerm : end_cut_time;
                 return scope.getTaskStats(task, start_time, end_time);
@@ -715,7 +722,7 @@ define('zb_sync_button/zb_sync_button',
             case 3:
               return ['jx_grid', 'jxWork_grid', 'att_limit_grid',
                   'guanxiu_grid'][grid];
-            case 4:
+            case JINGTU_DEPARTMENT:
               return ['jt_grid', '', 'fohao_att_limit_grid'][grid];
             default:
               return null;
