@@ -285,8 +285,15 @@ define('schedule_editor/schedule_editor',
                 utils.requestOneByOne([getClassInfo, getEmail, getTeacherEmail,
                     sendMail, update_notified_timestamp]);
               };
+              $scope.addVacation = function(group, scheduleId) {
+                group.editing = true;
+                var key = utils.maxKey(group.schedules) + 1;
+                var schedule = group.schedules[key] = {id: key, notes: '新的假期'};
+                $scope.insertSchedule(key, parseInt(scheduleId));
+                schedule.id = null;
+              };
             },
-            templateUrl : 'js/schedule_editor/schedule_editor.html'
+            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201707140808'
           };
         });
 });
