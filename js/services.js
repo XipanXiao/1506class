@@ -223,6 +223,14 @@ define('services', [], function() {
         return http_form_post($http, $httpParamSerializerJQLike(user));
       },
       
+      clone_user: function(user_id) {
+        var data = {
+          rid: 'clone_user',
+          user_id: user_id
+        };
+        return http_form_post($http, $httpParamSerializerJQLike(data));
+      },
+      
       search: function(prefix) {
         return $http.get(serviceUrl + '?rid=search&prefix=' + prefix);
       },

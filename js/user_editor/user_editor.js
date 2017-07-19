@@ -31,15 +31,41 @@ define('user_editor/user_editor',
 
         $scope.$watch('user', function() {
           $scope.editing = null;
-          if (!$scope.user || $scope.user.classInfo) return;
-
-          var classId = $scope.user.classId;
-          rpc.get_classes(classId).then(function(response) {
-            $scope.user.classInfo =
-              response.data[classId] || response.data['' + classId];
-          });
+          if ($scope.user && !$scope.user.classInfo) {
+            getClassInfo();
+          }
         });
 
+        function getClassInfo() {
+          var classId = $scope.user.classId;
+          return rpc.get_classes(classId).then(function(response) {
+            return $scope.user.classInfo =
+              response.data[classId] || response.data['' + classId];
+          });
+        }
+        
+        /// Clears all learning record by deleting the user and cloning a new 
+        /// one.
+        function clearLearningRecord() {
+          return rpc.clone_user($scope.user.id).then(function(response) {
+            if (!response.data.updated) return false;
+            return $scope.user.id = response.data.updated;
+          });
+        }
+
+        /// Checks whether the user's learning records need to be cleared.
+        function checkClassChange() {
+          var classInfo = $scope.user.classInfo;
+          var previousInfo = $scope.originalUser.classInfo;
+          if (classInfo.department_id != previousInfo.department_id ||
+              classInfo.start_year != previousInfo.start_year) {
+            if (confirm('需要清除{0}的所有学修记录吗？'.format($scope.user.name))) { 
+              clearLearningRecord();
+            }
+            return utils.truePromise();
+          }
+        }
+        
         $scope.$watch('editing', function() {
           if (!$scope.editing) return;
           document.querySelector('div.user-info-editor').scrollIntoView();
@@ -65,20 +91,26 @@ define('user_editor/user_editor',
             data[editing] = user[editing];
             break;
           }
+
+          function updateUser() {
+            return rpc.update_user(data).then(function(response) {
+              if (response.data.updated && editing == 'classId') {
+                $rootScope.$broadcast('class-updated', user.classId);
+                return true;
+              }
+              
+              if (response.data.updated) {
+                $scope.editing = null;
+              } else {
+                utils.mix_in($scope.user, $scope.originalUser);
+                $scope.user.confirm = null;
+                $scope.error = response.data.error;
+              }
+              return false;
+            });
+          }
           
-          rpc.update_user(data).then(function(response) {
-            if (response.data.updated && editing == 'classId') {
-              $rootScope.$broadcast('class-updated', user.classId);
-            }
-            
-            if (response.data.updated) {
-              $scope.editing = null;
-            } else {
-              utils.mix_in($scope.user, $scope.originalUser);
-              $scope.user.confirm = null;
-              $scope.error = response.data.error;
-            }
-          });
+          utils.requestOneByOne([updateUser, getClassInfo, checkClassChange]);
         };
         
         $scope.admining = window.location.href.indexOf('admin.html') > 0;

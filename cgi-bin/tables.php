@@ -355,6 +355,28 @@ function update_user($user) {
   return null;
 }
 
+function clone_user($user_id) {
+  global $medoo;
+  
+  $user = get_single_record($medoo, "users", $user_id);
+  if (!user) return 0;
+
+  $email = $user["email"]. ".deleted";
+  if (!$medoo->update("users", ["email" => $email], ["id" => $user_id])) {
+  	return 0;
+  }
+  
+  unset($user["id"]);
+  unset($user["internal_id"]);
+  $newId = $medoo->insert("users", $user);
+  if (!$newId) {
+  	return 0;
+  }
+
+  remove_user($user_id);
+  return $newId;
+}
+
 function get_db_error() {
   global $medoo;
   

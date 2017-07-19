@@ -270,6 +270,10 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     }
   } elseif ($resource_id == "class_prefs") {
     update_class_pref($user->id, $_POST);
+  } elseif ($resource_id == "clone_user") {
+    $response = canWriteUser($user, $_POST["user_id"])
+        ? ["updated" => clone_user($_POST["user_id"])] 
+        : permision_denied_error();
   }
 } elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE" &&
     isset ( $_REQUEST["rid"] )) {
