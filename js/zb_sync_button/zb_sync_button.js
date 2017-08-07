@@ -36,6 +36,14 @@ define('zb_sync_button/zb_sync_button',
               }
             });
           });
+          /// Initializes an empty map to store stats for various tasks, for
+          /// each user in scope.users.
+          function initTaskStats() {
+            utils.forEach(scope.users, function(user) {
+              user.taskStats = {};
+            });
+            return utils.truePromise();
+          }
           scope.sync = function() {
             if (scope.inprogress) return;
             scope.inprogress = true;
@@ -57,6 +65,7 @@ define('zb_sync_button/zb_sync_button',
                   switch (scope.classInfo.department_id) {
                   case JIA_XING: 
                     return utils.requestOneByOne([
+                      initTaskStats,
                       scope.getZBTaskStats(WORK_GRID),
                       scope.getZBScheduleTaskStats(MAIN_COURSE_GRID_NAME),
                       scope.getZBScheduleTaskStats(ATT_LIMIT_GRID_NAME),
@@ -68,6 +77,7 @@ define('zb_sync_button/zb_sync_button',
                     break;
                   default:
                     return utils.requestOneByOne([
+                      initTaskStats,
                       scope.getZBTaskStats(ATT_LIMIT_GRID),
                       scope.getZBScheduleTaskStats(MAIN_COURSE_GRID_NAME),
                       scope.getZBScheduleTaskStats(ATT_LIMIT_GRID_NAME),
@@ -499,7 +509,7 @@ define('zb_sync_button/zb_sync_button',
                 start_time, end_time).then(function(response) {
                   var users = response.data || [];
                   users.forEach(function(user) {
-                    var taskStats = scope.users[user.id].taskStats || {};
+                    var taskStats = scope.users[user.id].taskStats;
                     var parts = (task.zb_name || '').split('_');
                     var zbStat = scope.zbTaskStats[user.zb_id];
                     var stat = user.stats[0] || {sum: 0, duration: 0};
@@ -538,7 +548,6 @@ define('zb_sync_button/zb_sync_button',
                       taskStats[timeKey] = 
                           parseInt(10 * hour) ? hour : existingValue;
                     }
-                    scope.users[user.id].taskStats = taskStats;
                   });
                   return true; 
                 });
