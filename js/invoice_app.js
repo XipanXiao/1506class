@@ -1,15 +1,17 @@
 define('invoice_app', [
     'invoice/invoice',
+    'permission',
     'services',
     'utils'],
     function() {
 
   angular.module('AppModule', [
       'InvoiceModule',
+      'PermissionModule',
       'ServicesModule',
       'UtilsModule'
       ])
-      .directive('body', function(rpc, utils) {
+      .directive('body', function(perm, rpc, utils) {
         function parseMoney(value) {
           return value && parseFloat(value) || 0.00;
         }
@@ -24,15 +26,22 @@ define('invoice_app', [
                 break;
               }
             }
-            rpc.get_order(order_id).then(function(response) {
-              if (response.data.error == 'login needed') {
-                utils.login();
-                return;
-              }
-              var order = response.data;
-              rpc.get_items().then(function(response) {
+            function getUser() {
+              return rpc.get_user().then(function(user) {
+                return perm.user = user;
+              });
+            }
+            function getOrder() {
+              return rpc.get_order(order_id).then(function(response) {
+                return scope.order = response.data;
+              });
+            }
+            function getItems() {
+              var level = perm.isOrderAdmin() && 99;
+              return rpc.get_items(null, level).then(function(response) {
                 var items = response.data;
 
+                var order = scope.order;
                 order.sub_total = parseMoney(order.sub_total);
                 order.shipping = parseMoney(order.shipping);
                 order.int_shipping = parseMoney(order.int_shipping);
@@ -41,9 +50,10 @@ define('invoice_app', [
                 order.items.forEach(function(item) {
                   item.name = items[item.item_id].name;
                 });
-                scope.order = order;
+                return true;
               });
-            });
+            }
+            utils.requestOneByOne([getUser, getOrder, getItems]);
           }
         };
       });
