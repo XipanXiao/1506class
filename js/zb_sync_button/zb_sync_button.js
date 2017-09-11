@@ -291,7 +291,7 @@ define('zb_sync_button/zb_sync_button',
               scope.statusText = '正在登录...';
               zbrpc.login(username, password, captcha).then(function(response) {
                 var success = response.data &&
-                    (response.data.returnValue == 'success');
+                    (response.data.returnValue == 'true');
                 if (!success) {
                   scope.finished++;
                   alert('登录失败');
