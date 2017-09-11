@@ -290,7 +290,9 @@ define('zb_sync_button/zb_sync_button',
   
               scope.statusText = '正在登录...';
               zbrpc.login(username, password, captcha).then(function(response) {
-                if (zbrpc.is_showing_login_form(response.data)) {
+                var success = response.data &&
+                    (response.data.returnValue == 'success');
+                if (!success) {
                   scope.finished++;
                   alert('登录失败');
                   scope.deferredLogin.resolve(false);
