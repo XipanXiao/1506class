@@ -102,7 +102,10 @@ define('zb_services', ['utils'], function() {
           'captcha': captcha,
           'url': serviceUrl + '/account/login' 
         };
-        return http_form_post($http, $httpParamSerializerJQLike(data));
+        var url = ('{0}/account/login_ajax?type=login&username={1}' + 
+            '&password={2}&captcha={3}').format(serviceUrl, username, 
+            password, captcha);
+        return $http.get(get_proxied_url(url));
       },
       edit: function(editPassword) {
         var url = ('{0}/pre/check_edit_password_ajax?type=check_edit_password' + 
