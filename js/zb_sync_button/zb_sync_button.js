@@ -513,12 +513,12 @@ define('zb_sync_button/zb_sync_button',
                   users.forEach(function(user) {
                     var taskStats = scope.users[user.id].taskStats;
                     var parts = (task.zb_name || '').split('_');
-                    var zbStat = scope.zbTaskStats[user.zb_id];
+                    var zbStat = scope.zbTaskStats[user.zb_id] || {};
                     var stat = user.stats[0] || {sum: 0, duration: 0};
                     if (parts.length == 2) {
                       var countKey = parts[0] + '_count';
                       // Do not erase data of transferred students.
-                      var existingValue = parseInt(zbStat[countKey]);
+                      var existingValue = parseInt(zbStat[countKey]) || 0;
 
                       if (!taskStats[countKey]) {
                         // !!!! This is important do not change !!!!
@@ -536,7 +536,7 @@ define('zb_sync_button/zb_sync_button',
                     } else {
                       var countKey = task.zb_name + '_count'; 
                       // Do not erase data of transferred students.
-                      var existingValue = parseInt(zbStat[countKey]);
+                      var existingValue = parseInt(zbStat[countKey]) || 0;
                       taskStats[countKey] = stat.sum || existingValue;
                       if (task.name.indexOf('/') >= 0) {
                         taskStats[task.zb_name + '_type'] = stat.sub_index || 0;
@@ -546,7 +546,7 @@ define('zb_sync_button/zb_sync_button',
                       var timeKey = task.zb_name + '_time'; 
                       var hour = utils.toGuanxiuHour(stat.duration);
                       // Do not erase data of transferred students.
-                      var existingValue = zbStat[timeKey];
+                      var existingValue = zbStat[timeKey] || 0;
                       taskStats[timeKey] = 
                           parseInt(10 * hour) ? hour : existingValue;
                     }
