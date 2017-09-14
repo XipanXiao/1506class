@@ -63,7 +63,7 @@ define('learning_records/learning_records', [
                 $scope.reload(term);
               };
 
-              $scope.exportCourse = function(group, course_ids, secondary) {
+              $scope.exportCourse = function(group, course_ids) {
                 var data = '';
                 utils.forEach(course_ids, function(course_id) {
                   data += '\t' + group.courses[course_id].name + '\t';
@@ -79,13 +79,7 @@ define('learning_records/learning_records', [
                   });
                   data += '\n';
                 });
-                if (secondary) {
-                  $scope.exportedRecords2 = utils.createDataUrl(data,
-                      $scope.exportedRecords2);
-                } else {
-                  $scope.exportedRecords = utils.createDataUrl(data,
-                      $scope.exportedRecords);
-                }
+                return data;
               };
               $scope.getCourses = function(group, secondary) {
                 var isNotVacation = function(schedule) {
@@ -97,14 +91,34 @@ define('learning_records/learning_records', [
                 return utils.map(utils.where(group.schedules, isNotVacation),
                     getCourseId);
               };
+              function getCoursesAlt(group) {
+                var result = [];
+                utils.forEach(group.schedules, function(schedule) {
+                  if ($scope.vacation(schedule)) return;
+
+                  result.push(schedule.course_id);
+                  if (schedule.course_id2) {
+                    result.push(schedule.course_id2);
+                  }
+                });
+                return result;
+              }
               $scope.export = function() {
                 utils.forEach($scope.schedule_groups, function(group) {
                   var course_ids = $scope.getCourses(group);
-                  $scope.exportCourse(group, course_ids);
+                  $scope.exportedRecords = utils.createDataUrl(
+                      $scope.exportCourse(group, course_ids),
+                      $scope.exportedRecords);
                   if (!parseInt(group.course_group2))
                     return;
                   var course_ids2 = $scope.getCourses(group, true);
-                  $scope.exportCourse(group, course_ids2, true);
+                  $scope.exportedRecords2 = utils.createDataUrl(
+                      $scope.exportCourse(group, course_ids2),
+                      $scope.exportedRecords2);
+                  var alt = getCoursesAlt(group);
+                  $scope.exportedRecordsAlt = utils.createDataUrl(
+                      $scope.exportCourse(group, alt),
+                      $scope.exportedRecordsAlt);
                 });
               };
             },

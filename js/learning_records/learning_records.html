@@ -37,6 +37,9 @@
         <a ng-if="exportedRecords2" href="{{exportedRecords2}}" download="第{{group.term}}学期课程2.txt">
           第{{group.term}}学期课程2.txt
         </a>
+        <a ng-if="exportedRecordsAlt" href="{{exportedRecordsAlt}}" download="第{{group.term}}学期.txt">
+          第{{group.term}}学期交叉合并.txt
+        </a>
         &nbsp;&nbsp;
         <zb-sync-button type="schedule_task" users="users" class-id="classId"
             schedule-group="group" title="学修记录上报学院">
