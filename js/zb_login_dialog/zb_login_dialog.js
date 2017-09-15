@@ -2,6 +2,9 @@ define('zb_login_dialog/zb_login_dialog', [], function() {
   return angular.module('ZBLoginDialogModule', []).directive('zbLoginDialog',
     function() {
       return {
+        scope: {
+          name: '='
+        },
         link: function(scope) {
           scope.close = function(ok) {
             scope.$broadcast('zb-login-confirmed', ok ? {
