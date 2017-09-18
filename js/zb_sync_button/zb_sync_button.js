@@ -137,6 +137,9 @@ define('zb_sync_button/zb_sync_button',
             function hasRecord(entry) { return entry; }
 
             var zbRecords = scope.zbScheduleStats[user.zb_id];
+            if (!zbRecords) {
+              alert('{0}: 智悲系统中没有这个学员，请先同步学员列表。'.format(user.name));
+            }
             var zbBookAudio = limited ? zbRecords.limit : zbRecords.main;
             var reported = utils.any(audio, hasRecord) || 
                 utils.any(book, hasRecord);
