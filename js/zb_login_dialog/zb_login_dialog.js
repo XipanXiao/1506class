@@ -1,13 +1,13 @@
 define('zb_login_dialog/zb_login_dialog', [], function() {
   return angular.module('ZBLoginDialogModule', []).directive('zbLoginDialog',
-    function() {
+    function($rootScope) {
       return {
         scope: {
           name: '='
         },
         link: function(scope) {
           scope.close = function(ok) {
-            scope.$broadcast('zb-login-confirmed', ok ? {
+            $rootScope.$broadcast('zb-login-confirmed', ok ? {
               username: document.querySelector('#zb-username').value,
               password: document.querySelector('#zb-password').value,
               editPassword: document.querySelector('#zb-editpassword').value,
