@@ -136,7 +136,7 @@ define('zb_sync_button/zb_sync_button',
 
             function hasRecord(entry) { return entry; }
 
-            if (!user.zb_id) {
+            if (!parseInt(user.zb_id)) {
               alert('{0}: 智悲系统中没有这个学员，请先同步学员列表。'.format(user.name));
             }
             var zbRecords = scope.zbScheduleStats[user.zb_id] || {
