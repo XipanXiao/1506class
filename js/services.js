@@ -214,7 +214,8 @@ define('services', [], function() {
       },
 
       get_scores: function(classId) {
-        var url = 'cgi-bin/score.php?rid=scores&class_id={0}'.format(classId);
+        var url = 
+            'cgi-bin/score.php?rid=scores&class_id={0}'.format(classId || '');
         return $http.get(url);
       },
       

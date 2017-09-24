@@ -4,6 +4,7 @@ js/angular.js
 js/utils.js
 js/services.js
 js/permission.js
+js/score/score.js
 js/search_bar/search_bar.js
 js/app_bar/app_bar.js
 js/bit_editor/bit_editor.js

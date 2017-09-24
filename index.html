@@ -22,6 +22,7 @@
     <paper-tab>考勤登记</paper-tab>
     <paper-tab>个人信息</paper-tab>
     <paper-tab>历史报数</paper-tab>
+    <paper-tab>考试成绩</paper-tab>
   </paper-tabs>
   
   <iron-pages selected="0">
@@ -42,9 +43,12 @@
     <div>
       <task-history ng-if="pageLoaded[2]" user="user"></task-history>
     </div>
+    <div>
+      <score ng-if="pageLoaded[3]"></score>
+    </div>
   </iron-pages>
 </div>
 
-<script type="text/javascript" src="index.js?tag=201707031255"></script>
+<script type="text/javascript" src="index.js?tag=201709232029"></script>
 </body>
 </html>

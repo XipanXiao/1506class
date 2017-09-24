@@ -1,11 +1,13 @@
 define('student_app', ['app_bar/app_bar', 'setup_tasks/setup_tasks',
     'tasks/tasks', 'schedule_tasks/schedule_tasks',
+    'score/score',
     'task_history/task_history',
     'user_editor/user_editor',
     'permission', 'services'], function() {
 
   angular.module('AppModule', ['AppBarModule', 'SetupTasksModule',
       'TasksModule', 'ScheduleTasksModule',
+      'ScoreModule',
       'TaskHistoryModule',
       'UserEditorModule',
       'PermissionModule', 'ServicesModule'])

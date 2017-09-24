@@ -13,8 +13,16 @@ function get_scores($classId) {
 
   $userIds = $medoo->select("users", "id", ["classId" => $classId]);
   return keyed_by_id($medoo->select("scores", 
-  		["user_id", "type1", "score1", "type2", "score2"], 
-  		["user_id" => $userIds]), "user_id");	
+      ["user_id", "type1", "score1", "type2", "score2"], 
+      ["user_id" => $userIds]), "user_id");  
+}
+
+function get_score($userId) {
+  global $medoo;
+  
+  $results = $medoo->select("scores", ["type1", "score1", "type2", "score2"],
+      ["user_id" => $userId]);
+  return empty($results) ? null : current($results);
 }
 
 function update_scores($score) {
@@ -35,29 +43,34 @@ if (empty($_SESSION["user"])) {
 
 if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   $resource_id = $_GET["rid"];
-  if ($resource_id == "scores" && !empty($_GET["class_id"])) {
-  	$classId = $_GET["class_id"];
-    $classes = get_classes(["id" => $classId]);
-    if (empty($classes)) return;
-
-    $classInfo = $classes[$classId];
-  	$response = canRead($user, $classInfo) 
-  	    ? get_scores($classId) 
-  	    : permision_denied_error();
+  if ($resource_id == "scores") {
+    // Return my score if class_id is not provided.
+    if (empty($_GET["class_id"])) {
+      $response = get_score($user->id);
+    } else {
+      $classId = $_GET["class_id"];
+      $classes = get_classes(["id" => $classId]);
+      if (empty($classes)) return;
+  
+      $classInfo = $classes[$classId];
+      $response = canRead($user, $classInfo) 
+          ? get_scores($classId) 
+          : permision_denied_error();
+    }
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];
 
   if ($resource_id == "scores" && !empty($_POST["user_id"])) {
-  	$user_id = $_POST["user_id"];
-  	$users = get_users(null, null, $user_id);
-  	if (empty($users)) return;
-  	
-  	unset($_POST["rid"]);
-  	$targetUser = current($users);
-  	$response = canWrite($user, $targetUser->classInfo)
-  	    ? ["updated" => update_scores($_POST)]
-  	    : permision_denied_error();
+    $user_id = $_POST["user_id"];
+    $users = get_users(null, null, $user_id);
+    if (empty($users)) return;
+    
+    unset($_POST["rid"]);
+    $targetUser = current($users);
+    $response = canWrite($user, $targetUser->classInfo)
+        ? ["updated" => update_scores($_POST)]
+        : permision_denied_error();
   }
 }
 
