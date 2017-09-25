@@ -56,16 +56,22 @@ define('schedule_editor/schedule_editor',
                     $scope.users[id] = response.data.users[id].name;
                   }
 
-                  $scope.schedule_groups[0] = {
-                    id: 0,
-                    classId: $scope.classId,
-                    course_group: 0,
-                    name: '新的学修安排模板',
-                    start_time: utils.unixTimestamp(utils.getDefaultStartTime())
-                  };
-
                   return $scope.schedule_groups;
                 });
+              };
+              
+              $scope.addTerm = function() {
+                var term = utils.last($scope.schedule_groups).term + 1;
+                $scope.schedule_groups[0] = {
+                  id: 0,
+                  term: term,
+                  editing: true,
+                  classId: $scope.classId,
+                  course_group: 0,
+                  name: '第{0}学期'.format(term),
+                  start_time: utils.unixTimestamp(utils.getDefaultStartTime())
+                };
+                $scope.term = term;
               };
               
               $scope.update = function(schedule, key, value) {
