@@ -121,8 +121,31 @@ define('learning_records/learning_records', [
                       $scope.exportedRecordsAlt);
                 });
               };
+              function exportLimitedCourse(group) {
+                var data = '';
+                utils.forEach(group.limited_courses, function(course) {
+                  data += '\t' + course.name + '\t';
+                });
+                data += '\n';
+                utils.forEach($scope.users, function(user) {
+                  data += user.name;
+                  utils.forEach(group.limited_courses, function(course) {
+                    var record = user.records[course.id];
+                    var video = (record && record.video) ? '' : '未听Z';
+                    var text = (record && record.text) ? '' : '未看Z';
+                    data += '\t' + video + '\t' + text;
+                  });
+                  data += '\n';
+                });
+                return data;
+              }
+              $scope.exportLimitedCourse = function(group) {
+                $scope.exportedLimitedRecords = utils.createDataUrl(
+                    exportLimitedCourse(group),
+                    $scope.exportedLimitedRecords);
+              };
             },
-            templateUrl : 'js/learning_records/learning_records.html?tag=201705242138'
+            templateUrl : 'js/learning_records/learning_records.html?tag=201709252208'
           };
         });
 });

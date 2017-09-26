@@ -78,6 +78,15 @@
             </div>
           </div>
         </div>
+        <div ng-if="group.limited_course_group">
+	        <iron-icon class="small-icon clickable" icon="cloud-download"
+	            title="导出限制性课程记录" ng-click="exportLimitedCourse(group)">
+	        </iron-icon>
+	        <a ng-if="exportedLimitedRecords" href="{{exportedLimitedRecords}}"
+	            download="第{{group.term}}学期限制性课程.txt">
+	          第{{group.term}}学期限制性课程.txt
+	        </a>
+        </div>
         <div ng-if="group.limited_course_group" class="css-table odd-even">
           <div class="css-table-row header">
             <div class="css-table-cell name-field"></div>
