@@ -1,8 +1,8 @@
 { "nothing" : "<?php /* This makes the following content invisible for web access",
   "localhost": {
     "servername": "127.0.0.1",
-    "username": "root",
-    "password": "2345678901",
+    "username": "${MYSQL_USERNAME}",
+    "password": "${MYSQL_PASSWORD}",
     "dbname": "buddcourses",
     "zbServiceUrl": "http://www.zhibei.info/zb"
   },
