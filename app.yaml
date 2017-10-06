@@ -1,0 +1,17 @@
+runtime: php55
+api_version: 1
+
+handlers:
+# Serve images as static resources.
+- url: /(.+\.(html|js|css|ico))$
+  static_files: \1
+  upload: .+\.(html|js|css)$
+# Serve php scripts.
+- url: /(cgi-bin/.+\.php)$
+  script: \1
+- url: /(js/*)$
+  static_files: \1
+  upload: /(js/*)$
+- url: /(images/*)$
+  static_files: \1
+  upload: /(images/*)$
