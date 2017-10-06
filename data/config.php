@@ -1,8 +1,8 @@
 { "nothing" : "<?php /* This makes the following content invisible for web access",
   "localhost": {
     "servername": "127.0.0.1",
-    "username": "${MYSQL_USERNAME}",
-    "password": "${MYSQL_PASSWORD}",
+    "username": "root",
+    "password": "2345678901",
     "dbname": "buddcourses",
     "zbServiceUrl": "http://www.zhibei.info/zb"
   },
@@ -28,6 +28,13 @@
     "dbname": "buddcourses",
     "session_path": "${OPENSHIFT_TMP_DIR}",
     "zbServiceUrl": ""
+  },
+  "bicw-154304.appspot.com": {
+    "servername": "localhost",
+    "username": null,
+    "password": null,
+    "dbname": "buddcourses",
+    "zbServiceUrl": "http://www.zhibei.info/zb"
   },
   "closing": "*/?>"
 }
