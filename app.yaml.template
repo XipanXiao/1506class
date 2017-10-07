@@ -3,21 +3,17 @@ api_version: 1
 
 handlers:
 # Serve images as static resources.
-- url: /(.+\.(html|js|css|ico))$
+- url: /(.+\.(html|js|css|ico|jpg))$
   static_files: \1
-  upload: .+\.(html|js|css)$
+  upload: .+\.(html|js|css|ico|jpg)$
   secure: always
 # Serve php scripts.
 - url: /(cgi-bin/.+\.php)$
   script: \1
   secure: always
-- url: /(js/*)$
+- url: /(images/.+\.jpg)$
   static_files: \1
-  upload: /(js/*)$
-  secure: always
-- url: /(images/*)$
-  static_files: \1
-  upload: /(images/*)$
+  upload: images/.+\.jpg
   secure: always
 - url: /
   static_files: index.html
