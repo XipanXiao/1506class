@@ -21,18 +21,10 @@
     "session_path": "${OPENSHIFT_TMP_DIR}",
     "zbServiceUrl": "http://www.zhibei.info/zb"
   },
-  "buddcourses-bicwdev.rhcloud.com": {
-    "servername": "${OPENSHIFT_MYSQL_DB_HOST}",
-    "username": "${OPENSHIFT_MYSQL_DB_USERNAME}",
-    "password": "${OPENSHIFT_MYSQL_DB_PASSWORD}",
-    "dbname": "buddcourses",
-    "session_path": "${OPENSHIFT_TMP_DIR}",
-    "zbServiceUrl": ""
-  },
-  "bicw-154304.appspot.com": {
-    "servername": "localhost",
-    "username": null,
-    "password": null,
+  "bicw-class.appspot.com": {
+    "socket": "${MYSQL_SOCKET}",
+    "username": "${MYSQL_USERNAME}",
+    "password": "${MYSQL_PASSWORD}",
     "dbname": "buddcourses",
     "zbServiceUrl": "http://www.zhibei.info/zb"
   },

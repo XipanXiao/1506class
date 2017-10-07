@@ -25,6 +25,7 @@
         'database_type' => 'mysql',
         'database_name' => $config->dbname,
         'server' => $config->servername,
+        'socket' => $config->socket,
         'username' => $config->username,
         'password' => $config->password,
         'charset' => $charset == NULL ? 'utf8' : $charset,
