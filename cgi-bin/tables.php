@@ -506,7 +506,7 @@ function convert_schedule_record($source, $string_to_int = false) {
 /// Whether all fields in the array are all 0.
 function is_empty_data($datas, $fields) {
   foreach ($fields as $field) {
-    if ($datas[$field]) return false;
+    if (!empty($datas[$field])) return false;
   }
 
   return true;
