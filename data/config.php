@@ -1,6 +1,7 @@
 { "nothing" : "<?php /* This makes the following content invisible for web access",
   "localhost": {
     "servername": "127.0.0.1",
+    "socket": null,
     "username": "root",
     "password": "2345678901",
     "dbname": "buddcourses",
@@ -8,6 +9,7 @@
   },
   "10.254.151.229": {
     "servername": "127.0.0.1",
+    "socket": null,
     "username": "root",
     "password": "0217",
     "dbname": "buddcourses",
@@ -22,6 +24,7 @@
     "zbServiceUrl": "http://www.zhibei.info/zb"
   },
   "bicw-class.appspot.com": {
+    "servername": null,
     "socket": "${MYSQL_SOCKET}",
     "username": "${MYSQL_USERNAME}",
     "password": "${MYSQL_PASSWORD}",
