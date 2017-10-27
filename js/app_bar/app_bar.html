@@ -20,6 +20,10 @@
         href="local.html">
       地方小组
     </a>
+    <a ng-if="!isIn('/user_stats.html') && isSysAdmin()" class="app-bar-link" 
+        href="user_stats.html">
+      用户统计
+    </a>
     <a ng-if="!isIn('/admin.html') && isAdmin()" class="app-bar-link" 
         href="admin.html">
       学修管理

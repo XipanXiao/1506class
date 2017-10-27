@@ -9,3 +9,5 @@ order.js
 order_admin.js
 
 invoice_print.js
+
+user_stats.js

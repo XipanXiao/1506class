@@ -5,6 +5,8 @@ rm -f index.js
 for f in `cat index.deps`; do cat $f >> index.js; done;
 rm -f local.js
 for f in `cat local.deps`; do cat $f >> local.js; done;
+rm -f user_stats.js
+for f in `cat user_stats.deps`; do cat $f >> user_stats.js; done;
 rm -f assignment.js
 for f in `cat assignment.deps`; do cat $f >> assignment.js; done;
 rm -f order.js
