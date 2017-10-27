@@ -71,13 +71,14 @@ define('user_stats_app', [
               }
               
               $scope.users = [];
+              $scope.allUsers = [];
               var requests = [getClassIds];
               function collectClassUsers() {
                 var requests = [];
                 utils.forEach(classIds, function(classId) {
                   requests.push(function() {
                     return rpc.get_users(null, classId).then(function(response) {
-                      return $scope.users = 
+                      return $scope.users = $scope.allUsers = 
                           $scope.users.concat(utils.toList(response.data));
                     });
                   });
