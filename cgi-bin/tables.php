@@ -363,14 +363,14 @@ function clone_user($user_id) {
 
   $email = $user["email"]. ".deleted";
   if (!$medoo->update("users", ["email" => $email], ["id" => $user_id])) {
-  	return 0;
+    return 0;
   }
   
   unset($user["id"]);
   unset($user["internal_id"]);
   $newId = $medoo->insert("users", $user);
   if (!$newId) {
-  	return 0;
+    return 0;
   }
 
   remove_user($user_id);
@@ -728,7 +728,12 @@ function get_state_stats($countryCode) {
 function get_state_users($countryCode, $stateIndex) {
   global $medoo;
   
+  $deletedClassIds = $medoo->select("classes", "id", ["deleted" => 1]);
   return $medoo->select("users", "*",
-      ["AND" => ["country" => $countryCode, "state" => $stateIndex]]);
+      ["AND" => [
+          "country" => $countryCode, 
+          "state" => $stateIndex,
+          "classId[!]" => $deletedClassIds
+      ]]);
 }
 ?>
