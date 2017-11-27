@@ -114,7 +114,7 @@ define('schedule_group_editor/schedule_group_editor',
                 }
 
                 // Appending new schedules.
-                for (; week < weeks; week++) {
+                for (; week < weeks || courseIndex < course_ids.length; week++) {
                   var courseId = 0;
                   courseId = course_ids[courseIndex++] || null;
 
