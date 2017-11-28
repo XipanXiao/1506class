@@ -66,6 +66,14 @@ define('user_stats_app', [
               function getClassIds() {
                 return rpc.get_classes(null, departmentId)
                     .then(function(response) {
+                  // Exclude '退出' classes from the all departments results.
+                  if (!departmentId) {
+                    function isNotQuit(classInfo) {
+                      return parseInt(classInfo.department_id) != 9; 
+                    }
+                    var classes = utils.where(response.data, isNotQuit);
+                    return classIds = utils.keys(classes);
+                  }
                   return classIds = utils.keys(response.data);
                 });
               }
