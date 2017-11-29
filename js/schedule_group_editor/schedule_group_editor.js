@@ -57,6 +57,15 @@ define('schedule_group_editor/schedule_group_editor',
               };
               scope.courseGroupChanged = function(courses, second) {
                 var group = scope.group;
+                var clearing = utils.isEmpty(courses);
+                if (clearing) {
+                  if (second) {
+                    group.course_group2 = null;
+                  } else {
+                    alert('主课不能为空');
+                    return;
+                  }
+                }
                 var course_ids1, course_ids2, course_ids;
                 group.courses = utils.mix_in(group.courses || {}, courses);
 
@@ -78,14 +87,16 @@ define('schedule_group_editor/schedule_group_editor',
                     course_ids2 = courseIds;
                   }
 
-                  if (course_ids2.length != course_ids1.length) {
+                  if (!clearing && course_ids2.length != course_ids1.length) {
                     alert('Secondary course should have same lessons as the' +
                         ' primary one.');
                     return;
                   }
 
-                  courseIds = scope.merge_courses(course_ids1, course_ids2);
-                  scope.arrange_schedules(courseIds, true);
+                  if (!clearing) {
+                    courseIds = scope.merge_courses(course_ids1, course_ids2);
+                  }
+                  scope.arrange_schedules(courseIds, !clearing);
                 });
               };
 
@@ -106,6 +117,8 @@ define('schedule_group_editor/schedule_group_editor',
                     schedule.course_id = course_ids[courseIndex++];
                     if (hasSecondCourse) {
                       schedule.course_id2 = course_ids[courseIndex++];
+                    } else {
+                      schedule.course_id2 = null;
                     }
                   }
                   schedule_id = utils.maxKey(group.schedules) + 1;

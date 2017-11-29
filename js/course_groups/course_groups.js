@@ -19,7 +19,13 @@ define('course_groups/course_groups',
 
               rpc.get_course_groups().then(function(response) {
                 $scope.course_groups = response.data;
-                $scope.groupIds = utils.positiveKeys($scope.course_groups);
+                var groupIds = utils.positiveKeys($scope.course_groups);
+                groupIds.sort(function(id1, id2) {
+                  return response.data[id1].name
+                      .localeCompare(response.data[id2].name);
+                });
+                $scope.groupIds = [0].concat(groupIds);
+                $scope.course_groups[0] = {name: '-- 清除 --'};
                 $scope.select($scope.groupId);
               });
 
@@ -37,7 +43,10 @@ define('course_groups/course_groups',
                 $scope.selected.id = id;
                 $scope.group = $scope.course_groups[id];
 
-                if (!id) return;
+                if (!id) {
+                  $scope.onChange({courses: {}});
+                  return;
+                }
                 
                 $scope.groupId = id;
 
