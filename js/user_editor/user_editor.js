@@ -57,13 +57,17 @@ define('user_editor/user_editor',
         function checkClassChange() {
           var classInfo = $scope.user.classInfo;
           var previousInfo = $scope.originalUser.classInfo;
+          if (parseInt(previousInfo.department_id) == 1 &&
+              parseInt(classInfo.department_id) != 1) {
+            return utils.truePromise();
+          }
           if (classInfo.department_id != previousInfo.department_id ||
               classInfo.start_year != previousInfo.start_year) {
             if (confirm('需要清除{0}的所有学修记录吗？'.format($scope.user.name))) { 
-              clearLearningRecord();
+              return clearLearningRecord();
             }
-            return utils.truePromise();
           }
+          return utils.truePromise();
         }
         
         $scope.$watch('editing', function() {
