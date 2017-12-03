@@ -19,18 +19,17 @@ if (empty($_SESSION["user"])) {
   }
 }
 
-if (!function_exists('http_parse_cookies')) {
-	function http_parse_cookies($raw_headers) {
-		preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $raw_headers, $matches);
+function my_http_parse_cookies($raw_headers) {
+  $pattern = "#Set-Cookie:\\s+(?<cookie>[^=]+=[^;]+)#m"; 
 
-		$cookies = array();
-		foreach($matches[1] as $item) {
-			parse_str($item, $cookie);
-			$cookies = array_merge($cookies, $cookie);
-		}
+  preg_match_all($pattern, $raw_headers, $matches);
+  $cookies = array();
+  foreach($matches[1] as $item) {
+    parse_str($item, $cookie);
+    $cookies = array_merge($cookies, $cookie);
+  }
 
-		return $cookies;
-	}
+  return $cookies;
 }
 
 $ch = null;
@@ -89,7 +88,7 @@ try {
   $header = substr($response, 0, $header_size);
   $body = substr($response, $header_size);
   
-  $cookies = http_parse_cookies($header);
+  $cookies = my_http_parse_cookies($header);
 
   // Pass cookies to the client with a 'PROXY_' prefix in their name.
   foreach ($cookies as $key => $value) {
