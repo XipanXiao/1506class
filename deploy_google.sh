@@ -1,4 +1,4 @@
 git pull
-./aggregate.js
+./aggregate.sh
 gcloud app deploy app.yaml --project bicw-class
 
