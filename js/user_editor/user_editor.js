@@ -28,6 +28,9 @@ define('user_editor/user_editor',
         $scope.isSysAdmin = function() {
           return perm.isSysAdmin();
         };
+        $scope.isYearLeader = function() {
+          return perm.isYearLeader();
+        };
 
         $scope.$watch('user', function() {
           $scope.editing = null;
