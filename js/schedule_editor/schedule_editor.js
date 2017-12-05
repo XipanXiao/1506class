@@ -299,8 +299,14 @@ define('schedule_editor/schedule_editor',
                 $scope.insertSchedule(key, parseInt(scheduleId));
                 schedule.id = null;
               };
+              $scope.removeVacation = function(group, scheduleId) {
+                rpc.remove_schedule(scheduleId).then(function(response) {
+                  if (!response.data.deleted) return;
+                  delete group.schedules[scheduleId];
+                });
+              };
             },
-            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201707140808'
+            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201712050808'
           };
         });
 });

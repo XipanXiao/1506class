@@ -67,6 +67,9 @@
         <iron-icon class="hover-icon" icon="add" title="在本节课后面添加假日"
             ng-click="addVacation(group, schedule.id, $index)">
         </iron-icon>
+        <iron-icon class="hover-icon" icon="delete" title="删除" ng-if="vacation(schedule)"
+            ng-click="removeVacation(group, schedule.id)">
+        </iron-icon>
         <iron-icon class="hover-icon" icon="mail" ng-if="!vacation(schedule)"
             ng-click="notify(group, schedule, $index)"
             title="{{schedule.notified ? '上次发送' + schedule.notified : '发送上课通知'}}">
