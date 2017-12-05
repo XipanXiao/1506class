@@ -88,9 +88,13 @@ define('schedule_group_editor/schedule_group_editor',
                   }
 
                   if (!clearing && course_ids2.length != course_ids1.length) {
-                    alert('Secondary course should have same lessons as the' +
-                        ' primary one.');
-                    return;
+                    if (course_ids2.length > course_ids1.length) {
+                      alert('Secondary course should have same lessons as the' +
+                          ' primary one.');
+                      return;
+		    }
+                    var len = course_ids1.length - course_ids2.length;
+                    course_ids2.length = course_ids2.concat(new Array(len).fill(null));
                   }
 
                   if (!clearing) {
