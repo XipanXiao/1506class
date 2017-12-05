@@ -94,7 +94,7 @@ define('schedule_group_editor/schedule_group_editor',
                       return;
 		    }
                     var len = course_ids1.length - course_ids2.length;
-                    course_ids2.length = course_ids2.concat(new Array(len).fill(null));
+                    course_ids2 = course_ids2.concat(new Array(len).fill(null));
                   }
 
                   if (!clearing) {
