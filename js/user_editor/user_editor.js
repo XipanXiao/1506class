@@ -117,7 +117,7 @@ define('user_editor/user_editor',
             });
           }
           
-          utils.requestOneByOne([updateUser, getClassInfo, checkClassChange]);
+          utils.requestOneByOne([updateUser, getClassInfo]);
         };
         
         $scope.admining = window.location.href.indexOf('admin.html') > 0;
