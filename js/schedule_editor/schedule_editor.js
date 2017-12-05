@@ -61,7 +61,8 @@ define('schedule_editor/schedule_editor',
               };
               
               $scope.addTerm = function() {
-                var term = utils.last($scope.schedule_groups).term + 1;
+                var term = utils.isEmpty($scope.schedule_groups) ? 
+                    1 : utils.last($scope.schedule_groups).term + 1;
                 $scope.schedule_groups[0] = {
                   id: 0,
                   term: term,

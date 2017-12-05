@@ -61,7 +61,7 @@ define('schedule_group_editor/schedule_group_editor',
                 if (clearing) {
                   if (second) {
                     group.course_group2 = null;
-                  } else {
+                  } else if (group.course_group) {
                     alert('主课不能为空');
                     return;
                   }
