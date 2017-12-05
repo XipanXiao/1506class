@@ -75,4 +75,10 @@ function getStartPage($user) {
   if (isOrderManager($user)) return "order_admin.html";
   return "index.html";
 }
+
+abstract class Roles {
+  const SYS_ADMIN = 0xFFFF;
+  const YEAR_LEADER = 0x3F;
+  const CLASS_LEADER = 0xF;
+}
 ?>

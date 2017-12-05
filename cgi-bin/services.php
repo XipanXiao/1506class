@@ -67,6 +67,16 @@ function isSameYear($another) {
   return $classes[$classId]["start_year"] == $user->classInfo["start_year"];
 }
 
+function checkPermission($role) {
+  global $user;
+
+  if (($user->permission & $role) == $role) return;
+  
+  $response = permision_denied_error();
+  echo json_encode($response);
+  exit();
+}
+
 if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   $resource_id = $_GET["rid"];
   $classId = empty($_GET["classId"]) ? $user->classId : $_GET["classId"];
@@ -280,24 +290,24 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     isset ( $_REQUEST["rid"] )) {
 
   $resource_id = $_REQUEST["rid"];
-  if (!isSysAdmin($user) 
-      && $resource_id != "task_records") {
-    $response = permision_denied_error();
-    echo json_encode($response);
-    exit();
-  }
 
   if ($resource_id == "course_group") {
+    checkPermission(Roles::SYS_ADMIN);
     $response = ["deleted" => remove_course_group($_REQUEST["id"])];
   } elseif ($resource_id == "schedule_group") {
+    checkPermission(Roles::YEAR_LEADER);
     $response = ["deleted" => remove_schedule_group($_REQUEST["id"])];
   } elseif ($resource_id == "course") {
+    checkPermission(Roles::SYS_ADMIN);
     $response = ["deleted" => remove_course($_REQUEST["id"])];
   } elseif ($resource_id == "schedule") {
+    checkPermission(Roles::YEAR_LEADER);
     $response = ["deleted" => remove_schedule($_REQUEST["id"])];
   } elseif ($resource_id == "class") {
+    checkPermission(Roles::SYS_ADMIN);
     $response = ["deleted" => remove_class($_REQUEST["id"])];
   } elseif ($resource_id == "task") {
+    checkPermission(Roles::SYS_ADMIN);
     $response = ["deleted" => remove_task($_REQUEST["id"])];
   } elseif ($resource_id == "task_records") {
     $record = get_task_record($_REQUEST["id"]);
@@ -312,6 +322,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       ];
     }
   } elseif ($resource_id == "user") {
+    checkPermission(Roles::SYS_ADMIN);
     $userId = $_REQUEST["id"];
 
     $userToDelete = get_user_by_id($userId);
@@ -320,6 +331,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 
     $response = ["deleted" => remove_user($userId)];
   } elseif ($resource_id == "department") {
+    checkPermission(Roles::SYS_ADMIN);
     $response = ["deleted" => remove_department($_REQUEST["id"])];
   }
 }
