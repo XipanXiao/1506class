@@ -28,6 +28,9 @@ define('user_editor/user_editor',
         $scope.isSysAdmin = function() {
           return perm.isSysAdmin();
         };
+        $scope.isAdmin = function() {
+          return perm.isAdmin();
+        };
         $scope.isYearLeader = function() {
           return perm.isYearLeader();
         };
@@ -123,7 +126,7 @@ define('user_editor/user_editor',
         $scope.admining = window.location.href.indexOf('admin.html') > 0;
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201712061627'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201712061350'
     };
   });
 });

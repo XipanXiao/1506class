@@ -5,7 +5,8 @@
         <div class="css-table-cell">姓名</div>
         <div class="css-table-cell">{{user.name}}</div>
         <div class="css-table-cell">
-          <iron-icon class="selectable" icon="chevron-right" ng-click="editing = 'name'">
+          <iron-icon class="selectable" ng-show="isAdmin()" icon="chevron-right"
+              ng-click="editing = 'name'">
           </iron-icon>
         </div>          
       </div>
