@@ -58,6 +58,9 @@
             ng-change="reportTask(schedule.course_id)"
             ng-if="!vacation(schedule)" ng-disabled="!user.classInfo.self_report">
       </div>
+      <div ng-if="schedule.middle" class="report-alert vacation">
+        <iron-icon icon="report"></iron-icon>报数报数报数！
+      </div>
     </div>
   </div>
   <div ng-if="hasLimitedCourses(group)">

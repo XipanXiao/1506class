@@ -512,6 +512,12 @@ google-chart {
 .report-week {
   background-color: green !important;
   color: white;  
+  position: relative;
+}
+
+.report-alert {
+  padding: 2px 16px;
+  position: absolute;
 }
 
 .bio {

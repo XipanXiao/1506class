@@ -100,14 +100,15 @@ define('schedule_editor/schedule_editor',
                 var vacations = utils.where(schedules, $scope.vacation);
                 var total = utils.keys(schedules).length;
                 var effective = total - utils.keys(vacations).length; 
-                var middle = Math.floor(effective / 2) + 1;
+                var middle = parseInt(group.mid_week) || 
+                    (Math.floor(effective / 2) + 1);
 
                 var i = 0;
                 for(var id in schedules) {
                   var schedule = schedules[id];
 
                   if ($scope.vacation(schedule)) continue;
-                  if (i++ == middle) {
+                  if (++i == middle) {
                     schedule.middle = true;
                     return;
                   }
@@ -306,7 +307,7 @@ define('schedule_editor/schedule_editor',
                 });
               };
             },
-            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201712050808'
+            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201712052203'
           };
         });
 });
