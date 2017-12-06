@@ -145,7 +145,7 @@ define('learning_records/learning_records', [
                     $scope.exportedLimitedRecords);
               };
             },
-            templateUrl : 'js/learning_records/learning_records.html?tag=201709252208'
+            templateUrl : 'js/learning_records/learning_records.html?tag=201712062208'
           };
         });
 });

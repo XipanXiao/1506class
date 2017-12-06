@@ -102,7 +102,7 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                 }
               };
             },
-            templateUrl : 'js/schedule_tasks/schedule_tasks.html?tag=201712052203'
+            templateUrl : 'js/schedule_tasks/schedule_tasks.html?tag=201712062203'
           };
         });
 });
