@@ -123,7 +123,7 @@ define('user_editor/user_editor',
         $scope.admining = window.location.href.indexOf('admin.html') > 0;
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201712031627'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201712061627'
     };
   });
 });
