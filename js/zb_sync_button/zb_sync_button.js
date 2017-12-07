@@ -29,8 +29,10 @@ define('zb_sync_button/zb_sync_button',
               if (!scope.classInfo) return;
 
               if (scope.type == 'schedule_task') {
+                var halfTerm = scope.getHalfTerms().length - 1;
                 scope.zbUrl = zbrpc.get_report_result_url(scope.classInfo.zb_id,
-                    scope.scheduleGroup ? scope.scheduleGroup.term * 2 : '');
+                    scope.scheduleGroup ? 
+                        scope.scheduleGroup.term * 2 + halfTerm : '');
               } else {
                 scope.zbUrl = zbrpc.get_class_info_url(scope.classInfo.zb_id);
               }

@@ -276,8 +276,17 @@ define('utils', [], function() {
       getEndTime: function(scheduleGroup) {
         var startDate = this.toDateTime(scheduleGroup.start_time);
         var endTerm = new Date(startDate.getTime());
-        // Each term lasts for 26 weeks.
-        var weeks = this.keys(scheduleGroup.schedules).length - 1;
+        var scheduleIds = this.keys(scheduleGroup.schedules);
+        var weeks = scheduleIds.length - 1;
+        function vacation(schedule) {
+          return !parseInt(schedule.course_id) && !parseInt(schedule.course_id2);
+        }
+        // Trim ending holidays.
+        for (var index = weeks; index >= 0; index--) {
+          var schedule = scheduleGroup.schedules[scheduleIds[index]];
+          if (!vacation(schedule)) break; 
+          weeks--;
+        }
         endTerm.setDate(startDate.getDate() + 7 * weeks + 1);
         return this.unixTimestamp(endTerm);
       },
