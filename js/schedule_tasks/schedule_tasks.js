@@ -30,7 +30,7 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                   $scope.schedule_groups = response.data.groups;
                   $scope.users = response.data.users;
                   $scope.records = $scope.users[$scope.user.id].records;
-                  utils.forEach($scope.schedule_groups, $scope._calcMiddleWeek);
+                  utils.forEach($scope.schedule_groups, utils.calcMiddleWeek);
                 });
               };
               
@@ -82,24 +82,6 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                 var tm = group && group.end_time;
                 return tm ?
                     '报数已截止于' + utils.toDateTime(tm).toLocaleString() : '';
-              };
-              $scope._calcMiddleWeek = function(group) {
-                var schedules = group.schedules;
-                var vacations = utils.where(schedules, $scope.vacation);
-                var total = utils.keys(schedules).length;
-                var effective = total - utils.keys(vacations).length; 
-                var middle = Math.floor(effective / 2) + 1;
-
-                var i = 0;
-                for(var id in schedules) {
-                  var schedule = schedules[id];
-
-                  if ($scope.vacation(schedule)) continue;
-                  if (i++ == middle) {
-                    schedule.middle = true;
-                    return;
-                  }
-                }
               };
             },
             templateUrl : 'js/schedule_tasks/schedule_tasks.html?tag=201712062203'

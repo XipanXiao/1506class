@@ -46,7 +46,7 @@ define('schedule_editor/schedule_editor',
                   var group = utils.first($scope.schedule_groups);
                   if (group) {
                     $scope.term = group.term;
-                    $scope._calcMiddleWeek(group);
+                    utils.calcMiddleWeek(group);
                   } else {
                     $scope.schedule_groups = {};
                   }
@@ -94,25 +94,6 @@ define('schedule_editor/schedule_editor',
               };
               $scope.vacation = function(schedule) {
                 return !schedule.course_id || !parseInt(schedule.course_id);
-              };
-              $scope._calcMiddleWeek = function(group) {
-                var schedules = group.schedules;
-                var vacations = utils.where(schedules, $scope.vacation);
-                var total = utils.keys(schedules).length;
-                var effective = total - utils.keys(vacations).length; 
-                var middle = parseInt(group.mid_week) || 
-                    (Math.floor(effective / 2) + 1);
-
-                var i = 0;
-                for(var id in schedules) {
-                  var schedule = schedules[id];
-
-                  if ($scope.vacation(schedule)) continue;
-                  if (++i == middle) {
-                    schedule.middle = true;
-                    return;
-                  }
-                }
               };
               window.dragSchedule = function(event) {
                 event.dataTransfer.setData("text", event.target.id);

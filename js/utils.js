@@ -33,7 +33,7 @@ define('utils', [], function() {
   var enroll_tasks = ['welcomed', 'wechated', 'yyed', 'tested', 'bookordered'];
 
   return angular.module('UtilsModule', []).factory('utils', function($q) {
-    return {
+    var utils = {
       countryLabels: window.countryData.getCountryMap(),
       us_states: {
         "AL": "Alabama",
@@ -278,17 +278,14 @@ define('utils', [], function() {
         var endTerm = new Date(startDate.getTime());
         var scheduleIds = this.keys(scheduleGroup.schedules);
         var weeks = scheduleIds.length - 1;
-        function vacation(schedule) {
-          return !parseInt(schedule.course_id) && !parseInt(schedule.course_id2);
-        }
         // Trim ending holidays.
         for (var index = weeks; index >= 0; index--) {
           var schedule = scheduleGroup.schedules[scheduleIds[index]];
-          if (!vacation(schedule)) break; 
+          if (!utils.vacation(schedule)) break; 
           weeks--;
         }
         endTerm.setDate(startDate.getDate() + 7 * weeks + 1);
-        return this.unixTimestamp(endTerm);
+        return utils.unixTimestamp(endTerm);
       },
       /// Given a date like 2015-12-05 18:00:00, returns 2015-12-01 00:00:00,
       /// a date like 05-28, returns 06-01.
@@ -464,6 +461,31 @@ define('utils', [], function() {
         midTerm.setDate(startDate.getDate() + 7 * 12);
         return this.unixTimestamp(midTerm);
       },
+      /// Returns true if [schedule] has no classes.
+      vacation: function(schedule) {
+        return !parseInt(schedule.course_id);
+      },
+      /// Sets middle to true for the schedule of the week for middle 
+      /// term reporting for the schedule [group].
+      calcMiddleWeek: function(group) {
+        var schedules = group.schedules;
+        var vacations = utils.where(schedules, utils.vacation);
+        var total = utils.keys(schedules).length;
+        var effective = total - utils.keys(vacations).length;
+        var middle = parseInt(group.mid_week) ||
+            Math.floor(effective / 2) + 1;
+
+        var i = 0;
+        for(var id in schedules) {
+          var schedule = schedules[id];
+
+          if (utils.vacation(schedule)) continue;
+          if (++i == middle) {
+            schedule.middle = true;
+            return;
+          }
+        }
+      },
       toGuanxiuHour: function(minutes) {
         return Math.min(minutes/60.0, this.maxGuanxiuTime).toFixed(1);
       },
@@ -505,5 +527,6 @@ define('utils', [], function() {
       // in time. Add this extra 15 days to avoid a zero number.
       extraReportTime: 3600 * 24 * 15
     };
+    return utils;
   });
 });
