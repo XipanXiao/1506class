@@ -458,7 +458,8 @@ define('utils', [], function() {
       getMidTerm: function(scheduleGroup) {
         var startDate = this.toDateTime(scheduleGroup.start_time);
         var midTerm = new Date(startDate.getTime());
-        midTerm.setDate(startDate.getDate() + 7 * 12);
+        var weeks = parseInt(scheduleGroup.mid_week) || 12;
+        midTerm.setDate(startDate.getDate() + 7 * weeks);
         return this.unixTimestamp(midTerm);
       },
       /// Returns true if [schedule] has no classes.
