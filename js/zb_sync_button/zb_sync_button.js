@@ -1060,6 +1060,11 @@ define('zb_sync_button/zb_sync_button',
             utils.forEach(scope.users, function(user) {
               var localScore = scores[user.id];
               var score = scope.scores[user.zb_id];
+              if (!score) {
+                alert('用户"{0}"不在智悲系统本班中，'.format(user.name) +
+                    '请先同步用户或去智悲系统转班');
+                return;
+              }
               if (localScore) {
                 merge_from_local(localScore, score);
               } else {
