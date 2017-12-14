@@ -297,7 +297,8 @@ function get_teachers() {
   global $medoo;
 
   $sql = sprintf("SELECT id, name, nickname, email FROM users".
-      " WHERE (permission & %d)=%d", TEACHER, TEACHER);
+      " WHERE ((permission & %d)=%d) AND ((permission & %d) != %d);", 
+      TEACHER, TEACHER, INSPECTOR, INSPECTOR);
 
   $result = $medoo->query($sql)->fetchAll();
   return keyed_by_id($result);

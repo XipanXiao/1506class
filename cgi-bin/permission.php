@@ -1,12 +1,13 @@
 <?php
 define("TEACHER", 0x403);
+define("INSPECTOR", 0x57);
 
 function isSysAdmin($user) {
   return ($user->permission & 0xFFFF) == 0xFFFF;
 }
 
 function isInspector($user) {
-  return ($user->permission & 0x57) == 0x57;	
+  return ($user->permission & INSPECTOR) == INSPECTOR;	
 }
 
 function isYearLeader($user) {
