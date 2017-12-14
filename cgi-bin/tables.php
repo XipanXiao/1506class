@@ -293,12 +293,14 @@ function get_users($email, $classId = null, $user_id = null, $sn = null) {
   return $users;
 }
 
-function get_admins($permission) {
+function get_teachers() {
   global $medoo;
 
-  return keyed_by_id($medoo->select("users",
-      ["id", "name", "nickname", "email"],
-      ["permission" => $permission]));
+  $sql = sprintf("SELECT id, name, nickname, email FROM users".
+      " WHERE (permission & %d)=%d", TEACHER, TEACHER);
+
+  $result = $medoo->query($sql)->fetchAll();
+  return keyed_by_id($result);
 }
 
 function remove_user($id) {

@@ -139,9 +139,8 @@ define('services', [], function() {
         });
       },
       
-      get_admins: function(permission) {
-        var url = "{0}?rid=admins&permission={1}".format(serviceUrl,
-            permission);
+      get_teachers: function() {
+        var url = "{0}?rid=teachers".format(serviceUrl);
         return $http.get(url);
       },
 

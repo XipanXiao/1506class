@@ -97,10 +97,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = get_class_candidates($user);
   } elseif ($resource_id == "course_groups") {
     $response = get_course_groups($_GET["detailed"]);
-  } elseif ($resource_id == "admins") {
-    $response = isAdmin($user) 
-        ? get_admins(intval($_GET["permission"])) 
-        : permision_denied_error();
+  } elseif ($resource_id == "teachers") {
+    $response = isAdmin($user) ? get_teachers() : permision_denied_error();
   } elseif ($resource_id == "tasks") {
     if (isset($_GET["department_id"])) {
       $response = get_tasks($_GET["department_id"]);

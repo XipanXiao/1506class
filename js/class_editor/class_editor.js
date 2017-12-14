@@ -60,10 +60,11 @@ define('class_editor/class_editor', ['departments/departments',
               }
               
               scope.teachers = {};
-              rpc.get_admins(perm.ROLES.TEACHER).then(function(response) {
+              rpc.get_teachers().then(function(response) {
                 for (var id in response.data) {
                   var teacher = response.data[id];
-                  scope.teachers[id] = teacher.nickname || teacher.name;
+                  scope.teachers[id] = '{0}({1})'.format(teacher.name, 
+                      teacher.nickname);
                 };
               });
               

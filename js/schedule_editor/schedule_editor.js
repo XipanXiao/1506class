@@ -233,8 +233,7 @@ define('schedule_editor/schedule_editor',
                 function getTeacherEmail() {
                   if (!$scope.classInfo.teacher_id) return utils.truePromise();
                   
-                  var level = perm.ROLES.TEACHER;
-                  return rpc.get_admins(level).then(function(response) {
+                  return rpc.get_teachers().then(function(response) {
                     var teacher = response.data[$scope.classInfo.teacher_id];
                     $scope.teacherEmail = teacher && teacher.email;
                     return true;

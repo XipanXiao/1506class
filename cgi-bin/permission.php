@@ -1,4 +1,6 @@
 <?php
+define("TEACHER", 0x403);
+
 function isSysAdmin($user) {
   return ($user->permission & 0xFFFF) == 0xFFFF;
 }
@@ -36,7 +38,7 @@ function get_student_permission() {
 }
 
 function is_teacher($user) {
-  return ($user->permission & 0x403) == 0x403;
+  return ($user->permission & TEACHER) == TEACHER;
 }
 
 function is_teacher_of($user, $classInfo) {
