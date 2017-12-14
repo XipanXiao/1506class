@@ -28,7 +28,7 @@
       </div>
       <div class="css-table-row padded-element">
         <div class="css-table-cell">权限</div>
-        <div class="css-table-cell">{{permissionLabel[user.permission]}}</div>
+        <div class="css-table-cell">{{permissionLabel[user.permission] || '混合身份'}}</div>
         <div class="css-table-cell">
           <iron-icon ng-show="isSysAdmin() || isYearLeader()" class="selectable"
               icon="chevron-right" ng-click="editing = 'permission'">
@@ -261,9 +261,8 @@
         <input ng-switch-when="internal_id" ng-model="user.internal_id" type="text" autofocus>
         <classes ng-switch-when="classId" class-id="user.classId" permission="{{user.permission}}">
         </classes>
-        <select ng-switch-when="permission" ng-model="user.permission" autofocus
-            ng-options="permissionLabel[value] for value in permissions">
-        </select>
+        <permission-editor ng-switch-when="permission" user="user" editable="true">
+        </permission-editor>
         <input ng-switch-when="phone" ng-model="user.phone" type="tel" autofocus>
         <input ng-switch-when="im" ng-model="user.im" type="text" autofocus>
         <input ng-switch-when="yy" ng-model="user.yy" type="number" autofocus>

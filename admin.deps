@@ -15,6 +15,7 @@ js/departments/departments.js
 js/bit_editor/bit_editor.js
 js/editable_label/editable_label.js
 js/department_editor_dialog/department_editor_dialog.js
+js/permission_editor/permission_editor.js
 js/user_picker/user_picker.js
 js/class_editor/class_editor.js
 js/progress_bar/progress_bar.js

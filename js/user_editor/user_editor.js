@@ -2,10 +2,12 @@ define('user_editor/user_editor',
     ['services', 'utils',
      'address_editor/address_editor',
      'bit_editor/bit_editor', 'classes/classes',
+     'permission_editor/permission_editor',
      'permission'], function() {
   return angular.module('UserEditorModule', ['ServicesModule',
       'AddressEditorModule',
       'BitEditorModule', 'ClassesModule',
+      'PermissionEditorModule',
       'PermissionModule', 'UtilsModule']).directive('userEditor',
           function($rootScope, perm, rpc, utils) {
     return {
@@ -126,7 +128,7 @@ define('user_editor/user_editor',
         $scope.admining = window.location.href.indexOf('admin.html') > 0;
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201712061350'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201712131350'
     };
   });
 });

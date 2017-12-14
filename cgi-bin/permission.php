@@ -16,7 +16,7 @@ function isClassLeader($user, $classId) {
 }
 
 function isAdmin($user) {
-  return ($user->permission & 0xF) == 0xF;
+  return $user->permission > get_student_permission();
 }
 
 function isOrderManager($user) {
@@ -35,11 +35,20 @@ function get_student_permission() {
   return 3;
 }
 
+function is_teacher($user) {
+  return ($user->permission & 0x403) == 0x403;
+}
+
+function is_teacher_of($user, $classInfo) {
+  return is_teacher($user) && 
+      intval($classInfo["teacher_id"]) == $user->id;
+}
+
 function canRead($user, $classInfo) {
   if (isSysAdmin($user) || isInspector($user)) return true;
 
   $level = $classInfo["perm_level"];
-  if (intval($classInfo["teacher_id"]) == $user->id || !$level) {
+  if (!$level || is_teacher_of($user, $classInfo)) {
     return true;
   }
 
@@ -71,8 +80,9 @@ function checkYear($user, $classInfo) {
 }
 
 function getStartPage($user) {
-  if (isAdmin($user)) return "admin.html";
+  if (isSysAdmin($user)) return "admin.html";
   if (isOrderManager($user)) return "order_admin.html";
+  if (isAdmin($user)) return "admin.html";
   return "index.html";
 }
 

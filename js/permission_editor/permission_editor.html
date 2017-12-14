@@ -1,0 +1,88 @@
+<div class="css-table">
+  <div class="css-table-row">
+    <div class="css-table-cell">身份：</div>
+    <div class="css-table-cell">
+      <select ng-options="role.name for role in roles"
+        ng-model="selectedRole.role" ng-change="roleChanged()">
+      </select>
+    </div>
+  </div>
+  <div class="css-table-row">
+    <div class="css-table-cell">读取自己的信息</div>
+    <div class="css-table-cell">
+      <input type="checkbox" ng-model="user.permission"
+          ng-disabled="!customizing" bit-index="0">
+    </div>
+  </div>
+  <div class="css-table-row">
+    <div class="css-table-cell">修改自己的信息</div>
+    <div class="css-table-cell">
+      <input type="checkbox" ng-model="user.permission"
+          ng-disabled="!customizing" bit-index="1">
+    </div>
+  </div>
+  <div ng-if="canGrant(2)" class="css-table-row">
+    <div class="css-table-cell">读取所在班级信息</div>
+    <div class="css-table-cell">
+      <input type="checkbox" ng-model="user.permission"
+          ng-disabled="!customizing" bit-index="2">
+    </div>
+  </div>
+  <div ng-if="canGrant(3)" class="css-table-row">
+    <div class="css-table-cell">修改所在班级信息</div>
+    <div class="css-table-cell">
+      <input type="checkbox" ng-model="user.permission"
+          ng-disabled="!customizing" bit-index="3">
+    </div>
+  </div>
+  <div ng-if="canGrant(4)" class="css-table-row">
+    <div class="css-table-cell">读取年级所有班级</div>
+    <div class="css-table-cell">
+      <input type="checkbox" ng-model="user.permission"
+          ng-disabled="!customizing" bit-index="4">
+    </div>
+  </div>
+  <div ng-if="canGrant(5)" class="css-table-row">
+    <div class="css-table-cell">修改年级所有班级</div>
+    <div class="css-table-cell">
+      <input type="checkbox" ng-model="user.permission"
+          ng-disabled="!customizing" bit-index="5">
+    </div>
+  </div>
+  <div ng-if="canGrant(6)" class="css-table-row">
+    <div class="css-table-cell">读取所有班级信息</div>
+    <div class="css-table-cell">
+      <input type="checkbox" ng-model="user.permission"
+          ng-disabled="!customizing" bit-index="6">
+    </div>
+  </div>
+  <div ng-if="canGrant(7)" class="css-table-row">
+    <div class="css-table-cell">修改所有班级信息</div>
+    <div class="css-table-cell">
+      <input type="checkbox" ng-model="user.permission"
+          ng-disabled="!customizing" bit-index="7">
+    </div>
+  </div>
+  <div ng-if="canGrant(8)" class="css-table-row">
+    <div class="css-table-cell">查看所有法本订单</div>
+    <div class="css-table-cell">
+      <input type="checkbox" ng-model="user.permission"
+          ng-disabled="!customizing" bit-index="8">
+    </div>
+  </div>
+  <div ng-if="canGrant(9)" class="css-table-row">
+    <div class="css-table-cell">修改所有法本订单</div>
+    <div class="css-table-cell">
+      <input type="checkbox" ng-model="user.permission"
+          ng-disabled="!customizing" bit-index="9">
+    </div>
+  </div>
+  <div ng-if="canGrant(10)" class="css-table-row">
+    <div class="css-table-cell">辅导员读所带班级</div>
+    <div class="css-table-cell">
+      <input type="checkbox" ng-model="user.permission"
+          ng-disabled="!customizing" bit-index="10">
+    </div>
+  </div>
+</div>
+
