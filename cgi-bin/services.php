@@ -217,8 +217,10 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         : permision_denied_error();
   } elseif ($resource_id == "class") {
     if (isSysAdmin($user) ||
-        !empty($_POST["id"]) && isClassLeader($user, $_POST["id"])) {
+        !empty($_POST["id"]) && canWriteClass($user, $_POST["id"])) {
       $response = ["updated" => update_class($_POST)];
+    } else {
+      $response = permision_denied_error();
     }
   } elseif ($resource_id == "course_group") {
     if (!isYearLeader($user)) return;
