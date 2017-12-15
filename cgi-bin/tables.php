@@ -220,7 +220,7 @@ function update_task($task) {
   
   $datas = [];
   $fields = ["department_id", "name", "max", "duration", "sub_tasks",
-      "starting_half_term", "zb_name", "zb_course_id"];
+      "starting_half_term", "report_half_term", "zb_name", "zb_course_id"];
   foreach ($fields as $field) {
     $datas[$field] = $task[$field];
   }
@@ -427,7 +427,7 @@ function get_tasks($department_id) {
   global $medoo;
 
   $int_fields = ["duration", "max", "sub_tasks", "starting_half_term",
-      "zb_course_id"];
+      "report_half_term", "zb_course_id"];
   $tasks = keyed_by_id($medoo->select("tasks", "*",
       $department_id ? ["department_id" => $department_id] : null));
   foreach ($tasks as $id => $task) {

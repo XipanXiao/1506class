@@ -509,7 +509,7 @@ define('zb_sync_button/zb_sync_button',
                   return scope.tasks = utils.where(response.data,
                       function(task) {
                         return task.zb_name &&
-                            task.starting_half_term <= scope.half_term;
+                            task.report_half_term <= scope.half_term;
                       });
                 });
           };
@@ -612,7 +612,7 @@ define('zb_sync_button/zb_sync_button',
               requests.push(function() {
                 // Is this the first time to report the [task]?
                 // For first time reporting, do not skip the first 15 days.
-                var isFirstTime = task.starting_half_term == scope.half_term;
+                var isFirstTime = task.report_half_term == scope.half_term;
                 var start_cut_time = isFirstTime
                     ? startTerm 
                     : (scope.lastReportTime || (startTerm + extraReportTime));
