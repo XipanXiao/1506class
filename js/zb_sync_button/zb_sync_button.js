@@ -589,6 +589,16 @@ define('zb_sync_button/zb_sync_button',
             var now = utils.unixTimestamp(new Date());
             return Math.min(now, cut);
           };
+
+          /// Gets the start time corresponding to [halfTerm].
+          function getStartTime(halfTerm) {
+            var date = utils.toDateTime(scope.scheduleGroup.start_time);
+            var halfTerms = halfTerm - scope.scheduleGroup.term * 2;
+            var months = halfTerms * 3;
+            date.setMonth(date.getMonth() + months);
+            return utils.unixTimestamp(date); 
+          }
+
           /// Collects all task reports since last report.
           ///
           /// By default if there is no special reason the time is cut between
@@ -614,7 +624,7 @@ define('zb_sync_button/zb_sync_button',
                 // For first time reporting, do not skip the first 15 days.
                 var isFirstTime = task.report_half_term == scope.half_term;
                 var start_cut_time = isFirstTime
-                    ? startTerm 
+                    ? getStartTime(task.starting_half_term) 
                     : (scope.lastReportTime || (startTerm + extraReportTime));
                 var start_time = fistHalf ? start_cut_time : midTerm;
                 var end_time = fistHalf ? midTerm : end_cut_time;
