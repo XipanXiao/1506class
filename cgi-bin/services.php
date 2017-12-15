@@ -237,15 +237,22 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       echo json_encode($response);
       exit();
     }
-    if (!canWriteUser($user, $_POST["id"])) {
+    $targetUser = intval($_POST["id"]);
+    if ($targetUser != $user->id) {
+      $targetUser = get_users(null, null, $targetUser)[$targetUser];
+    } else {
+      $targetUser = $user;
+    }
+
+    if (!canWriteUser($user, $targetUser)) {
       exit();
     }
     
-    if (!empty($_POST["permission"]) && 
-        !canGrant($user, intval($_POST["permission"]))) {
+    if (isset($_POST["permission"]) &&
+        (!canGrant($user, $targetUser->permission) || 
+        !canGrant($user, intval($_POST["permission"])))) {
       exit();
     }
-    
     if (isset($_POST["classId"]) && intval($_POST["classId"]) == 0) {
       if(!empty($_POST["classId_label"]) &&
           !empty($_POST["start_year_label"])) {

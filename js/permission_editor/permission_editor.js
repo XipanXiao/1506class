@@ -1,9 +1,9 @@
 define('permission_editor/permission_editor', 
-  ['bit_editor/bit_editor', 'permission'], function() {
+  ['bit_editor/bit_editor', 'permission', 'utils'], function() {
 
   return angular.module('PermissionEditorModule',
-      ['BitEditorModule', 'PermissionModule'])
-    .directive('permissionEditor', function(perm) {
+      ['BitEditorModule', 'PermissionModule', 'UtilsModule'])
+    .directive('permissionEditor', function(perm, utils) {
       return {
         scope: {
           editable: '@',
@@ -14,7 +14,7 @@ define('permission_editor/permission_editor',
             {name: '--自定义--', permission: 1}
           ];
           scope.permissionLabel = perm.permissions;
-          scope.permissions = perm.lowerPermissions();
+          scope.permissions = utils.keys(perm.permissions);
           scope.selectedRole = {};
 
           function init(user) {
@@ -55,7 +55,7 @@ define('permission_editor/permission_editor',
             return (perm.user.permission & (1<<bit)) != 0;
           };
         },
-        templateUrl : 'js/permission_editor/permission_editor.html'
+        templateUrl : 'js/permission_editor/permission_editor.html?tag=201712150026'
       };
     });
 });
