@@ -29,12 +29,13 @@ define('serial_number_dialog/serial_number_dialog',
                 var weekday = classInfo.weekday || 7;
                 scope.base = '{0}{1}-0{2}-01'.format(dep, year, weekday); 
               });
+
               function back(users) {
-                backup = {};
                 utils.forEach(users, function(user) {
                   backup[user.id] = user.internal_id;
                 });
               }
+
               scope.restore = function() {
                 function restoreUser(user) {
                   user.internal_id = backup[user.id];
@@ -50,6 +51,7 @@ define('serial_number_dialog/serial_number_dialog',
                 return function() {
                   return rpc.update_user(user).then(function(response) {
                     if (scope.errors[user.id] = response.data.error) return false;
+                    backup[user.id] = user.internal_id;
                     return user;
                   });
                 }
@@ -81,10 +83,17 @@ define('serial_number_dialog/serial_number_dialog',
                 var base = parseInt(parts.pop());
                 var prefix = parts.join('-');
                 utils.forEach(scope.users, function(user) {
-                  if (sameFormat(scope.base, user.internal_id)) return;
+                  if (user.internal_id &&
+                      sameFormat(scope.base, user.internal_id)) return;
                   var index = base < 10 ? ('0' + base) : base;
                   user.internal_id = '{0}-{1}'.format(prefix, index);
                   base++;
+                });
+              };
+
+              scope.clear = function() {
+                utils.forEach(scope.users, function(user) {
+                  user.internal_id = null;
                 });
               };
             },

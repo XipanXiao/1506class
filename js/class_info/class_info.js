@@ -26,15 +26,12 @@ define('class_info/class_info', ['bit_editor/bit_editor',
             return $scope.classId === 1;
           };
           $scope.reload = function(classId) {
-            if (!classId) {
-              $scope.users = [];
-            } else {
-              rpc.get_users(null, classId).then(function(response) {
-                if (!(response.data instanceof String)) {
-                  $scope.users = response.data;
-                }
-              });
-            }
+            if (!classId) return; 
+            rpc.get_users(null, classId).then(function(response) {
+              if (!(response.data instanceof String)) {
+                $scope.users = response.data;
+              }
+            });
           };
           $scope.$watch('classId', function(classId) {
             $scope.reload(classId);
