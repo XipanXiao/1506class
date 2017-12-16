@@ -14,21 +14,25 @@ define('serial_number_dialog/serial_number_dialog',
               var backup = {};
 
               if (scope.users) {
-                back(scope.users);
+                initBase(scope.users);
               } else {
-                scope.$watch('users', back);
+                scope.$watch('users', initBase);
               }
 
               function getDepLetter(depId) {
                 return {'2': 'C', '3': 'A', '4': 'B'}[depId];
               }
-              rpc.get_classes(scope.classId).then(function(response) {
-                var classInfo = response.data[scope.classId];
-                var dep = getDepLetter(classInfo.department_id);
-                var year = (new Date()).getFullYear() % 100;
-                var weekday = classInfo.weekday || 7;
-                scope.base = '{0}{1}-0{2}-01'.format(dep, year, weekday); 
-              });
+
+              function initBase(users) {
+                back(users);
+                rpc.get_classes(scope.classId).then(function(response) {
+                  var classInfo = response.data[scope.classId];
+                  var dep = getDepLetter(classInfo.department_id);
+                  var year = (new Date()).getFullYear() % 100;
+                  var weekday = classInfo.weekday || 7;
+                  scope.base = '{0}{1}-0{2}-01'.format(dep, year, weekday);
+                });
+              }
 
               function back(users) {
                 utils.forEach(users, function(user) {
