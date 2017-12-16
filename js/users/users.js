@@ -73,6 +73,9 @@ define('users/users', ['bit_editor/bit_editor',
                   $scope.exportedUrl = url;
                 });
           };
+          $scope.showSerialNumberDlg = function() {
+            document.querySelector('#serial-number-dlg').open();
+          };
         },
         templateUrl : 'js/users/users.html?tag=201705162307'
       };
