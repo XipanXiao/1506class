@@ -101,7 +101,7 @@ define('serial_number_dialog/serial_number_dialog',
                 });
               };
             },
-            templateUrl : 'js/serial_number_dialog/serial_number_dialog.html'
+            templateUrl : 'js/serial_number_dialog/serial_number_dialog.html?tag=201712170938'
           };
         });
 });
