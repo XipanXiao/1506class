@@ -43,8 +43,7 @@ function is_teacher($user) {
 }
 
 function is_teacher_of($user, $classInfo) {
-  return is_teacher($user) && 
-      intval($classInfo["teacher_id"]) == $user->id;
+  return intval($classInfo["teacher_id"]) == $user->id;
 }
 
 function canRead($user, $classInfo) {
