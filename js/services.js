@@ -235,6 +235,15 @@ define('services', [], function() {
         return $http.get(serviceUrl + '?rid=search&prefix=' + prefix);
       },
       
+      searchByName: function(name) {
+        return $http.get('{0}?rid=search_name&name={1}'.format(serviceUrl,
+            name));
+      },
+      
+      getUserLabel: function(id) {
+        return $http.get('{0}?rid=user_label&id={1}'.format(serviceUrl, id));
+      },
+      
       get_course_groups: function(detailed) {
         var url = "{0}?rid=course_groups&detailed={1}".format(serviceUrl,
             detailed || false);

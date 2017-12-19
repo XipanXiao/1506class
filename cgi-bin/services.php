@@ -157,6 +157,14 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         $response = array_filter($response, "isSameYear");
       }
     }
+  } elseif ($resource_id == "user_label") {
+    $response = isAdmin($user) 
+        ? ["label" => getUserLabel($_GET["id"])] 
+        : permision_denied_error();
+  } elseif ($resource_id == "search_name") {
+    $response = isAdmin($user) 
+        ? searchByName($_GET["name"]) 
+        : permision_denied_error();
   } elseif ($resource_id == "task_stats") {
     $startTime =
         empty($_GET["start_time"]) ? null : intval($_GET["start_time"]);
@@ -288,7 +296,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "class_prefs") {
     update_class_pref($user->id, $_POST);
   } elseif ($resource_id == "clone_user") {
-  	error_log($user->email. " DELETE learning records of ". $_POST["user_id"]);
+    error_log($user->email. " DELETE learning records of ". $_POST["user_id"]);
     $response = canWriteUser($user, $_POST["user_id"])
         ? ["updated" => clone_user($_POST["user_id"])] 
         : permision_denied_error();

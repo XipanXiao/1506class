@@ -710,6 +710,27 @@ function search($prefix) {
       ["OR" => ["name[~]" => $prefix, "email[~]" => $prefix]]);
 }
 
+/// A search returns only id, name and nick name.
+function searchByName($name) {
+	global $medoo;
+	
+	return $medoo->select("users", ["id", "name", "nickname"],
+			["OR" => ["name[~]" => $name, "nickname[~]" => $name]]);
+}
+
+/// Returns "name(nickname)" for a user identified by [$id].
+function getUserLabel($id) {
+	global $medoo;
+
+	$users = $medoo->select("users", ["name", "nickname"], ["id" => $id]);
+	if (empty($users)) return "";
+
+	$user = current($users);
+	$name = $user["name"];
+	$nickname = $user["nickname"];
+	return $nickname ? sprintf("%s(%s)", $name, $nickname) : $name;
+}
+
 /// Returns the distribution of people in each state of the country.
 ///
 /// Returns a map like ["1" => 32, "2" => 48, ..., "8" => 26];

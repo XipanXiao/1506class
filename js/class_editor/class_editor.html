@@ -2,7 +2,8 @@
   <div class="padded-element">
     类别：
     <departments department-id="classInfo.department_id"></departments>
-    <iron-icon icon="editor:border-color" class="small-icon" ng-click="openDepartmentEditor()">
+    <iron-icon icon="editor:border-color" class="small-icon clickable"
+        ng-click="openDepartmentEditor()">
     </iron-icon>
   </div>
   <div class="padded-element" ng-switch="classInfo.id">
@@ -27,14 +28,13 @@
     <editable-label value="classInfo.class_room"></editable-label>
   </div>
   <div class="padded-element">
-    email：
+    班级群邮件地址：
     <editable-label value="classInfo.email"></editable-label>
   </div>
   <div class="padded-element">
     辅导员：
-    <user-picker class="inline" user-id="classInfo.teacher_id"
-        user-list="teachers">
-    </user-picker>
+    <user-input class="inline" user-id="classInfo.teacher_id">
+    </user-input>
   </div>
 	<div class="padded-element">
 	  <label>

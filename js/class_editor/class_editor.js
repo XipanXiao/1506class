@@ -2,13 +2,17 @@ define('class_editor/class_editor', ['departments/departments',
     'department_editor_dialog/department_editor_dialog', 
     'editable_label/editable_label',
     'time/time',
-    'permission', 'services', 'user_picker/user_picker', 'utils',
+    'permission', 'services',
+    'user_input/user_input',
+    'user_picker/user_picker',
+    'utils',
     'zb_services'], function() {
 
   return angular.module('ClassEditorModule',
       ['DepartmentEditorDialogModule',
        'DepartmentsModule', 'EditableLabelModule', 'TimeModule', 
        'ServicesModule',
+       'UserInputModule',
        'UserPickerModule', 'UtilsModule',
        'ZBServicesModule']).directive('classEditor',
         function($rootScope, perm, rpc, utils, zbrpc) {
@@ -59,15 +63,6 @@ define('class_editor/class_editor', ['departments/departments',
                 scope.years[index] = 2010 + index;
               }
               
-              scope.teachers = {};
-              rpc.get_teachers().then(function(response) {
-                for (var id in response.data) {
-                  var teacher = response.data[id];
-                  scope.teachers[id] = '{0}({1})'.format(teacher.name, 
-                      teacher.nickname);
-                };
-              });
-              
               scope.reload = function(classId) {
                 if (classId == 0) {
                   scope.classInfo = utils.classTemplate();
@@ -102,7 +97,7 @@ define('class_editor/class_editor', ['departments/departments',
                     scope.classInfo && scope.classInfo.department_id == 1;
               };
             },
-            templateUrl : 'js/class_editor/class_editor.html'
+            templateUrl : 'js/class_editor/class_editor.html?tag=201712172243'
           };
         });
 });
