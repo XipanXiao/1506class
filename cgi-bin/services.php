@@ -218,7 +218,9 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         ? ["updated" => report_schedule_task($task_user_id, $_POST)]
         : permision_denied_error();
   } elseif ($resource_id == "schedule") {
-    $response = ["updated" => update_schedule($_POST)];
+    $response = isAdmin($user) 
+      ? ["updated" => update_schedule($_POST)] 
+      : permision_denied_error();
   }  elseif ($resource_id == "schedule_group") {
     $response = canWriteClass($user, $_POST["classId"]) 
         ? ["updated" => update_schedule_group($_POST)]
