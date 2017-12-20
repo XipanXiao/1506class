@@ -11,12 +11,12 @@ define('permission', ['utils'], function() {
         INSPECTION: 0x57,
         FINANCE: 0x103,
         ORDER_MANAGER: 0x303,
-        TEACHER: 0x403,
+        // TEACHER: 0x403,
         ADMIN: 0xFFFF
       },
       permissions: {
         0xFFFF: '管理员',  //rw all data
-        0x403: '辅导员',   //01 00 00 00 00 11 teacher.
+        // 0x403: '辅导员',   //01 00 00 00 00 11 teacher.
         0x303: '订单管理', //00 11 00 00 00 11 rw orders.
         0x103: '财务',    //00 01 00 00 00 11 rw orders, but sees no addresses.
         0x57: '理事会', // 00 00 01 01 01 11 r

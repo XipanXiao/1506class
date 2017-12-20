@@ -55,7 +55,7 @@ define('permission_editor/permission_editor',
             return (perm.user.permission & (1<<bit)) != 0;
           };
         },
-        templateUrl : 'js/permission_editor/permission_editor.html?tag=201712150026'
+        templateUrl : 'js/permission_editor/permission_editor.html?tag=201712190026'
       };
     });
 });
