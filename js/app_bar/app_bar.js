@@ -1,12 +1,16 @@
-define('app_bar/app_bar', ['permission', 'search_bar/search_bar'], function() {
-  return angular.module('AppBarModule', ['PermissionModule', 'SearchBarModule'])
-    .directive('appBar', function(perm) {
+define('app_bar/app_bar', ['permission', 'search_bar/search_bar', 'utils'],
+    function() {
+  return angular.module('AppBarModule', ['PermissionModule',
+     'SearchBarModule', 'UtilsModule'])
+    .directive('appBar', function(perm, utils) {
       return {
         scope: {
           admining: '@',
           user: '='
         },
         link: function(scope) {
+          scope.weekDayLabels = utils.weekDayLabels;
+          scope.formatTime = utils.formatTime;
           scope.isAdmin = function() {
             return perm.isAdmin();
           };

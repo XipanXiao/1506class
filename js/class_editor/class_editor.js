@@ -97,7 +97,7 @@ define('class_editor/class_editor', ['departments/departments',
                     scope.classInfo && scope.classInfo.department_id == 1;
               };
             },
-            templateUrl : 'js/class_editor/class_editor.html?tag=201712172243'
+            templateUrl : 'js/class_editor/class_editor.html?tag=201712202243'
           };
         });
 });

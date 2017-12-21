@@ -198,7 +198,7 @@ define('schedule_group_editor/schedule_group_editor',
                 return terms;
               })();
             },
-            templateUrl : 'js/schedule_group_editor/schedule_group_editor.html?tag=201712052243'
+            templateUrl : 'js/schedule_group_editor/schedule_group_editor.html?tag=201712202243'
           };
         });
 });

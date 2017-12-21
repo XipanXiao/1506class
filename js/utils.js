@@ -256,10 +256,28 @@ define('utils', [], function() {
       getWeeklyTime: function(time, week) {
         var date = time ? this.toDateTime(time) : this.getDefaultStartTime();
         date.setDate(date.getDate() + 7 * week);
-        return date.toLocaleString();
+        function fullDigits(d) {
+          return (d < 10 ? '0' : '') + d;
+        }
+        return '{0}/{1}/{2}'.format(
+            fullDigits(date.getMonth() + 1),
+            fullDigits(date.getDate()),
+            date.getFullYear());
       },
       toDateTime: function(unixtimestamp) {
         return new Date(unixtimestamp * 1000);
+      },
+      /// Output [time] string in EST to local time string.
+      formatTime: function(timeString) {
+        // A time in EST.
+        var date = new Date('1970-01-01T' + timeString + 'Z');
+        // Time in UTC.
+        date.setTime(date.getTime() + 5 * 60 * 60 * 1000);
+
+        // Time string in local.
+        var options = {timeZoneName: 'short', 
+            hour: '2-digit', minute: '2-digit'};
+        return date.toLocaleTimeString('en-US', options);
       },
       getDefaultStartTime: function() {
         var date = new Date();
