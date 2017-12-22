@@ -267,12 +267,22 @@ define('utils', [], function() {
       toDateTime: function(unixtimestamp) {
         return new Date(unixtimestamp * 1000);
       },
+      isDst: function() {
+        var date = new Date();
+        function stdTimezoneOffset() {
+          var jan = new Date(date.getFullYear(), 0, 1);
+          var jul = new Date(date.getFullYear(), 6, 1);
+          return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+        }
+        return date.getTimezoneOffset() < stdTimezoneOffset();
+      },
       /// Output [time] string in EST to local time string.
       formatTime: function(timeString) {
         // A time in EST.
         var date = new Date('1970-01-01T' + timeString + 'Z');
         // Time in UTC.
-        date.setTime(date.getTime() + 5 * 60 * 60 * 1000);
+        var zone = utils.isDst() ? 4 : 5;
+        date.setTime(date.getTime() + zone * 60 * 60 * 1000);
 
         // Time string in local.
         var options = {timeZoneName: 'short', 
