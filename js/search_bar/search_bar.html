@@ -4,7 +4,6 @@
 	      placeholder="输入名字或者email地址查找">
 	  <datalist id="hints">
       <option ng-repeat="hint in hints" value="{{hint.name}} <{{hint.email}}>"></option>
-      <option ng-repeat="hint in hints" value="{{hint.email}} ({{hint.name}})"></option>
 	  </datalist>
 	</label>
 	<input type="submit" value="search" ng-click="search()">
