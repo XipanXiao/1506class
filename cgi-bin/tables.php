@@ -482,6 +482,19 @@ function get_class_task_stats($classId, $task_id, $startTime, $endTime,
 function report_task($user_id, $task_id, $sub_index, $count, $duration) {
   global $medoo;
   
+  if (intval($sub_index) > 0) {
+    $updated = $medoo->update("task_records", [
+        "count[+]" => intval($count),
+        "duration[+]" => $duration
+      ], 
+      ["AND" => [
+        "student_id" => intval($user_id),
+        "task_id" => intval($task_id),
+        "sub_index" => intval($sub_index)
+      ]      	
+    ]);
+    if ($updated) return $updated;
+  }
   return $medoo->insert("task_records", [
     "student_id" => intval($user_id), 
     "task_id" => intval($task_id),
@@ -712,23 +725,23 @@ function search($prefix) {
 
 /// A search returns only id, name and nick name.
 function searchByName($name) {
-	global $medoo;
-	
-	return $medoo->select("users", ["id", "name", "nickname"],
-			["OR" => ["name[~]" => $name, "nickname[~]" => $name]]);
+  global $medoo;
+  
+  return $medoo->select("users", ["id", "name", "nickname"],
+      ["OR" => ["name[~]" => $name, "nickname[~]" => $name]]);
 }
 
 /// Returns "name(nickname)" for a user identified by [$id].
 function getUserLabel($id) {
-	global $medoo;
+  global $medoo;
 
-	$users = $medoo->select("users", ["name", "nickname"], ["id" => $id]);
-	if (empty($users)) return "";
+  $users = $medoo->select("users", ["name", "nickname"], ["id" => $id]);
+  if (empty($users)) return "";
 
-	$user = current($users);
-	$name = $user["name"];
-	$nickname = $user["nickname"];
-	return $nickname ? sprintf("%s(%s)", $name, $nickname) : $name;
+  $user = current($users);
+  $name = $user["name"];
+  $nickname = $user["nickname"];
+  return $nickname ? sprintf("%s(%s)", $name, $nickname) : $name;
 }
 
 /// Returns the distribution of people in each state of the country.
