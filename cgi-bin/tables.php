@@ -491,7 +491,7 @@ function report_task($user_id, $task_id, $sub_index, $count, $duration) {
         "student_id" => intval($user_id),
         "task_id" => intval($task_id),
         "sub_index" => intval($sub_index)
-      ]      	
+      ], "LIMIT" => 1      	
     ]);
     if ($updated) return $updated;
   }
