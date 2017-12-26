@@ -1,4 +1,4 @@
-<?php
+<?php /*
 include_once "config.php";
 include_once "connection.php";
 include_once "tables.php";
@@ -175,5 +175,5 @@ if (empty($_SESSION["user"])) {
   foreach ($groups as $group) {
   	fix_double_course_group($group);
   }
-}
+} */
 ?>

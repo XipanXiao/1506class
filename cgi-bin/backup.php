@@ -1,7 +1,7 @@
 <?php
 
 function try_backup() {
-  $dir = getenv("HOME") . "/app-root/data";
+/*  $dir = getenv("HOME") . "/app-root/data";
 
   date_default_timezone_set("UTC");
   $filename = $dir . "/buddcourses_" . date("w") . ".sql";
@@ -12,6 +12,6 @@ function try_backup() {
   }
   
   $command = $dir. "/../repo/backup.sh ". $filename; 
-  return exec($command);
+  return exec($command); */
 }
 ?>
