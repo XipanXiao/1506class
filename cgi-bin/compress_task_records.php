@@ -1,4 +1,4 @@
-<?php
+<?php/*
 include_once "datatype.php";
 include_once "connection.php";
 include_once "permission.php";
@@ -176,5 +176,5 @@ if (empty($_SESSION["user"])) {
   } else {
     compress_guanxiu_records(4);    
   }
-}
+}*/
 ?>
