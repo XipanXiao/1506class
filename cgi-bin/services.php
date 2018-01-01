@@ -191,11 +191,6 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];
 
-  if (isSysAdmin($user) || isYearLeader($user)) {
-    error_log($user->email. " UPDATES ". $resource_id. ":". 
-        (empty($_POST["id"]) ? "" : $_POST["id"]));
-  }
-
   if ($resource_id == "tasks") {
     $task_id = $_POST["task_id"];
     $task_user_id = 
@@ -210,6 +205,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     }
   } elseif ($resource_id == "task") {
     if (!isSysAdmin($user)) return;
+    error_log($user->email. " UPDATES ". $resource_id. ":". 
+        (empty($_POST["id"]) ? "" : $_POST["id"]));
     $response = ["updated" => update_task($_POST)];
   } elseif ($resource_id == "schedule_tasks") {
     $task_user_id = 
@@ -222,6 +219,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       ? ["updated" => update_schedule($_POST)] 
       : permision_denied_error();
   }  elseif ($resource_id == "schedule_group") {
+    error_log($user->email. " UPDATES ". $resource_id. ":". 
+        (empty($_POST["id"]) ? "" : $_POST["id"]));
     $response = canWriteClass($user, $_POST["classId"]) 
         ? ["updated" => update_schedule_group($_POST)]
         : permision_denied_error();
@@ -234,12 +233,18 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     }
   } elseif ($resource_id == "course_group") {
     if (!isYearLeader($user)) return;
+    error_log($user->email. " UPDATES ". $resource_id. ":". 
+        (empty($_POST["id"]) ? "" : $_POST["id"]));
     $response = ["group" => update_course_group($_POST)];
   } elseif ($resource_id == "department") {
     if (!isSysAdmin($user)) return;
+    error_log($user->email. " UPDATES ". $resource_id. ":". 
+        (empty($_POST["id"]) ? "" : $_POST["id"]));
     $response = ["updated" => update_department($_POST)];
   } elseif ($resource_id == "course") {
     if (!isYearLeader($user)) return;
+    error_log($user->email. " UPDATES ". $resource_id. ":". 
+        (empty($_POST["id"]) ? "" : $_POST["id"]));
     $response = update_course($_POST); 
   } elseif ($resource_id == "user") {
     if (!isset($_POST["id"])) {
@@ -310,6 +315,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 
   if ($resource_id == "course_group") {
     checkPermission(Roles::SYS_ADMIN);
+    error_log($user->email. " DELETES ". $resource_id. ":". 
+        (empty($_POST["id"]) ? "" : $_POST["id"]));
     $response = ["deleted" => remove_course_group($_REQUEST["id"])];
   } elseif ($resource_id == "schedule_group") {
     checkPermission(Roles::YEAR_LEADER);
@@ -322,9 +329,13 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = ["deleted" => remove_schedule($_REQUEST["id"])];
   } elseif ($resource_id == "class") {
     checkPermission(Roles::SYS_ADMIN);
+    error_log($user->email. " DELETES ". $resource_id. ":". 
+        (empty($_POST["id"]) ? "" : $_POST["id"]));
     $response = ["deleted" => remove_class($_REQUEST["id"])];
   } elseif ($resource_id == "task") {
     checkPermission(Roles::SYS_ADMIN);
+    error_log($user->email. " DELETES ". $resource_id. ":". 
+        (empty($_POST["id"]) ? "" : $_POST["id"]));
     $response = ["deleted" => remove_task($_REQUEST["id"])];
   } elseif ($resource_id == "task_records") {
     $record = get_task_record($_REQUEST["id"]);
@@ -332,6 +343,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         (empty($record) || $record["student_id"] != $student_id)) {
         $response = permision_denied_error();
     } else {
+      error_log($user->email. " DELETES ". $resource_id. ":". 
+          (empty($_POST["id"]) ? "" : $_POST["id"]));
       $response = [
         "deleted" => remove_task_record($_REQUEST["id"]), 
         "last" => get_last_task_record($student_id, $record["task_id"], 
@@ -349,6 +362,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = ["deleted" => remove_user($userId)];
   } elseif ($resource_id == "department") {
     checkPermission(Roles::SYS_ADMIN);
+    error_log($user->email. " DELETES ". $resource_id. ":". 
+        (empty($_POST["id"]) ? "" : $_POST["id"]));
     $response = ["deleted" => remove_department($_REQUEST["id"])];
   }
 }
