@@ -1,4 +1,4 @@
-<?php/*
+<?php
 include_once "datatype.php";
 include_once "connection.php";
 include_once "permission.php";
@@ -171,10 +171,11 @@ if (empty($_SESSION["user"])) {
   $user = unserialize($_SESSION["user"]);
   if (!isSysAdmin($user)) exit();
 
-  if (isset($_GET["restore"])) {
-    restore(4);
-  } else {
-    compress_guanxiu_records(4);    
-  }
-}*/
+  verify(4);
+//   if (isset($_GET["restore"])) {
+//     restore(4);
+//   } else {
+//     compress_guanxiu_records(4);    
+//   }
+}
 ?>
