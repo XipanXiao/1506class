@@ -9,7 +9,7 @@ define('services', [], function() {
     };
   }
 
-  var serviceUrl = 'cgi-bin/services.php';
+  var serviceUrl = 'php/services.php';
   var departmentsPromise;
   
   function http_form_post($http, data, url) {
@@ -170,12 +170,12 @@ define('services', [], function() {
       },
       
       get_order: function(order_id) {
-        var url = "cgi-bin/shop.php?rid=orders&order_id={0}".format(order_id);
+        var url = "php/shop.php?rid=orders&order_id={0}".format(order_id);
         return $http.get(url);
       },
       
       get_orders: function(student_id, filters) {
-        var url = ("cgi-bin/shop.php?rid=orders&student_id={0}&start={1}" + 
+        var url = ("php/shop.php?rid=orders&student_id={0}&start={1}" + 
             "&end={2}&items={3}&status={4}&class_id={5}").format(
                 student_id || '', filters.start || '', filters.end || '',
                 filters.items || '', filters.status || '',
@@ -184,37 +184,37 @@ define('services', [], function() {
       },
       
       get_items: function(category, level) {
-        var url = 'cgi-bin/shop.php?rid=items&category={0}&level={1}'
+        var url = 'php/shop.php?rid=items&category={0}&level={1}'
             .format(category || '', parseInt(level) || (level === 0 ? 0 : ''));
         return $http.get(url);
       },
       
       get_item_categories: function(level) {
-        var url = 'cgi-bin/shop.php?rid=item_categories&level={0}'
+        var url = 'php/shop.php?rid=item_categories&level={0}'
             .format(parseInt(level) || (level === 0 ? 0 : ''));
         return $http.get(url);
       },
       
       get_order_stats: function(year) {
-        var url = 'cgi-bin/shop.php?rid=order_stats&year={0}'.format(year);
+        var url = 'php/shop.php?rid=order_stats&year={0}'.format(year);
         return $http.get(url);
       },
       
       get_book_list: function(dep_id, term) {
-        var url = 'cgi-bin/shop.php?rid=book_lists&dep_id={0}&term={1}'
+        var url = 'php/shop.php?rid=book_lists&dep_id={0}&term={1}'
             .format(dep_id || '', term || '');
         return $http.get(url);
       },
       
       get_class_book_lists: function(year) {
-        var url = 'cgi-bin/shop.php?rid=class_book_lists&year={0}'
+        var url = 'php/shop.php?rid=class_book_lists&year={0}'
             .format(year || (new Date()).getFullYear());
         return $http.get(url);
       },
 
       get_scores: function(classId) {
         var url = 
-            'cgi-bin/score.php?rid=scores&class_id={0}'.format(classId || '');
+            'php/score.php?rid=scores&class_id={0}'.format(classId || '');
         return $http.get(url);
       },
       
@@ -258,7 +258,7 @@ define('services', [], function() {
       update_order: function(order) {
         order.rid = 'orders';
         return http_form_post($http, $httpParamSerializerJQLike(order),
-            'cgi-bin/shop.php');
+            'php/shop.php');
       },
       
       merge_orders: function(order_ids) {
@@ -267,7 +267,7 @@ define('services', [], function() {
             order_ids: order_ids
         };
         return http_form_post($http, $httpParamSerializerJQLike(request),
-            'cgi-bin/shop.php');
+            'php/shop.php');
       },
       
       move_order_items: function(fromOrder, toOrder) {
@@ -277,25 +277,25 @@ define('services', [], function() {
             to_order: toOrder
         };
         return http_form_post($http, $httpParamSerializerJQLike(request),
-            'cgi-bin/shop.php');
+            'php/shop.php');
       },
       
       update_book_list: function(bookList) {
         bookList.rid = 'book_lists';
         return http_form_post($http, $httpParamSerializerJQLike(bookList),
-            'cgi-bin/shop.php');
+            'php/shop.php');
       },
 
       update_class_term: function(classInfo) {
         classInfo.rid = 'class_book_lists';
         return http_form_post($http, $httpParamSerializerJQLike(classInfo),
-            'cgi-bin/shop.php');
+            'php/shop.php');
       },
       
       update_item: function(item) {
         item.rid = 'items';
         return http_form_post($http, $httpParamSerializerJQLike(item),
-            'cgi-bin/shop.php');
+            'php/shop.php');
       },
       
       update_scores: function(scores) {
@@ -308,7 +308,7 @@ define('services', [], function() {
           score2: scores.score2
         };
         return http_form_post($http, $httpParamSerializerJQLike(data),
-            'cgi-bin/score.php');
+            'php/score.php');
       },
       
       remove_course: function(course_id) {
@@ -357,18 +357,18 @@ define('services', [], function() {
       },
 
       remove_order: function(order_id) {
-        var url = '{0}?rid=orders&id={1}'.format('cgi-bin/shop.php', order_id);
+        var url = '{0}?rid=orders&id={1}'.format('php/shop.php', order_id);
         return $http.delete(url);
       },
 
       remove_order_item: function(id) {
-        var url = '{0}?rid=order_details&id={1}'.format('cgi-bin/shop.php', id);
+        var url = '{0}?rid=order_details&id={1}'.format('php/shop.php', id);
         return $http.delete(url);
       },
       
       remove_book_list: function(depId, term) {
         var url = '{0}?rid=book_lists&dep_id={1}&term={2}'
-            .format('cgi-bin/shop.php', depId, term);
+            .format('php/shop.php', depId, term);
         return $http.delete(url);
       },
 

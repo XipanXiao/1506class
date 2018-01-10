@@ -51,7 +51,7 @@
     function login() {
       var email = document.getElementById('email').value;
       var password = document.getElementById('password').value;
-      post('cgi-bin/login.php', 
+      post('php/login.php', 
           {email: email, password: password}).then(function(response) {
         document.getElementById('logined').innerHTML = 'logined';
       });
@@ -59,7 +59,7 @@
     function listClasses() {
       var classId = document.getElementById("class-id").value;
       var depId = document.getElementById("department-id").value;
-      getString('cgi-bin/services.php?rid=classes&classId=' + 
+      getString('php/services.php?rid=classes&classId=' + 
           classId + '&department_id=' + depId).then(function(response) {
         document.getElementById('classes').innerHTML = response;
       });
@@ -67,7 +67,7 @@
     function listUsers() {
       var classId = document.getElementById("users-class-id").value;
       var email = document.getElementById("users-email").value;
-      getString('cgi-bin/services.php?rid=users&classId=' + 
+      getString('php/services.php?rid=users&classId=' + 
           classId + '&email=' + email).then(function(response) {
         document.getElementById('users').innerHTML = response;
       });
@@ -80,7 +80,7 @@
 <form onsubmit="return false;">
   <h2>Login</h2>
   <div>
-  POST cgi-bin/login.php?email=test@example.com&password=passw0rd
+  POST php/login.php?email=test@example.com&password=passw0rd
   </div>
   <div>
   Response: Authenticated successfully, redirecting...
@@ -94,7 +94,7 @@
 <hr>
   <h2>List classes</h2>
   <div>
-  GET cgi-bin/services.php?rid=classes&classId=1&department_id=1
+  GET php/services.php?rid=classes&classId=1&department_id=1
   </div>
   <div>
   Response:  {"1":{"id":1,"department_id":1,"name":"15届周六加行","start_year":2017,"perm_level":2,"weekday":3}}
@@ -107,8 +107,8 @@
 <hr>
   <h2>List users</h2>
   <div>
-  GET cgi-bin/services.php?rid=users&email=test@example.com
-  GET cgi-bin/services.php?rid=users&classId=1
+  GET php/services.php?rid=users&email=test@example.com
+  GET php/services.php?rid=users&classId=1
   </div>
   <div>
   Response:  {"id":"123","sex":1,"education":4,"classId":6,"birthyear":"1978","email":"test@example.com"}}
