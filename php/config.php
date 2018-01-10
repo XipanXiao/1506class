@@ -32,7 +32,7 @@
       $config = (array)json_decode(file_get_contents('../data/config.php'));
       
       $config = empty($config[$_SERVER['HTTP_HOST']]) ?
-          $config["localhost"] : $config[$_SERVER['HTTP_HOST']];
+          $config["default"] : $config[$_SERVER['HTTP_HOST']];
     
       $config = replace_config_variables($config);
     }
