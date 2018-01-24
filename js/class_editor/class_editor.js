@@ -21,6 +21,9 @@ define('class_editor/class_editor', ['departments/departments',
               classId: '='
             },
             link: function(scope) {
+              scope.isSysAdmin = function() {
+                return perm.isSysAdmin();
+              };
               scope.dayLabels = ['星期日', '星期一', '星期二', '星期三', '星期四',
                   '星期五', '星期六'];
               scope.setupPermissionEditor = function(classInfo) {
@@ -97,7 +100,7 @@ define('class_editor/class_editor', ['departments/departments',
                     scope.classInfo && scope.classInfo.department_id == 1;
               };
             },
-            templateUrl : 'js/class_editor/class_editor.html?tag=201712202243'
+            templateUrl : 'js/class_editor/class_editor.html?tag=201801242243'
           };
         });
 });

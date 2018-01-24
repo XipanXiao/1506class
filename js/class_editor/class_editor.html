@@ -24,11 +24,11 @@
     <input type="time" ng-model="classInfo.time" time> 
   </label>
   <div class="padded-element">
-    YY房间：
+    YY/zoom房间：
     <editable-label value="classInfo.class_room"></editable-label>
   </div>
   <div class="padded-element">
-    班级群邮件地址：
+    班级email：
     <editable-label value="classInfo.email"></editable-label>
   </div>
   <div class="padded-element">
@@ -47,6 +47,9 @@
   <div class="padded-element">
     允许学员自报考勤 
     <input type="checkbox" ng-model="classInfo.self_report">
+  </div>
+  <div class="padded-element" ng-if="isSysAdmin()">
+    学院系统ID: <input type="number" ng-model="classInfo.zb_id">
   </div>
   <iron-icon icon="icons:delete" title="删除" ng-click="remove()" class="selectable padded-element"
       ng-if="classInfo.id">
