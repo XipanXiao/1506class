@@ -163,19 +163,15 @@ define('zb_services', ['utils'], function() {
               }
             });
       },
-      get_user_preclass_id: function(userID) {
+      get_user_preclass: function(userID) {
         var url = '{0}/user/basic?userID={1}'.format(serviceUrl, userID);
         return $http.get(get_proxied_url(url)).then(function(response) {
           var html = response.data;
           var m = /var history_classes_json = (\[.+\]);/g.exec(html);
           if (!m || !m[1]) return;
           var histories = JSON.parse(m[1]);
-          for (var index in histories) {
-              var history = histories[index];
-              if (parseInt(history.status) == 0) {
-                return parseInt(history.pre_classID);
-              }
-          }
+          // The first entry of the histories list has the most updated class info.
+          return utils.first(histories);
         });
       },
       list_users: function(pre_classID) {
@@ -289,6 +285,15 @@ define('zb_services', ['utils'], function() {
           dst_pre_classID: destinationClassID,
           reason: reason
         };
+        return http_form_post($http, $httpParamSerializerJQLike(data));
+      },
+      recover_user: function(pre_classID, userID) {
+  	    var data = {
+          url: '{0}/pre/classinfo_ajax'.format(serviceUrl),
+          type: 'recover_users',
+          pre_classID: pre_classID,
+          userIDs: [userID]    	    		
+  	    };
         return http_form_post($http, $httpParamSerializerJQLike(data));
       }
     };

@@ -781,10 +781,20 @@ define('zb_sync_button/zb_sync_button',
                 // Need to transfer the user first
                 if (user.zb_id && !scope.zb_users_map[user.name]) {
                 	  var getPreClassID = function() {
-                	    return zbrpc.get_user_preclass_id(user.zb_id)
-                	        .then(function(id) { return user.zb_class_id = id; });  
+                	    return zbrpc.get_user_preclass(user.zb_id)
+                	        .then(function(preClass) {
+                	        	  user.zb_status = parseInt(preClass.status);
+                	        	  return user.zb_class_id =
+                	        	      parseInt(preClass.pre_classID);
+                	        	});  
                 	  };
                   requests.push(getPreClassID);
+                  function recover() {
+                	    // No need to recover, do nothing.
+                	    if (user.zb_status != 11) return utils.truePromise();
+                	    return zbrpc.recover_user(user.zb_class_id, user.zb_id);
+                  }
+                  requests.push(recover);
                   var transfer = function() {
                     return zbrpc.transfer_user(user.zb_id, user.zb_class_id,
                         pre_classID, 'sync');
