@@ -49,7 +49,7 @@
     <input type="checkbox" ng-model="classInfo.self_report">
   </div>
   <div class="padded-element" ng-if="isSysAdmin()">
-    学院系统ID: <input type="number" ng-model="classInfo.zb_id">
+    学院系统ID: <editable-label value="classInfo.zb_id"></editable-label>
   </div>
   <iron-icon icon="icons:delete" title="删除" ng-click="remove()" class="selectable padded-element"
       ng-if="classInfo.id">

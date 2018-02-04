@@ -163,6 +163,21 @@ define('zb_services', ['utils'], function() {
               }
             });
       },
+      get_user_preclass_id: function(userID) {
+        var url = '{0}/user/basic?userID={1}'.format(serviceUrl, userID);
+        return $http.get(get_proxied_url(url)).then(function(response) {
+          var html = response.data;
+          var m = /var history_classes_json = (\[.+\]);/g.exec(html);
+          if (!m || !m[1]) return;
+          var histories = JSON.parse(m[1]);
+          for (var index in histories) {
+              var history = histories[index];
+              if (parseInt(history.status) == 0) {
+                return parseInt(history.pre_classID);
+              }
+          }
+        });
+      },
       list_users: function(pre_classID) {
         var url =
             '{0}/pre/classinfo_ajax?type=pre_class_user_list&pre_classID={1}'
@@ -264,6 +279,17 @@ define('zb_services', ['utils'], function() {
         var url = '{0}/pre/report_ajax?type={1}&pre_classID={2}&half_term={3}'.
             format(serviceUrl, gridType, pre_classID, halfTerm);
         return $http.get(get_proxied_url(url));
+      },
+      transfer_user: function(userID, preclassID, destinationClassID, reason) {
+        var data = {
+          url: '{0}/pre/classinfo_ajax'.format(serviceUrl),
+          type: 'transfer_users',
+          userIDs: [userID],
+          pre_classID: preclassID,
+          dst_pre_classID: destinationClassID,
+          reason: reason
+        };
+        return http_form_post($http, $httpParamSerializerJQLike(data));
       }
     };
   });

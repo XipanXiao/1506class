@@ -777,6 +777,20 @@ define('zb_sync_button/zb_sync_button',
               utils.forEach(users, function(user) {
                 if (scope.checkUserTask(user, taskKey, 0)) return;
                 
+                // User is in the zb system but not in this zb class.
+                // Need to transfer the user first
+                if (user.zb_id && !scope.zb_users_map[user.name]) {
+                	  var getPreClassID = function() {
+                	    return zbrpc.get_user_preclass_id(user.zb_id)
+                	        .then(function(id) { return user.zb_class_id = id; });  
+                	  };
+                  requests.push(getPreClassID);
+                  var transfer = function() {
+                    return zbrpc.transfer_user(user.zb_id, user.zb_class_id,
+                        pre_classID, 'sync');
+                  };
+                  requests.push(transfer);
+                }
                 var request = function() {
                   return (user.zb_id ? zbrpc.update_user(user) :
                     zbrpc.create_user(pre_classID, user))
@@ -893,6 +907,7 @@ define('zb_sync_button/zb_sync_button',
               if (parseInt(zb_user.status) == 11) return;
               zb_users_map[zb_user.name] = zb_user;
             });
+            scope.zb_users_map = zb_users_map;
 
             var requests = [];
             utils.forEach(users, function(user) {
