@@ -325,7 +325,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     checkPermission(Roles::SYS_ADMIN);
     $response = ["deleted" => remove_course($_REQUEST["id"])];
   } elseif ($resource_id == "schedule") {
-    checkPermission(Roles::YEAR_LEADER);
+    checkPermission(Roles::CLASS_LEADER);
     $response = ["deleted" => remove_schedule($_REQUEST["id"])];
   } elseif ($resource_id == "class") {
     checkPermission(Roles::SYS_ADMIN);
