@@ -60,6 +60,9 @@ define('zb_sync_button/zb_sync_button',
             switch (scope.type) {
             case 'schedule_task':
               var half_terms = scope.getHalfTerms();
+              if (!half_terms.length) {
+                alert("还没到报数时间，请检查学修安排");
+              }
               var requests = [scope.ensure_authenticated];
               requests = requests.concat(half_terms.map(function(half_term) {
                 return function() {
@@ -479,8 +482,14 @@ define('zb_sync_button/zb_sync_button',
             var atts = scope.get_attendance(user);
             // If there is no attendance record, might be transferred users.
             if (!atts[0] && !atts[1]) {
-              var index = half_term % 2;              
-              atts[index] = scope.zbScheduleStats[user.zb_id].att;
+              var index = half_term % 2;
+              var zbAttendanceRecord = scope.zbScheduleStats[user.zb_id];
+              if (!zbAttendanceRecord) {
+                alert("用户{0}没在智悲系统本班中，".format(user.name) +
+                    "如果是新注册用户，请先同步“班级信息”");
+              } else {
+                atts[index] = scope.zbScheduleStats[user.zb_id].att;
+              }
             }
             var records = scope.getBookAudioRecords(scope.lessons, user, true);
             var otherTasks = scope.classInfo.department_id == JIA_XING ?
