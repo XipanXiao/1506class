@@ -151,17 +151,9 @@ define('zb_services', ['utils'], function() {
       update_user: function(user) {
         var data = toZBUser(user);
         data.userID = user.zb_id;
-        data.url = '{0}/user/basic?userID={1}'.format(serviceUrl, user.zb_id);
+        data.url = '{0}/user/basic_ajax'.format(serviceUrl);
 
-        return http_form_post($http, $httpParamSerializerJQLike(data))
-            .then(function(response) {
-              if (response.data.startsWith('<!DOCTYPE html>')) {
-                return {data: {returnValue: 'success'}};
-              } else {
-                alert(response.data);
-                return {data: {error: response.data}};
-              }
-            });
+        return http_form_post($http, $httpParamSerializerJQLike(data));
       },
       get_user_preclass: function(userID) {
         var url = '{0}/user/basic?userID={1}'.format(serviceUrl, userID);
