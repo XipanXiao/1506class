@@ -13,7 +13,7 @@ define('serial_number_dialog/serial_number_dialog',
 
               var backup = {};
 
-              if (scope.users) {
+              if (scope.users && scope.classId) {
                 initBase(scope.users);
               } else {
                 scope.$watch('users', initBase);
