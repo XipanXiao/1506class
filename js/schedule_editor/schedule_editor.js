@@ -3,14 +3,18 @@ define('schedule_editor/schedule_editor',
      'editable_label/editable_label',
      'navigate_bar/navigate_bar',
      'permission',
-    'schedule_group_editor/schedule_group_editor', 'services',
+    'schedule_group_editor/schedule_group_editor',
+    'task_arrangements/task_arrangements',
+    'services',
     'user_picker/user_picker', 'utils'], function() {
 
   return angular.module('ScheduleEditorModule',
       ['CourseEditorDialogModule', 'EditableLabelModule',
        'NavigateBarModule',
        'PermissionModule',
-       'ScheduleGroupEditorModule', 'ServicesModule', 'UserPickerModule',
+       'ScheduleGroupEditorModule',
+       'TaskArrangementsModule',
+       'ServicesModule', 'UserPickerModule',
        'UtilsModule']).directive('scheduleEditor', function(perm, rpc, utils) {
           return {
             scope: {
@@ -26,6 +30,10 @@ define('schedule_editor/schedule_editor',
               
               $scope.toDateTime = function(tm) {
                 return tm ? utils.toDateTime(tm).toLocaleString() : '';
+              };
+              
+              $scope.isYearLeader = function() {
+                return perm.isYearLeader();
               };
               
               $scope.$watch('classId', function() {

@@ -125,4 +125,9 @@ function insertOrUpdate($medoo, $table, $record) {
     return intval($medoo->insert($table, $record));
   }
 }
+
+function run_sql_file($file, $medoo) {
+  $sqls = file_get_contents($file);
+  $medoo->query($sqls);
+}
 ?>

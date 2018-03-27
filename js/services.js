@@ -109,6 +109,10 @@ define('services', [], function() {
         return $http.get(url);
       },
       
+      get_task_arranges: function(classId) {
+          return $http.get('php/task_arrangements.php?class_id={0}'.format(classId));
+      },
+      
       get_courses: function(group_id) {
         return $http.get(serviceUrl + '?rid=courses&group_id=' + 
             (group_id || ''), {cache: true}).then(function(response) {
@@ -309,6 +313,18 @@ define('services', [], function() {
         };
         return http_form_post($http, $httpParamSerializerJQLike(data),
             'php/score.php');
+      },
+      
+      update_task_arranges: function(classId, taskId, start_half_term,
+          report_half_term) {
+        var data = {
+          class_id: classId,
+          task_id: taskId,
+          start_half_term: start_half_term,
+          report_half_term: report_half_term
+        };
+        return http_form_post($http, $httpParamSerializerJQLike(data),
+            'php/task_arrangements.php');
       },
       
       remove_course: function(course_id) {
