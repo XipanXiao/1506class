@@ -434,11 +434,14 @@ define('utils', [], function() {
         return parts[0] + '年' + (parseInt(parts[1])||1) + '月' + 
             (parseInt(parts[2])||1) + '日';
       },
-      truePromise: function() {
+      futureValue: function(value) {
         return $q(function(resolve) {
-          resolve(true);
+          resolve(value);
         });
       },
+      truePromise: function() {
+        return utils.futureValue(true);
+      }, 
       /// Calls the first asynchronous function from the list of [requests], 
       /// then calls the next one once it's done, and so on. The chain
       /// terminates after all promises resolve with a true value, or any of
@@ -458,7 +461,8 @@ define('utils', [], function() {
           var fn = requests[index++];
           // Always return a promise so that 'then' is called even [requests]
           // is empty.
-          return fn ? fn().then(next, onError) : that.truePromise();
+          return fn ? fn().then(next, onError) :
+                utils.futureValue(previousResponse);
         };
         return next(true);
       },
@@ -526,6 +530,39 @@ define('utils', [], function() {
         data = new Blob([data], {type: 'text/plain'});
         if (file) window.URL.revokeObjectURL(file);
         return file = window.URL.createObjectURL(data);
+      },
+      
+      getTasks: function(rpc, depId, classId) {
+        var tasks;
+
+        function getTasks() {
+          return rpc.get_tasks(depId).then(function(response) {
+            return tasks = response.data;
+          });
+        }
+
+        function getArranges() {
+           if (!classId) return tasks;
+
+          return rpc.get_task_arranges(classId).then(function(response) {
+            var arranges = response.data;
+            utils.forEach(tasks, function(task) {
+              var arrange = arranges[task.id];
+              if (!arrange) return;
+
+              task.starting_half_term = parseInt(arrange.start_half_term) ||
+                  task.starting_half_term; 
+              task.report_half_term = parseInt(arrange.report_half_term) ||
+                  task.report_half_term;
+            });
+            tasks = utils.where(tasks, function(task) {
+            	  return task.starting_half_term < 17;
+            });
+            return tasks;
+          });
+        }
+        
+        return utils.requestOneByOne([getTasks, getArranges]);
       },
 
       // Index of bit in the user.enroll_tasks bits.

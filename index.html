@@ -30,7 +30,7 @@
       <!-- Don't use ng-switch here, it breaks the iron page for FireFox, Safari, etc. -->
       <setup-tasks ng-show="isFirstClass()" user="user" class="left">
       </setup-tasks>
-      <tasks ng-hide="isFirstClass()" department-id="{{user.classInfo.department_id}}" class="left">
+      <tasks ng-hide="isFirstClass()" class-info="user.classInfo" class="left">
       </tasks>
       <schedule-tasks class="left" user="user"></schedule-tasks>
     </div>

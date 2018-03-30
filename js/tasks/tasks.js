@@ -4,18 +4,20 @@ define('tasks/tasks', ['progress_bar/progress_bar', 'services', 'utils'],
       'UtilsModule']).directive('tasks', function($rootScope, rpc, utils) {
       return {
         scope: {
-          departmentId: '@'
+          classInfo: '='
         },
         link: function($scope) {
-          $scope.$watch('departmentId', $scope.loadTasks);
+          $scope.$watch('classInfo', $scope.loadTasks);
 
           $scope.loadTasks = function() {
-            if (!$scope.departmentId || !$scope.half_term) return;
+            if (!$scope.classInfo || !$scope.half_term) return;
 
-            rpc.get_tasks($scope.departmentId).then(function(response) {
+            var classId = $scope.classInfo.id;
+            var depId = $scope.classInfo.department_id;
+            utils.getTasks(rpc, depId, classId).then(function(tasks) {
               $scope.tasks = [];
               
-              angular.forEach(response.data, function(task) {
+              angular.forEach(tasks, function(task) {
                 if ($scope.half_term < task.starting_half_term) return;
 
                 task = angular.copy(task);
