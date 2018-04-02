@@ -23,11 +23,11 @@ js/progress_bar/progress_bar.js
 js/task_editor_dialog/task_editor_dialog.js
 js/task_history/task_history.js
 js/task_stats/task_stats.js
-js/task_arrangements/task_arrangements.js
 js/new_user_dialog/new_user_dialog.js
 js/address_editor/address_editor.js
 js/user_editor/user_editor.js
 js/zb_sync_button/zb_sync_button.js
+js/task_arrangements/task_arrangements.js
 js/scores/scores.js
 js/users/users.js
 js/serial_number_dialog/serial_number_dialog.js

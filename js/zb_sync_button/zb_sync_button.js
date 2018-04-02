@@ -111,6 +111,14 @@ define('zb_sync_button/zb_sync_button',
                   scope.update_zb_scores
               ]).then(done);
               break;
+            case 'tasks':
+                utils.requestOneByOne([
+                    scope.ensure_authenticated,
+                    getZbTaskReportTerms,
+                    getLocalTasks,
+                    updateTaskArranges,
+                ]).then(done);
+                break;
             }
           };
           scope.getCourseRecord = function(user, course_id, audio, book) {
@@ -513,9 +521,11 @@ define('zb_sync_button/zb_sync_button',
           };
           
           scope.getTasks = function() {
-            return rpc.get_tasks(scope.classInfo.department_id)
-                .then(function(response) {
-                  return scope.tasks = utils.where(response.data,
+            var classId = scope.classInfo.id;
+            var depId = scope.classInfo.department_id;
+            return utils.getTasks(rpc, depId, classId)
+                .then(function(tasks) {
+                  return scope.tasks = utils.where(tasks,
                       function(task) {
                         return task.zb_name &&
                             task.report_half_term <= scope.half_term;
@@ -789,19 +799,19 @@ define('zb_sync_button/zb_sync_button',
                 // User is in the zb system but not in this zb class.
                 // Need to transfer the user first
                 if (user.zb_id && !scope.zb_users_map[user.name]) {
-                	  var getPreClassID = function() {
-                	    return zbrpc.get_user_preclass(user.zb_id)
-                	        .then(function(preClass) {
-                	        	  user.zb_status = parseInt(preClass.status);
-                	        	  return user.zb_class_id =
-                	        	      parseInt(preClass.pre_classID);
-                	        	});  
-                	  };
+                    var getPreClassID = function() {
+                      return zbrpc.get_user_preclass(user.zb_id)
+                          .then(function(preClass) {
+                              user.zb_status = parseInt(preClass.status);
+                              return user.zb_class_id =
+                                  parseInt(preClass.pre_classID);
+                            });  
+                    };
                   requests.push(getPreClassID);
                   function recover() {
-                	    // No need to recover, do nothing.
-                	    if (user.zb_status != 11) return utils.truePromise();
-                	    return zbrpc.recover_user(user.zb_class_id, user.zb_id);
+                      // No need to recover, do nothing.
+                      if (user.zb_status != 11) return utils.truePromise();
+                      return zbrpc.recover_user(user.zb_class_id, user.zb_id);
                   }
                   requests.push(recover);
                   var transfer = function() {
@@ -1143,6 +1153,60 @@ define('zb_sync_button/zb_sync_button',
                 toRequest);
             return utils.requestOneByOne(requests);
           };
+
+          var localTasks = [];
+          var zbTasks = {};
+          function getZbTaskReportTerms() {
+            var grid = scope.get_report_type(WORK_GRID);
+            var pre_classID = scope.classInfo.zb_id;
+            var allTerms = [];
+            for (var halfTerm = 4; halfTerm <= 17; halfTerm++) {
+              allTerms.push(halfTerm);
+            }
+            var requests = [];
+            // Use forEach and closure. Don't use for loop.
+            allTerms.forEach(function(halfTerm) {
+              var request = function() {
+                return zbrpc.get_task_records(grid, pre_classID, halfTerm)
+                    .then(function(response) {
+                  var user = response.data.data[0];
+                  if (!user) return true;
+                  for (var key in user) {
+                    if (!key || !key.endsWith('_total')) continue;
+                    var zbTaskName = key.split('_')[0];
+                    zbTasks[zbTaskName] = zbTasks[zbTaskName] || halfTerm;
+                  }
+                  return true;
+                });
+              };
+              requests.push(request);
+            });
+            return utils.requestOneByOne(requests);
+          }
+          function getLocalTasks() {
+            var depId = scope.classInfo.department_id;
+            return rpc.get_tasks(depId).then(function(response) {
+              return localTasks = response.data;
+            });
+          }
+          function updateTaskArranges() {
+            var classId = scope.classInfo.id;
+            function updateArrange(task) {
+              var zbReportTerm = zbTasks[task.zb_name];
+              return function() {
+                if (!zbReportTerm || zbReportTerm == task.report_half_term) {
+                	  return utils.truePromise();
+                	}
+                return rpc.update_task_arranges(classId, task.id,
+                    task.starting_half_term,
+                    zbReportTerm);
+                };
+            }
+            return utils.requestOneByOne(utils.map(localTasks, updateArrange))
+                .then(function() {
+               $rootScope.$broadcast('reload-task-arrange');
+            });
+          }
 
           scope.totalTasks = 0;
           scope.finished = 0;

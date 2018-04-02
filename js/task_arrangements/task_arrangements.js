@@ -1,7 +1,10 @@
-define('task_arrangements/task_arrangements', ['services', 'utils'],
+define('task_arrangements/task_arrangements', ['services', 'utils',
+    'zb_sync_button/zb_sync_button'
+],
     function() {
   return angular.module('TaskArrangementsModule', ['ServicesModule',
-      'UtilsModule']).directive('taskArrangements', function(rpc, utils) {
+      'UtilsModule','ZBSyncButtonModule'])
+      .directive('taskArrangements', function(rpc, utils) {
       return {
         scope: {
           classId: '='
@@ -22,6 +25,9 @@ define('task_arrangements/task_arrangements', ['services', 'utils'],
 
           scope.$watch('classId', function() {
         	    scope.loadTasks();
+          });
+          scope.$on('reload-task-arrange', function() {
+      	    scope.loadTasks();
           });
           
           function getClassInfo() {
