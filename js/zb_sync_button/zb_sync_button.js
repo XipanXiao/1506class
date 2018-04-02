@@ -1154,8 +1154,6 @@ define('zb_sync_button/zb_sync_button',
             return utils.requestOneByOne(requests);
           };
 
-          var localTasks = [];
-          var zbTasks = {};
           function getZbTaskReportTerms() {
             var grid = scope.get_report_type(WORK_GRID);
             var pre_classID = scope.classInfo.zb_id;
@@ -1163,6 +1161,7 @@ define('zb_sync_button/zb_sync_button',
             for (var halfTerm = 4; halfTerm <= 17; halfTerm++) {
               allTerms.push(halfTerm);
             }
+            scope.zbTasks = {};
             var requests = [];
             // Use forEach and closure. Don't use for loop.
             allTerms.forEach(function(halfTerm) {
@@ -1174,7 +1173,8 @@ define('zb_sync_button/zb_sync_button',
                   for (var key in user) {
                     if (!key || !key.endsWith('_total')) continue;
                     var zbTaskName = key.split('_')[0];
-                    zbTasks[zbTaskName] = zbTasks[zbTaskName] || halfTerm;
+                    scope.zbTasks[zbTaskName] = scope.zbTasks[zbTaskName] ||
+                        halfTerm;
                   }
                   return true;
                 });
@@ -1184,25 +1184,26 @@ define('zb_sync_button/zb_sync_button',
             return utils.requestOneByOne(requests);
           }
           function getLocalTasks() {
+             var classId = scope.classInfo.id;
             var depId = scope.classInfo.department_id;
-            return rpc.get_tasks(depId).then(function(response) {
-              return localTasks = response.data;
+            return utils.getTasks(rpc, depId, classId).then(function(tasks) {
+              return scope.localTasks = tasks;
             });
           }
           function updateTaskArranges() {
             var classId = scope.classInfo.id;
             function updateArrange(task) {
-              var zbReportTerm = zbTasks[task.zb_name];
+              var zbReportTerm = scope.zbTasks[task.zb_name];
               return function() {
                 if (!zbReportTerm || zbReportTerm == task.report_half_term) {
-                	  return utils.truePromise();
-                	}
+                  return utils.truePromise();
+                }
                 return rpc.update_task_arranges(classId, task.id,
                     task.starting_half_term,
                     zbReportTerm);
                 };
             }
-            return utils.requestOneByOne(utils.map(localTasks, updateArrange))
+            return utils.requestOneByOne(utils.map(scope.localTasks, updateArrange))
                 .then(function() {
                $rootScope.$broadcast('reload-task-arrange');
             });

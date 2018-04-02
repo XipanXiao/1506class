@@ -556,7 +556,7 @@ define('utils', [], function() {
                   task.report_half_term;
             });
             tasks = utils.where(tasks, function(task) {
-            	  return task.starting_half_term < 17;
+            	  return task.starting_half_term < 18;
             });
             return tasks;
           });
