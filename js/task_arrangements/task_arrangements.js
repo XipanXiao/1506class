@@ -24,10 +24,10 @@ define('task_arrangements/task_arrangements', ['services', 'utils',
           scope.isNotEmpty = true;
 
           scope.$watch('classId', function() {
-        	    scope.loadTasks();
+              scope.loadTasks();
           });
           scope.$on('reload-task-arrange', function() {
-      	    scope.loadTasks();
+            scope.loadTasks();
           });
           
           function getClassInfo() {
@@ -37,12 +37,17 @@ define('task_arrangements/task_arrangements', ['services', 'utils',
           }
           
           function getTaskArranges() {
-      	    var classId = scope.classInfo.id;
-        	    var depId = scope.classInfo.department_id;
-        	    return utils.getTasks(rpc, depId, classId).then(function(tasks) {
-        	    	  scope.isNotEmpty = !utils.isEmpty(tasks);
-    	        	  return scope.tasks = tasks;
-    	        });
+            var classId = scope.classInfo.id;
+              var depId = parseInt(scope.classInfo.department_id);
+              if (depId != 3) {
+                scope.tasks = [];
+                scope.isNotEmpty = false;
+                return utils.futureValue(false);
+              }
+              return utils.getTasks(rpc, depId, classId).then(function(tasks) {
+                scope.isNotEmpty = !utils.isEmpty(tasks);
+                return scope.tasks = tasks;
+              });
           }
 
           scope.loadTasks = function() {
