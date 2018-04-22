@@ -13,16 +13,13 @@
 <body class="center local">
 
 <app-bar user="user" admining="true"></app-bar>
-<div class="flex">
-  <departments on-change="depChanged(department)"></departments>
-  <div>
-    <checkbox-filter options="classYears" selection-changed="classYearChanged()">
-    </checkbox-filter>
-    <users users="users"></users>
-  </div>
-</div>
+<checkbox-filter options="classYears" selection-changed="classYearChanged()">
+</checkbox-filter>
+<checkbox-filter options="departments" selection-changed="depChanged()">
+</checkbox-filter>
+<users users="users"></users>
 
-<script type="text/javascript" src="user_stats.js?tag=201612132115"></script>
+<script type="text/javascript" src="user_stats.js?tag=201804212115"></script>
 
 </body>
 
