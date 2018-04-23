@@ -25,6 +25,7 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
 <body>
   注册没有成功。请通过验证码测试，确认您不是机器人。
   验证码测试使用Google reCAPTCHA服务，请确保您能访问Google。
+  <a href="javascript:history.back()">重试</a>
 </body>
 </html>
 <?php    
