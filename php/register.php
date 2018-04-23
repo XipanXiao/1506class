@@ -12,8 +12,22 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
   
   if (empty($_POST["g-recaptcha-response"]) ||
       !checkCaptcha($_POST["g-recaptcha-response"])) {
-    header('Content-Type: text/html; charset=utf-8');
-    echo "请通过验证码测试，确认您不是机器人。";
+?>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>注册失败</title>
+<script type="text/javascript">
+  alert('注册没有成功。请通过验证码测试，确认您不是机器人。\n' + 
+      '验证码测试使用Google reCAPTCHA服务，请确保您能访问Google。');
+</script>
+<body>
+  注册没有成功。请通过验证码测试，确认您不是机器人。
+  验证码测试使用Google reCAPTCHA服务，请确保您能访问Google。
+</body>
+</html>
+<?php    
     exit();
   }
   
