@@ -32,7 +32,7 @@
     if (!zip) return;
 
     var url = 'https://maps.googleapis.com/maps/api/geocode/json?sensor=true&' + 
-        'address=' + zip;
+        'language=en&address=' + zip;
     httpGet(url).then(function(response) {
       var error = document.querySelector('#address-error');
       if (response.status != 'OK') {
