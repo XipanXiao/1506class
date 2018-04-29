@@ -105,6 +105,37 @@ define('user_stats_app', [
                   getDepartments, aggregateClassYears, filterUsers]);
             };
             
+            $scope.fixCityNames = function() {
+              var requests = [];
+              utils.forEach($scope.users, function(user) {
+                if (!user.zip) return;
+                var request = function() {
+                  return rpc.lookup(user.zip).then(function(results) {
+                    if (!results) return true;
+
+                    var address = 
+                        window.countryData.fromGoogleResults(user.zip, results);            
+                    if (user.country == address.countryCode &&
+                        user.state == address.stateIndex &&
+                        user.city != address.city) {
+                      return rpc.update_user({id: user.id, 
+                          city: address.city}).then(function(response) {
+                        if (response.data.updated) {
+                          console.log('{0} city is changed from {1} to {2}'.
+                              format(user.name, user.city, address.city));
+                          user.city = address.city;
+                        }
+                        return true;
+                      });
+                    }
+                    return true;
+                  });
+                };
+                requests.push(request);
+              });
+              utils.requestOneByOne(requests);
+            };
+
             loadAllUsers();
           }
         };
