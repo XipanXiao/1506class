@@ -108,7 +108,7 @@ define('user_stats_app', [
             $scope.fixCityNames = function() {
               var requests = [];
               utils.forEach($scope.users, function(user) {
-                if (!user.zip) return;
+                if (!user.zip || (user.city && /^\w+$/.test(user.city))) return;
                 var request = function() {
                   return rpc.lookup(user.zip).then(function(results) {
                     if (!results) return true;

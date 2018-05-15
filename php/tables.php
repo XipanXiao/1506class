@@ -103,6 +103,8 @@ function remove_schedule_group($id) {
 function remove_class($id) {
   global $medoo;
  
+  if (intval($id) == 1) return 0;
+
   // If there is no reference to this class, it's deleted from the DB.
   $deleted = $medoo->delete("classes", ["id" => $id]);
   if ($deleted) return $deleted;
@@ -323,7 +325,7 @@ function update_user($user) {
   
   $fields = ["internal_id", "name", "nickname", "email",
       "phone", "street", "city", "country", "zip",
-      "im", "occupation", "comments", "skills", "bio"];
+      "im", "occupation", "comments", "skills", "bio", "experience"];
 
   foreach ($user as $key => $value) {
     if ($key == "password") {

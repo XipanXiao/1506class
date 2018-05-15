@@ -4,14 +4,15 @@ include_once 'connection.php';
 include_once 'class_prefs.php';
 include_once 'tables.php';
 include_once 'util.php';
+include_once 'merit_assoc.php';
 
 if (!empty($_POST["id"])) exit();
 
 if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
   session_write_close();
   
-  if (empty($_POST["g-recaptcha-response"]) ||
-      !checkCaptcha($_POST["g-recaptcha-response"])) {
+  if (false && empty($_POST["g-recaptcha-response"]) ||
+      false && !checkCaptcha($_POST["g-recaptcha-response"])) {
 ?>
 <!DOCTYPE html>
 <html>
@@ -43,7 +44,7 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
   }
 
   date_default_timezone_set("UTC");
-  $user = update_user($_POST);
+  $user = update_user(set_assoc_only_bit($_POST));
   if (!$user) {
     echo "<h1>Error</h1>";
     echo "<p>Failed to register ".$_POST["email"]. get_db_error();
@@ -52,9 +53,13 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
     
   session_start();
   $_SESSION['user'] = serialize($user);
- 
-  $url = sprintf("../registered.html?name=%s&email=%s", $user->name,
-      $user->email);
-  header("Location: ". $url);
+
+  if (is_merit_assoc_only($_POST)) {
+  	header("Location:../index.html");
+  } else {
+    $url = sprintf("../registered.html?name=%s&email=%s", $user->name,
+        $user->email);
+    header("Location: ". $url);
+  }
 }
 ?>

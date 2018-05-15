@@ -13,6 +13,7 @@
       <div class="css-table-cell"><strong>跟进</strong></div>
       <div class="css-table-cell" ng-if="isNewClass()"><strong>入口</strong></div>
       <div class="css-table-cell" ng-if="isNewClass()"><strong>已信,入微,YY,试麦</strong></div>
+      <div class="css-table-cell" ng-if="isNewClass()"><strong>功德会</strong></div>
       <div class="css-table-cell"><strong>备注</strong></div>
       <div class="css-table-cell"></div>
     </div>
@@ -35,6 +36,10 @@
             ng-click="updateEnroll(user)" bit-index="2">
         <input type="checkbox" ng-model="user.enroll_tasks" title="YY试麦完成"
             ng-click="updateEnroll(user)" bit-index="3">
+      </div>
+      <div class="css-table-cell" ng-if="isNewClass()">
+        <input type="checkbox" ng-model="user.enroll_tasks" title="功德会成员"
+            ng-click="updateEnroll(user)" bit-index="8" disabled>
       </div>
       <div class="css-table-cell comments">{{user.comments}}</div>
       <div class="css-table-cell">
