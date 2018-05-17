@@ -43,7 +43,7 @@ function canWriteClass($user, $classId) {
 
 /// Whether [$user] can report task for [$task_user_id].
 function canWriteUser($user, $targetUser) {
-  if ($user->id == $targetUser) return true;
+  if ($user == $targetUser || $user->id == $targetUser) return true;
 
   if (!($targetUser instanceof User)) {
     $targetUser = get_users(null, null, $targetUser)[$targetUser];
@@ -260,32 +260,13 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     }
 
     if (!canWriteUser($user, $targetUser)) {
-      exit();
+      $response = permision_denied_error();
     }
     
     if (isset($_POST["permission"]) &&
         (!canGrant($user, $targetUser->permission) || 
         !canGrant($user, intval($_POST["permission"])))) {
-      exit();
-    }
-    if (isset($_POST["classId"]) && intval($_POST["classId"]) == 0) {
-      if(!empty($_POST["classId_label"]) &&
-          !empty($_POST["start_year_label"])) {
-            $class_name = $_POST["start_year_label"]. $_POST["classId_label"];
-            $classId = get_class_id($class_name);
-      
-            if (!$classId) {
-              $classId = create_class($class_name, date("Y"));
-            }
-      
-            if (!$classId) {
-              $response = ["error" => "failed to create class ". $class_name];
-            } else {
-              $_POST["classId"] = $classId;
-            }
-          } else {
-            $response = ["error" => "check class_label and start_year_label"];
-          }
+      $response = permision_denied_error();
     }
     
     if (!$response) {
