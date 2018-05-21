@@ -437,16 +437,82 @@ div.compact-url {
 }
 
 .register-back {
-  background-image: url("images/body_bg.jpg");
+  background-image: url("images/background.png");
+  padding-top: 48px;
 }
 
 .register-form {
-  background: white;  
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimSun, sans-serif;
+  font-size: 94%;
+  margin-top: -2px;  
   width: 800px;
 }
 
+.register-form form {
+  background-color: rgba(255, 255, 255, .7);
+  border-radius: 0 0 4px 4px;
+}
+
+.register-form .css-table-cell {
+	padding: 0px 8px;
+}
+
+.register-form fieldset {
+	border: none;
+}
+
+.register-form textarea,
+.register-form input {
+	border-color: gray;
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 2px;
+}
+
+.register-form .place-holder {
+  width: 24px;
+}
+
+.register-form .vertical-place-holder {
+  height: 48px;
+  vertical-align: middle;
+}
+
+.section-index {
+	background-color: #982838;
+	border-radius: 15px;
+  color: #eec94d;
+  display: table-cell;
+  font-size: 110%;
+  font-weight: bold;
+  height: 30px;
+	text-align: center;
+	vertical-align: middle;
+  width: 30px;
+}
+
+.section-title {
+  color: #982838;
+  font-size: 150%;
+  height: 64px;
+}
+
 .register-banner {
+  background-image: url("images/welcome.jpg");
+  height: 348px;
+  position: relative;
   width: 800px;
+}
+
+.outer-us {
+	color: white;
+	left: 100px;
+	top: 270px;
+	position: absolute;
+}
+
+.outer-us > a {
+	color: #eec94d;
 }
 
 paper-dialog#new-user-dlg {
@@ -665,10 +731,20 @@ iron-icon.add-icon {
   width: 48px;
 }
 
-.register-button {
-	background-color: blue;
-  color: white !important;
+.register-form input.register-button {
+	background-color: #972937;
+	border-radius: 4px;
+  color: #eec94d;
   cursor: pointer;
+  font-size: 200%;
   height: 36px;
+  margin: 48px;
   width: 148px;
+}
+
+.copy-right {
+	color: white;
+	font-size: 120%;
+  padding: 32px;
+  text-align: center;
 }
