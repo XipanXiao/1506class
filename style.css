@@ -448,9 +448,41 @@ div.compact-url {
   width: 800px;
 }
 
+.register-type-chooser,
 .register-form form {
   background-color: rgba(255, 255, 255, .7);
   border-radius: 0 0 4px 4px;
+}
+
+.register-type-chooser {
+	margin-top: -16px;
+}
+
+.register-entry {
+	background-size: cover;
+	display: block;
+	height: 230px;
+	width: 230px;
+}
+
+.flex.justify-align {
+  justify-content: center;
+}
+
+.bodhi-class {
+  background-image: url("images/bodhi_class.png");
+}
+
+.bodhi-class:hover {
+  background-image: url("images/bodhi_class_hover.png");
+}
+
+.bodhi-merit {
+  background-image: url("images/bodhi_merit.png");
+}
+
+.bodhi-merit:hover {
+  background-image: url("images/bodhi_merit_hover.png");
 }
 
 .register-form .css-table-cell {
@@ -461,6 +493,7 @@ div.compact-url {
 	border: none;
 }
 
+.register-form select,
 .register-form textarea,
 .register-form input {
 	border-color: gray;
@@ -747,4 +780,9 @@ iron-icon.add-icon {
 	font-size: 120%;
   padding: 32px;
   text-align: center;
+}
+
+.merit-body {
+	background-image: url("images/body_bg.jpg");
+  width: 640px;
 }
