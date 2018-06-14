@@ -184,7 +184,7 @@
               <select id="state" name="state"></select>
             </div>
           </div>
-          <div hidden>
+          <div id="country-chooser" class="css-table-row">
             <div class="css-table-cell"></div>
             <div class="css-table-cell"></div>
             <div class="css-table-cell">
@@ -440,9 +440,30 @@
       node.parentNode.removeChild(node);
     });
   }
+  
+  function getUrlParameter(name) {
+    var result = null;
+    var params = location.search.substr(1).split("&");
+    for (var i in params) {
+        var pair = params[i].split('=');
+        if (pair[0] === name) return pair[1];
+    }
+  }
 
+  function adjustCountryContext() {
+    var country = getUrlParameter('country');
+    if (!country || country.toLowerCase() == 'us') {
+      var chooser = document.querySelector('#country-chooser');
+      chooser.parentNode.removeChild(chooser);
+    } else {
+      var outerUs = document.querySelector('.outer-us');
+      outerUs.parentNode.removeChild(outerUs);
+      document.querySelector('#country').value = country;
+    }
+  }
+
+  adjustCountryContext();
   removeUnneededSection();
   </script>
 </body>
 </html>
-

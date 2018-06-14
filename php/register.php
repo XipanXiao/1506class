@@ -54,7 +54,7 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
   session_start();
   $_SESSION['user'] = serialize($user);
 
-  if (is_merit_assoc_only($_POST)) {
+  if (is_merit_assoc_only($_POST) || $_POST["country"] != 'US') {
   	header("Location:../index.html");
   } else {
     $url = sprintf("../registered.html?name=%s&email=%s", $user->name,
