@@ -17,7 +17,7 @@
         href="index.html">
       考勤登记
     </a>
-    <a ng-if="!isIn('/admin.html') && isAdmin()" class="app-bar-link"
+    <a ng-if="!isIn('/admin.html') && (isAdmin() || isTeacher())" class="app-bar-link"
         href="admin.html">
       学修管理
     </a>

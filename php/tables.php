@@ -164,7 +164,7 @@ function get_classes($filters = []) {
   global $medoo;
   
   $int_fields = ["id", "department_id", "teacher_id", "start_year",
-      "perm_level", "weekday", "zb_id"];
+      "perm_level", "weekday", "zb_id", "teacher2_id"];
   $undeleted = ["deleted[!]" => 1, "deleted" => NULL];
   $filters = array_merge($filters, ["OR" => $undeleted]);
   $classes = keyed_by_id($medoo->select("classes", "*", ["AND" => $filters]));
@@ -197,14 +197,21 @@ function update_class($classInfo) {
   
   $datas = [];
   $fields = ["department_id", "name", "class_room", "email", "start_year", 
-      "perm_level", "weekday", "time", "zb_id", "teacher_id"];
+      "perm_level", "weekday", "time", "zb_id", "teacher_id", "teacher2_id"];
 
   foreach ($fields as $field) {
     if (isset($classInfo[$field])) {
       $datas[$field] = $classInfo[$field];
     }
   }
-
+  
+  if (intval($datas['teacher_id']) == 0) {
+  	$datas['teacher_id'] = null;
+  }
+  if (intval($datas['teacher2_id']) == 0) {
+  	$datas['teacher2_id'] = null;
+  }
+  
   if (isset($classInfo["self_report"])) {
     $datas["self_report"] = $classInfo["self_report"] == "true" ? 1 : 0;
   }
@@ -293,17 +300,6 @@ function get_users($email, $classId = null, $user_id = null, $sn = null) {
   }
 
   return $users;
-}
-
-function get_teachers() {
-  global $medoo;
-
-  $sql = sprintf("SELECT id, name, nickname, email FROM users".
-      " WHERE ((permission & %d)=%d) AND ((permission & %d) != %d);", 
-      TEACHER, TEACHER, INSPECTOR, INSPECTOR);
-
-  $result = $medoo->query($sql)->fetchAll();
-  return keyed_by_id($result);
 }
 
 function remove_user($id) {
@@ -493,7 +489,7 @@ function report_task($user_id, $task_id, $sub_index, $count, $duration) {
         "student_id" => intval($user_id),
         "task_id" => intval($task_id),
         "sub_index" => intval($sub_index)
-      ], "LIMIT" => 1      	
+      ], "LIMIT" => 1        
     ]);
     if ($updated) return $updated;
   }
@@ -775,5 +771,14 @@ function get_state_users($countryCode, $stateIndex) {
           "state" => $stateIndex,
           "classId[!]" => $deletedClassIds
       ]]);
+}
+
+function is_teacher($id) {
+  global $medoo;
+  
+  return $medoo->count("classes", "id", ["OR" => [
+      "teacher_id" => $id,
+      "teacher2_id" => $id
+  ]]) > 0;
 }
 ?>

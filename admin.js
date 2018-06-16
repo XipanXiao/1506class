@@ -30153,11 +30153,6 @@ define('services', [], function() {
         });
       },
       
-      get_teachers: function() {
-        var url = "{0}?rid=teachers".format(serviceUrl);
-        return $http.get(url);
-      },
-
       // records: 'class', 'mine' or 'none'.
       get_schedules: function(classId, term, records) {
         var url = "{0}?rid=learning_records&classId={1}&term={2}&records={3}".
@@ -30448,6 +30443,9 @@ define('permission', ['utils'], function() {
       },
       isAdmin: function() {
         return this.user && this.user.permission > this.ROLES.STUDENT;
+      },
+      isTeacher: function() {
+        return this.user && this.user.is_teacher;
       },
       /// Class leaders (and below) should see only classes of the same year.
       checkClass: function(user, classInfo) {
@@ -31311,6 +31309,9 @@ define('app_bar/app_bar', ['permission', 'search_bar/search_bar', 'utils'],
           scope.isOrderAdmin = function() {
             return perm.isOrderAdmin();
           };
+          scope.isTeacher = function() {
+            return perm.isTeacher();
+          };
           scope.showAssignments = function() {
             return perm.isSysAdmin() || perm.isYearLeader();
           };
@@ -31813,7 +31814,10 @@ define('user_input/user_input', ['services'], function() {
           return users[userId];
         });
         ngModel.$parsers.push(function(userLabel) {
-          if (!userLabel) return null;
+          if (!userLabel) {
+            scope.$parent.userId = 0;
+            return 0;
+          }
 
           var userId = users[userLabel];
           if (userId) {
@@ -31979,7 +31983,7 @@ define('class_editor/class_editor', ['departments/departments',
                     scope.classInfo && scope.classInfo.department_id == 1;
               };
             },
-            templateUrl : 'js/class_editor/class_editor.html?tag=201802032243'
+            templateUrl : 'js/class_editor/class_editor.html?tag=201806152243'
           };
         });
 });
@@ -34931,15 +34935,6 @@ define('schedule_editor/schedule_editor',
                         utils.map(response.data, getUserEmail).join(',');
                   });
                 }
-                function getTeacherEmail() {
-                  if (!$scope.classInfo.teacher_id) return utils.truePromise();
-                  
-                  return rpc.get_teachers().then(function(response) {
-                    var teacher = response.data[$scope.classInfo.teacher_id];
-                    $scope.teacherEmail = teacher && teacher.email;
-                    return true;
-                  });
-                }
                 function sendMail() {
                   var courseName = group.courses[schedule.course_id].name;
                   return emailjs.send("bicw_notifcation", "class_notification",
@@ -34971,7 +34966,7 @@ define('schedule_editor/schedule_editor',
                     return response.data.updated;
                   });
                 }
-                utils.requestOneByOne([getClassInfo, getEmail, getTeacherEmail,
+                utils.requestOneByOne([getClassInfo, getEmail,
                     sendMail, update_notified_timestamp]);
               };
               $scope.addVacation = function(group, scheduleId) {

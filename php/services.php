@@ -97,8 +97,6 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = get_class_candidates($user);
   } elseif ($resource_id == "course_groups") {
     $response = get_course_groups($_GET["detailed"]);
-  } elseif ($resource_id == "teachers") {
-    $response = isAdmin($user) ? get_teachers() : permision_denied_error();
   } elseif ($resource_id == "tasks") {
     if (isset($_GET["department_id"])) {
       $response = get_tasks($_GET["department_id"]);
@@ -133,6 +131,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       }
     } else {
       $user = current(get_users($user->email));
+      $user->is_teacher = is_teacher($user->id);
       // Refresh the session user data every time the user access the home page.
       $_SESSION["user"] = serialize($user);
       $response = $user;

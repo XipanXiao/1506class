@@ -31,6 +31,7 @@ if(!empty($_POST["email"])) {
 
     $user = undelete($user);
     $user->password = null;
+    $user->is_teacher = is_teacher($user->id);
     $_SESSION["user"] = serialize($user);
     
     $page = empty($_POST["redirect-url"]) 

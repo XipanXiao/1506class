@@ -1,5 +1,4 @@
 <?php
-define("TEACHER", 0x403);
 define("INSPECTOR", 0x57);
 
 function isSysAdmin($user) {
@@ -38,12 +37,9 @@ function get_student_permission() {
   return 3;
 }
 
-function is_teacher($user) {
-  return ($user->permission & TEACHER) == TEACHER;
-}
-
 function is_teacher_of($user, $classInfo) {
-  return intval($classInfo["teacher_id"]) == $user->id;
+  return intval($classInfo["teacher_id"]) == $user->id ||
+      intval($classInfo["teacher2_id"]) == $user->id;
 }
 
 function canRead($user, $classInfo) {

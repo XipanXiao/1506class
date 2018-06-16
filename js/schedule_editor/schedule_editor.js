@@ -238,15 +238,6 @@ define('schedule_editor/schedule_editor',
                         utils.map(response.data, getUserEmail).join(',');
                   });
                 }
-                function getTeacherEmail() {
-                  if (!$scope.classInfo.teacher_id) return utils.truePromise();
-                  
-                  return rpc.get_teachers().then(function(response) {
-                    var teacher = response.data[$scope.classInfo.teacher_id];
-                    $scope.teacherEmail = teacher && teacher.email;
-                    return true;
-                  });
-                }
                 function sendMail() {
                   var courseName = group.courses[schedule.course_id].name;
                   return emailjs.send("bicw_notifcation", "class_notification",
@@ -278,7 +269,7 @@ define('schedule_editor/schedule_editor',
                     return response.data.updated;
                   });
                 }
-                utils.requestOneByOne([getClassInfo, getEmail, getTeacherEmail,
+                utils.requestOneByOne([getClassInfo, getEmail,
                     sendMail, update_notified_timestamp]);
               };
               $scope.addVacation = function(group, scheduleId) {

@@ -143,11 +143,6 @@ define('services', [], function() {
         });
       },
       
-      get_teachers: function() {
-        var url = "{0}?rid=teachers".format(serviceUrl);
-        return $http.get(url);
-      },
-
       // records: 'class', 'mine' or 'none'.
       get_schedules: function(classId, term, records) {
         var url = "{0}?rid=learning_records&classId={1}&term={2}&records={3}".

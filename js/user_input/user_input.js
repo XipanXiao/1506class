@@ -13,7 +13,10 @@ define('user_input/user_input', ['services'], function() {
           return users[userId];
         });
         ngModel.$parsers.push(function(userLabel) {
-          if (!userLabel) return null;
+          if (!userLabel) {
+            scope.$parent.userId = 0;
+            return 0;
+          }
 
           var userId = users[userLabel];
           if (userId) {

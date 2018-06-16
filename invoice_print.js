@@ -29418,6 +29418,9 @@ $provide.value("$locale", {
       isAdmin: function() {
         return this.user && this.user.permission > this.ROLES.STUDENT;
       },
+      isTeacher: function() {
+        return this.user && this.user.is_teacher;
+      },
       /// Class leaders (and below) should see only classes of the same year.
       checkClass: function(user, classInfo) {
         return (user.permission & this.ROLES.LEADER) == this.ROLES.LEADER &&
@@ -29621,11 +29624,6 @@ define('services', [], function() {
         });
       },
       
-      get_teachers: function() {
-        var url = "{0}?rid=teachers".format(serviceUrl);
-        return $http.get(url);
-      },
-
       // records: 'class', 'mine' or 'none'.
       get_schedules: function(classId, term, records) {
         var url = "{0}?rid=learning_records&classId={1}&term={2}&records={3}".
