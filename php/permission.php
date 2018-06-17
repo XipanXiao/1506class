@@ -86,6 +86,7 @@ function getStartPage($user) {
 
 abstract class Roles {
   const SYS_ADMIN = 0xFFFF;
+  const COUNTRY_ADMIN = 0x3FF;
   const YEAR_LEADER = 0x3F;
   const CLASS_LEADER = 0xF;
 }
