@@ -28,7 +28,7 @@
       </div>
       <div class="css-table-row padded-element">
         <div class="css-table-cell">权限</div>
-        <div class="css-table-cell">{{permissionLabel[user.permission] || '混合身份'}}</div>
+        <div class="css-table-cell">{{permissionLabel[user.permission] || '管理员'}}</div>
         <div class="css-table-cell">
           <iron-icon ng-show="isSysAdmin() || isYearLeader()" class="selectable"
               icon="chevron-right" ng-click="editing = 'permission'">
