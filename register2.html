@@ -440,7 +440,7 @@
       node.parentNode.removeChild(node);
     });
   }
-  
+
   function getUrlParameter(name) {
     var result = null;
     var params = location.search.substr(1).split("&");
@@ -454,7 +454,7 @@
     var country = getUrlParameter('country');
     if (!country || country.toLowerCase() == 'us') {
       var chooser = document.querySelector('#country-chooser');
-      chooser.parentNode.removeChild(chooser);
+      chooser.style.display = 'none';
     } else {
       var outerUs = document.querySelector('.outer-us');
       outerUs.parentNode.removeChild(outerUs);
