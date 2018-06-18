@@ -199,10 +199,10 @@ function update_class($classInfo) {
   }
   
   if (intval($datas['teacher_id']) == 0) {
-  	$datas['teacher_id'] = null;
+    $datas['teacher_id'] = null;
   }
   if (intval($datas['teacher2_id']) == 0) {
-  	$datas['teacher2_id'] = null;
+    $datas['teacher2_id'] = null;
   }
   
   if (isset($classInfo["self_report"])) {
@@ -212,7 +212,8 @@ function update_class($classInfo) {
   ensure_country_columns($medoo);
   $id = intval($classInfo["id"]);
   if ($id == 0) {
-    return $medoo->insert("classes", $datas);
+    return $medoo->insert("classes", 
+        array_merge($datas, ["country" => $classInfo["country"]]));
   }
 
   return $medoo->update("classes", $datas, ["id" => $id]);
