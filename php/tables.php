@@ -1,6 +1,7 @@
 <?php
 include_once "datatype.php";
 include_once "connection.php";
+include_once "district.php";
 include_once "permission.php";
 include_once "util.php";
 
@@ -184,14 +185,6 @@ function get_class_id($class_name) {
   return empty($result) ? null : $result[0]["id"];
 }
 
-function create_class($class_name, $start_year) {
-  global $medoo;
-  
-  $medoo->insert("classes",
-      ["name" => $class_name, "start_year" => $start_year]);
-  return get_class_id($class_name);
-}
-
 function update_class($classInfo) {
   global $medoo;
   
@@ -216,6 +209,7 @@ function update_class($classInfo) {
     $datas["self_report"] = $classInfo["self_report"] == "true" ? 1 : 0;
   }
   
+  ensure_country_columns($medoo);
   $id = intval($classInfo["id"]);
   if ($id == 0) {
     return $medoo->insert("classes", $datas);
@@ -717,7 +711,7 @@ function remove_task_record($task_id) {
 function search($prefix) {
   global $medoo;
   
-  return $medoo->select("users", ["classId", "name", "email"],
+  return $medoo->select("users", ["classId", "name", "email", "country"],
       ["OR" => ["name[~]" => $prefix, "email[~]" => $prefix]]);
 }
 
@@ -725,7 +719,7 @@ function search($prefix) {
 function searchByName($name) {
   global $medoo;
   
-  return $medoo->select("users", ["id", "name", "nickname"],
+  return $medoo->select("users", ["id", "name", "nickname", "country"],
       ["OR" => ["name[~]" => $name, "nickname[~]" => $name]]);
 }
 

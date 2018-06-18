@@ -32,7 +32,7 @@
       <div class="css-table-cell"><label for="country">Country</label></div>
       <div class="css-table-cell">
         <select id="state" ng-options="countryLabels[value] for value in countries"
-            ng-model="user.country"></select>
+            ng-model="user.country" disabled></select>
       </div>
     </div>
     <div ng-if="withContact" class="css-table-row">

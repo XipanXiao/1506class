@@ -30405,11 +30405,11 @@ define('permission', ['utils'], function() {
         INSPECTION: 0x57,
         FINANCE: 0x103,
         ORDER_MANAGER: 0x303,
-        // TEACHER: 0x403,
+        COUNTRY_ADMIN: 0x3FF,
         ADMIN: 0xFFFF
       },
       permissions: {
-        0xFFFF: /*11 11 11 11 11 11*/'系统管理员', // rw all data
+        // 0xFFFF: /*11 11 11 11 11 11*/'系统管理员', // rw all data
         0x03FF: /*00 11 11 11 11 11*/'管理员',    // rw country data
         0x303:  /*00 11 00 00 00 11*/'订单管理',  // rw orders.
         0x103:  /*00 01 00 00 00 11*/'财务',     // rw orders, but sees no addresses.
@@ -30474,7 +30474,7 @@ define('permission', ['utils'], function() {
       },
       isSysAdmin: function() {
         return this.user && 
-            (this.user.permission & this.ROLES.ADMIN) == this.ROLES.ADMIN;
+            (this.user.permission & this.ROLES.COUNTRY_ADMIN) == this.ROLES.COUNTRY_ADMIN;
       },
       isOrderAdmin: function() {
         return this.user && 
@@ -31653,7 +31653,7 @@ define('address_editor/address_editor', ['services', 'utils'], function() {
         });
       },
 
-      templateUrl : 'js/address_editor/address_editor.html?tag=201706041132'
+      templateUrl : 'js/address_editor/address_editor.html?tag=201806141132'
     };
   });
 });

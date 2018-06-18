@@ -458,7 +458,8 @@
     } else {
       var outerUs = document.querySelector('.outer-us');
       outerUs.parentNode.removeChild(outerUs);
-      document.querySelector('#country').value = country;
+      document.querySelector('#country').value = country.toUpperCase();
+      countrySelect.onchange();
     }
   }
 

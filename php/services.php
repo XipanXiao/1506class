@@ -62,9 +62,20 @@ function canReadUser($another) {
 /// Whether [$another] is at the same class year of the current [$user].
 function isSameYear($another) {
   global $user;
+
   $classId = $another["classId"];
   $classes = get_classes(["id" => $classId]);
   return $classes[$classId]["start_year"] == $user->classInfo["start_year"];
+}
+
+/// Whether [$another] is in the same country of the current [$user].
+/// System admins are considered to be everywhere.
+function isSameCountry($another) {
+  global $user;
+
+  if (isSysAdmin($user)) return true;
+  $country = is_array($another) ? $another["country"] : $another->country; 
+  return $country == $user->country;
 }
 
 function checkPermission($role) {
@@ -121,7 +132,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       $classInfo = get_class_info($classId);
 
       if ($classInfo && canRead($user, $classInfo)) {
-        $response = get_users(null, $classId);
+        $response = array_filter(get_users(null, $classId), "isSameCountry");
       }
     } elseif ($email || $sn) {
       $response = current($email ?
@@ -151,9 +162,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "search") {
     if (isYearLeader($user)) {
       $response = search($_GET["prefix"]);
-      if (!empty($response) && !isSysAdmin($user)) {
+      if (!empty($response) && !isCountryAdmin($user)) {
         // For year leaders they can only see students of the same year.
         $response = array_filter($response, "isSameYear");
+      } else {
+        $response = array_filter($response, "isSameCountry");
       }
     }
   } elseif ($resource_id == "user_label") {
@@ -162,7 +175,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         : permision_denied_error();
   } elseif ($resource_id == "search_name") {
     $response = isAdmin($user) 
-        ? searchByName($_GET["name"]) 
+        ? array_filter(searchByName($_GET["name"]), "isSameCountry") 
         : permision_denied_error();
   } elseif ($resource_id == "task_stats") {
     $startTime =
@@ -173,13 +186,13 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = get_class_task_stats($classId, $_GET["task_id"], $startTime,
         $endTime, $isIndex);
   } elseif ($resource_id == "state_stats") {
-    if (!isSysAdmin($user)) return;
+    if (!isCountryAdmin($user) || $_GET["country"] != $user->country) return;
     $response = get_state_stats($_GET["country"]);
   } elseif ($resource_id == "state_users") {
-    if (!isSysAdmin($user)) return;
+    if (!isCountryAdmin($user) || $_GET["country"] != $user->country) return;
     $response = get_state_users($_GET["country"], $_GET["state"]);
   } elseif ($resource_id == "class_prefs") {
-    if (isYearLeader($user) || isSysAdmin($user)) {
+    if (isYearLeader($user) || isCountryAdmin($user)) {
       $response = get_class_prefs(
           isset($_GET["department_id"]) ? null : $user->id,
           isset($_GET["department_id"]) ? $_GET["department_id"] : null);
@@ -224,8 +237,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         ? ["updated" => update_schedule_group($_POST)]
         : permision_denied_error();
   } elseif ($resource_id == "class") {
-    if (isSysAdmin($user) ||
-        !empty($_POST["id"]) && canWriteClass($user, $_POST["id"])) {
+    if (empty($_POST["id"]) && isYearLeader($user) ||
+        canWriteClass($user, $_POST["id"])) {
+      if (empty($_POST["id"])) {
+        $_POST["country"] = $user->country;
+      }
       $response = ["updated" => update_class($_POST)];
     } else {
       $response = permision_denied_error();
@@ -269,6 +285,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     }
     
     if (!$response) {
+    	// Country is set when registering and can't be changed later.
+      unset($_POST["country"]);
       $result = update_user($_POST);
       if ($result && $result->id == $user->id) {
         $user = $result;
@@ -308,7 +326,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     checkPermission(Roles::CLASS_LEADER);
     $response = ["deleted" => remove_schedule($_REQUEST["id"])];
   } elseif ($resource_id == "class") {
-    checkPermission(Roles::SYS_ADMIN);
+    checkPermission(Roles::COUNTRY_ADMIN);
     error_log($user->email. " DELETES ". $resource_id. ":". 
         (empty($_POST["id"]) ? "" : $_POST["id"]));
     $response = ["deleted" => remove_class($_REQUEST["id"])];
@@ -332,7 +350,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       ];
     }
   } elseif ($resource_id == "user") {
-    checkPermission(Roles::SYS_ADMIN);
+    checkPermission(Roles::COUNTRY_ADMIN);
     $userId = $_REQUEST["id"];
 
     $userToDelete = get_user_by_id($userId);
