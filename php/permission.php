@@ -10,7 +10,7 @@ function isCountryAdmin($user) {
 }
 
 function isInspector($user) {
-  return ($user->permission & Roles::INSPECTOR) == Roles::INSPECTOR;	
+  return ($user->permission & Roles::INSPECTOR) == Roles::INSPECTOR;
 }
 
 function isYearLeader($user) {
@@ -18,7 +18,7 @@ function isYearLeader($user) {
 }
 
 function isClassLeader($user, $classId) {
-  return ($user->permission & Roles::CLASS_LEADER) == Roles::CLASS_LEADER && 
+  return ($user->permission & Roles::CLASS_LEADER) == Roles::CLASS_LEADER &&
       $user->classId == $classId;
 }
 
@@ -31,7 +31,7 @@ function isOrderManager($user) {
 }
 
 function canGrant($user, $perm) {
-  return ($user->permission & $perm) == $perm;	
+  return ($user->permission & $perm) == $perm;
 }
 
 function canReadOrderAddress($user) {
@@ -43,13 +43,14 @@ function get_student_permission() {
 }
 
 function sameCountry($user, $classInfo) {
-	// Class with id 1 is visible to every country, new registered students are
-	// put here.
-	return $user->country == $classInfo["country"] || isNewClass($classInfo);
+  return true;
+  // Class with id 1 is visible to every country, new registered students are
+  // put here.
+  // return $user->country == $classInfo["country"] || isNewClass($classInfo);
 }
 
 function isNewClass($classInfo) {
-	return intval($classInfo["id"]) == 1;
+  return intval($classInfo["id"]) == 1;
 }
 
 function is_teacher_of($user, $classInfo) {
@@ -65,7 +66,7 @@ function canRead($user, $classInfo) {
 
   $perm = ($user->permission >> (($level - 1) * 2)) & 1;
   if (!$perm) return false;
-  
+
   return checkClass($user, $classInfo) || checkYear($user, $classInfo) ||
       checkInspector($user, $classInfo) || checkDistrict($user, $classInfo) ||
       isSysAdmin($user);
@@ -74,7 +75,7 @@ function canRead($user, $classInfo) {
 function canWrite($user, $classInfo) {
   $level = $classInfo["perm_level"];
   if (!$level) return true;
-  
+
   $perm = ($user->permission >> (($level - 1) * 2)) & 2;
   if (!$perm) return false;
 
@@ -83,7 +84,7 @@ function canWrite($user, $classInfo) {
 }
 
 function checkDistrict($user, $classInfo) {
-	return isCountryAdmin($user) && sameCountry($user, $classInfo);
+  return isCountryAdmin($user) && sameCountry($user, $classInfo);
 }
 
 function checkClass($user, $classInfo) {
@@ -97,7 +98,7 @@ function checkYear($user, $classInfo) {
 }
 
 function checkInspector($user, $classInfo) {
-	return isInspector($user) && sameCountry($user, $classInfo); 
+  return isInspector($user) && sameCountry($user, $classInfo);
 }
 
 function getStartPage($user) {
@@ -115,3 +116,4 @@ abstract class Roles {
   const CLASS_LEADER = 0xF;
 }
 ?>
+

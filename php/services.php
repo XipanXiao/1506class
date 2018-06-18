@@ -71,11 +71,12 @@ function isSameYear($another) {
 /// Whether [$another] is in the same country of the current [$user].
 /// System admins are considered to be everywhere.
 function isSameCountry($another) {
-  global $user;
+  return true;
+//  global $user;
 
-  if (isSysAdmin($user)) return true;
-  $country = is_array($another) ? $another["country"] : $another->country; 
-  return $country == $user->country;
+//  if (isSysAdmin($user)) return true;
+//  $country = is_array($another) ? $another["country"] : $another->country;
+//  return $country == $user->country;
 }
 
 function checkPermission($role) {
