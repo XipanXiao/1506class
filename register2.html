@@ -453,8 +453,8 @@
   function adjustCountryContext() {
     var country = getUrlParameter('country');
     if (!country || country.toLowerCase() == 'us') {
-      var chooser = document.querySelector('#country-chooser');
-      chooser.style.display = 'none';
+//      var chooser = document.querySelector('#country-chooser');
+//      chooser.style.display = 'none';
     } else {
       var outerUs = document.querySelector('.outer-us');
       outerUs.parentNode.removeChild(outerUs);
