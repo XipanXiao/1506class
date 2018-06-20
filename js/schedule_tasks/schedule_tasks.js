@@ -84,7 +84,7 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                     '报数已截止于' + utils.toDateTime(tm).toLocaleString() : '';
               };
             },
-            templateUrl : 'js/schedule_tasks/schedule_tasks.html?tag=201712062203'
+            templateUrl : 'js/schedule_tasks/schedule_tasks.html?tag=201806062203'
           };
         });
 });

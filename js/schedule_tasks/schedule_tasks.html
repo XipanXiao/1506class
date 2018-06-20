@@ -42,7 +42,10 @@
             ng-click="reportTask(schedule.course_id)" ng-if="!vacation(schedule)">
       </div>
       <div class="css-table-cell" ng-if="group.course_group2">
-        {{group.courses[schedule.course_id2].name}}
+        <a href="https://www.youtube.com/results?search_query={{group.courses[schedule.course_id2].name}}"
+            target="_blank" title="Click to search in YouTube">
+          {{group.courses[schedule.course_id2].name}}
+        </a>
       </div>
       <div class="css-table-cell" ng-if="group.course_group2">{{users[schedule.open].name}}</div>
       <div class="css-table-cell" ng-if="group.course_group2">

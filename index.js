@@ -30948,7 +30948,7 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                     '报数已截止于' + utils.toDateTime(tm).toLocaleString() : '';
               };
             },
-            templateUrl : 'js/schedule_tasks/schedule_tasks.html?tag=201712062203'
+            templateUrl : 'js/schedule_tasks/schedule_tasks.html?tag=201806062203'
           };
         });
 });
@@ -31787,7 +31787,7 @@ define('user_editor/user_editor',
         $scope.admining = window.location.href.indexOf('admin.html') > 0;
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201805141350'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201806141350'
     };
   });
 });
