@@ -537,6 +537,10 @@ div.compact-url {
   width: 800px;
 }
 
+.register-banner.ca {
+  background-image: url("images/welcome.ca.png");
+}
+
 .outer-us {
 	color: white;
 	left: 100px;

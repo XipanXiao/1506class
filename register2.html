@@ -441,30 +441,8 @@
     });
   }
 
-  function getUrlParameter(name) {
-    var result = null;
-    var params = location.search.substr(1).split("&");
-    for (var i in params) {
-        var pair = params[i].split('=');
-        if (pair[0] === name) return pair[1];
-    }
-  }
-
-  function adjustCountryContext() {
-    var country = getUrlParameter('country');
-    if (!country || country.toLowerCase() == 'us') {
-      var chooser = document.querySelector('#country-chooser');
-      chooser.style.display = 'none';
-    } else {
-      var outerUs = document.querySelector('.outer-us');
-      outerUs.parentNode.removeChild(outerUs);
-      document.querySelector('#country').value = country.toUpperCase();
-      countrySelect.onchange();
-    }
-  }
-
-  adjustCountryContext();
   removeUnneededSection();
   </script>
 </body>
+<script src='js/country_context.js'></script>
 </html>

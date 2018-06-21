@@ -31537,7 +31537,7 @@ define('user_editor/user_editor',
         $scope.admining = window.location.href.indexOf('admin.html') > 0;
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201805141350'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201806141350'
     };
   });
 });
