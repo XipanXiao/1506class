@@ -22,6 +22,8 @@ function getCountryCode() {
 function adjustCountryContext() {
   var country = getCountryCode();
   if (country == 'US') return;
+  
+  document.title = '注册';
 
   var outerUs = document.querySelector('.outer-us');
   outerUs.parentNode.removeChild(outerUs);
