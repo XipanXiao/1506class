@@ -13,7 +13,7 @@ body {
 
 body.admin {
   max-width: 1440px;
-  overflow-x: auto;	
+  overflow-x: auto;  
 }
 
 .padded-element {
@@ -222,7 +222,7 @@ select#state {
 
 .name-field {
   display: block;
-	width: 60px;
+  width: 60px;
 }
 
 .compact-name-field {
@@ -388,21 +388,49 @@ div.task-stats {
 }
 
 paper-dialog#course-editor-dlg {
-  width: 1024px;
+  width: 800px;
 }
 
-div.course-groups {
+paper-dialog#create-course-dialog {
+  width: 400px;
+}
+
+.course-groups {
+  height: 500px;
+  overflow-y: auto;
   width: 200px;
 }
 
-.course-name {
-  min-width: 100px;
+.course-category {
+  padding: 8px 0;
 }
 
-div.compact-url {
-  max-width: 280px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.course-category-selection {
+	padding-top: 16px;
+}
+.course-editor-content {
+  display: flex;
+  height: 500px;
+}
+
+.expandable.expanded {
+	transform: rotate(90deg);
+}
+
+.course-right-panel {
+  border-left: solid 1px;
+  height: 460px;
+  margin-left: 32px;
+  overflow-y: auto;
+}
+
+.course-list {
+	padding-top: 32px;
+  text-align: right;
+}
+
+.course-name {
+  width: 320px;
 }
 
 .class-editor {
@@ -455,14 +483,14 @@ div.compact-url {
 }
 
 .register-type-chooser {
-	margin-top: -16px;
+  margin-top: -16px;
 }
 
 .register-entry {
-	background-size: cover;
-	display: block;
-	height: 230px;
-	width: 230px;
+  background-size: cover;
+  display: block;
+  height: 230px;
+  width: 230px;
 }
 
 .flex.justify-align {
@@ -486,20 +514,20 @@ div.compact-url {
 }
 
 .register-form .css-table-cell {
-	padding: 0px 8px;
+  padding: 0px 8px;
 }
 
 .register-form fieldset {
-	border: none;
+  border: none;
 }
 
 .register-form select,
 .register-form textarea,
 .register-form input {
-	border-color: gray;
-	border-style: solid;
-	border-width: 1px;
-	border-radius: 2px;
+  border-color: gray;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 2px;
 }
 
 .register-form .place-holder {
@@ -512,15 +540,15 @@ div.compact-url {
 }
 
 .section-index {
-	background-color: #982838;
-	border-radius: 15px;
+  background-color: #982838;
+  border-radius: 15px;
   color: #eec94d;
   display: table-cell;
   font-size: 110%;
   font-weight: bold;
   height: 30px;
-	text-align: center;
-	vertical-align: middle;
+  text-align: center;
+  vertical-align: middle;
   width: 30px;
 }
 
@@ -542,14 +570,14 @@ div.compact-url {
 }
 
 .outer-us {
-	color: white;
-	left: 100px;
-	top: 270px;
-	position: absolute;
+  color: white;
+  left: 100px;
+  top: 270px;
+  position: absolute;
 }
 
 .outer-us > a {
-	color: #eec94d;
+  color: #eec94d;
 }
 
 paper-dialog#new-user-dlg {
@@ -557,7 +585,7 @@ paper-dialog#new-user-dlg {
 }
 
 .check-complete {
-	text-align: right;
+  text-align: right;
 }
 
 .completed-task {
@@ -605,7 +633,7 @@ address-filter {
 }
 
 .indented {
-  padding-left: 16px;	
+  padding-left: 16px;  
 }
 
 google-chart {
@@ -668,7 +696,7 @@ body.white {
 }
 
 .check-out-button {
-	width: 100px;
+  width: 100px;
 }
 
 .right-align {
@@ -758,19 +786,19 @@ body.white {
 }
 
 .class-book-list {
-	width: 560px;
+  width: 560px;
 }
 
 iron-icon.add-icon {
-	color: blue;
-	height: 48px;
-	padding: 16px;
+  color: blue;
+  height: 48px;
+  padding: 16px;
   width: 48px;
 }
 
 .register-form input.register-button {
-	background-color: #972937;
-	border-radius: 4px;
+  background-color: #972937;
+  border-radius: 4px;
   color: #eec94d;
   cursor: pointer;
   font-size: 200%;
@@ -780,13 +808,25 @@ iron-icon.add-icon {
 }
 
 .copy-right {
-	color: white;
-	font-size: 120%;
+  color: white;
+  font-size: 120%;
   padding: 32px;
   text-align: center;
 }
 
 .merit-body {
-	background-image: url("images/body_bg.jpg");
+  background-image: url("images/body_bg.jpg");
   width: 640px;
+}
+
+.add-course-button {
+	left: 230px;
+  position: absolute;
+  top: 30px;
+}
+
+.append-course-icon {
+  cursor: pointer;
+  position: absolute;
+  right: 64px;
 }

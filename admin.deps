@@ -34,6 +34,7 @@ js/serial_number_dialog/serial_number_dialog.js
 js/class_info/class_info.js
 js/navigate_bar/navigate_bar.js
 js/learning_records/learning_records.js
+js/create_course_dialog/create_course_dialog.js
 js/course_editor_dialog/course_editor_dialog.js
 js/course_groups/course_groups.js
 js/timestamp/timestamp.js
