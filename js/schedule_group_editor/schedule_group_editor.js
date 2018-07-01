@@ -28,12 +28,6 @@ define('schedule_group_editor/schedule_group_editor',
                 $rootScope.$broadcast('reload-schedules', term);
               };
 
-              /// Returns true if name1 and name2 has the same name prefix.
-              ///
-              /// e.g. 入行论广解23 and 入行论广解24
-              scope.isSameName = function(name1, name2) {
-                return name1[0] == name2[0] && name1[1] == name2[1];
-              };
               scope.getCourseIds = function(group) {
                 return rpc.get_courses(group).then(function(courses) {
                   return utils.keys(courses);
@@ -41,10 +35,7 @@ define('schedule_group_editor/schedule_group_editor',
               };
               scope.merge_courses = function(course_ids1, course_ids2) {
                 var group = scope.group;
-                var appending = scope.isSameName(
-                    group.courses[course_ids1[0]].name,
-                    group.courses[course_ids2[0]].name);
-                if (appending || scope.sequential) {
+                if (scope.sequential) {
                   return course_ids1.concat(course_ids2);
                 } else {
                   var alternate = [];

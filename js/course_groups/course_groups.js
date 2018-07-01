@@ -37,7 +37,17 @@ define('course_groups/course_groups',
                 var dialog = document.querySelector('#course-editor-dlg');
                 dialog.open();
                 var scope = angular.element(dialog).scope();
-                scope.select($scope.groupId);
+                if ($scope.groupId) {
+                  scope.select($scope.groupId);
+                }
+                scope.onSave = function(group) {
+                  $scope.course_groups[group.id] = group;
+                  var id = parseInt(group.id);
+                  if ($scope.groupIds.indexOf(id) < 0) {
+                    $scope.groupIds.push(id);
+                  }
+                  $scope.select(id);
+                };
               };
               
               $scope.select = function(id) {

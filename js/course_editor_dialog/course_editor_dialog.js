@@ -8,7 +8,8 @@ define('course_editor_dialog/course_editor_dialog',
 				function(rpc, utils) {
 					return {
 					  scope: {
-					    groupId: '@'
+					    groupId: '=',
+					    onSave: '&'
 					  },
 					  link: function($scope, element) {
 					    $scope.selected = {id: 0};
@@ -154,7 +155,15 @@ define('course_editor_dialog/course_editor_dialog',
                 }
                 // Save courses one by one to keep their order.
                 var requests = utils.map(newCourses, toRequest);
-                utils.requestOneByOne(requests).then(_close);
+                utils.requestOneByOne(requests).then(function() {
+                  var courses = {};
+                  utils.forEach($scope.group.courses, function(course) {
+                    courses[course.id] = course;
+                  });
+                  $scope.group.courses = courses;
+                  $scope.onSave($scope.group);
+                  _close();
+                });
               };
               
               $scope.removeCourse = function(course) {

@@ -34310,7 +34310,8 @@ define('course_editor_dialog/course_editor_dialog',
 				function(rpc, utils) {
 					return {
 					  scope: {
-					    groupId: '@'
+					    groupId: '=',
+					    onSave: '&'
 					  },
 					  link: function($scope, element) {
 					    $scope.selected = {id: 0};
@@ -34456,7 +34457,15 @@ define('course_editor_dialog/course_editor_dialog',
                 }
                 // Save courses one by one to keep their order.
                 var requests = utils.map(newCourses, toRequest);
-                utils.requestOneByOne(requests).then(_close);
+                utils.requestOneByOne(requests).then(function() {
+                  var courses = {};
+                  utils.forEach($scope.group.courses, function(course) {
+                    courses[course.id] = course;
+                  });
+                  $scope.group.courses = courses;
+                  $scope.onSave($scope.group);
+                  _close();
+                });
               };
               
               $scope.removeCourse = function(course) {
@@ -34500,7 +34509,7 @@ define('course_groups/course_groups',
 					    $scope.isSysAdmin = function() {
 					      return perm.isSysAdmin();
 					    };
-
+					    
               rpc.get_course_groups().then(function(response) {
                 $scope.course_groups = response.data;
                 var groupIds = utils.positiveKeys($scope.course_groups);
@@ -34521,7 +34530,17 @@ define('course_groups/course_groups',
                 var dialog = document.querySelector('#course-editor-dlg');
                 dialog.open();
                 var scope = angular.element(dialog).scope();
-                scope.select($scope.groupId);
+                if ($scope.groupId) {
+                  scope.select($scope.groupId);
+                }
+                scope.onSave = function(group) {
+                  $scope.course_groups[group.id] = group;
+                  var id = parseInt(group.id);
+                  if ($scope.groupIds.indexOf(id) < 0) {
+                    $scope.groupIds.push(id);
+                  }
+                  $scope.select(id);
+                };
               };
               
               $scope.select = function(id) {
@@ -34600,12 +34619,6 @@ define('schedule_group_editor/schedule_group_editor',
                 $rootScope.$broadcast('reload-schedules', term);
               };
 
-              /// Returns true if name1 and name2 has the same name prefix.
-              ///
-              /// e.g. 入行论广解23 and 入行论广解24
-              scope.isSameName = function(name1, name2) {
-                return name1[0] == name2[0] && name1[1] == name2[1];
-              };
               scope.getCourseIds = function(group) {
                 return rpc.get_courses(group).then(function(courses) {
                   return utils.keys(courses);
@@ -34613,10 +34626,7 @@ define('schedule_group_editor/schedule_group_editor',
               };
               scope.merge_courses = function(course_ids1, course_ids2) {
                 var group = scope.group;
-                var appending = scope.isSameName(
-                    group.courses[course_ids1[0]].name,
-                    group.courses[course_ids2[0]].name);
-                if (appending || scope.sequential) {
+                if (scope.sequential) {
                   return course_ids1.concat(course_ids2);
                 } else {
                   var alternate = [];
