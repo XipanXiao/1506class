@@ -34509,7 +34509,7 @@ define('course_groups/course_groups',
 					    $scope.isSysAdmin = function() {
 					      return perm.isSysAdmin();
 					    };
-					    
+
               rpc.get_course_groups().then(function(response) {
                 $scope.course_groups = response.data;
                 var groupIds = utils.positiveKeys($scope.course_groups);

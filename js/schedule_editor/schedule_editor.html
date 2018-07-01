@@ -39,7 +39,8 @@
         ng-class="{'vacation': vacation(schedule), 'selectable': vacation(schedule), 
             'report-week': schedule.middle}"
         title="{{schedule.middle ? '中期报数开始啦！' : ''}}"
-        draggable="{{vacation(schedule)}}" ondragstart="dragSchedule(event)"
+        draggable="{{vacation(schedule) && !!group.id}}"
+        ondragstart="dragSchedule(event)"
         ondrop="dropSchedule(event)" ondragover="allowDrop(event)">
       <div class="css-table-cell">{{$index + 1}}</div>
       <div class="css-table-cell">{{getWeeklyTime(group, $index)}}</div>
@@ -65,10 +66,11 @@
       </div>
       <div class="css-table-cell">
         <iron-icon class="hover-icon" icon="add" title="在本节课后面添加假日"
-            ng-click="addVacation(group, schedule.id, $index)">
+            ng-click="addVacation(group, schedule.id, $index)"
+            ng-if="group.id">
         </iron-icon>
         <iron-icon class="hover-icon" icon="delete" title="删除"
-            ng-if="vacation(schedule)"
+            ng-if="vacation(schedule) && group.id"
             ng-click="removeVacation(group, schedule.id)">
         </iron-icon>
         <iron-icon class="hover-icon" icon="mail"
@@ -78,7 +80,7 @@
         </iron-icon>
       </div>
       <div ng-if="schedule.middle" class="report-alert vacation"
-          title="修改上面中期报数时间调整报数周位置">
+          title="修改上面中期报数时间，可调整报数周位置">
         <iron-icon icon="report"></iron-icon>本周以后报数
       </div>
     </div>
