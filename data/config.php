@@ -7,7 +7,7 @@
     "dbname": "buddcourses",
     "zbServiceUrl": "http://www.zhibei.info/zb"
   },
-  "10.254.151.229": {
+  "192.168.0.10": {
     "servername": "127.0.0.1",
     "socket": null,
     "username": "root",

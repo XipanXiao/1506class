@@ -215,7 +215,6 @@ CREATE TABLE users(
               INDEX classId_idx(classId),
               FOREIGN KEY (classId)
                 REFERENCES classes(id),
-            mentor_id INT,
             permission INT,
             birthday DATETIME,
 

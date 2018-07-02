@@ -44,7 +44,10 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
   }
 
   date_default_timezone_set("UTC");
+
+  $_POST['start_year'] = date("Y");
   $user = update_user(set_assoc_only_bit($_POST));
+
   if (!$user) {
     echo "<h1>Error</h1>";
     echo "<p>Failed to register ".$_POST["email"]. get_db_error();
