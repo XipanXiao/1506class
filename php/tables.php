@@ -311,8 +311,16 @@ function remove_user($id) {
   return 1;
 }
 
+
+function add_startyear_column($medoo) {
+  $query = "ALTER TABLE users ADD start_year YEAR";
+  $medoo->query($query);
+}
+
 function update_user($user) {
   global $medoo;
+
+  add_startyear_column($medoo);
 
   $datas = [];
   
