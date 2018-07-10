@@ -204,9 +204,20 @@ function get_shop_items($category, $level) {
   return keyed_by_id($medoo->select("items", "*", $filters));
 }
 
+function ensure_other_category() {
+  global $medoo;
+  
+  if (!$medoo->insert("item_categories", ["id" => 10, "name" => "非教材结缘物", 
+      "level" => 1, "shared" => 1, "parent_id" => 2])) {
+    return;
+  }
+  $medoo->update("item_categories", ["parent_id" => 1], ["parent_id" => null]);
+}
+
 function get_item_categories($level) {
   global $medoo;
 
+  ensure_other_category();
   if ($level == 99) {
     return keyed_by_id($medoo->select("item_categories", "*"));
   }
@@ -217,7 +228,7 @@ function get_item_categories($level) {
 }
 
 function update_item($item) {
-	global $medoo;
+  global $medoo;
 
   return insertOrUpdate($medoo, "items", $item);
 }
@@ -342,12 +353,12 @@ function get_book_list($dep_id, $term, $classId) {
   global $medoo;
 
   if (!$dep_id && !$term) {
-  	$classes = $medoo->select("classes", "*", ["id" => intval($classId)]);
-  	if (empty($classes)) return [];
+    $classes = $medoo->select("classes", "*", ["id" => intval($classId)]);
+    if (empty($classes)) return [];
 
-  	$classInfo = current($classes);
-  	$dep_id = $classInfo["department_id"];
-  	$term = $classInfo["term"];
+    $classInfo = current($classes);
+    $dep_id = $classInfo["department_id"];
+    $term = $classInfo["term"];
   }
   return $medoo->select("book_lists", "item_id", ["AND" =>
       ["department_id" => intval($dep_id), "term" => intval($term)]]);

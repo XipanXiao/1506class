@@ -85,11 +85,15 @@ define('book_list_details/book_list_details',
             return scope.categories = response.data;
           });
         }
+        function isBook(item) {
+          var category = scope.categories[item.category];
+          return category && parseInt(category.parent_id) == 1;
+        }
         function getDepartmentBooks() {
           var dep = scope.departments[scope.classInfo.department_id];
           return rpc.get_items(null, parseInt(dep.level)).then(function(response) {
-            scope.classInfo.books = response.data;
-            return scope.items = response.data;
+            scope.classInfo.books = utils.where(response.data, isBook);
+            return scope.items = scope.classInfo.books;
           });
         }
         function getBookList() {

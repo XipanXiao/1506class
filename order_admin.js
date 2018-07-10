@@ -29922,6 +29922,15 @@ $provide.value("$locale", {
         return file = window.URL.createObjectURL(data);
       },
       
+      getUrlParameter: function(name) {
+        var result = null;
+        var params = location.search.substr(1).split("&");
+        for (var i in params) {
+            var pair = params[i].split('=');
+            if (pair[0] === name) return pair[1];
+        }
+      },
+      
       getTasks: function(rpc, depId, classId) {
         var tasks;
 
@@ -31168,7 +31177,7 @@ define('orders/orders', [
           $rootScope.$on('reload-orders', scope.reload);
           scope.$watch('user', scope.reload);
         },
-        templateUrl : 'js/orders/orders.html?tag=201706242314'
+        templateUrl : 'js/orders/orders.html?tag=201806242314'
       };
     });
 });
@@ -31192,7 +31201,7 @@ define('book_editor/book_editor',
           }
         });
       },
-      templateUrl : 'js/book_editor/book_editor.html?tag=201707041052'
+      templateUrl : 'js/book_editor/book_editor.html?tag=201807041052'
     };
   });
 });
@@ -31283,11 +31292,15 @@ define('book_list_details/book_list_details',
             return scope.categories = response.data;
           });
         }
+        function isBook(item) {
+          var category = scope.categories[item.category];
+          return category && parseInt(category.parent_id) == 1;
+        }
         function getDepartmentBooks() {
           var dep = scope.departments[scope.classInfo.department_id];
           return rpc.get_items(null, parseInt(dep.level)).then(function(response) {
-            scope.classInfo.books = response.data;
-            return scope.items = response.data;
+            scope.classInfo.books = utils.where(response.data, isBook);
+            return scope.items = scope.classInfo.books;
           });
         }
         function getBookList() {

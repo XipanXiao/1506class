@@ -365,7 +365,7 @@ define('orders/orders', [
           $rootScope.$on('reload-orders', scope.reload);
           scope.$watch('user', scope.reload);
         },
-        templateUrl : 'js/orders/orders.html?tag=201706242314'
+        templateUrl : 'js/orders/orders.html?tag=201806242314'
       };
     });
 });

@@ -30419,6 +30419,15 @@ define('utils', [], function() {
         return file = window.URL.createObjectURL(data);
       },
       
+      getUrlParameter: function(name) {
+        var result = null;
+        var params = location.search.substr(1).split("&");
+        for (var i in params) {
+            var pair = params[i].split('=');
+            if (pair[0] === name) return pair[1];
+        }
+      },
+      
       getTasks: function(rpc, depId, classId) {
         var tasks;
 

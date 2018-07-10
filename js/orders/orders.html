@@ -89,7 +89,7 @@
     target="_blank" class="right">
     付款流程
 </a>
-<div ng-repeat="order in orders | filter: {id: orderId, phone: tel, class_name: className}"
+<div ng-repeat="order in orders | filter: {id: orderId, phone: tel, class_name: className} | orderBy: '-created_time'"
     class="section order-details-line">
   <order-details order="order" admin="{{admin}}"
       on-cancel="remove(order)" on-update="update(order)" user="user"

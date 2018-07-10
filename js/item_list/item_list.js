@@ -10,27 +10,42 @@ define('item_list/item_list', ['flying/flying', 'services', 'utils'], function()
         link: function(scope) {
           scope.items = [];
           
+          var bookIds = {};
+
+          var parent_id = parseInt(utils.getUrlParameter('parent_id')) || 1;
+
+          function validCategory(category) {
+            return category && parseInt(category.parent_id) == parent_id;
+          }
+          
+          function validItem(item) {
+            return parent_id == 1 ? bookIds.has(item.id) : 
+                validCategory(scope.categories[item.category]);
+          }
+          
           function getCategories() {
             return rpc.get_item_categories().then(function(response) {
               utils.forEach(response.data, function(category) {
                 category.selected = true;
               });
-              return scope.categories = response.data;
+              return scope.categories =
+                  utils.where(response.data, validCategory);
             });
           }
           
           function getItems() {
             return rpc.get_items().then(function(response) {
-              scope.bookIds.forEach(function(id) {
-                scope.items[id] = response.data[id];
-              });
-              return scope.items;
+              return scope.items =
+                  utils.toList(utils.where(response.data, validItem));
             });
           }
           
           function getBookList() {
+            if (parent_id != 1) {
+              return utils.truePromise();
+            }
             return rpc.get_book_list().then(function(response) {
-              return scope.bookIds = response.data;
+              return bookIds = new Set(response.data);
             });
           }
 

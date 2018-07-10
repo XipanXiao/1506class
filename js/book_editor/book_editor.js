@@ -18,7 +18,7 @@ define('book_editor/book_editor',
           }
         });
       },
-      templateUrl : 'js/book_editor/book_editor.html?tag=201707041052'
+      templateUrl : 'js/book_editor/book_editor.html?tag=201807041052'
     };
   });
 });
