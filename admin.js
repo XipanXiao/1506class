@@ -30575,7 +30575,6 @@ define('importers', ['permission', 'services', 'utils'], function() {
       "nickname": "nickname",
       "country": "country",
       "im": "im",
-      "mentro_id": "mentor_id",
       "permission": "permission"
     },
     "sex": {

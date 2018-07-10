@@ -10,7 +10,7 @@
       <div class="css-table-cell"><strong>电子邮件</strong></div>
       <div class="css-table-cell"><strong>电话</strong></div>
       <div class="css-table-cell" ng-if="!isNewClass()"><strong>州</strong></div>
-      <div class="css-table-cell"><strong>跟进</strong></div>
+      <div class="css-table-cell"><strong>入学年份</strong></div>
       <div class="css-table-cell" ng-if="isNewClass()"><strong>入口</strong></div>
       <div class="css-table-cell" ng-if="isNewClass()"><strong>已信,入微,YY,试麦</strong></div>
       <div class="css-table-cell" ng-if="isNewClass()"><strong>功德会</strong></div>
@@ -25,7 +25,7 @@
       <div class="css-table-cell email">{{user.email}}</div>
       <div class="css-table-cell">{{user.phone}}</div>
       <div class="css-table-cell" ng-if="!isNewClass()">{{user.stateLabel}}</div>
-      <div class="css-table-cell">{{userNames[user.mentor_id]}}</div>
+      <div class="css-table-cell" >{{user.start_year}}</div>
       <div class="css-table-cell" ng-if="isNewClass()">{{entrances[user.entrance]}}</div>
       <div class="css-table-cell" ng-if="isNewClass()">
         <input type="checkbox" ng-model="user.enroll_tasks" title="欢迎信已发"
