@@ -31550,7 +31550,6 @@ define('user_editor/user_editor',
           return $scope.user && utils.getDisplayLabel($scope.user, key);
         };
 
-        $scope.permissionLabel = perm.permissions;
         $scope.permissions = perm.lowerPermissions();
         $scope.isSysAdmin = function() {
           return perm.isSysAdmin();
@@ -31651,9 +31650,22 @@ define('user_editor/user_editor',
         };
         
         $scope.admining = window.location.href.indexOf('admin.html') > 0;
+        
+        $scope.getPermissionLabel = function(permission) {
+          var label = perm.permissions[permission];
+          if (label) return label;
+          
+          var perms = utils.keys(perm.permissions);
+          for (var i = perms.length - 1; i >= 0; i--) {
+            var p = perms[i];
+            if ((p & permission) == p) {
+              return perm.permissions[p];
+            }
+          }
+        };
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201806141350'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201807101350'
     };
   });
 });
