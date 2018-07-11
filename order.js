@@ -31243,7 +31243,7 @@ define('order_app', [
                 }
                 this.subTotal = this.subTotal.toFixed(2);
                 this.int_shipping = this.int_shipping.toFixed(2);
-                this.shipping = (this.shipping || 7).toFixed(2);
+                this.shipping = this.shipping.toFixed(2);
               },
               clear: function() {
                 this.items = {};
