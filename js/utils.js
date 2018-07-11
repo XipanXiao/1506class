@@ -248,7 +248,8 @@ define('utils', [], function() {
       login: function() {
         var index = location.pathname.lastIndexOf("/") + 1;
         var filename = location.pathname.substr(index);
-        location.href = 'login.html?redirect=' + filename;
+        location.href = 'login.html?redirect=' + filename +
+            encodeURIComponent(location.search);
       },
       refresh: function() {
         window.location.reload();

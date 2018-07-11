@@ -29479,7 +29479,7 @@ $provide.value("$locale", {
     };
   });
 });
-define('services', [], function() {
+define('services', ['utils'], function() {
   if (!String.prototype.format) {
     String.prototype.format = function() {
       var args = arguments;
@@ -29502,8 +29502,8 @@ define('services', [], function() {
     });
   }
 
-  return angular.module('ServicesModule', []).factory('rpc', function($http, 
-      $httpParamSerializerJQLike) {
+  return angular.module('ServicesModule', ['UtilsModule']).factory('rpc', function($http, 
+      $httpParamSerializerJQLike, utils) {
     return {
       get_departments: function() {
         return departmentsPromise ||
@@ -29615,9 +29615,7 @@ define('services', [], function() {
       get_user: function(email) {
         return this.get_users(email).then(function(response) {
           if (response.data.error == "login needed") {
-            var index = location.pathname.lastIndexOf("/") + 1;
-            var filename = location.pathname.substr(index);
-            location.href = 'login.html?redirect=' + filename;
+            utils.login();
           } else {
             return response.data;
           }
@@ -30135,7 +30133,8 @@ define('utils', [], function() {
       login: function() {
         var index = location.pathname.lastIndexOf("/") + 1;
         var filename = location.pathname.substr(index);
-        location.href = 'login.html?redirect=' + filename;
+        location.href = 'login.html?redirect=' + filename +
+            encodeURIComponent(location.search);
       },
       refresh: function() {
         window.location.reload();

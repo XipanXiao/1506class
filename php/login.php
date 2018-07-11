@@ -37,12 +37,17 @@ if(!empty($_POST["email"])) {
     $page = empty($_POST["redirect-url"]) 
         ? getStartPage($user) 
         : $_POST["redirect-url"];
+    $url_parts = explode("?", urldecode($page));
+    $file_name = $url_parts[0];
     $validPages = ["admin.html", "index.html", "local.html", "order.html",
         "order_admin.html", "assignment.html"];
-    if (!in_array($page, $validPages)) {
+    if (!in_array($file_name, $validPages)) {
       $page = "index.html";
     }
 
+    if (count($url_parts) > 1) {
+    	$page = $file_name. "?". $url_parts[1];
+    }
     header("Location: ../" . $page);
     try_backup();
   } else {

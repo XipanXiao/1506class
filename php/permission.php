@@ -116,4 +116,3 @@ abstract class Roles {
   const CLASS_LEADER = 0xF;
 }
 ?>
-
