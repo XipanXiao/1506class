@@ -81,6 +81,7 @@ define('order_app', [
                   state: user.state,
                   country: user.country,
                   zip: user.zip,
+                  district: user.district,
                   items: []
                 };
                 for (var id in this.items) {

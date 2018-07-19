@@ -29492,6 +29492,7 @@ define('services', ['utils'], function() {
 
   var serviceUrl = 'php/services.php';
   var departmentsPromise;
+  var districtPromise;
   
   function http_form_post($http, data, url) {
     return $http({
@@ -29879,6 +29880,12 @@ define('services', ['utils'], function() {
         return $http.get(url).then(function(response) {
           return response.data.status == 'OK' && response.data.results;
         });
+      },
+      
+      get_districts: function(country) {
+        var url = "php/district.php?rid=districts&country={0}".format(
+            country || 'US');
+        return districtPromise || (districtPromise = $http.get(url));
       }
     };
   });

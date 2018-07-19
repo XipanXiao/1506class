@@ -1,7 +1,11 @@
 define('order_details/order_details', [
-    'address_editor/address_editor', 'permission'], function() {
+    'address_editor/address_editor', 
+    'districts/districts',
+    'permission'], function() {
   return angular.module('OrderDetailsModule', [
-      'AddressEditorModule', 'PermissionModule'])
+      'AddressEditorModule',
+      'DistrictsModule',
+      'PermissionModule'])
     .directive('orderDetails', function(perm) {
       return {
         scope: {

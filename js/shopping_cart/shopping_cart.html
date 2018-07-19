@@ -1,18 +1,40 @@
 <div ng-if="confirming">
   <h2>确认收货地址和联系方式</h2>
   <hr>
-  <div class="padded-element">
-    <address-editor user="user" with-contact="true"></address-editor>
-  </div>
-  <div class="padded-element">
-    <label>
-      <input type="checkbox" ng-model="addrEditor.editing">
-      修改送货地址
-    </label>
-  </div>
-  <div ng-if="addrEditor.editing" class="padded-element">
-    <address-editor editing="true" user="user" with-contact="true">
-    </address-editor>
+  <div class="css-table">
+    <div class="css-table-row">
+      <label class="css-table-cell address-column">
+        <input type="radio" name="localGroup" ng-click="useLocalGroup(false)"
+            checked>
+        运送到我的地址
+      </label>
+  
+      <label class="css-table-cell">
+        <input type="radio" name="localGroup" ng-click="useLocalGroup(true)">
+        运送到地方组
+      </label>
+    </div>
+    <div class="css-table-row">
+      <div class="padded-element css-table-cell">
+        <address-editor user="user" with-contact="true"></address-editor>
+      </div>
+      <div class="css-table-cell">
+        <districts user="user" editable="true"></districts>
+      </div>
+    </div>
+    <div class="css-table-row">
+      <div class="padded-element css-table-cell">
+        <label>
+          <input type="checkbox" ng-model="addrEditor.editing"
+              ng-disabled="sendtoLocalGroup">
+          修改地址
+        </label>
+        <div ng-show="addrEditor.editing && !sendtoLocalGroup" class="padded-element">
+          <address-editor editing="true" user="user" with-contact="true">
+          </address-editor>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 <div ng-if="cart.size">

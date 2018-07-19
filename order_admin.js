@@ -30009,6 +30009,7 @@ define('services', ['utils'], function() {
 
   var serviceUrl = 'php/services.php';
   var departmentsPromise;
+  var districtPromise;
   
   function http_form_post($http, data, url) {
     return $http({
@@ -30396,6 +30397,12 @@ define('services', ['utils'], function() {
         return $http.get(url).then(function(response) {
           return response.data.status == 'OK' && response.data.results;
         });
+      },
+      
+      get_districts: function(country) {
+        var url = "php/district.php?rid=districts&country={0}".format(
+            country || 'US');
+        return districtPromise || (districtPromise = $http.get(url));
       }
     };
   });
@@ -30488,6 +30495,27 @@ define('permission', ['utils'], function() {
         return this.user && 
             ((this.user.permission & this.ROLES.FINANCE) == this.ROLES.FINANCE);
       }
+    };
+  });
+});
+define('districts/districts',
+    ['services', 'utils'], function() {
+  return angular.module('DistrictsModule', ['ServicesModule',
+      'UtilsModule']).directive('districts',
+          function(rpc, utils) {
+    return {
+      scope: {
+        editable: '@',
+        user: '='
+      },
+      link: function(scope) {
+        rpc.get_districts().then(function(response) {
+          scope.localGroups = response.data;
+          scope.localGroupIds = utils.keys(scope.localGroups);
+        });
+      },
+
+      templateUrl : 'js/districts/districts.html?tag=201807101350'
     };
   });
 });
@@ -30783,9 +30811,13 @@ define('order_stats/order_stats', [
     });
 });
 define('order_details/order_details', [
-    'address_editor/address_editor', 'permission'], function() {
+    'address_editor/address_editor', 
+    'districts/districts',
+    'permission'], function() {
   return angular.module('OrderDetailsModule', [
-      'AddressEditorModule', 'PermissionModule'])
+      'AddressEditorModule',
+      'DistrictsModule',
+      'PermissionModule'])
     .directive('orderDetails', function(perm) {
       return {
         scope: {
@@ -30878,6 +30910,7 @@ define('orders/orders', [
           
           function calculate_order_values(order) {
             order.status = parseInt(order.status);
+            order.district = parseInt(order.district) || 0;
             order.sub_total = parseMoney(order.sub_total).toFixed(2);
             order.shipping = parseMoney(order.shipping).toFixed(2);
             order.int_shipping = parseMoney(order.int_shipping).toFixed(2);

@@ -77,7 +77,7 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
   
   $fields = ["id", "user_id", "status", "sub_total", "paid", "shipping",
       "int_shipping", "shipping_date", "paid_date", "created_time", "name",
-      "paypal_trans_id", "usps_track_id", "class_name"];
+      "paypal_trans_id", "usps_track_id", "class_name", "district"];
   $address_fields = 
       ["phone", "email", "street", "city", "state", "country", "zip"];
   
@@ -85,6 +85,7 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
     $fields = array_merge($fields, $address_fields);
   }
 
+  ensure_local_group_column();
   $orders = $medoo->select("orders", $fields, ["AND" => 
       array_merge($userFilter, $statusFilter, $timeFilter, $classFilter)]); 
   if (!$withItems) return $orders;
@@ -97,6 +98,13 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
   return $orders;
 }
 
+function ensure_local_group_column() {
+  global $medoo;
+  $sql = "ALTER TABLE orders ADD district MEDIUMINT,".
+      "ADD FOREIGN KEY (district) REFERENCES districts(id);";
+  $medoo->query($sql);
+}
+
 function place_order($order) {
   global $medoo;
 
@@ -104,6 +112,7 @@ function place_order($order) {
   unset($order["items"]);
 
   $order = array_merge($order, sanitize_address());
+  ensure_local_group_column();
   $id = $medoo->insert("orders", $order);
   if (!$id || empty($items)) return $id;
 

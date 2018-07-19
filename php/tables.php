@@ -2,7 +2,6 @@
 include_once "datatype.php";
 include_once "connection.php";
 include_once "course_category.php";
-include_once "district.php";
 include_once "permission.php";
 include_once "util.php";
 
@@ -211,7 +210,6 @@ function update_class($classInfo) {
     $datas["self_report"] = $classInfo["self_report"] == "true" ? 1 : 0;
   }
   
-  ensure_country_columns($medoo);
   $id = intval($classInfo["id"]);
   if ($id == 0) {
     return $medoo->insert("classes", 

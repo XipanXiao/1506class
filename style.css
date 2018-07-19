@@ -830,3 +830,7 @@ iron-icon.add-icon {
   position: absolute;
   right: 64px;
 }
+
+.address-column {
+  width: 300px;
+}

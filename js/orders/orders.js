@@ -67,6 +67,7 @@ define('orders/orders', [
           
           function calculate_order_values(order) {
             order.status = parseInt(order.status);
+            order.district = parseInt(order.district) || 0;
             order.sub_total = parseMoney(order.sub_total).toFixed(2);
             order.shipping = parseMoney(order.shipping).toFixed(2);
             order.int_shipping = parseMoney(order.int_shipping).toFixed(2);

@@ -30009,6 +30009,7 @@ define('services', ['utils'], function() {
 
   var serviceUrl = 'php/services.php';
   var departmentsPromise;
+  var districtPromise;
   
   function http_form_post($http, data, url) {
     return $http({
@@ -30396,6 +30397,12 @@ define('services', ['utils'], function() {
         return $http.get(url).then(function(response) {
           return response.data.status == 'OK' && response.data.results;
         });
+      },
+      
+      get_districts: function(country) {
+        var url = "php/district.php?rid=districts&country={0}".format(
+            country || 'US');
+        return districtPromise || (districtPromise = $http.get(url));
       }
     };
   });
@@ -30488,6 +30495,27 @@ define('permission', ['utils'], function() {
         return this.user && 
             ((this.user.permission & this.ROLES.FINANCE) == this.ROLES.FINANCE);
       }
+    };
+  });
+});
+define('districts/districts',
+    ['services', 'utils'], function() {
+  return angular.module('DistrictsModule', ['ServicesModule',
+      'UtilsModule']).directive('districts',
+          function(rpc, utils) {
+    return {
+      scope: {
+        editable: '@',
+        user: '='
+      },
+      link: function(scope) {
+        rpc.get_districts().then(function(response) {
+          scope.localGroups = response.data;
+          scope.localGroupIds = utils.keys(scope.localGroups);
+        });
+      },
+
+      templateUrl : 'js/districts/districts.html?tag=201807101350'
     };
   });
 });
@@ -30747,9 +30775,13 @@ define('item_list/item_list', ['flying/flying', 'services', 'utils'], function()
     });
 });
 define('order_details/order_details', [
-    'address_editor/address_editor', 'permission'], function() {
+    'address_editor/address_editor', 
+    'districts/districts',
+    'permission'], function() {
   return angular.module('OrderDetailsModule', [
-      'AddressEditorModule', 'PermissionModule'])
+      'AddressEditorModule',
+      'DistrictsModule',
+      'PermissionModule'])
     .directive('orderDetails', function(perm) {
       return {
         scope: {
@@ -30842,6 +30874,7 @@ define('orders/orders', [
           
           function calculate_order_values(order) {
             order.status = parseInt(order.status);
+            order.district = parseInt(order.district) || 0;
             order.sub_total = parseMoney(order.sub_total).toFixed(2);
             order.shipping = parseMoney(order.shipping).toFixed(2);
             order.int_shipping = parseMoney(order.int_shipping).toFixed(2);
@@ -31146,10 +31179,11 @@ define('orders/orders', [
 });
 define('shopping_cart/shopping_cart', [
     'address_editor/address_editor',
-    'services'], function() {
+    'districts/districts',
+    'services', 'utils'], function() {
   return angular.module('ShoppingCartModule', [
-      'AddressEditorModule', 'ServicesModule'])
-    .directive('shoppingCart', function(rpc) {
+      'AddressEditorModule', 'DistrictsModule', 'ServicesModule', 'UtilsModule'])
+    .directive('shoppingCart', function(rpc, utils) {
       return {
         scope: {
           cart: '=',
@@ -31158,25 +31192,37 @@ define('shopping_cart/shopping_cart', [
         link: function(scope) {
           scope.confirming = false;
           scope.addrEditor = {};
-          
+
           scope.checkOut = function() {
             if (!scope.confirming) {
               scope.confirming = true;
               return;
             }
-            var user = scope.user;    
-            if (!user.name || !user.street || !user.city ||
-                !user.zip) {
-              alert('请输入完整收货信息.');
-              scope.addrEditor.editing = true;
-              return;
+            var user = scope.user;
+            if (scope.sendtoLocalGroup) {
+              if (!user.district) {
+                alert('请选择地方组');
+                return;
+              }
+            } else {
+              user.localGroupId = null;
+              if (!user.name || !user.street || !user.city ||
+                  !user.zip) {
+                alert('请输入完整收货信息.');
+                scope.addrEditor.editing = true;
+                return;
+              }
             }
             scope.cart.checkOut().then(function(placed) {
               if (placed) scope.confirming = false;
             });
           };
+          
+          scope.useLocalGroup = function(local) {
+            scope.sendtoLocalGroup = local;
+          };
         },
-        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201705012131'
+        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201805012131'
       };
     });
 });
@@ -31263,6 +31309,7 @@ define('order_app', [
                   state: user.state,
                   country: user.country,
                   zip: user.zip,
+                  district: user.district,
                   items: []
                 };
                 for (var id in this.items) {
