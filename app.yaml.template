@@ -13,7 +13,7 @@ handlers:
   secure: always
 - url: /(images/.+\.(jpg|png))$
   static_files: \1
-  upload: images/.+\.(jpg|png)
+  upload: images/.+\.(jpg|png)$
   secure: always
 - url: /
   static_files: index.html
