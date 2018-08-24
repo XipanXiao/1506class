@@ -61,9 +61,9 @@
         <input type="button" value="确认修改" ng-click="onUpdate()">
       </div>
     </div>
-    <div class="css-table-cell">
-      <address-editor user="order" with-contact="true"></address-editor>
-      <districts user="order" ng-if="order.district"></districts>
+    <div class="css-table-cell" ng-switch="!!order.district">
+      <districts ng-switch-when="true" user="order"></districts>
+      <address-editor ng-switch-default user="order" with-contact="true"></address-editor>
       <div class="padded-element">班级：{{order.class_name}}</div>
     </div>
     <div class="css-table-cell">
