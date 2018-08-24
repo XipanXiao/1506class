@@ -63,8 +63,8 @@
     </div>
     <div class="css-table-cell" ng-switch="!!order.district">
       <div ng-switch-when="true">
+        <div><strong>{{order.name}}</strong></div>
         <districts user="order"></districts>
-        {{order.name}}
       </div>
       <address-editor ng-switch-default user="order" with-contact="true"></address-editor>
       <div class="padded-element">班级：{{order.class_name}}</div>
