@@ -31553,18 +31553,9 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
           };
 
           $scope.showEmailDialog = function() {
-        	    var classes = utils.toList(utils.where($scope.classes,
-        	    		(classInfo) => classInfo.department_id != 9));
-        	    var userRequests = classes.map(function(classInfo) {
-        	    	  return function() {
-        	    	    return rpc.get_users(null, classInfo.id).then(function(response) {
-        	    		  return classInfo.users = response.data;
-        	    	    });
-        	    	  };
-        	    });
-        	    utils.requestOneByOne(userRequests).then(function() {
-            	    utils.showEmailDialog(classes);
-        	    });
+        	    const isNotQuit = (classInfo) => classInfo.department_id != 9;
+        	    var classes = utils.where($scope.classes, isNotQuit);
+        	    utils.showEmailDialog(utils.toList(classes));
           };
           
           $scope.exportUsers = function() {
@@ -31696,16 +31687,22 @@ define('email_group_chip/email_group_chip', ['services', 'utils'], function() {
       .directive('emailGroupChip', function(rpc, utils) {
     return {
       scope: {
-    	    classInfo: '=',
-    	    remove: '&'
+        classInfo: '=',
+        remove: '&'
       },
       link: function(scope, element) {
-    	    scope.toggleExpand = function() {
-    	    	  scope.expanded = !scope.expanded;
-    	    };
-    	    scope.removeUser = function(user) {
-    	    	  delete scope.classInfo.users[user.id];
-    	    };
+        scope.toggleExpand = function() {
+          scope.expanded = !scope.expanded;
+        };
+        scope.removeUser = function(user) {
+        	  delete scope.classInfo.users[user.id];
+        };
+        scope.$watch('classInfo', function(classInfo) {
+          if (classInfo.users) return;
+          rpc.get_users(null, classInfo.id).then(function(response) {
+            classInfo.users = response.data;
+          });
+        });
       },
       templateUrl : 'js/email_group_chip/email_group_chip.html?tag=20180621'
     };

@@ -31615,18 +31615,9 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
           };
 
           $scope.showEmailDialog = function() {
-        	    var classes = utils.toList(utils.where($scope.classes,
-        	    		(classInfo) => classInfo.department_id != 9));
-        	    var userRequests = classes.map(function(classInfo) {
-        	    	  return function() {
-        	    	    return rpc.get_users(null, classInfo.id).then(function(response) {
-        	    		  return classInfo.users = response.data;
-        	    	    });
-        	    	  };
-        	    });
-        	    utils.requestOneByOne(userRequests).then(function() {
-            	    utils.showEmailDialog(classes);
-        	    });
+        	    const isNotQuit = (classInfo) => classInfo.department_id != 9;
+        	    var classes = utils.where($scope.classes, isNotQuit);
+        	    utils.showEmailDialog(utils.toList(classes));
           };
           
           $scope.exportUsers = function() {
