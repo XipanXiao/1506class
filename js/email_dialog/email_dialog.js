@@ -46,7 +46,7 @@ define('email_dialog/email_dialog',
       );
     	    };
       },
-      templateUrl : 'js/email_dialog/email_dialog.html?tag=20180621'
+      templateUrl : 'js/email_dialog/email_dialog.html?tag=20180821'
     };
   });
 });

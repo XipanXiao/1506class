@@ -18,7 +18,7 @@
   <div class="buttons" footer>
     <paper-button dialog-dismiss>取消</paper-button>
     <paper-button ng-click="send()" affirmative
-        ng-disabled="!classes.length || sending">
+        ng-disabled="!classes.length || sending || !subject">
       发送
     </paper-button>
   </div>
