@@ -1,0 +1,25 @@
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+
+<paper-dialog id="email-dialog" no-cancel-on-esc-key modal>
+  <div header><h1 header>发送邮件</h1></div>
+  <div class="content">
+    <label><strong>收件人: </strong>
+      <email-group-chip ng-repeat="classInfo in classes" class-info="classInfo"
+          remove="remove(classInfo)">
+      </email-group-chip>
+    </label>
+    <div>
+      <strong>主题: </strong>
+      <input ng-model="subject" class="email-subject" placeholder="请输入邮件标题...">
+    </div>
+    <label><strong>正文</strong>(按Ctrl V可以粘贴剪贴板内容)</label>
+    <div contenteditable="true" class="email-body"></div>
+  </div>
+  <div class="buttons" footer>
+    <paper-button dialog-dismiss>取消</paper-button>
+    <paper-button ng-click="send()" affirmative
+        ng-disabled="!classes.length || sending">
+      发送
+    </paper-button>
+  </div>
+</paper-dialog>

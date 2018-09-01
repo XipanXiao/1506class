@@ -1,5 +1,6 @@
 define('admin_app',
     ['app_bar/app_bar', 'classes/classes', 'class_info/class_info',
+    	'email_dialog/email_dialog',
     'task_stats/task_stats', 'learning_records/learning_records',
     'scores/scores',
     'schedule_editor/schedule_editor', 'services', 'permission', 'utils',
@@ -8,8 +9,11 @@ define('admin_app',
     function() {
 
   angular.module('AppModule', ['AppBarModule', 'ClassesModule',
-      'ClassInfoModule', 'TaskStatsModule',
-      'LearningRecordsModule', 'PermissionModule',
+      'ClassInfoModule',
+      'EmailDialogModule',
+      'TaskStatsModule',
+      'LearningRecordsModule',
+      'PermissionModule',
       'ScoresModule',
       'ScheduleEditorModule',
       'ServicesModule', 'UtilsModule', 'ZBLoginDialogModule',
@@ -45,7 +49,7 @@ define('admin_app',
               tabs.select(index);
             });
 
-            emailjs.init("user_AZIJ32nwn6RJmV7EzdJy8");
+            emailjs.init("user_ZAqyLkjaj5MHdbn3alvEx");
           }
         };
       }).config( ['$compileProvider', function( $compileProvider ) {

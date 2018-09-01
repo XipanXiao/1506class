@@ -10,6 +10,10 @@
 <new-user-dialog refresh="reload(classId)"></new-user-dialog>
 <zb-sync-button type="class" users="users" class-id="classId" title="学员名单上报学院">
 </zb-sync-button>
+<iron-icon icon="communication:email" ng-click="showEmailDialog()"
+    class="clickable small-icon"
+    title="发送班级邮件...">
+</iron-icon>
 <users users="users" on-delete="reload(classId)" class-id="classId"></users>
 <serial-number-dialog class-id="classId" users="users"><serial-number-dialog>
 

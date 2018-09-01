@@ -29964,6 +29964,12 @@ $provide.value("$locale", {
         
         return utils.requestOneByOne([getTasks, getArranges]);
       },
+      showEmailDialog: function(classes) {
+        var dialog = document.getElementById('email-dialog');
+        dialog.open();
+        var scope = angular.element(dialog).scope();
+        scope.classes = classes;
+      },
 
       // Index of bit in the user.enroll_tasks bits.
       // Indicating whether welcome letter is sent.
@@ -31603,6 +31609,24 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
           
           $scope.isSysAdmin = function() {
             return perm.isSysAdmin();
+          };
+          $scope.isYearLeader = function() {
+            return perm.isYearLeader();
+          };
+
+          $scope.showEmailDialog = function() {
+        	    var classes = utils.toList(utils.where($scope.classes,
+        	    		(classInfo) => classInfo.department_id != 9));
+        	    var userRequests = classes.map(function(classInfo) {
+        	    	  return function() {
+        	    	    return rpc.get_users(null, classInfo.id).then(function(response) {
+        	    		  return classInfo.users = response.data;
+        	    	    });
+        	    	  };
+        	    });
+        	    utils.requestOneByOne(userRequests).then(function() {
+            	    utils.showEmailDialog(classes);
+        	    });
           };
           
           $scope.exportUsers = function() {

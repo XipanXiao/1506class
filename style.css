@@ -834,3 +834,37 @@ iron-icon.add-icon {
 .address-column {
   width: 300px;
 }
+
+paper-dialog#email-dialog {
+  height: 580px;
+  width: 660px;
+}
+
+.email-subject {
+  width: 100%;;
+}
+
+.email-body {
+  border: inset 1px;
+  height: 340px;
+  width: 100%;
+}
+
+.email-chip {
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 14px;
+  display: inline-block;
+  height: 24px;
+  margin: 4px;
+  padding: 2px;
+}
+
+.delete-group-icon,
+.email-chip > iron-icon {
+  color: gray;
+}
+
+.delete-group-icon {
+  cursor: pointer;
+}

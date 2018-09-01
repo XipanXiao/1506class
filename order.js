@@ -29964,6 +29964,12 @@ $provide.value("$locale", {
         
         return utils.requestOneByOne([getTasks, getArranges]);
       },
+      showEmailDialog: function(classes) {
+        var dialog = document.getElementById('email-dialog');
+        dialog.open();
+        var scope = angular.element(dialog).scope();
+        scope.classes = classes;
+      },
 
       // Index of bit in the user.enroll_tasks bits.
       // Indicating whether welcome letter is sent.

@@ -39,6 +39,13 @@ define('class_info/class_info', ['bit_editor/bit_editor',
           $scope.showNewUserDialog = function() {
             document.getElementById('new-user-dlg').open();
           };
+          $scope.showEmailDialog = function() {
+        	    rpc.get_classes($scope.classId).then(function(response) {
+        	    	  var classInfo = response.data[$scope.classId];
+        	    	  classInfo.users = angular.copy($scope.users);
+        	    	  utils.showEmailDialog([classInfo]);
+        	    });
+          }
         },
         templateUrl : 'js/class_info/class_info.html'
       };

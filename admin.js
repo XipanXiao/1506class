@@ -29964,6 +29964,12 @@ $provide.value("$locale", {
         
         return utils.requestOneByOne([getTasks, getArranges]);
       },
+      showEmailDialog: function(classes) {
+        var dialog = document.getElementById('email-dialog');
+        dialog.open();
+        var scope = angular.element(dialog).scope();
+        scope.classes = classes;
+      },
 
       // Index of bit in the user.enroll_tasks bits.
       // Indicating whether welcome letter is sent.
@@ -31542,6 +31548,24 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
           $scope.isSysAdmin = function() {
             return perm.isSysAdmin();
           };
+          $scope.isYearLeader = function() {
+            return perm.isYearLeader();
+          };
+
+          $scope.showEmailDialog = function() {
+        	    var classes = utils.toList(utils.where($scope.classes,
+        	    		(classInfo) => classInfo.department_id != 9));
+        	    var userRequests = classes.map(function(classInfo) {
+        	    	  return function() {
+        	    	    return rpc.get_users(null, classInfo.id).then(function(response) {
+        	    		  return classInfo.users = response.data;
+        	    	    });
+        	    	  };
+        	    });
+        	    utils.requestOneByOne(userRequests).then(function() {
+            	    utils.showEmailDialog(classes);
+        	    });
+          };
           
           $scope.exportUsers = function() {
             importers.userImporter.exportUsers($scope.classIds,
@@ -31666,6 +31690,78 @@ define('editable_label/editable_label', function() {
 						templateUrl : 'js/editable_label/editable_label.html'
 					};
 				});
+});
+define('email_group_chip/email_group_chip', ['services', 'utils'], function() {
+  return angular.module('EmailGroupChipModule', ['ServicesModule', 'UtilsModule'])
+      .directive('emailGroupChip', function(rpc, utils) {
+    return {
+      scope: {
+    	    classInfo: '=',
+    	    remove: '&'
+      },
+      link: function(scope, element) {
+    	    scope.toggleExpand = function() {
+    	    	  scope.expanded = !scope.expanded;
+    	    };
+    	    scope.removeUser = function(user) {
+    	    	  delete scope.classInfo.users[user.id];
+    	    };
+      },
+      templateUrl : 'js/email_group_chip/email_group_chip.html?tag=20180621'
+    };
+  });
+});
+define('email_dialog/email_dialog', 
+    ['email_group_chip/email_group_chip', 
+    	'permission', 'services', 'utils'], function() {
+  return angular.module('EmailDialogModule', [
+	  'EmailGroupChipModule', 'PermissionModule', 'ServicesModule', 'UtilsModule'])
+      .directive('emailDialog', function(perm, rpc, utils) {
+    return {
+      scope: {
+    	    classes: '='
+      },
+      link: function(scope, element) {
+    	    scope.remove = function(classInfo) {
+    	    	  scope.classes.splice(scope.classes.indexOf(classInfo), 1);
+    	    };
+    	    function getEmails() {
+    	    	  const collectEmails = (emails, classInfo) => {
+    	    		return emails.concat(utils.map(classInfo.users, function(user) {
+    	    		  return user.email;
+    	    		}));  
+    	    	  };
+    	    	  return scope.classes.reduce(collectEmails, []);
+    	    }
+    	    scope.send = function() {
+    	    	  var emails = getEmails();
+    	    	  if (emails.length == 0) return;
+    	    	  
+    	    	  if (emails.length >= 10 && 
+    	    	      !confirm('请确认您将群发邮件到{0}用户.'.format(emails.length))) return;
+
+          return emailjs.send("bicw_notification", "bicw_group",
+        {
+          to: emails.join(),
+          subject: scope.subject,
+          body: document.querySelector('.email-body').innerHTML,
+          sender: perm.user.email,
+          sender_name: perm.user.name
+        }).then(function(response) {
+          scope.sending = false;
+          var dialog = document.querySelector('#email-dialog');
+          dialog.close();
+        }, 
+        function(error) {
+          scope.sending = false;
+          alert('发送邮件失败(一般因为发的人太多，用完了名额，只好麻烦您自己动手了): ' + error);
+        }
+      );
+    	    };
+      },
+      templateUrl : 'js/email_dialog/email_dialog.html?tag=20180621'
+    };
+  });
 });
 define('department_editor_dialog/department_editor_dialog',
     ['editable_label/editable_label', 'services', 'utils'], function() {
@@ -34130,6 +34226,13 @@ define('class_info/class_info', ['bit_editor/bit_editor',
           $scope.showNewUserDialog = function() {
             document.getElementById('new-user-dlg').open();
           };
+          $scope.showEmailDialog = function() {
+        	    rpc.get_classes($scope.classId).then(function(response) {
+        	    	  var classInfo = response.data[$scope.classId];
+        	    	  classInfo.users = angular.copy($scope.users);
+        	    	  utils.showEmailDialog([classInfo]);
+        	    });
+          }
         },
         templateUrl : 'js/class_info/class_info.html'
       };
@@ -35145,6 +35248,7 @@ define('zb_login_dialog/zb_login_dialog', [], function() {
 });
 define('admin_app',
     ['app_bar/app_bar', 'classes/classes', 'class_info/class_info',
+    	'email_dialog/email_dialog',
     'task_stats/task_stats', 'learning_records/learning_records',
     'scores/scores',
     'schedule_editor/schedule_editor', 'services', 'permission', 'utils',
@@ -35153,8 +35257,11 @@ define('admin_app',
     function() {
 
   angular.module('AppModule', ['AppBarModule', 'ClassesModule',
-      'ClassInfoModule', 'TaskStatsModule',
-      'LearningRecordsModule', 'PermissionModule',
+      'ClassInfoModule',
+      'EmailDialogModule',
+      'TaskStatsModule',
+      'LearningRecordsModule',
+      'PermissionModule',
       'ScoresModule',
       'ScheduleEditorModule',
       'ServicesModule', 'UtilsModule', 'ZBLoginDialogModule',
@@ -35190,7 +35297,7 @@ define('admin_app',
               tabs.select(index);
             });
 
-            emailjs.init("user_AZIJ32nwn6RJmV7EzdJy8");
+            emailjs.init("user_ZAqyLkjaj5MHdbn3alvEx");
           }
         };
       }).config( ['$compileProvider', function( $compileProvider ) {
