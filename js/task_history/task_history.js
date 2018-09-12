@@ -13,6 +13,7 @@ define('task_history/task_history', ['utils',
       link: function(scope, element, attrs) {
         scope.$watch('user', function() {
           if (!scope.user) return;
+
           if (scope.user.classInfo) {
             var depId = scope.user.classInfo.department_id;
             rpc.get_tasks(depId).then(function(response) {
@@ -25,16 +26,16 @@ define('task_history/task_history', ['utils',
         });
 
         scope.$watch('selectedTask', function() {
-          if (!scope.selectedTask) return;
+          if (!scope.selectedTask || !scope.user) return;
 
           reloadTaskHistory();
         });
-        
+
         var scheduleGroups;
 
         function getScheduleGroups() {
-       	  return rpc.get_schedule_groups(scope.user.classId)
-       	      .then(function(response) {
+          return rpc.get_schedule_groups(scope.user.classId)
+              .then(function(response) {
             scheduleGroups = response.data;
             scheduleGroups.sort(function(a, b) {
               return parseInt(a.term) - parseInt(b.term);
@@ -42,7 +43,7 @@ define('task_history/task_history', ['utils',
             return scheduleGroups;
           });
         }
-        
+
         function getTaskHistory() {
           return rpc.get_task_history(scope.user.id, scope.selectedTask.id)
               .then(function(response) {
@@ -62,20 +63,20 @@ define('task_history/task_history', ['utils',
             return scope.task_history;
           });
         };
-        
+
         function addTermSummaries() {
           if (scope.selectedTask.duration || !scheduleGroups.length) {
-        	    scope.expanded = true;
-        	    return;
+            scope.expanded = true;
+            return;
           }
 
           var termIndex = 0;
           var scheduleGroup = scheduleGroups[termIndex++];
           var history = [];
           for (var index = 0; index < scope.task_history.length; index++) {
-      	    var record = scope.task_history[index];
-       	    while (!scheduleGroup.end_time ||
-                scheduleGroup.end_time < record.ts) {
+          var record = scope.task_history[index];
+          while (!scheduleGroup.end_time ||
+              scheduleGroup.end_time < record.ts) {
               if (scheduleGroup.sum) {
                 scheduleGroup.id = 0;
                 scheduleGroup.ts = '第{0}学期'.format(scheduleGroup.term);
@@ -83,11 +84,11 @@ define('task_history/task_history', ['utils',
               }
               scheduleGroup = scheduleGroups[termIndex++];
               if (!scheduleGroup) {
-            	    for (; index < scope.task_history.length; index++) {
-            	    	  history.push(scope.task_history[index]);
-            	    }
-            	    scope.task_history = history;
-            	    return;
+                for (; index < scope.task_history.length; index++) {
+                  history.push(scope.task_history[index]);
+                }
+                scope.task_history = history;
+                return;
               }
             }
             scheduleGroup.sum = (scheduleGroup.sum || 0) + record.count;
@@ -104,7 +105,7 @@ define('task_history/task_history', ['utils',
         function reloadTaskHistory() {
           utils.requestOneByOne([getScheduleGroups, getTaskHistory]);
         };
-        
+
         scope.remove = function(record) {
           var message = scope.selectedTask.duration ? ',用时:{2}]' : ']';
           message = ('您确认要删除这条记录吗？[时间:{0},数量:{1}' + message)
@@ -116,7 +117,7 @@ define('task_history/task_history', ['utils',
             }
           });
         };
-        
+
         scope.buildHistogram = function() {
           scope.histogram = [];
           if (!(scope.task_history instanceof Array) ||
@@ -126,7 +127,7 @@ define('task_history/task_history', ['utils',
           var values = [], cutOff;
           if (scope.selectedTask.duration) {
             scope.task_history.forEach(function(record) {
-              values[record.sub_index] = 
+              values[record.sub_index] =
                   (values[record.sub_index] || 0) + record.duration;
               sum += record.duration;
             });
@@ -147,7 +148,7 @@ define('task_history/task_history', ['utils',
               return [record.ts, Math.min(cutOff, record.count)];
             });
           }
-          
+
           scope.sum = sum;
           scope.chartOptions = '{"vAxis": {"minValue": 0, "maxValue": {0}}}'.
               format(cutOff);
@@ -157,3 +158,4 @@ define('task_history/task_history', ['utils',
     };
   });
 });
+
