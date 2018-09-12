@@ -200,6 +200,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     } else {
       $response = get_class_prefs($user->id, null);
     }
+  } elseif ($resource_id == "schedule_groups") {
+    $response = get_schedule_groups($_GET["classId"]);
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];

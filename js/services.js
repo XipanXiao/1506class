@@ -149,6 +149,11 @@ define('services', ['utils'], function() {
         return $http.get(url);
       },
       
+      get_schedule_groups: function(classId) {
+        var url = "{0}?rid=schedule_groups&classId={1}".format(serviceUrl, classId);
+        return $http.get(url);
+      },
+        
       get_task_history: function(userId, taskId) {
         var url = "{0}?rid=task_history&user_id={1}&task_id={2}".
             format(serviceUrl, userId || '', taskId);

@@ -20,18 +20,31 @@ define('task_history/task_history', ['utils',
               scope.selectedTask = utils.first(scope.tasks);
             });
           } else {
-            scope.reloadTaskHistory();
+            reloadTaskHistory();
           }
         });
 
         scope.$watch('selectedTask', function() {
           if (!scope.selectedTask) return;
 
-          scope.reloadTaskHistory();
+          reloadTaskHistory();
         });
         
-        scope.reloadTaskHistory = function() {
-          rpc.get_task_history(scope.user.id, scope.selectedTask.id)
+        var scheduleGroups;
+
+        function getScheduleGroups() {
+       	  return rpc.get_schedule_groups(scope.user.classId)
+       	      .then(function(response) {
+            scheduleGroups = response.data;
+            scheduleGroups.sort(function(a, b) {
+              return parseInt(a.term) - parseInt(b.term);
+            });
+            return scheduleGroups;
+          });
+        }
+        
+        function getTaskHistory() {
+          return rpc.get_task_history(scope.user.id, scope.selectedTask.id)
               .then(function(response) {
             scope.task_history = response.data;
             var sum = 0;
@@ -45,7 +58,51 @@ define('task_history/task_history', ['utils',
               record.totalDuration = (totalDuration += record.duration);
             }
             scope.buildHistogram();
+            addTermSummaries();
+            return scope.task_history;
           });
+        };
+        
+        function addTermSummaries() {
+          if (scope.selectedTask.duration || !scheduleGroups.length) {
+        	    scope.expanded = true;
+        	    return;
+          }
+
+          var termIndex = 0;
+          var scheduleGroup = scheduleGroups[termIndex++];
+          var history = [];
+          for (var index = 0; index < scope.task_history.length; index++) {
+      	    var record = scope.task_history[index];
+       	    while (!scheduleGroup.end_time ||
+                scheduleGroup.end_time < record.ts) {
+              if (scheduleGroup.sum) {
+                scheduleGroup.id = 0;
+                scheduleGroup.ts = '第{0}学期'.format(scheduleGroup.term);
+                history.push(scheduleGroup);
+              }
+              scheduleGroup = scheduleGroups[termIndex++];
+              if (!scheduleGroup) {
+            	    for (; index < scope.task_history.length; index++) {
+            	    	  history.push(scope.task_history[index]);
+            	    }
+            	    scope.task_history = history;
+            	    return;
+              }
+            }
+            scheduleGroup.sum = (scheduleGroup.sum || 0) + record.count;
+            history.push(record);
+          }
+          if (scheduleGroup && scheduleGroup.sum && scheduleGroup.id) {
+            scheduleGroup.id = 0;
+            scheduleGroup.ts = '第{0}学期'.format(scheduleGroup.term);
+            history.push(scheduleGroup);
+          }
+          scope.task_history = history;
+        }
+
+        function reloadTaskHistory() {
+          utils.requestOneByOne([getScheduleGroups, getTaskHistory]);
         };
         
         scope.remove = function(record) {
@@ -55,7 +112,7 @@ define('task_history/task_history', ['utils',
           if (!confirm(message)) return;
           rpc.remove_task_record(record.id).then(function(response) {
             if (response.data.deleted) {
-              scope.reloadTaskHistory();
+              reloadTaskHistory();
             }
           });
         };
@@ -96,7 +153,7 @@ define('task_history/task_history', ['utils',
               format(cutOff);
         };
       },
-      templateUrl : 'js/task_history/task_history.html'
+      templateUrl : 'js/task_history/task_history.html?tag=20180911'
     };
   });
 });

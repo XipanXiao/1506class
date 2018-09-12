@@ -19,9 +19,16 @@
 	    <div class="css-table-cell" ng-if="selectedTask.duration">用时</div>
 	    <div class="css-table-cell">累计数量</div>
 	    <div class="css-table-cell" ng-if="selectedTask.duration">累计用时</div>
-	    <div class="css-table-cell">删除</div>
+	    <div class="css-table-cell"></div>
+	    <div class="css-table-cell clickable" ng-switch="expanded" ng-click="expanded = !expanded">
+          <iron-icon icon="expand-more" ng-switch-when="true" title="收起明细列表">
+          </iron-icon>
+          <iron-icon icon="chevron-right" ng-switch-default title="展开明细列表">
+          </iron-icon>
+        </div>
 	  </div>
-	  <div ng-repeat="record in task_history" class="css-table-row">
+	  <div ng-repeat="record in task_history" class="css-table-row deletable"
+	      ng-if="expanded || !record.id">
 	    <div class="css-table-cell">{{record.ts}}</div>
 	    <div class="css-table-cell" ng-if="selectedTask.sub_tasks">
 	      第{{record.sub_index + 1}}修法
@@ -30,8 +37,8 @@
 	    <div class="css-table-cell" ng-if="selectedTask.duration">{{record.duration}}</div>
 	    <div class="css-table-cell">{{record.sum}}</div>
 	    <div class="css-table-cell" ng-if="selectedTask.duration">{{record.totalDuration}}</div>
-	    <div class="css-table-cell">
-	      <iron-icon icon="icons:delete" title="删除" ng-click="remove(record)" class="selectable">
+	    <div class="css-table-cell" ng-if="record.id">
+	      <iron-icon icon="icons:delete" title="删除" ng-click="remove(record)" class="delete-button">
 	      </iron-icon>
 	    </div>
 	  </div>

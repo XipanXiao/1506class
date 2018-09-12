@@ -554,6 +554,13 @@ function report_schedule_task($user_id, $schedule) {
   return 1;
 }
 
+/// Returns all schecule groups for [$classId].
+function get_schedule_groups($classId) {
+  global $medoo;
+
+  return $medoo->select("schedule_groups", "*", ["classId" => $classId]); 
+}
+
 function get_schedules($classId, $term, $records, $user_id) {
   global $medoo;
   
