@@ -85,7 +85,7 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
             });
           };
           scope.select = function(user) {
-            scope.selectedUser = user;
+            scope.selectedUser = utils.mix_in({classId: scope.classId}, user);
           };
           scope.selected = function(user) {
             return scope.selectedUser && scope.selectedUser.id == user.id;

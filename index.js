@@ -31870,7 +31870,7 @@ define('task_history/task_history', ['utils',
               scope.tasks = response.data;
               scope.selectedTask = utils.first(scope.tasks);
             });
-          } else {
+          } else if (scope.selectedTask) {
             reloadTaskHistory();
           }
         });
@@ -31922,11 +31922,13 @@ define('task_history/task_history', ['utils',
 
           var termIndex = 0;
           var scheduleGroup = scheduleGroups[termIndex++];
+          scheduleGroup.sum = 0;
+
           var history = [];
           for (var index = 0; index < scope.task_history.length; index++) {
-          var record = scope.task_history[index];
-          while (!scheduleGroup.end_time ||
-              scheduleGroup.end_time < record.ts) {
+            var record = scope.task_history[index];
+            while (!scheduleGroup.end_time ||
+                scheduleGroup.end_time < record.ts) {
               if (scheduleGroup.sum) {
                 scheduleGroup.id = 0;
                 scheduleGroup.ts = '第{0}学期'.format(scheduleGroup.term);
@@ -31940,11 +31942,12 @@ define('task_history/task_history', ['utils',
                 scope.task_history = history;
                 return;
               }
+              scheduleGroup.sum = 0;
             }
-            scheduleGroup.sum = (scheduleGroup.sum || 0) + record.count;
+            scheduleGroup.sum += record.count;
             history.push(record);
           }
-          if (scheduleGroup && scheduleGroup.sum && scheduleGroup.id) {
+          if (scheduleGroup && scheduleGroup.sum) {
             scheduleGroup.id = 0;
             scheduleGroup.ts = '第{0}学期'.format(scheduleGroup.term);
             history.push(scheduleGroup);
