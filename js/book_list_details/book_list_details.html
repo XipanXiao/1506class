@@ -39,19 +39,22 @@
           ng-disabled="!dirty">
     </div>
   </div>
+  <iron-icon icon="arrow-back" ng-click="addSelectedBooks()" class="clickable"
+      title="将所选法本加入班级书单">
+  </iron-icon>
   <div class="padded-element" ng-if="classInfo.adding">
     <select multiple="true" class="book-selection">
       <option ng-repeat="item in items" value="{{item.id}}"
-          ng-click="addBook(item)" ng-if="!classInfo.books[item.id]">
+          ng-click="classInfo.editingBook = item" ng-if="!classInfo.books[item.id]">
         {{item.name}}
       </option>
     </select>
-    <iron-icon icon="add" class="clickable" ng-click="classInfo.newBook = {}"
+    <iron-icon icon="add" class="clickable" ng-click="classInfo.editingBook = {}"
         title="新建法本...">
     </iron-icon>
-    <book-editor ng-if="classInfo.newBook != null" book="classInfo.newBook"
-        items="items" categories="categories" on-save="createBook()"
-        on-cancel="classInfo.newBook = null">
+    <book-editor ng-if="classInfo.editingBook != null" book="classInfo.editingBook"
+        items="items" categories="categories" on-save="updateBook()"
+        on-cancel="classInfo.editingBook = null">
     </book-editor>
   </div> 
 </div>

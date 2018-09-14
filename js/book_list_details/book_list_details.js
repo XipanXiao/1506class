@@ -8,7 +8,7 @@ define('book_list_details/book_list_details',
       scope: {
         classInfo: '='
       },
-      link: function(scope) {
+      link: function(scope, element) {
         scope.$watch('classInfo', function(classInfo) {
           if (classInfo) {
             reload(classInfo);
@@ -55,20 +55,25 @@ define('book_list_details/book_list_details',
           scope.dirty = false;
         };
 
-        /// Adds a book from the [items] to the book list.
-        scope.addBook = function(item) {
-          scope.classInfo.books[item.id] = item;
-          scope.dirty = true;
+        /// Adds all selected books to the class's book list.
+        scope.addSelectedBooks = function() {
+        	  var select = element[0].querySelector('.book-selection');
+        	  for (let option of select.options) {
+        		if (option.selected) {
+        		  scope.classInfo.books[option.value] = scope.items[option.value];
+              scope.dirty = true;
+        		}
+        	  }
         };
         
-        /// Creates a new book, adds it to [items].
-        scope.createBook = function() {
-          rpc.update_item(scope.classInfo.newBook).then(function(response) {
+        /// Updates or creates a book, adds it to [items] if it's new.
+        scope.updateBook = function() {
+          rpc.update_item(scope.classInfo.editingBook).then(function(response) {
             var id = response.data.updated;
             if (id) {
-              scope.classInfo.newBook.id = id;
-              scope.items[id] = scope.classInfo.newBook;
-              scope.classInfo.newBook = null;
+              scope.classInfo.editingBook.id = id;
+              scope.items[id] = scope.classInfo.editingBook;
+              scope.classInfo.editingBook = null;
             } else {
               alert('新建法本失败，请检查是不是同名法本已经存在！');
             }
@@ -89,10 +94,19 @@ define('book_list_details/book_list_details',
           var category = scope.categories[item.category];
           return category && parseInt(category.parent_id) == 1;
         }
+        function convertNumbers() {
+        	  utils.forEach(scope.classInfo.books, function(book) {
+        		book.category = parseInt(book.category);
+        		book.price = parseFloat(book.price);
+        		book.shipping = parseFloat(book.shipping);
+        		book.int_shipping = parseFloat(book.int_shipping);
+        	  });
+        }
         function getDepartmentBooks() {
           var dep = scope.departments[scope.classInfo.department_id];
           return rpc.get_items(null, parseInt(dep.level)).then(function(response) {
             scope.classInfo.books = utils.where(response.data, isBook);
+            convertNumbers();
             return scope.items = scope.classInfo.books;
           });
         }
