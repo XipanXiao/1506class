@@ -31432,7 +31432,7 @@ define('book_lists/book_lists',
         }
         utils.requestOneByOne([getDepartments, scope.yearChanged]);
       },
-      templateUrl : 'js/book_lists/book_lists.html?tag=201706062300'
+      templateUrl : 'js/book_lists/book_lists.html?tag=201806062300'
     };
   });
 });

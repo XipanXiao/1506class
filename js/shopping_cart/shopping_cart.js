@@ -43,7 +43,7 @@ define('shopping_cart/shopping_cart', [
             scope.sendtoLocalGroup = local;
           };
         },
-        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201805012131'
+        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809132131'
       };
     });
 });

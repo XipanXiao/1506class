@@ -30792,7 +30792,7 @@ define('item_list/item_list', ['flying/flying', 'services', 'utils'], function()
             }
           });
         },
-        templateUrl : 'js/item_list/item_list.html?tag=201707050736'
+        templateUrl : 'js/item_list/item_list.html?tag=201807050736'
       };
     });
 });
@@ -31244,7 +31244,7 @@ define('shopping_cart/shopping_cart', [
             scope.sendtoLocalGroup = local;
           };
         },
-        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201805012131'
+        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809132131'
       };
     });
 });

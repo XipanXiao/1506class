@@ -10,8 +10,8 @@
       </label>
   
       <label class="css-table-cell">
-        <input type="radio" name="localGroup" ng-click="useLocalGroup(true)">
-        运送到地方组
+        <input type="radio" name="localGroup" ng-click="useLocalGroup(true)" disabled>
+        运送到地方组(暂不开放)
       </label>
     </div>
     <div class="css-table-row">
@@ -19,7 +19,7 @@
         <address-editor user="user" with-contact="true"></address-editor>
       </div>
       <div class="css-table-cell">
-        <districts user="user" editable="true"></districts>
+        <districts user="user"></districts>
       </div>
     </div>
     <div class="css-table-row">

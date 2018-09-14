@@ -8,7 +8,8 @@
       <div class="css-table-cell">科系</div>
       <div class="css-table-cell">学期</div>
     </div>
-    <div ng-repeat="classInfo in classes" class="css-table-row"
+    <div ng-repeat="classInfo in classes"
+        class="css-table-row selectable clickable"
         ng-click="selectedClass.id = classInfo.id"
         ng-class="{'selected': selectedClass.id == classInfo.id}">
       <div class="css-table-cell">{{classInfo.name}}</div>
