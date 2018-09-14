@@ -127,7 +127,7 @@ define('book_list_details/book_list_details',
           scope.dirty = false;
         }
       },
-      templateUrl : 'js/book_list_details/book_list_details.html?tag=201707031806'
+      templateUrl : 'js/book_list_details/book_list_details.html?tag=201807031806'
     };
   });
 });
