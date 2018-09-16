@@ -26,12 +26,13 @@
 </div>
 <div ng-if="admin && isOrderAdmin() && orders.length" class="css-table">
   <div class="css-table-row">
-	  <div class="css-table-cell"> 
-	    总数 {{stats.count}}
-	  </div>
-	  <div class="css-table-cell"> 
-	    金额 {{stats.sub_total}}
-	  </div>
+    <div class="css-table-cell"> 
+      总数 {{stats.count}}
+    </div>
+    <div class="css-table-cell"> 
+      金额 {{stats.sub_total}}
+    </div>
+    <!--
     <div class="css-table-cell"> 
       预计国际运费 {{stats.int_shipping_estmt}}
     </div>
@@ -49,11 +50,13 @@
       <input type="button" ng-disabled="!stats.actual_int_shipping"
           value="保存" ng-click="save()">
     </div>
-	  <label class="css-table-cell">显示汇总 
-	    <input type="checkbox" ng-model="stats.showStats">
-	  </label>
+    <label class="css-table-cell">显示汇总 
+      <input type="checkbox" ng-model="stats.showStats">
+    </label>
+    -->
   </div>
 </div>
+<!--
 <div ng-if="stats.showStats && admin">
   <h2>汇总</h2>
   <div ng-if="stats" class="section css-table order-details-line odd-even">
@@ -84,6 +87,7 @@
   </div>
   <hr>
 </div>
+-->
 <h3>订单列表</h3>
 <iron-icon class="selectable" icon="cloud-download" title="导出地址本..."
     ng-click="exportAddresses()" ng-if="admin">
