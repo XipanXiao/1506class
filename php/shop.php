@@ -198,9 +198,9 @@ function sanitize_address() {
 function get_shop_items($category, $level) {
   global $medoo;
 
-  $filters = null;
+  $filters = ["deleted[!]" => 1];
   if ($category) {
-    $filters = ["category" => $category, "deleted[!]" => 1]; 
+    $filters = ["AND" => ["category" => $category, "deleted[!]" => 1]]; 
   }
 
   if ($level != 99) {
@@ -208,11 +208,11 @@ function get_shop_items($category, $level) {
     if ($category) {
       if (!array_search($category, $categories)) return [];
     } else {
-      $filters = ["category" => $categories, "deleted[!]" => 1]; 
+      $filters = ["AND" => ["category" => $categories, "deleted[!]" => 1]]; 
     }
   }
-  
-  return keyed_by_id($medoo->select("items", "*", ["AND" => $filters]));
+
+  return keyed_by_id($medoo->select("items", "*", $filters));
 }
 
 function ensure_other_category() {
@@ -307,8 +307,8 @@ function merge_orders($order_ids) {
 
 /// Moves selected items from [$fromOrder] to [$toOrder].
 ///
-/// "id", "sub_total", "int_shipping" of both orders are required.
-/// id, price, count, int_shipping of each item are required.  
+/// "id", "sub_total", "int_shipping", "shipping" of both orders are required.
+/// id, price, count, int_shipping, shipping of each item are required.  
 function move_order_items($fromOrder, $toOrder) {
   global $medoo;
 
@@ -332,17 +332,25 @@ function move_order_items($fromOrder, $toOrder) {
     $shipping += intval($item["count"]) * floatval($item["int_shipping"]);
     return $shipping;
   }
+  function get_shipping($shipping, $item) {
+    $shipping += intval($item["count"]) * floatval($item["shipping"]);
+    return $shipping;
+  }
   $sub_total = array_reduce($items, "get_total", 0.0);
   $int_shipping = array_reduce($items, "get_int_shipping", 0.0);
+  $shipping = array_reduce($items, "get_shipping", 0.0);
   
   $fromOrder["sub_total"] = floatval($fromOrder["sub_total"]) - $sub_total;
   $fromOrder["int_shipping"] = 
       floatval($fromOrder["int_shipping"]) - $int_shipping;
+  $fromOrder["shipping"] = floatval($fromOrder["shipping"]) - $shipping;
+
   $toOrder["sub_total"] = floatval($toOrder["sub_total"]) + $sub_total;
   $toOrder["int_shipping"] =
       floatval($toOrder["int_shipping"]) + $int_shipping;
-  
-  $grand = $sub_total + $int_shipping;
+  $toOrder["shipping"] = floatval($toOrder["shipping"]) + $shipping;
+
+  $grand = $sub_total + $int_shipping + $shipping;
   if (floatval($fromOrder["paid"]) >= $grand) {
     $fromOrder["paid"] = floatval($fromOrder["paid"]) - $grand;
     $toOrder["paid"] = floatval($toOrder["paid"]) + $grand;

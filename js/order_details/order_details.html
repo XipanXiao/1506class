@@ -20,14 +20,14 @@
     </div>
     <div class="css-table-cell">
       <div>金额: ${{order.sub_total}}</div>
-      <div>预计国际运费: ${{order.int_shipping_estmt}}</div>
-      <div>实际国际运费: ${{order.int_shipping}}</div>
+      <!--div>预计国际运费: ${{order.int_shipping_estmt}}</div>
+      <div>实际国际运费: ${{order.int_shipping}}</div-->
       <div>美国国内运费: ${{order.shipping}}</div>
       <div>合计: ${{order.grand_total}}</div>
       <div>已付: ${{order.paid}}</div>
       <div>
         <strong>Balance: ${{order.balance}}</strong>
-        <a ng-if="false && !admin" href="https://www.paypal.me/BICWNY/{{order.balance}}"
+        <a ng-if="!admin" href="https://www.paypal.me/BICWNY/{{order.balance}}"
             target="_blank">
           付款
         </a>
@@ -103,7 +103,7 @@
     <div class="css-table-cell">{{item.name}}</div>
     <div class="css-table-cell">{{item.count}}</div>
     <div class="css-table-cell">${{item.price}}</div>
-    <div class="css-table-cell">${{item.int_shipping}}</div>
+    <div class="css-table-cell">${{item.shipping}}</div>
     <div class="css-table-cell" ng-if="admin">
       <iron-icon icon="delete" class="delete-button"
           ng-click="onRemoveItem({'order': order, 'item': item})">

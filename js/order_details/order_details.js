@@ -25,7 +25,7 @@ define('order_details/order_details', [
             return items.length > 1 && items.some(itemSelected);
           };
         },
-        templateUrl : 'js/order_details/order_details.html?tag=201809162038'
+        templateUrl : 'js/order_details/order_details.html?tag=201809161450'
       };
     });
 });

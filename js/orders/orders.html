@@ -86,7 +86,7 @@
 </div>
 <h3>订单列表</h3>
 <iron-icon class="selectable" icon="cloud-download" title="导出地址本..."
-    ng-click="exportAddresses()">
+    ng-click="exportAddresses()" ng-if="admin">
 </iron-icon>
 <a ng-if="addressDataUrl" href="{{addressDataUrl}}" download="addresses.csv">
   addresses.csv

@@ -83,6 +83,7 @@ define('orders/orders', [
 
           function init_item_labels(order) {
             order.count = 0;
+            order.shipping_estmt = 0.0;
             order.int_shipping_estmt = 0.0;
             order.items.forEach(function(item) {
               var info = scope.items[item.item_id];
@@ -90,13 +91,17 @@ define('orders/orders', [
                 item.image = info.image;
                 item.name = info.name;
                 item.producer = info.producer;
+                item.shipping = info.shipping;
                 item.int_shipping = info.int_shipping;
               }
               order.count += parseInt(item.count);
               order.int_shipping_estmt += 
                   parseInt(item.count) * parseMoney(item.int_shipping);
+              order.shipping_estmt += 
+                  parseInt(item.count) * parseMoney(item.shipping);
             });
             order.int_shipping_estmt = order.int_shipping_estmt.toFixed(2);
+            order.shipping_estmt = order.shipping_estmt.toFixed(2);
           }
           
           function calculate_stats(orders) {
@@ -106,10 +111,13 @@ define('orders/orders', [
               grand_total: 0.00,
               int_shipping: 0.00,
               int_shipping_estmt: 0.00,
+              shipping: 0.00,
+              shipping_estmt: 0.00,
               items: {},
             };
             orders.forEach(function(order) {
               stats.int_shipping += parseMoney(order.int_shipping);
+              stats.shipping += parseMoney(order.shipping);
               order.items.forEach(function(item) {
                 var item_id = item.item_id;
                 /// The items in the items db.
@@ -126,19 +134,26 @@ define('orders/orders', [
                 stat.int_shipping_estmt = (stat.int_shipping_estmt || 0) + 
                     parseMoney(info && info.int_shipping || 0.0) * 
                     item.count;
+                stat.shipping_estmt = (stat.shipping_estmt || 0) + 
+                    parseMoney(info && info.shipping || 0.0) * 
+                    item.count;
               });
             });
             utils.forEach(stats.items, function(item) {
               stats.count += item.count;
               stats.sub_total += item.sub_total;
               stats.int_shipping_estmt += item.int_shipping_estmt;
+              stats.shipping_estmt += item.shipping_estmt;
 
               item.sub_total = item.sub_total.toFixed(2);
               item.int_shipping_estmt = item.int_shipping_estmt.toFixed(2);
+              item.shipping_estmt = item.shipping_estmt.toFixed(2);
             });
             stats.sub_total = stats.sub_total.toFixed(2);
             stats.int_shipping = stats.int_shipping.toFixed(2);
             stats.int_shipping_estmt = stats.int_shipping_estmt.toFixed(2);
+            stats.shipping = stats.shipping.toFixed(2);
+            stats.shipping_estmt = stats.shipping_estmt.toFixed(2);
           }
           
           scope.reload = function() {
@@ -276,11 +291,12 @@ define('orders/orders', [
           };
 
           
-          /// Creates a new order of same information of order without no items.
+          /// Creates a new order of same information of order with no items.
           function _createOrderFrom(order) {
             var splitOrder = {
               sub_total: 0.0,
               int_shipping: 0.0,
+              shipping: 0.0,
               paid: 0.0,
               status: order.status,
               user_id: order.user_id,
@@ -353,6 +369,8 @@ define('orders/orders', [
                   item.count * item.price).toFixed(2);
               order.int_shipping = (parseMoney(order.int_shipping) - 
                   item.count * item.int_shipping).toFixed(2);
+              order.shipping = (parseMoney(order.shipping) - 
+                  item.count * item.shipping).toFixed(2);
 
               var index = order.items.indexOf(item);
               order.items.splice(index, 1);
@@ -363,7 +381,8 @@ define('orders/orders', [
               var data = {
                 id: order.id,
                 sub_total: order.sub_total,
-                int_shipping: order.int_shipping
+                int_shipping: order.int_shipping,
+                shipping: order.shipping
               };
               return rpc.update_order(data);
             };
@@ -405,7 +424,7 @@ define('orders/orders', [
           $rootScope.$on('reload-orders', scope.reload);
           scope.$watch('user', scope.reload);
         },
-        templateUrl : 'js/orders/orders.html?tag=201806242314'
+        templateUrl : 'js/orders/orders.html?tag=201809242314'
       };
     });
 });
