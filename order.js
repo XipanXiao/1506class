@@ -30873,7 +30873,7 @@ define('order_details/order_details', [
             return items.length > 1 && items.some(itemSelected);
           };
         },
-        templateUrl : 'js/order_details/order_details.html?tag=201809161450'
+        templateUrl : 'js/order_details/order_details.html?tag=201809161630'
       };
     });
 });
