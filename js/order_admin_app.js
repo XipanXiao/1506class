@@ -46,7 +46,9 @@ define('order_admin_app', [
             });
           }
         };
-      });
+      }).config( ['$compileProvider', function( $compileProvider ) {
+        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|blob):/);
+      }]);
 
   angular.element(document.body).ready(function() {
     angular.bootstrap(document.body, ['AppModule']);

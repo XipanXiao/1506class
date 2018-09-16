@@ -85,6 +85,13 @@
   <hr>
 </div>
 <h3>订单列表</h3>
+<iron-icon class="selectable" icon="cloud-download" title="导出地址本..."
+    ng-click="exportAddresses()">
+</iron-icon>
+<a ng-if="addressDataUrl" href="{{addressDataUrl}}" download="addresses.csv">
+  addresses.csv
+</a>
+
 <a ng-if="false && !admin" href="https://docs.google.com/document/d/1xD1dwbkiFAfrrdueCo-A4NzoG5nmyJSp2v5H5DBncyw/edit?usp=sharing"
     target="_blank" class="right">
     付款流程

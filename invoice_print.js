@@ -29493,6 +29493,9 @@ define('services', ['utils'], function() {
   var departmentsPromise;
   var districtPromise;
 
+  // Promise of http.get('/data/Uni2Pinyin.txt'); 
+  var pinyinTablePromise;
+
   function http_form_post($http, data, url) {
     return $http({
       method: 'POST',
@@ -29902,7 +29905,23 @@ define('services', ['utils'], function() {
             var url = 'php/district.php?rid=districts&country={0}'.format(
                 country || 'US');
             return districtPromise || (districtPromise = $http.get(url));
-          }
+          },
+          
+          get_pinyin_table: function() {
+        	    if (pinyinTablePromise) return pinyinTablePromise;
+
+        	    var url = 'data/Uni2Pinyin.txt';
+        	    return pinyinTablePromise = $http.get(url).then((response) => {
+            	  var map = {};
+              for (let line of response.data.split('\n')) {
+      		    if (!line || line.startsWith('#')) continue;
+      		    var parts = line.split('\t');
+      		    var pinyin = (parts[1] || '').replace(/\d$/, '');
+      		    map[parts[0]] = pinyin;
+              }
+              return map;
+            });
+          },
         };
       });
 });
@@ -29926,6 +29945,12 @@ define('utils', [], function() {
       return this.indexOf(suffix, this.length - suffix.length) !== -1;
     };
   }
+  if (!String.prototype.replaceAll) {
+	String.prototype.replaceAll = function(search, replacement) {
+	  var target = this;
+	  return target.replace(new RegExp(search, 'g'), replacement);
+	};	  
+  }
 
   if (!Array.prototype.map) {
     Array.prototype.map = function(callback) {
@@ -29937,7 +29962,7 @@ define('utils', [], function() {
       return result;
     };
   }
-
+  
   var enroll_tasks = ['welcomed', 'wechated', 'yyed', 'tested', 'bookordered'];
 
   return angular.module('UtilsModule', []).factory('utils', function($q) {
@@ -30438,7 +30463,7 @@ define('utils', [], function() {
       createDataUrl: function(data, file) {
         data = new Blob([data], {type: 'text/plain'});
         if (file) window.URL.revokeObjectURL(file);
-        return file = window.URL.createObjectURL(data);
+        return window.URL.createObjectURL(data);
       },
       
       getUrlParameter: function(name) {
@@ -30487,6 +30512,31 @@ define('utils', [], function() {
         dialog.open();
         var scope = angular.element(dialog).scope();
         scope.classes = classes;
+      },
+      /// Given a Chinese name, return its pinyin.
+      /// e.g. Input: 张三, output ['San', 'Zhang'].
+      getPinyinName: function(name, pinyinTable) {
+    	    var m = name.match(/[a-zA-Z ]+/);
+    	    if (m && m[0]) return m[0].split(' ');
+
+        const toHex = (char) => {
+        	  var s = char.toString(16).toUpperCase();
+        	  return s.length < 4 ? ('0' + s) : s;
+        }
+        const capitalize = (s) => s.replace(/^\w/, c => c.toUpperCase());
+        const getFirstName = (name) => {
+        	  var firstName = '';
+        	  for (var index = 1; index < name.length; index++) {
+        		var ch = toHex(name.charCodeAt(index));
+        		firstName += pinyinTable[ch];
+        	  }
+        	  return capitalize(firstName);
+        };
+        const getLastName = (name) => {
+        	  var ch = toHex(name.charCodeAt(0));
+        	  return capitalize(pinyinTable[ch]);
+        };
+        return [getFirstName(name), getLastName(name)];
       },
 
       // Index of bit in the user.enroll_tasks bits.

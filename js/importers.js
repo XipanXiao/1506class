@@ -394,11 +394,6 @@ define('importers', ['permission', 'services', 'utils'], function() {
               utils.getDisplayLabel(user, 'volunteer') + delimiter +
               user.ts
           };
-          var createDataUrl = function(data, file) {
-            data = new Blob([data], {type: 'text/plain'});
-            if (file) window.URL.revokeObjectURL(file);
-            return file = window.URL.createObjectURL(data);
-          };
           
           var classMap = {};
           utils.forEach(users, function(user) {
@@ -423,7 +418,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
                 result += exportUser(user, classInfo.name) + '\n';
               });
             });
-            return createDataUrl(result, dataUrl);
+            return utils.createDataUrl(result, dataUrl);
           });
         }
       }

@@ -362,6 +362,38 @@ define('orders/orders', [
             };
             return utils.requestOneByOne([removeItem, updateOrder]);
           }
+          
+          
+          scope.exportAddresses = function() {
+            var pinyinTable;
+
+            const getPinyinTable = () => 
+                rpc.get_pinyin_table().then((map) => pinyinTable = map);
+                
+            const clean = (s) => s.replaceAll(',', ''); 
+
+        	    const getAddress = (order) => {
+        	    	  var name = utils.getPinyinName(order.name, pinyinTable);
+        	    	  utils.setCountryLabels(order);
+        	    	  return '{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}\n'.
+        	    	      format(clean(name[0]), clean(name[1] || ''),
+                  clean(order.street), clean(order.city),
+                  clean(order.stateLabel), clean(order.zip),
+                  clean(order.countryLabel), clean(order.phone),
+                  clean(order.email), order.id);
+        	    };
+
+        	    const exportData = () => {
+            	    var data = 'First Name,Last Name,Address 1,City,State/Province,' +
+          	        'ZIP/Postal Code,Country,Phone Number,E Mail,Reference Number\n';
+          	    for (let order of scope.orders) {
+          	    	  data += getAddress(order);
+          	    }
+          	    scope.addressDataUrl = utils.createDataUrl(data, scope.addressDataUrl);
+          	    return utils.truePromise();
+        	    };
+        	    utils.requestOneByOne([getPinyinTable, exportData]);
+          };
 
           $rootScope.$on('reload-orders', scope.reload);
           scope.$watch('user', scope.reload);

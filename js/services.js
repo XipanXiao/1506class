@@ -12,6 +12,9 @@ define('services', ['utils'], function() {
   var departmentsPromise;
   var districtPromise;
 
+  // Promise of http.get('/data/Uni2Pinyin.txt'); 
+  var pinyinTablePromise;
+
   function http_form_post($http, data, url) {
     return $http({
       method: 'POST',
@@ -421,7 +424,23 @@ define('services', ['utils'], function() {
             var url = 'php/district.php?rid=districts&country={0}'.format(
                 country || 'US');
             return districtPromise || (districtPromise = $http.get(url));
-          }
+          },
+          
+          get_pinyin_table: function() {
+        	    if (pinyinTablePromise) return pinyinTablePromise;
+
+        	    var url = 'data/Uni2Pinyin.txt';
+        	    return pinyinTablePromise = $http.get(url).then((response) => {
+            	  var map = {};
+              for (let line of response.data.split('\n')) {
+      		    if (!line || line.startsWith('#')) continue;
+      		    var parts = line.split('\t');
+      		    var pinyin = (parts[1] || '').replace(/\d$/, '');
+      		    map[parts[0]] = pinyin;
+              }
+              return map;
+            });
+          },
         };
       });
 });
