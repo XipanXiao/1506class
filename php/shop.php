@@ -200,7 +200,7 @@ function get_shop_items($category, $level) {
 
   $filters = null;
   if ($category) {
-    $filters = ["category" => $category]; 
+    $filters = ["category" => $category, "deleted[!]" => 1]; 
   }
 
   if ($level != 99) {
@@ -208,11 +208,11 @@ function get_shop_items($category, $level) {
     if ($category) {
       if (!array_search($category, $categories)) return [];
     } else {
-      $filters = ["category" => $categories]; 
+      $filters = ["category" => $categories, "deleted[!]" => 1]; 
     }
   }
   
-  return keyed_by_id($medoo->select("items", "*", $filters));
+  return keyed_by_id($medoo->select("items", "*", ["AND" => $filters]));
 }
 
 function ensure_other_category() {
