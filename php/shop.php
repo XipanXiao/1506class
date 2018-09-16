@@ -14,11 +14,13 @@ abstract class OrderStatus
   const CREATED = 0;
   /// Shipped.
   const SHIPPED = 1;
+  /// Paid but not shipped.
+  const PAID = 2;
   /// Shipped and paid, no further actions are needed.
   const COMPLETED = 3;
   
   static function fromString($value) {
-    $map = ["CREATED" => 0, "SHIPPED" => 1, "COMPLETED" => 3];
+    $map = ["CREATED" => 0, "SHIPPED" => 1, "PAID" => 2, "COMPLETED" => 3];
     return $map[$value];
   }
 }
@@ -514,7 +516,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 
   $record = get_single_record($medoo, $resource_id, $_REQUEST["id"]);
   error_log($user->email ." DELETE ". json_encode($record));
-  if (!isOrderManager($user)) {
+  if (!isOrderManager($user) && $record["status"]) {
     $response = permision_denied_error();
   } elseif ($resource_id == "orders") {
     if (floatval($record["paid"]) >= 0.01 || 

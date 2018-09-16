@@ -19,8 +19,9 @@
 
 <div class="center page-container">
   <paper-tabs noink selected="0">
-    <paper-tab>待发货订单</paper-tab>
     <paper-tab>待付款订单</paper-tab>
+    <paper-tab>已付款订单</paper-tab>
+    <paper-tab>已发货订单</paper-tab>
     <paper-tab>已完成订单</paper-tab>
     <paper-tab ng-show="isOrderAdmin()">按班级汇总</paper-tab>
     <paper-tab ng-show="isOrderAdmin()">班级订书单</paper-tab>
@@ -29,6 +30,10 @@
   <iron-pages selected="0">
     <div>
       <orders user="user" admin="true" status="0"></orders>
+    </div>
+    <div>
+      <orders ng-if="pageLoaded[1]" user="user" admin="true" status="2">
+      </orders>
     </div>
     <div>
       <orders ng-if="pageLoaded[1]" user="user" admin="true" status="1">
@@ -48,6 +53,6 @@
   </iron-pages>
 </div>
 
-<script type="text/javascript" src="order_admin.js?tag=201809132135"></script>
+<script type="text/javascript" src="order_admin.js?tag=201809152135"></script>
 </body>
 </html>

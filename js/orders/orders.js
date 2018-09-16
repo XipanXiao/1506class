@@ -172,6 +172,13 @@ define('orders/orders', [
           
           scope.update = function(order) {
             var statusChanged = order.status != scope.status;
+            // The order is marked as paid but with a non-zero balance.
+            if (statusChanged && (order.status & 2) &&
+            		parseFloat(order.balance) > 0) {
+            	  alert('余额没有付清，欠款$' + order.balance);
+            	  order.status = scope.status;
+            	  return;
+            }
             rpc.update_order(order).then(function(response) {
               if (!response.data.updated) return;
               if (statusChanged) {

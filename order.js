@@ -30734,7 +30734,7 @@ define('app_bar/app_bar', ['permission', 'search_bar/search_bar', 'utils'],
             return location.pathname.endsWith(page);
           };
         },
-        templateUrl : 'js/app_bar/app_bar.html?tag=201706041057'
+        templateUrl : 'js/app_bar/app_bar.html?tag=201806041057'
       };
     });
 });
@@ -30866,14 +30866,14 @@ define('order_details/order_details', [
           order: '='
         },
         link: function(scope) {
-          scope.statusLabels = {0: '待发货', 1: '已发货', 3: '钱货两清'};
+          scope.statusLabels = {0: '待付款', 1: '已发货', 2: '已付款', 3: '钱货两清'};
           scope.hasSelection = function() {
             function itemSelected(item) { return item.selected; }
             var items = scope.order.items;
             return items.length > 1 && items.some(itemSelected);
           };
         },
-        templateUrl : 'js/order_details/order_details.html?tag=201808242038'
+        templateUrl : 'js/order_details/order_details.html?tag=201809162038'
       };
     });
 });
@@ -31051,6 +31051,13 @@ define('orders/orders', [
           
           scope.update = function(order) {
             var statusChanged = order.status != scope.status;
+            // The order is marked as paid but with a non-zero balance.
+            if (statusChanged && (order.status & 2) &&
+            		parseFloat(order.balance) > 0) {
+            	  alert('余额没有付清，欠款$' + order.balance);
+            	  order.status = scope.status;
+            	  return;
+            }
             rpc.update_order(order).then(function(response) {
               if (!response.data.updated) return;
               if (statusChanged) {
