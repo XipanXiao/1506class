@@ -30960,8 +30960,8 @@ define('orders/orders', [
               var orders = response.data || [];
               orders.forEach(function(order) {
                 collect_order_info(order);
-                calculate_order_values(order);
                 init_item_labels(order);
+                calculate_order_values(order);
               });
               orders.forEach(function(order) {
                 order.mergeable = !order.usps_track_id && 
@@ -30980,8 +30980,21 @@ define('orders/orders', [
             scope.phones[order.phone] = order.phone;
           }
           
+          function summarize_order(order) {
+              order.sub_total = 0.0;
+              order.shipping = 0.0;
+              order.int_shipping = 0.0;
+              for (let item of order.items) {
+              	  item.count = parseInt(item.count);
+              	  order.sub_total += item.count * parseMoney(item.price);
+              	  order.shipping += item.count * parseMoney(item.shipping);
+              	  order.int_shipping += item.count * parseMoney(item.int_shipping);
+              }
+          }
+
           function calculate_order_values(order) {
             order.status = parseInt(order.status);
+            summarize_order(order);
             order.district = parseInt(order.district) || 0;
             order.sub_total = parseMoney(order.sub_total).toFixed(2);
             order.shipping = parseMoney(order.shipping).toFixed(2);
@@ -30989,7 +31002,7 @@ define('orders/orders', [
             order.paid = parseMoney(order.paid).toFixed(2);
 
             order.grand_total = parseMoney(order.sub_total) + 
-                parseMoney(order.int_shipping) + parseMoney(order.shipping);
+                parseMoney(order.shipping);
             order.grand_total = order.grand_total.toFixed(2);
             order.balance = 
                 parseMoney(order.grand_total) - parseMoney(order.paid);
@@ -31124,8 +31137,8 @@ define('orders/orders', [
             return function() {
               return rpc.get_order(order.id).then(function(response) {
                 utils.mix_in(order, response.data);
-                calculate_order_values(order);
                 init_item_labels(order);
+                calculate_order_values(order);
                 return order;
               });
             }
@@ -31290,8 +31303,8 @@ define('orders/orders', [
               var index = order.items.indexOf(item);
               order.items.splice(index, 1);
 
-              calculate_order_values(order);
               init_item_labels(order);
+              calculate_order_values(order);
 
               var data = {
                 id: order.id,
