@@ -7,7 +7,7 @@
       <div ng-switch="admin" class="padded-element">
         <label ng-switch-when="true">订单状态:
           <select ng-model="order.status"
-              ng-options="statusLabels[value] for value in [0, 1, 2, 3]"
+              ng-options="statusLabels[value] for value in [0, 2, 3]"
               ng-change="onUpdate()">
           </select>
         </label>
