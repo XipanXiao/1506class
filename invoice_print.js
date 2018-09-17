@@ -29895,7 +29895,8 @@ define('services', ['utils'], function() {
           /// Given a [zip] code, returns the address.
           lookup: function(zip) {
             var url = 'https://maps.googleapis.com/maps/api/geocode/json?' +
-                'address={0}&sensor=true&language=en'.format(zip);
+                'address={0}&sensor=true&language=en&key={1}'.format(zip,
+                		'AIzaSyAtjIuxegSzX2EKW2TeF1LVizFk7ZtZ9xM');
             return $http.get(url).then(function(response) {
               return response.data.status == 'OK' && response.data.results;
             });

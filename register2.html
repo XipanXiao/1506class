@@ -34,7 +34,7 @@
     if (!zip) return;
 
     var url = 'https://maps.googleapis.com/maps/api/geocode/json?sensor=true&' +
-        'language=en&address=' + zip;
+        'language=en&key=AIzaSyAtjIuxegSzX2EKW2TeF1LVizFk7ZtZ9xM&address=' + zip;
     httpGet(url).then(function(response) {
       var error = document.querySelector('#address-error');
       if (response.status != 'OK') {
