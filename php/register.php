@@ -62,7 +62,6 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
   } else {
     $url = sprintf("../registered.html?name=%s&email=%s", $user->name,
         $user->email);
-    header("Location: ". $url);
 ?>
 <!DOCTYPE html>
 <html>
