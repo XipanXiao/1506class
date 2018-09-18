@@ -8,7 +8,7 @@
             checked>
         运送到我的地址
       </label>
-  
+
       <label class="css-table-cell">
         <input type="radio" name="localGroup" ng-click="useLocalGroup(1)" disabled>
         运送到地方组(暂不开放)
@@ -60,7 +60,7 @@
         <h3>{{item.name}}</h3> by {{item.producer}}
       </div>
       <div class="css-table-cell">${{item.price}}</div>
-      <div class="css-table-cell">${{item.shipping}}</div>
+      <div class="css-table-cell">${{user.district == 99 ? 0.00 : item.shipping}}</div>
       <div class="css-table-cell">
         <input type="number" min="1" ng-model="item.count" ng-change="cart.update()">
       </div>

@@ -37,15 +37,19 @@ define('shopping_cart/shopping_cart', [
               if (placed) scope.confirming = false;
             });
           };
-          
+
           scope.useLocalGroup = function(local) {
             scope.sendtoLocalGroup = local;
             if (local == 2) {
               scope.user.district = 99;
+              scope.cart.shipping = 0.00;
+            } else if (!local) {
+              scope.user.district = null;
+              scope.cart.update();
             }
           };
         },
-        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809172258'
+        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809182258'
       };
     });
 });

@@ -21,7 +21,7 @@ define('order_app', [
         return {
           link: function(scope) {
             scope.pageLoaded = [];
-            
+
             scope.cart = {
               size: 0,
               subTotal: 0.0,
