@@ -26,7 +26,6 @@ define('shopping_cart/shopping_cart', [
                 return;
               }
             } else {
-              user.localGroupId = null;
               if (!user.name || !user.street || !user.city ||
                   !user.zip) {
                 alert('请输入完整收货信息.');
@@ -41,9 +40,12 @@ define('shopping_cart/shopping_cart', [
           
           scope.useLocalGroup = function(local) {
             scope.sendtoLocalGroup = local;
+            if (local == 2) {
+              scope.user.district = 99;
+            }
           };
         },
-        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809132131'
+        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809172258'
       };
     });
 });

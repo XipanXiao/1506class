@@ -89,6 +89,7 @@ define('order_app', [
                   order.items.push({
                     item_id: item.id,
                     price: item.price,
+                    shipping: (user.district == 99) ? 0.00 : item.shipping,
                     count: item.count
                   });
                 }

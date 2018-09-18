@@ -30984,7 +30984,6 @@ define('orders/orders', [
                 item.image = info.image;
                 item.name = info.name;
                 item.producer = info.producer;
-                item.shipping = info.shipping;
                 item.int_shipping = info.int_shipping;
               }
               order.count += parseInt(item.count);
@@ -31028,7 +31027,7 @@ define('orders/orders', [
                     parseMoney(info && info.int_shipping || 0.0) * 
                     item.count;
                 stat.shipping_estmt = (stat.shipping_estmt || 0) + 
-                    parseMoney(info && info.shipping || 0.0) * 
+                    parseMoney(item.shipping || 0.0) * 
                     item.count;
               });
             });
@@ -31349,7 +31348,6 @@ define('shopping_cart/shopping_cart', [
                 return;
               }
             } else {
-              user.localGroupId = null;
               if (!user.name || !user.street || !user.city ||
                   !user.zip) {
                 alert('请输入完整收货信息.');
@@ -31364,9 +31362,12 @@ define('shopping_cart/shopping_cart', [
           
           scope.useLocalGroup = function(local) {
             scope.sendtoLocalGroup = local;
+            if (local == 2) {
+              scope.user.district = 99;
+            }
           };
         },
-        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809132131'
+        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809172258'
       };
     });
 });
@@ -31461,6 +31462,7 @@ define('order_app', [
                   order.items.push({
                     item_id: item.id,
                     price: item.price,
+                    shipping: (user.district == 99) ? 0.00 : item.shipping,
                     count: item.count
                   });
                 }

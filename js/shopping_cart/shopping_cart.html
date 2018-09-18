@@ -4,14 +4,19 @@
   <div class="css-table">
     <div class="css-table-row">
       <label class="css-table-cell address-column">
-        <input type="radio" name="localGroup" ng-click="useLocalGroup(false)"
+        <input type="radio" name="localGroup" ng-click="useLocalGroup(0)"
             checked>
         运送到我的地址
       </label>
   
       <label class="css-table-cell">
-        <input type="radio" name="localGroup" ng-click="useLocalGroup(true)" disabled>
+        <input type="radio" name="localGroup" ng-click="useLocalGroup(1)" disabled>
         运送到地方组(暂不开放)
+      </label>
+
+      <label class="css-table-cell">
+        <input type="radio" name="localGroup" ng-click="useLocalGroup(2)">
+        上门自取(免运费)
       </label>
     </div>
     <div class="css-table-row">
@@ -43,7 +48,7 @@
       <div class="css-table-cell"></div>
       <div class="css-table-cell"></div>
       <div class="css-table-cell">单价</div>
-      <div class="css-table-cell">国际运费预计</div>
+      <div class="css-table-cell">运费</div>
       <div class="css-table-cell">数量</div>
       <div class="css-table-cell"></div>
     </div>
@@ -55,7 +60,7 @@
         <h3>{{item.name}}</h3> by {{item.producer}}
       </div>
       <div class="css-table-cell">${{item.price}}</div>
-      <div class="css-table-cell">${{item.int_shipping}}</div>
+      <div class="css-table-cell">${{item.shipping}}</div>
       <div class="css-table-cell">
         <input type="number" min="1" ng-model="item.count" ng-change="cart.update()">
       </div>
@@ -72,9 +77,11 @@
       <div class="h-padded-element">
         总价 ({{cart.size}} items): ${{cart.subTotal}}
       </div>
+      <!--
       <div class="h-padded-element">
         国际运费: ${{cart.int_shipping}}
       </div>
+      -->
       <div class="h-padded-element">
         运费: ${{cart.shipping}}
       </div>

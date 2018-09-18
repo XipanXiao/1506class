@@ -31020,7 +31020,6 @@ define('orders/orders', [
                 item.image = info.image;
                 item.name = info.name;
                 item.producer = info.producer;
-                item.shipping = info.shipping;
                 item.int_shipping = info.int_shipping;
               }
               order.count += parseInt(item.count);
@@ -31064,7 +31063,7 @@ define('orders/orders', [
                     parseMoney(info && info.int_shipping || 0.0) * 
                     item.count;
                 stat.shipping_estmt = (stat.shipping_estmt || 0) + 
-                    parseMoney(info && info.shipping || 0.0) * 
+                    parseMoney(item.shipping || 0.0) * 
                     item.count;
               });
             });

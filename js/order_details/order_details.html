@@ -22,7 +22,7 @@
       <div>金额: ${{order.sub_total}}</div>
       <!--div>预计国际运费: ${{order.int_shipping_estmt}}</div>
       <div>实际国际运费: ${{order.int_shipping}}</div-->
-      <div>美国国内运费: ${{order.shipping}}</div>
+      <div>运费: ${{order.shipping}}</div>
       <div>合计: ${{order.grand_total}}</div>
       <div>已付: ${{order.paid}}</div>
       <div>
@@ -47,7 +47,6 @@
       <label>修改<input type="checkbox" ng-model="order.editing"></label>
       <div ng-if="order.editing">
         <div ng-if="admin">
-          <div><label>运费: $<input ng-model="order.shipping"></label></div>
           <div>
             <label>USPS tracking ID:
               <input ng-model="order.usps_track_id">

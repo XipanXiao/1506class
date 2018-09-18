@@ -107,6 +107,14 @@ function ensure_local_group_column() {
   $medoo->query($sql);
 }
 
+function ensure_shipping_column() {
+  global $medoo;
+  $sql = "ALTER TABLE order_details ADD shipping".
+      " DECIMAL(10, 2) NOT NULL DEFAULT 0.00;";
+  $medoo->query($sql);
+  $medoo->insert("districts", ["id" => 99, "name" => "上门自取"]);
+}
+
 function place_order($order) {
   global $medoo;
 
@@ -115,6 +123,7 @@ function place_order($order) {
 
   $order = array_merge($order, sanitize_address());
   ensure_local_group_column();
+  ensure_shipping_column();
   $id = $medoo->insert("orders", $order);
   if (!$id || empty($items)) return $id;
 
