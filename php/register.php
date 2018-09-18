@@ -10,7 +10,7 @@ if (!empty($_POST["id"])) exit();
 
 if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
   session_write_close();
-  
+
   if (false && empty($_POST["g-recaptcha-response"]) ||
       false && !checkCaptcha($_POST["g-recaptcha-response"])) {
 ?>
@@ -20,7 +20,7 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
 <meta charset="UTF-8">
 <title>注册失败</title>
 <script type="text/javascript">
-  alert('注册没有成功。请通过验证码测试，确认您不是机器人。\n' + 
+  alert('注册没有成功。请通过验证码测试，确认您不是机器人。\n' +
       '验证码测试使用Google reCAPTCHA服务，请确保您能访问Google。');
 </script>
 <body>
@@ -29,16 +29,16 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
   <a href="javascript:history.back()">重试</a>
 </body>
 </html>
-<?php    
+<?php
     exit();
   }
-  
-  $password = md5 ( $_POST ['password'] );  
+
+  $password = md5 ( $_POST ['password'] );
   $users = get_users($_POST['email']);
-  
+
   if (sizeof($users) > 0) {
     header('Content-Type: text/html; charset=utf-8');
-  	echo "<h1>Error</h1>";
+    echo "<h1>Error</h1>";
     echo "该地址". $_POST["email"]. "已经注册，请勿重复注册。如忘记密码请联系组长。";
     exit();
   }
@@ -53,16 +53,31 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
     echo "<p>Failed to register ".$_POST["email"]. get_db_error();
     exit();
   }
-    
+
   session_start();
   $_SESSION['user'] = serialize($user);
 
   if (is_merit_assoc_only($_POST) || $_POST["country"] != 'US') {
-  	header("Location:../index.html");
+    header("Location:../index.html");
   } else {
     $url = sprintf("../registered.html?name=%s&email=%s", $user->name,
         $user->email);
     header("Location: ". $url);
+?>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="refresh" content="2;url=<?$url?>"/>
+<title>注册成功</title>
+<body>
+  注册成功。跳转中…如果您的浏览器没有跳转，请点击
+  <a href="<?$url?>">这里</a>。
+</body>
+</html>
+
+<?php
   }
 }
 ?>
+
