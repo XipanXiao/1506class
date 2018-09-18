@@ -67,11 +67,11 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
 <html>
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="refresh" content="2;url=<?$url?>"/>
+<meta http-equiv="refresh" content="2;url=<?=$url?>"/>
 <title>注册成功</title>
 <body>
   注册成功。跳转中…如果您的浏览器没有跳转，请点击
-  <a href="<?$url?>">这里</a>。
+  <a href="<?=$url?>">这里</a>。
 </body>
 </html>
 
