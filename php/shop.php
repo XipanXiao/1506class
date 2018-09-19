@@ -115,6 +115,22 @@ function ensure_shipping_column() {
   $medoo->insert("districts", ["id" => 99, "name" => "上门自取"]);
 }
 
+function increase_stock($item, $sign = 1) {
+  global $medoo;
+
+  $medoo->update("items", ["stock[+]" => (intval($item["count"]) * $sign)],
+      ["id" => $item["item_id"]]);
+}
+
+function increase_stocks($where) {
+  global $medoo;
+
+  $items = $medoo->select("order_details", ["item_id", "count"], $where);
+  foreach ($items as $item) {
+    increase_stock($item);
+  }
+}
+
 function place_order($order) {
   global $medoo;
 
@@ -131,6 +147,7 @@ function place_order($order) {
     unset($item["id"]);
     $item["order_id"] = $id;
     $medoo->insert("order_details", $item);
+    increase_stock($item, -1);
   }
   return $id;
 }
@@ -155,7 +172,8 @@ function close_order($id) {
 
 function delete_order($id) {
   global $medoo;
-  
+
+  increase_stocks(["order_id" => $id]);
   $medoo->delete("order_details", ["order_id" => $id]);
   return $medoo->delete("orders", ["id" => $id]);
 }
@@ -204,6 +222,23 @@ function sanitize_address() {
   return $data;
 }
 
+function ensure_stock_column() {
+  global $medoo;
+
+  $sql = "SHOW COLUMNS FROM `items` LIKE 'stock'";
+  $result = $medoo->query($sql)->fetchAll();
+  if (!empty($result)) return;
+
+  $sql = "ALTER TABLE items ADD stock INT NOT NULL DEFAULT 0";
+  $medoo->query($sql);
+
+  $medoo->update("items", ["stock" => 45], ["name" => "预科系入行论教材(全9册)"]);
+  $medoo->update("items", ["stock" => 21], ["name" => "预科系加行教材(全7册)"]);
+  $medoo->update("items", ["stock" => 7], ["name" => "预科系净土教材(全7册)"]);
+  $medoo->update("items", ["stock" => 24], ["name" => "前行实修法"]);
+  $medoo->update("items", ["stock" => 5], ["name" => "大学演讲系列(1-18)"]);
+}
+
 function get_shop_items($category, $level) {
   global $medoo;
 
@@ -221,13 +256,14 @@ function get_shop_items($category, $level) {
     }
   }
 
+  ensure_stock_column();
   return keyed_by_id($medoo->select("items", "*", $filters));
 }
 
 function ensure_other_category() {
   global $medoo;
   
-  if (!$medoo->insert("item_categories", ["id" => 10, "name" => "非教材结缘物", 
+  if (!$medoo->insert("item_categories", ["id" => 10, "name" => "非教材结缘物",
       "level" => 1, "shared" => 1, "parent_id" => 2])) {
     return;
   }
@@ -373,7 +409,8 @@ function move_order_items($fromOrder, $toOrder) {
 
 function delete_order_item($id) {
   global $medoo;
-  
+
+  increase_stocks(["id" => $id]);
   return $medoo->delete("order_details", ["id" => $id]);
 }
 
