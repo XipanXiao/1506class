@@ -121,15 +121,10 @@ define('orders/orders', [
               count: 0,
               sub_total: 0.00,
               grand_total: 0.00,
-              int_shipping: 0.00,
-              int_shipping_estmt: 0.00,
               shipping: 0.00,
-              shipping_estmt: 0.00,
               items: {},
             };
             orders.forEach(function(order) {
-              stats.int_shipping += parseMoney(order.int_shipping);
-              stats.shipping += parseMoney(order.shipping);
               order.items.forEach(function(item) {
                 var item_id = item.item_id;
                 /// The items in the items db.
@@ -138,34 +133,26 @@ define('orders/orders', [
                 if (!stat) {
                   stat = stats.items[item_id] = {};
                   stat.name = info && info.name;
-                  stat.price = info && info.price || 0.0;
                 }
                 var price = parseMoney(item.price);
                 stat.count = (stat.count || 0) + parseInt(item.count);
                 stat.sub_total = (stat.sub_total || 0.00) + price * item.count;
-                stat.int_shipping_estmt = (stat.int_shipping_estmt || 0) + 
-                    parseMoney(info && info.int_shipping || 0.0) * 
-                    item.count;
-                stat.shipping_estmt = (stat.shipping_estmt || 0) + 
-                    parseMoney(item.shipping || 0.0) * 
-                    item.count;
+                stat.shipping = (stat.shipping || 0.00) + 
+                    parseMoney(item.shipping || 0.0) * item.count;
               });
             });
             utils.forEach(stats.items, function(item) {
               stats.count += item.count;
               stats.sub_total += item.sub_total;
-              stats.int_shipping_estmt += item.int_shipping_estmt;
-              stats.shipping_estmt += item.shipping_estmt;
+              stats.shipping += item.shipping;
 
               item.sub_total = item.sub_total.toFixed(2);
-              item.int_shipping_estmt = item.int_shipping_estmt.toFixed(2);
-              item.shipping_estmt = item.shipping_estmt.toFixed(2);
+              item.shipping = item.shipping.toFixed(2);
             });
+            stats.grand_total = stats.sub_total + stats.shipping; 
             stats.sub_total = stats.sub_total.toFixed(2);
-            stats.int_shipping = stats.int_shipping.toFixed(2);
-            stats.int_shipping_estmt = stats.int_shipping_estmt.toFixed(2);
             stats.shipping = stats.shipping.toFixed(2);
-            stats.shipping_estmt = stats.shipping_estmt.toFixed(2);
+            stats.grand_total = stats.grand_total.toFixed(2);
           }
           
           scope.reload = function() {
@@ -448,7 +435,7 @@ define('orders/orders', [
           $rootScope.$on('reload-orders', scope.reload);
           scope.$watch('user', scope.reload);
         },
-        templateUrl : 'js/orders/orders.html?tag=201809162314'
+        templateUrl : 'js/orders/orders.html?tag=201809192314'
       };
     });
 });

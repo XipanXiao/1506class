@@ -24,13 +24,16 @@
   </label>
   </div>
 </div>
-<div ng-if="admin && isOrderAdmin() && orders.length" class="css-table">
+<div ng-if="orders.length" class="css-table">
   <div class="css-table-row">
     <div class="css-table-cell"> 
-      总数 {{stats.count}}
+      订单数 {{orders.length}}
     </div>
     <div class="css-table-cell"> 
-      金额 {{stats.sub_total}}
+      货物总数 {{stats.count}}
+    </div>
+    <div class="css-table-cell"> 
+      总金额 {{stats.grand_total}}
     </div>
     <!--
     <div class="css-table-cell"> 
@@ -50,44 +53,41 @@
       <input type="button" ng-disabled="!stats.actual_int_shipping"
           value="保存" ng-click="save()">
     </div>
-    <label class="css-table-cell">显示汇总 
+    -->
+    <label class="css-table-cell">显示分类汇总 
       <input type="checkbox" ng-model="stats.showStats">
     </label>
-    -->
   </div>
 </div>
-<!--
-<div ng-if="stats.showStats && admin">
+
+<div ng-if="stats.showStats">
   <h2>汇总</h2>
   <div ng-if="stats" class="section css-table order-details-line odd-even">
     <div class="css-table-row header">
       <div class="css-table-cell">编号</div>
       <div class="css-table-cell">书名</div>
-      <div class="css-table-cell">价格</div>
       <div class="css-table-cell">数量</div>
-      <div class="css-table-cell">合计</div>
-      <div class="css-table-cell">预计国际运费</div>
+      <div class="css-table-cell">书费</div>
+      <div class="css-table-cell">运费</div>
     </div>
     <div ng-repeat="item in stats.items" class="css-table-row">
       <div class="css-table-cell">{{$index + 1}}</div>
       <div class="css-table-cell book-name">{{item.name}}</div>
-      <div class="css-table-cell">{{item.price}}</div>
       <div class="css-table-cell">{{item.count}}</div>
       <div class="css-table-cell">{{item.sub_total}}</div>
-      <div class="css-table-cell">{{item.int_shipping_estmt}}</div>
+      <div class="css-table-cell">{{item.shipping}}</div>
     </div>
     <div class="css-table-row">
-      <div class="css-table-cell"></div>
       <div class="css-table-cell"></div>
       <div class="css-table-cell">合计</div>
       <div class="css-table-cell">{{stats.count}}</div>
       <div class="css-table-cell">{{stats.sub_total}}</div>
-      <div class="css-table-cell">{{stats.int_shipping_estmt}}</div>
+      <div class="css-table-cell">{{stats.shipping}}</div>
     </div>
   </div>
   <hr>
 </div>
--->
+
 <h3>订单列表</h3>
 <iron-icon class="selectable" icon="cloud-download" title="导出地址本..."
     ng-click="exportAddresses()" ng-if="admin">
