@@ -1,6 +1,6 @@
 <link rel="import" href="bower_components/iron-icons/editor-icons.html">
 <div class="css-table order-details-header">
-  <div class="css-table-row" ng-class="{'deletable': !order.status}">
+  <div class="css-table-row deletable">
     <div class="css-table-cell">
       <div>订单日期</div>
       <div>{{order.created_time}}</div>
@@ -83,7 +83,8 @@
     </div>
     <div class="css-table-cell">
       <iron-icon icon="delete" ng-click="onCancel()" class="delete-button"
-          title="取消订单" ng-show="admin || !order.status">
+          title="{{order.status == 3 ? '存档' : '取消订单'}}"
+          ng-show="admin || !order.status">
       </iron-icon>
     </div>
     <div class="css-table-cell">

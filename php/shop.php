@@ -18,6 +18,8 @@ abstract class OrderStatus
   const PAID = 2;
   /// Shipped and paid, no further actions are needed.
   const COMPLETED = 3;
+  /// Closed (the same as completed, but will not seen by the client).
+  const CLOSED = 7;
   
   static function fromString($value) {
     $map = ["CREATED" => 0, "SHIPPED" => 1, "PAID" => 2, "COMPLETED" => 3];
@@ -68,7 +70,7 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
   $timeFilter = ["created_time[><]" => [$filters["start"], $filters["end"]]];
   $statusFilter = isset($filters["status"]) && $filters["status"] != ""
       ? ["status" => intval($filters["status"])]
-      : [];
+      : ["status[!]" => OrderStatus::CLOSED];
   $userFilter = $user_id ? ["user_id" => $user_id] : [];
   $classFilter = [];
   if (empty($userFilter) && !empty($filters["class_id"])) {

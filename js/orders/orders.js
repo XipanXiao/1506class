@@ -70,10 +70,10 @@ define('orders/orders', [
               order.shipping = 0.0;
               order.int_shipping = 0.0;
               for (let item of order.items) {
-              	  item.count = parseInt(item.count);
-              	  order.sub_total += item.count * parseMoney(item.price);
-              	  order.shipping += item.count * parseMoney(item.shipping);
-              	  order.int_shipping += item.count * parseMoney(item.int_shipping);
+                  item.count = parseInt(item.count);
+                  order.sub_total += item.count * parseMoney(item.price);
+                  order.shipping += item.count * parseMoney(item.shipping);
+                  order.int_shipping += item.count * parseMoney(item.int_shipping);
               }
           }
 
@@ -188,6 +188,15 @@ define('orders/orders', [
           }
           
           scope.remove = function(order) {
+            if (order.status == 3 && confirm('请确认将订单#{0}存档'.format(order.id))) {
+              rpc.update_order({id: order.id, status: 7}).then((response) => {
+                if (response.data.updated) {
+                  orderDeleted(order);
+                }
+              });
+              return;
+            }
+
             if (!canRemove(order)) {
               alert('不能删除已经付款或发货的订单');
               return;
@@ -201,10 +210,10 @@ define('orders/orders', [
             var statusChanged = order.status != scope.status;
             // The order is marked as paid but with a non-zero balance.
             if (statusChanged && (order.status & 2) &&
-            		parseFloat(order.balance) > 0) {
-            	  alert('余额没有付清，欠款$' + order.balance);
-            	  order.status = scope.status;
-            	  return;
+                parseFloat(order.balance) > 0) {
+                alert('余额没有付清，欠款$' + order.balance);
+                order.status = scope.status;
+                return;
             }
             rpc.update_order(order).then(function(response) {
               if (!response.data.updated) return;
@@ -235,13 +244,16 @@ define('orders/orders', [
               });
             }
           };
+          function orderDeleted(order) {
+            var index = scope.orders.indexOf(order);
+            scope.orders.splice(index, 1);
+            return true;
+          }
           function deleteOrderRequest(order) {
             return function() {
               return rpc.remove_order(order.id).then(function(response) {
                 if (!response.data.deleted) return false;
-                var index = scope.orders.indexOf(order);
-                scope.orders.splice(index, 1);
-                return true;
+                return orderDeleted(response, order);
               });
             }
           };
@@ -410,27 +422,27 @@ define('orders/orders', [
                 
             const clean = (s) => s.replaceAll(',', ''); 
 
-        	    const getAddress = (order) => {
-        	    	  var name = utils.getPinyinName(order.name, pinyinTable);
-        	    	  utils.setCountryLabels(order);
-        	    	  return '{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}\n'.
-        	    	      format(clean(name[0]), clean(name[1] || ''),
+              const getAddress = (order) => {
+                  var name = utils.getPinyinName(order.name, pinyinTable);
+                  utils.setCountryLabels(order);
+                  return '{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}\n'.
+                      format(clean(name[0]), clean(name[1] || ''),
                   clean(order.street), clean(order.city),
                   clean(order.stateLabel), clean(order.zip),
                   clean(order.countryLabel), clean(order.phone),
                   clean(order.email), order.id);
-        	    };
+              };
 
-        	    const exportData = () => {
-            	    var data = 'First Name,Last Name,Address 1,City,State/Province,' +
-          	        'ZIP/Postal Code,Country,Phone Number,E Mail,Reference Number\n';
-          	    for (let order of scope.orders) {
-          	    	  data += getAddress(order);
-          	    }
-          	    scope.addressDataUrl = utils.createDataUrl(data, scope.addressDataUrl);
-          	    return utils.truePromise();
-        	    };
-        	    utils.requestOneByOne([getPinyinTable, exportData]);
+              const exportData = () => {
+                  var data = 'First Name,Last Name,Address 1,City,State/Province,' +
+                    'ZIP/Postal Code,Country,Phone Number,E Mail,Reference Number\n';
+                for (let order of scope.orders) {
+                    data += getAddress(order);
+                }
+                scope.addressDataUrl = utils.createDataUrl(data, scope.addressDataUrl);
+                return utils.truePromise();
+              };
+              utils.requestOneByOne([getPinyinTable, exportData]);
           };
 
           $rootScope.$on('reload-orders', scope.reload);
