@@ -18,9 +18,9 @@
       <div ng-repeat="(id, book) in classInfo.books"
           class="css-table-row deletable">
         <div class="css-table-cell">{{book.name}}</div>
-        <div class="css-table-cell">{{book.price}}</div>
-        <div class="css-table-cell">{{book.shipping}}</div>
-        <div class="css-table-cell">{{book.price + book.shipping}}</div>
+        <div class="css-table-cell">{{book.price.toFixed(2)}}</div>
+        <div class="css-table-cell">{{book.shipping.toFixed(2)}}</div>
+        <div class="css-table-cell">{{(book.price + book.shipping).toFixed(2)}}</div>
         <div class="css-table-cell">{{book.stock}}</div>
         <div class="css-table-cell">
           <iron-icon icon="delete" class="delete-button"
