@@ -244,9 +244,9 @@ function ensure_stock_column() {
 function get_shop_items($category, $level) {
   global $medoo;
 
-  $filters = ["deleted[!]" => 1];
+  $filters = null;
   if ($category) {
-    $filters = ["AND" => ["category" => $category, "deleted[!]" => 1]]; 
+    $filters = ["category" => $category]; 
   }
 
   if ($level != 99) {
@@ -254,7 +254,7 @@ function get_shop_items($category, $level) {
     if ($category) {
       if (!array_search($category, $categories)) return [];
     } else {
-      $filters = ["AND" => ["category" => $categories, "deleted[!]" => 1]]; 
+      $filters = ["category" => $categories]; 
     }
   }
 

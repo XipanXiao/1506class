@@ -91,6 +91,7 @@ define('book_list_details/book_list_details',
           });
         }
         function isBook(item) {
+          if (parseInt(item.deleted)) return false;
           var category = scope.categories[item.category];
           return category && parseInt(category.parent_id) == 1;
         }
