@@ -31421,7 +31421,7 @@ define('orders/orders', [
           $rootScope.$on('reload-orders', scope.reload);
           scope.$watch('user', scope.reload);
         },
-        templateUrl : 'js/orders/orders.html?tag=201809192314'
+        templateUrl : 'js/orders/orders.html?tag=201809212314'
       };
     });
 });
