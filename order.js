@@ -30946,15 +30946,15 @@ define('orders/orders', [
           }
           
           function summarize_order(order) {
-              order.sub_total = 0.0;
-              order.shipping = 0.0;
-              order.int_shipping = 0.0;
-              for (let item of order.items) {
-                  item.count = parseInt(item.count);
-                  order.sub_total += item.count * parseMoney(item.price);
-                  order.shipping += item.count * parseMoney(item.shipping);
-                  order.int_shipping += item.count * parseMoney(item.int_shipping);
-              }
+            order.sub_total = 0.0;
+            order.shipping = 0.0;
+            order.int_shipping = 0.0;
+            for (let item of order.items) {
+              item.count = parseInt(item.count);
+              order.sub_total += item.count * parseMoney(item.price);
+              order.shipping += item.count * parseMoney(item.shipping);
+              order.int_shipping += item.count * parseMoney(item.int_shipping);
+            }
           }
 
           function calculate_order_values(order) {
@@ -31055,7 +31055,8 @@ define('orders/orders', [
           }
           
           scope.remove = function(order) {
-            if (order.status == 3 && confirm('请确认将订单#{0}存档'.format(order.id))) {
+            if (order.status == 3) {
+              if (!confirm('请确认将订单#{0}存档'.format(order.id))) return;
               rpc.update_order({id: order.id, status: 7}).then((response) => {
                 if (response.data.updated) {
                   orderDeleted(order);
@@ -31077,10 +31078,15 @@ define('orders/orders', [
             var statusChanged = order.status != scope.status;
             // The order is marked as paid but with a non-zero balance.
             if (statusChanged && (order.status & 2) &&
-                parseFloat(order.balance) > 0) {
-                alert('余额没有付清，欠款$' + order.balance);
-                order.status = scope.status;
-                return;
+              parseFloat(order.balance) > 0) {
+              alert('余额没有付清，欠款$' + order.balance);
+              order.status = scope.status;
+              return;
+            }
+            var paidOff = parseFloat(order.paid) >= parseFloat(order.grand_total);
+            if (paidOff && (order.status & 2) == 0) {
+              order.status |= 2;
+              statusChanged = true;
             }
             rpc.update_order(order).then(function(response) {
               if (!response.data.updated) return;

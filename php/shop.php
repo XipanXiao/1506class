@@ -203,6 +203,9 @@ function update_order($order, $is_manager) {
   if ($is_manager) {
     $data = array_merge($data, build_update_data(["status", "shipping",
         "int_shipping", "sub_total", "usps_track_id"], $order));
+  } else if (isset($data["paid"]) &&
+      (intval($order["status"]) & OrderStatus::PAID)) {
+    $data["status"] = $order["status"];
   }
   
   if (!empty($data["paid"]) && empty($data["paid_date"])) {
