@@ -30571,6 +30571,105 @@ define('permission', ['utils'], function() {
     };
   });
 });
+define('model/cart', [], function() {
+  var utils, rpc, rootScope, scope;
+
+  var cart = {
+    size: 0,
+    subTotal: 0.0,
+    shipping: 0.0,
+    items: {},
+    add: function(item) {
+      var existing = this.items[item.id];
+      if (existing) {
+        existing.count++;
+      } else {
+        item.count = 1;
+        this.items[item.id] = item;
+      }
+      this.update();
+    },
+    addAll: function(items) {
+      var that = this;
+      items.forEach(function(item) {that.add(item);});
+      scope && scope.selectTab(1);
+    },
+    remove: function(id) {
+      delete this.items[id];
+      this.update();
+    },
+    update: function() {
+      this.size = 0;
+      this.subTotal = 0.0;
+      this.int_shipping = 0.0;
+      this.shipping = 0.0;
+      for (var id in this.items) {
+        var item = this.items[id];
+        this.size += item.count;
+        this.subTotal += item.count * item.price;
+        this.int_shipping += item.count * item.int_shipping;
+        this.shipping += item.count * item.shipping;
+      }
+      this.subTotal = this.subTotal.toFixed(2);
+      this.int_shipping = this.int_shipping.toFixed(2);
+      this.shipping = this.shipping.toFixed(2);
+    },
+    clear: function() {
+      this.items = {};
+      this.update();
+    },
+    checkOut: function(user, refill) {
+      var order = {
+        user_id: user.id,
+        status: refill ? 8 : 0,
+        sub_total: this.subTotal,
+        int_shipping: this.int_shipping,
+        shipping: this.shipping,
+        name: user.name,
+        phone: user.phone,
+        email: user.email,
+        street: user.street,
+        city: user.city,
+        state: user.state,
+        country: user.country,
+        zip: user.zip,
+        district: user.district,
+        items: []
+      };
+      for (var id in this.items) {
+        var item = this.items[id];
+        order.items.push({
+          item_id: item.id,
+          price: item.price,
+          shipping: (user.district == 99) ? 0.00 : item.shipping,
+          count: refill ? (-item.count) : item.count
+        });
+      }
+      var cart = this;
+      return rpc.update_order(order).then(function(response) {
+        if (response.data.updated) {
+          cart.clear();
+          rootScope.$broadcast('reload-orders');
+          var toast = document.querySelector('#toast0');
+          toast && toast.open();
+          scope && setTimeout(function() {
+            scope.selectTab(2);
+          }, 3000);
+          return true;
+        }
+        return false;
+      });
+    }
+  };
+  return function(params) {
+    utils = params.utils;
+    rpc = params.rpc;
+    rootScope = params.rootScope;
+    scope = params.scope;
+
+    utils.mix_in(this, cart);
+  };
+});
 define('districts/districts',
     ['services', 'utils'], function() {
   return angular.module('DistrictsModule', ['ServicesModule',
@@ -31156,6 +31255,7 @@ define('orders/orders', [
           function orderDeleted(order) {
             var index = scope.orders.indexOf(order);
             scope.orders.splice(index, 1);
+            $rootScope.$broadcast('order-deleted');
             return true;
           }
           function deleteOrderRequest(order) {
@@ -31361,6 +31461,62 @@ define('orders/orders', [
       };
     });
 });
+define('shopping_cart/shopping_cart', [
+    'address_editor/address_editor',
+    'districts/districts',
+    'services', 'utils'], function() {
+  return angular.module('ShoppingCartModule', [
+      'AddressEditorModule', 'DistrictsModule', 'ServicesModule', 'UtilsModule'])
+    .directive('shoppingCart', function(rpc, utils) {
+      return {
+        scope: {
+          cart: '=',
+          refill: '@',
+          user: '='
+        },
+        link: function(scope) {
+          scope.confirming = false;
+          scope.addrEditor = {};
+
+          scope.checkOut = function() {
+            if (!scope.confirming) {
+              scope.confirming = true;
+              return;
+            }
+            var user = scope.user;
+            if (scope.sendtoLocalGroup) {
+              if (!user.district) {
+                alert('请选择地方组');
+                return;
+              }
+            } else {
+              if (!user.name || !user.street || !user.city ||
+                  !user.zip) {
+                alert('请输入完整收货信息.');
+                scope.addrEditor.editing = true;
+                return;
+              }
+            }
+            scope.cart.checkOut(user, scope.refill).then(function(placed) {
+              if (placed) scope.confirming = false;
+            });
+          };
+
+          scope.useLocalGroup = function(local) {
+            scope.sendtoLocalGroup = local;
+            if (local == 2) {
+              scope.user.district = 99;
+              scope.cart.shipping = 0.00;
+            } else if (!local) {
+              scope.user.district = null;
+              scope.cart.update();
+            }
+          };
+        },
+        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809182258'
+      };
+    });
+});
 define('book_editor/book_editor', 
     ['services', 'utils'], function() {
   return angular.module('BookEditorModule', [
@@ -31563,11 +31719,66 @@ define('book_lists/book_lists',
     };
   });
 });
+define('inventory/inventory', [
+    'model/cart',
+    'orders/orders',
+    'shopping_cart/shopping_cart',
+    'services', 'utils'], function(Cart) {
+  return angular.module('InventoryModule', [
+        'OrdersModule',
+        'ShoppingCartModule',
+        'ServicesModule',
+        'UtilsModule'])
+    .directive('inventory', function($rootScope, rpc, utils) {
+      return {
+        scope: {
+          user: '='
+        },
+        link: function(scope) {
+          scope.year = new Date().getFullYear();
+          scope.cart = new Cart({rpc: rpc, utils: utils,
+              rootScope: $rootScope});
+          scope.selected = {};
+
+          function getItems() {
+            return rpc.get_items(null, 99).then(function(response) {
+              return scope.items = utils.toList(
+                  utils.where(response.data, 
+                      (item) => !parseInt(item.deleted)));
+            });
+          }
+
+          scope.addToCart = (item) => scope.cart.add(item);
+          
+          scope.remove = (item) => {
+        	    if (parseInt(item.stock)) {
+        	    	  alert('库存非0，不能删除。');
+        	    	  return;
+        	    }
+        	    if (!confirm('请确认删除"{0}"'.format(item.name))) return;
+
+        	    rpc.update_item({id: item.id, deleted: 1}).then((response) => {
+        	    	  if (response.data.updated) {
+        	    		var index = scope.items.indexOf(item);
+        	    		scope.items.splice(index, 1);
+        	    	  }
+        	    });
+          };
+          
+          $rootScope.$on('reload-orders', getItems);
+          $rootScope.$on('order-deleted', getItems);
+          getItems();
+        },
+        templateUrl : 'js/inventory/inventory.html?tag=201712232246'
+      };
+    });
+});
 define('order_admin_app', [
     'app_bar/app_bar',
     'book_lists/book_lists',
     'orders/orders',
     'order_stats/order_stats',
+    'inventory/inventory',
     'services',
     'permission',
     'utils'],
@@ -31578,6 +31789,7 @@ define('order_admin_app', [
       'BookListsModule',
       'OrdersModule',
       'OrderStatsModule',
+      'InventoryModule',
       'ServicesModule',
       'PermissionModule',
       'UtilsModule',

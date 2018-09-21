@@ -20,6 +20,8 @@ abstract class OrderStatus
   const COMPLETED = 3;
   /// Closed (the same as completed, but will not seen by the client).
   const CLOSED = 7;
+  /// Purchase order.
+  const PURCHASE = 8;
   
   static function fromString($value) {
     $map = ["CREATED" => 0, "SHIPPED" => 1, "PAID" => 2, "COMPLETED" => 3];

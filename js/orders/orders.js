@@ -240,6 +240,7 @@ define('orders/orders', [
           function orderDeleted(order) {
             var index = scope.orders.indexOf(order);
             scope.orders.splice(index, 1);
+            $rootScope.$broadcast('order-deleted');
             return true;
           }
           function deleteOrderRequest(order) {

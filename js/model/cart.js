@@ -19,7 +19,7 @@ define('model/cart', [], function() {
     addAll: function(items) {
       var that = this;
       items.forEach(function(item) {that.add(item);});
-      scope.selectTab(1);
+      scope && scope.selectTab(1);
     },
     remove: function(id) {
       delete this.items[id];
@@ -48,7 +48,7 @@ define('model/cart', [], function() {
     checkOut: function(user, refill) {
       var order = {
         user_id: user.id,
-        status: refill ? -1 : 0,
+        status: refill ? 8 : 0,
         sub_total: this.subTotal,
         int_shipping: this.int_shipping,
         shipping: this.shipping,
@@ -77,8 +77,9 @@ define('model/cart', [], function() {
         if (response.data.updated) {
           cart.clear();
           rootScope.$broadcast('reload-orders');
-          document.querySelector('#toast0').open();
-          setTimeout(function() {
+          var toast = document.querySelector('#toast0');
+          toast && toast.open();
+          scope && setTimeout(function() {
             scope.selectTab(2);
           }, 3000);
           return true;

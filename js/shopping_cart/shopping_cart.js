@@ -8,6 +8,7 @@ define('shopping_cart/shopping_cart', [
       return {
         scope: {
           cart: '=',
+          refill: '@',
           user: '='
         },
         link: function(scope) {
@@ -33,7 +34,7 @@ define('shopping_cart/shopping_cart', [
                 return;
               }
             }
-            scope.cart.checkOut(user, false).then(function(placed) {
+            scope.cart.checkOut(user, scope.refill).then(function(placed) {
               if (placed) scope.confirming = false;
             });
           };

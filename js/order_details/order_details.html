@@ -8,7 +8,7 @@
         <label ng-switch-when="true">订单状态:
           <select ng-model="order.status"
               ng-options="statusLabels[value] for value in [0, 2, 3]"
-              ng-change="onUpdate()">
+              ng-change="onUpdate()" ng-disabled="order.status == 8">
           </select>
         </label>
         <span ng-switch-default>订单状态: {{statusLabels[order.status]}}</span>

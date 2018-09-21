@@ -22,8 +22,8 @@
     <paper-tab>待付款订单</paper-tab>
     <paper-tab>已付款订单</paper-tab>
     <paper-tab>已完成订单</paper-tab>
-    <paper-tab ng-show="isOrderAdmin()">按班级汇总</paper-tab>
     <paper-tab ng-show="isOrderAdmin()">班级订书单</paper-tab>
+    <paper-tab ng-show="isOrderAdmin()">库存</paper-tab>
   </paper-tabs>
 
   <iron-pages selected="0">
@@ -40,14 +40,14 @@
       </orders>
     </div>
     <div>
-      <order-stats ng-if="pageLoaded[3]"></order-stats>
+      <book-lists ng-if="pageLoaded[3]"></book-lists>
     </div>
     <div>
-      <book-lists ng-if="pageLoaded[4]"></book-lists>
+      <inventory ng-if="pageLoaded[4]" user="user"></inventory>
     </div>
   </iron-pages>
 </div>
 
-<script type="text/javascript" src="order_admin.js?tag=201809202012"></script>
+<script type="text/javascript" src="order_admin.js?tag=201809202254"></script>
 </body>
 </html>

@@ -4,6 +4,7 @@ js/angular.js
 js/utils.js
 js/services.js
 js/permission.js
+js/model/cart.js
 js/districts/districts.js
 js/address_editor/address_editor.js
 js/editable_label/editable_label.js
@@ -13,7 +14,9 @@ js/departments/departments.js
 js/order_stats/order_stats.js
 js/order_details/order_details.js
 js/orders/orders.js
+js/shopping_cart/shopping_cart.js
 js/book_editor/book_editor.js
 js/book_list_details/book_list_details.js
 js/book_lists/book_lists.js
+js/inventory/inventory.js
 js/order_admin_app.js
