@@ -33,7 +33,7 @@ define('app_bar/app_bar', ['permission', 'search_bar/search_bar', 'utils'],
             return location.pathname.endsWith(page);
           };
         },
-        templateUrl : 'js/app_bar/app_bar.html?tag=201806041057'
+        templateUrl : 'js/app_bar/app_bar.html?tag=201809211057'
       };
     });
 });
