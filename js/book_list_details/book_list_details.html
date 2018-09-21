@@ -40,7 +40,7 @@
     </div>
   </div>
   <iron-icon icon="arrow-back" ng-click="addSelectedBooks()" class="clickable"
-      title="将所选法本加入班级书单">
+      title="将所选法本加入班级书单" ng-if="classInfo.adding">
   </iron-icon>
   <div class="padded-element" ng-if="classInfo.adding">
     <select multiple="true" class="book-selection">

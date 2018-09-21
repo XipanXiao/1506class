@@ -33,7 +33,7 @@ define('shopping_cart/shopping_cart', [
                 return;
               }
             }
-            scope.cart.checkOut().then(function(placed) {
+            scope.cart.checkOut(user, false).then(function(placed) {
               if (placed) scope.confirming = false;
             });
           };
