@@ -26,24 +26,24 @@
 </div>
 <div ng-if="orders.length" class="css-table">
   <div class="css-table-row">
-    <div class="css-table-cell"> 
+    <div class="css-table-cell">
       订单数 {{orders.length}}
     </div>
-    <div class="css-table-cell"> 
+    <div class="css-table-cell">
       货物总数 {{stats.count}}
     </div>
-    <div class="css-table-cell"> 
+    <div class="css-table-cell">
       总金额 {{stats.grand_total}}
     </div>
     <!--
-    <div class="css-table-cell"> 
+    <div class="css-table-cell">
       预计国际运费 {{stats.int_shipping_estmt}}
     </div>
-    <div class="css-table-cell"> 
+    <div class="css-table-cell">
       实际国际运费{{stats.int_shipping}}
     </div>
     <label class="css-table-cell">
-      输入实际国际运费总额: 
+      输入实际国际运费总额:
       <input type="number" min="1" step="any"
           ng-model="stats.actual_int_shipping">
     </label>
@@ -54,7 +54,7 @@
           value="保存" ng-click="save()">
     </div>
     -->
-    <label class="css-table-cell">显示分类汇总 
+    <label class="css-table-cell">显示分类汇总
       <input type="checkbox" ng-model="stats.showStats">
     </label>
   </div>
@@ -96,7 +96,7 @@
   addresses.csv
 </a>
 
-<a ng-if="false && !admin" href="https://docs.google.com/document/d/1xD1dwbkiFAfrrdueCo-A4NzoG5nmyJSp2v5H5DBncyw/edit?usp=sharing"
+<a ng-if="!admin" href="https://docs.google.com/document/d/1xD1dwbkiFAfrrdueCo-A4NzoG5nmyJSp2v5H5DBncyw/edit?usp=sharing"
     target="_blank" class="right">
     付款流程
 </a>
