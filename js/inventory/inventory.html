@@ -12,7 +12,7 @@
     </div>
     <div ng-repeat="item in items | filter: {name: namePrefix}"
         class="css-table-row deletable selectable">
-      <div class="css-table-cell">{{item.name}}</div>
+      <div class="css-table-cell item-name">{{item.name}}</div>
       <div class="css-table-cell">${{item.price}}</div>
       <div class="css-table-cell">${{item.shipping}}</div>
       <div class="css-table-cell">{{item.stock}}</div>

@@ -31009,7 +31009,7 @@ define('order_details/order_details', [
             return items.length > 1 && items.some(itemSelected);
           };
         },
-        templateUrl : 'js/order_details/order_details.html?tag=201809191851'
+        templateUrl : 'js/order_details/order_details.html?tag=201809201851'
       };
     });
 });
@@ -31769,7 +31769,7 @@ define('inventory/inventory', [
           $rootScope.$on('order-deleted', getItems);
           getItems();
         },
-        templateUrl : 'js/inventory/inventory.html?tag=201712232246'
+        templateUrl : 'js/inventory/inventory.html?tag=201812232246'
       };
     });
 });

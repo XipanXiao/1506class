@@ -48,7 +48,7 @@ define('inventory/inventory', [
           $rootScope.$on('order-deleted', getItems);
           getItems();
         },
-        templateUrl : 'js/inventory/inventory.html?tag=201712232246'
+        templateUrl : 'js/inventory/inventory.html?tag=201812232246'
       };
     });
 });

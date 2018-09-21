@@ -321,6 +321,13 @@ paper-dialog#preview {
   text-overflow: ellipsis;
 }
 
+.item-name {
+  width: 300px;
+  overflow: hidden; 
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .diff-modified {
   background: red;
 }
