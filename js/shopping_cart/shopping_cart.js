@@ -50,7 +50,7 @@ define('shopping_cart/shopping_cart', [
             }
           };
         },
-        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809182258'
+        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809212258'
       };
     });
 });
