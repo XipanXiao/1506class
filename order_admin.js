@@ -31083,12 +31083,10 @@ define('orders/orders', [
           function summarize_order(order) {
             order.sub_total = 0.0;
             order.shipping = 0.0;
-            order.int_shipping = 0.0;
             for (let item of order.items) {
               item.count = parseInt(item.count);
               order.sub_total += item.count * parseMoney(item.price);
               order.shipping += item.count * parseMoney(item.shipping);
-              order.int_shipping += item.count * parseMoney(item.int_shipping);
             }
           }
 
@@ -31209,6 +31207,21 @@ define('orders/orders', [
             utils.requestOneByOne([deleteOrderRequest(order)]);
           };
           
+          function sendEmail(order) {
+      	    var data = {
+              email: order.email,
+  	          order_id: order.id,
+  	          usps_track_id: order.usps_track_id
+      	    };
+            return emailjs.send("bicw_notification", "order_receipt",
+  	          data).then(() => false, (error) => {
+  	          alert('发送邮件失败(一般因为发的人太多，' +
+  	        		  '用完了名额，只好麻烦您自己动手了): ' +
+  	        		  error && error.service_error);
+  	          return false;
+  	        });
+          }
+
           scope.update = function(order) {
             var statusChanged = order.status != scope.status;
             // The order is marked as paid but with a non-zero balance.
@@ -31219,13 +31232,22 @@ define('orders/orders', [
               return;
             }
             var paidOff = parseFloat(order.paid) >= parseFloat(order.grand_total);
-            if (paidOff && (order.status & 2) == 0) {
-              order.status |= 2;
+            if (paidOff && !order.status) {
+              order.status = 2;
               statusChanged = true;
+            }
+            var shipped = false;
+            if (order.usps_track_id && order.status == 2 && !statusChanged) {
+              order.status = 3;
+              statusChanged = true;
+              shipped = true;
             }
             rpc.update_order(order).then(function(response) {
               if (!response.data.updated) return;
               if (statusChanged) {
+                if (shipped && scope.admin) {
+                  sendEmail(order);
+                }
                 $rootScope.$broadcast('reload-orders');
               } else {
                 order.editing = false;
@@ -31821,6 +31843,8 @@ define('order_admin_app', [
                 scope.$apply();
               }, 0);
             });
+
+            emailjs.init("user_ZAqyLkjaj5MHdbn3alvEx");
           }
         };
       }).config( ['$compileProvider', function( $compileProvider ) {
