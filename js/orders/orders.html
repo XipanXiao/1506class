@@ -110,7 +110,7 @@
     id: filters.id, 
     phone: filters.phone,
     class_name: filters.class_name,
-    district: (filters.district_enabled ? filters.district : 0)
+    district: (filters.district_enabled ? filters.district : null)
   } | orderBy: '-created_time'"
     class="section order-details-line">
   <order-details order="order" admin="{{admin}}"
