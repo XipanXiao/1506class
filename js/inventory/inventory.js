@@ -21,9 +21,12 @@ define('inventory/inventory', [
 
           function getItems() {
             return rpc.get_items(null, 99).then(function(response) {
-              return scope.items = utils.toList(
-                  utils.where(response.data, 
-                      (item) => !parseInt(item.deleted)));
+              var items = utils.toList(utils.where(response.data, (item) => {
+            	    if (parseInt(item.deleted)) return false;
+            	    item.stock = parseInt(item.stock);
+            	    return true;
+            	  }));
+              return scope.items = items;
             });
           }
 
@@ -48,7 +51,7 @@ define('inventory/inventory', [
           $rootScope.$on('order-deleted', getItems);
           getItems();
         },
-        templateUrl : 'js/inventory/inventory.html?tag=201812232246'
+        templateUrl : 'js/inventory/inventory.html?tag=201809232246'
       };
     });
 });
