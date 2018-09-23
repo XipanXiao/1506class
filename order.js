@@ -30677,7 +30677,7 @@ define('districts/districts',
           function(rpc, utils) {
     return {
       scope: {
-        editable: '@',
+        editable: '=',
         stock: '@',
         user: '='
       },
@@ -31462,7 +31462,7 @@ define('orders/orders', [
           $rootScope.$on('reload-orders', scope.reload);
           scope.$watch('user', scope.reload);
         },
-        templateUrl : 'js/orders/orders.html?tag=201809222255'
+        templateUrl : 'js/orders/orders.html?tag=201809222301'
       };
     });
 });
@@ -31521,7 +31521,7 @@ define('shopping_cart/shopping_cart', [
             }
           };
         },
-        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809212258'
+        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809222258'
       };
     });
 });

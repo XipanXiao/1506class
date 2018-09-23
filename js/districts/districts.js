@@ -5,7 +5,7 @@ define('districts/districts',
           function(rpc, utils) {
     return {
       scope: {
-        editable: '@',
+        editable: '=',
         stock: '@',
         user: '='
       },

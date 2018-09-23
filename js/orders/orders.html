@@ -109,7 +109,8 @@
 <div ng-repeat="order in orders | filter: {
     id: filters.id, 
     phone: filters.phone,
-    class_name: filters.class_name
+    class_name: filters.class_name,
+    district: (filters.district_enabled ? filters.district : filters.undefined)
   } | orderBy: '-created_time'"
     class="section order-details-line">
   <order-details order="order" admin="{{admin}}"
