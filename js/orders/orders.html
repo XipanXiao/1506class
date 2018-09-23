@@ -5,22 +5,28 @@
         ng-change="reload()"></select>
   </label>
   <label class="css-table-cell" ng-show="orders.length">输入订单号过滤：
-    <input ng-model="orderId" list="order-ids">
+    <input ng-model="filters.id" list="order-ids">
     <datalist id="order-ids">
       <option ng-repeat="id in orderIds" value="{{id}}"></option>
     </datalist>
   </label>
   <label class="css-table-cell" ng-show="orders.length">输入电话过滤：
-    <input ng-model="tel" list="phones">
+    <input ng-model="filters.phone" list="phones">
     <datalist id="phones">
       <option ng-repeat="phone in phones" value="{{phone}}"></option>
     </datalist>
   </label>
   <label class="css-table-cell" ng-show="orders.length">输入班级过滤：
-    <input ng-model="className" list="class-names">
+    <input ng-model="filters.class_name" list="class-names">
     <datalist id="class-names">
       <option ng-repeat="name in classNames" value="{{name}}"></option>
     </datalist>
+  </label>
+  <label class="css-table-cell" ng-show="orders.length">
+    <input type="checkbox" ng-model="filters.district_enabled">
+    按地方组过滤：
+    <districts user="filters" editable="true" ng-show="filters.district_enabled">
+    </districts>
   </label>
   </div>
 </div>
@@ -100,7 +106,12 @@
     target="_blank" class="right">
     付款流程
 </a>
-<div ng-repeat="order in orders | filter: {id: orderId, phone: tel, class_name: className} | orderBy: '-created_time'"
+<div ng-repeat="order in orders | filter: {
+    id: filters.id, 
+    phone: filters.phone,
+    class_name: filters.class_name,
+    district: (filters.district_enabled ? filters.district : 0)
+  } | orderBy: '-created_time'"
     class="section order-details-line">
   <order-details order="order" admin="{{admin}}"
       on-cancel="remove(order)" on-update="update(order)" user="user"

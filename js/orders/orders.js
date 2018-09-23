@@ -1,7 +1,8 @@
 define('orders/orders', [
+    'districts/districts',
     'order_details/order_details',
     'services', 'permission', 'utils'], function() {
-  return angular.module('OrdersModule', [
+  return angular.module('OrdersModule', ['DistrictsModule',
       'OrderDetailsModule', 'ServicesModule', 'UtilsModule'])
     .directive('orders', function($rootScope, rpc, perm, utils) {
       function getTimestampRange(year) {
@@ -23,6 +24,7 @@ define('orders/orders', [
         },
         link: function(scope) {
           scope.years = [];
+          scope.filters = {district: 0};
 
           for (var year = 2017; year <= (scope.year || 0); year++) {
             scope.years.push(year);
@@ -438,23 +440,38 @@ define('orders/orders', [
                 
             const clean = (s) => s.replaceAll(',', ''); 
 
-              const getAddress = (order) => {
-                  var name = utils.getPinyinName(order.name, pinyinTable);
-                  utils.setCountryLabels(order);
-                  return '{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}\n'.
-                      format(clean(name[0]), clean(name[1] || ''),
-                  clean(order.street), clean(order.city),
-                  clean(order.stateLabel), clean(order.zip),
-                  clean(order.countryLabel), clean(order.phone),
-                  clean(order.email), order.id);
+            const getAddress = (order) => {
+              var name = utils.getPinyinName(order.name, pinyinTable);
+              utils.setCountryLabels(order);
+              return '{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}\n'.
+                  format(clean(name[0]), clean(name[1] || ''),
+              clean(order.street), clean(order.city),
+              clean(order.stateLabel), clean(order.zip),
+              clean(order.countryLabel), clean(order.phone),
+              clean(order.email), order.id);
+            };
+
+            const filteredField = (order, field) => {
+              var filterValue = (scope.filters[field] || '').
+                  toString().toLowerCase();
+              if (!filterValue) return true;
+              var value = order[field].toString().toLowerCase();
+              return value.indexOf(filterValue) >= 0;
+            };
+
+            const filtered = (order) => {
+              return filteredField(order, 'id') &&
+                  filteredField(order, 'phone') &&
+                  filteredField(order, 'class_name') &&
+                  (!scope.filters.district_enabled ||
+                      filteredField(order, 'district'));
               };
 
               const exportData = () => {
                   var data = 'First Name,Last Name,Address 1,City,State/Province,' +
                     'ZIP/Postal Code,Country,Phone Number,E Mail,Reference Number\n';
-                for (let order of scope.orders) {
-                    data += getAddress(order);
-                }
+                var orders = utils.where(scope.orders, filtered);
+                utils.forEach(orders, (order) => data += getAddress(order));
                 scope.addressDataUrl = utils.createDataUrl(data, scope.addressDataUrl);
                 return utils.truePromise();
               };
@@ -464,7 +481,7 @@ define('orders/orders', [
           $rootScope.$on('reload-orders', scope.reload);
           scope.$watch('user', scope.reload);
         },
-        templateUrl : 'js/orders/orders.html?tag=201809212314'
+        templateUrl : 'js/orders/orders.html?tag=201809222314'
       };
     });
 });
