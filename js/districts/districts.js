@@ -17,7 +17,7 @@ define('districts/districts',
         });
       },
 
-      templateUrl : 'js/districts/districts.html?tag=201807101350'
+      templateUrl : 'js/districts/districts.html?tag=201809101350'
     };
   });
 });

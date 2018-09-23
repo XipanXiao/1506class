@@ -11,7 +11,15 @@ street: '8055 West Mercer Way', city: 'Mercer Island', state: 47}"
   </div>
   <div class="invoice-address">
     <div><strong>Ship To</strong></div>
-    <address-editor user="order" with-contact="true"></address-editor>
+    <div ng-switch="!!order.district">
+      <div ng-switch-when="true">
+        <div><strong>{{order.name}}</strong></div>
+        <districts user="order"></districts>
+      </div>
+      <address-editor ng-switch-default user="order" with-contact="true">
+      </address-editor>
+      <div class="padded-element">班级：{{order.class_name}}</div>
+    </div>
   </div>
   <div class="css-table">
     <div class="css-table-row">

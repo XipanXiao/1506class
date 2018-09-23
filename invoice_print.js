@@ -30626,16 +30626,42 @@ define('address_editor/address_editor', ['services', 'utils'], function() {
     };
   });
 });
-define('invoice/invoice', ['address_editor/address_editor'], function() {
-  return angular.module('InvoiceModule', ['AddressEditorModule'])
-    .directive('invoice', function() {
-      return {
-        scope: {
-          order: '='
-        },
-        templateUrl : 'js/invoice/invoice.html?tag=201809041104'
-      };
-    });
+define('districts/districts',
+    ['services', 'utils'], function() {
+  return angular.module('DistrictsModule', ['ServicesModule',
+      'UtilsModule']).directive('districts',
+          function(rpc, utils) {
+    return {
+      scope: {
+        editable: '=',
+        stock: '@',
+        user: '='
+      },
+      link: function(scope) {
+        rpc.get_districts().then(function(response) {
+          scope.localGroups = response.data;
+          scope.localGroupIds = utils.keys(utils.where(scope.localGroups,
+              (district) => scope.stock ? parseInt(district.stock) : true));
+        });
+      },
+
+      templateUrl : 'js/districts/districts.html?tag=201809101350'
+    };
+  });
+});
+define('invoice/invoice',
+    ['address_editor/address_editor', 'districts/districts'], function() {
+  return angular.module('InvoiceModule',[
+      'AddressEditorModule',
+      'DistrictsModule'
+  ]).directive('invoice', function() {
+    return {
+      scope: {
+        order: '='
+      },
+      templateUrl : 'js/invoice/invoice.html?tag=201809231104'
+    };
+  });
 });
 define('invoice_app', [
     'invoice/invoice',
@@ -30672,6 +30698,7 @@ define('invoice_app', [
             }
             function getOrder() {
               return rpc.get_order(order_id).then(function(response) {
+                response.data.district = parseInt(response.data.district);
                 return scope.order = response.data;
               });
             }

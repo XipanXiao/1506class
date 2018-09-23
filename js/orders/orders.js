@@ -24,7 +24,7 @@ define('orders/orders', [
         },
         link: function(scope) {
           scope.years = [];
-          scope.filters = {district: 0};
+          scope.filters = {};
 
           for (var year = 2017; year <= (scope.year || 0); year++) {
             scope.years.push(year);

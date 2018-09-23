@@ -33,6 +33,7 @@ define('invoice_app', [
             }
             function getOrder() {
               return rpc.get_order(order_id).then(function(response) {
+                response.data.district = parseInt(response.data.district);
                 return scope.order = response.data;
               });
             }

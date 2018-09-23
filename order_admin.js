@@ -30689,7 +30689,7 @@ define('districts/districts',
         });
       },
 
-      templateUrl : 'js/districts/districts.html?tag=201807101350'
+      templateUrl : 'js/districts/districts.html?tag=201809101350'
     };
   });
 });
@@ -31041,7 +31041,7 @@ define('orders/orders', [
         },
         link: function(scope) {
           scope.years = [];
-          scope.filters = {district: 0};
+          scope.filters = {};
 
           for (var year = 2017; year <= (scope.year || 0); year++) {
             scope.years.push(year);
