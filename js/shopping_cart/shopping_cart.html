@@ -16,7 +16,7 @@
 
       <label class="css-table-cell">
         <input type="radio" name="localGroup" ng-click="useLocalGroup(2)">
-        自己到西雅图地方组领取(免运费)
+        自己到地方组领取(免运费)
       </label>
     </div>
     <div class="css-table-row">
@@ -25,6 +25,9 @@
       </div>
       <div class="css-table-cell">
         <districts user="user"></districts>
+      </div>
+      <div class="css-table-cell">
+        <districts user="user" editable="true" stock="true"></districts>
       </div>
     </div>
     <div class="css-table-row">

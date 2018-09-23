@@ -45,10 +45,10 @@ define('model/cart', [], function() {
       this.items = {};
       this.update();
     },
-    checkOut: function(user, refill) {
+    checkOut: function(user, options) {
       var order = {
         user_id: user.id,
-        status: refill ? 8 : 0,
+        status: options.refill ? 8 : 0,
         sub_total: this.subTotal,
         int_shipping: this.int_shipping,
         shipping: this.shipping,
@@ -68,8 +68,8 @@ define('model/cart', [], function() {
         order.items.push({
           item_id: item.id,
           price: item.price,
-          shipping: (user.district == 99) ? 0.00 : item.shipping,
-          count: refill ? (-item.count) : item.count
+          shipping: options.localPickup ? 0.00 : item.shipping,
+          count: options.refill ? (-item.count) : item.count
         });
       }
       var cart = this;

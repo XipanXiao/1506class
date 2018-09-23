@@ -6,12 +6,14 @@ define('districts/districts',
     return {
       scope: {
         editable: '@',
+        stock: '@',
         user: '='
       },
       link: function(scope) {
         rpc.get_districts().then(function(response) {
           scope.localGroups = response.data;
-          scope.localGroupIds = utils.keys(scope.localGroups);
+          scope.localGroupIds = utils.keys(utils.where(scope.localGroups,
+              (district) => scope.stock ? parseInt(district.stock) : true));
         });
       },
 

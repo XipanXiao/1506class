@@ -34,7 +34,11 @@ define('shopping_cart/shopping_cart', [
                 return;
               }
             }
-            scope.cart.checkOut(user, scope.refill).then(function(placed) {
+            var options = {
+              refill: scope.refill,
+              localPickup: scope.sendtoLocalGroup == 2
+            };
+            scope.cart.checkOut(user, options).then(function(placed) {
               if (placed) scope.confirming = false;
             });
           };
@@ -42,7 +46,6 @@ define('shopping_cart/shopping_cart', [
           scope.useLocalGroup = function(local) {
             scope.sendtoLocalGroup = local;
             if (local == 2) {
-              scope.user.district = 99;
               scope.cart.shipping = 0.00;
             } else if (!local) {
               scope.user.district = null;

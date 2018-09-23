@@ -30618,10 +30618,10 @@ define('model/cart', [], function() {
       this.items = {};
       this.update();
     },
-    checkOut: function(user, refill) {
+    checkOut: function(user, options) {
       var order = {
         user_id: user.id,
-        status: refill ? 8 : 0,
+        status: options.refill ? 8 : 0,
         sub_total: this.subTotal,
         int_shipping: this.int_shipping,
         shipping: this.shipping,
@@ -30641,8 +30641,8 @@ define('model/cart', [], function() {
         order.items.push({
           item_id: item.id,
           price: item.price,
-          shipping: (user.district == 99) ? 0.00 : item.shipping,
-          count: refill ? (-item.count) : item.count
+          shipping: options.localPickup ? 0.00 : item.shipping,
+          count: options.refill ? (-item.count) : item.count
         });
       }
       var cart = this;
@@ -30678,12 +30678,14 @@ define('districts/districts',
     return {
       scope: {
         editable: '@',
+        stock: '@',
         user: '='
       },
       link: function(scope) {
         rpc.get_districts().then(function(response) {
           scope.localGroups = response.data;
-          scope.localGroupIds = utils.keys(scope.localGroups);
+          scope.localGroupIds = utils.keys(utils.where(scope.localGroups,
+              (district) => scope.stock ? parseInt(district.stock) : true));
         });
       },
 
@@ -31483,7 +31485,11 @@ define('shopping_cart/shopping_cart', [
                 return;
               }
             }
-            scope.cart.checkOut(user, scope.refill).then(function(placed) {
+            var options = {
+              refill: scope.refill,
+              localPickup: scope.sendtoLocalGroup == 2
+            };
+            scope.cart.checkOut(user, options).then(function(placed) {
               if (placed) scope.confirming = false;
             });
           };
@@ -31491,7 +31497,6 @@ define('shopping_cart/shopping_cart', [
           scope.useLocalGroup = function(local) {
             scope.sendtoLocalGroup = local;
             if (local == 2) {
-              scope.user.district = 99;
               scope.cart.shipping = 0.00;
             } else if (!local) {
               scope.user.district = null;

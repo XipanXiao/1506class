@@ -116,7 +116,11 @@ function ensure_shipping_column() {
   $sql = "ALTER TABLE order_details ADD shipping".
       " DECIMAL(10, 2) NOT NULL DEFAULT 0.00;";
   $medoo->query($sql);
-  $medoo->insert("districts", ["id" => 99, "name" => "上门自取"]);
+
+  $medoo->query('ALTER TABLE districts ADD stock INT NOT NULL DEFAULT 0');
+  $medoo->update("districts", ["stock" => 1], ["name" => "纽约地方组"]);
+  $medoo->update("districts", ["stock" => 1], ["name" => "西雅图地方组"]);
+  $medoo->update("orders", ["district" => 2], ["district" => 99]);
 }
 
 function increase_stock($item, $sign = 1) {
