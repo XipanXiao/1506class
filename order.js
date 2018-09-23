@@ -30748,6 +30748,68 @@ define('address_editor/address_editor', ['services', 'utils'], function() {
     };
   });
 });
+define('editable_label/editable_label', function() {
+	return angular.module('EditableLabelModule', [])
+		.directive('editableLabel',
+				function() {
+					return {
+					  scope: {
+              onChange: '&',
+					    label: '@',
+					    type: '@',
+					    value: '='
+					  },
+					  link: function(scope) {
+					    scope.convertValue = function(toLocal) {
+					      if (toLocal) {
+					        scope.localValue = scope.value;
+					      } else {
+					        scope.value = scope.localValue;
+					      }
+					    };
+
+					    scope.convertValue(true);
+
+					    scope.$watch('value', function() {
+					      scope.convertValue(true);
+					    });
+					    
+					    scope.editor = {
+					      value: scope.localValue
+					    };
+					    scope.commit = function() {
+					      scope.editing = false;
+					      scope.localValue = scope.editor.value;
+	              scope.convertValue(false);
+					      if (scope.onChange) {
+					        setTimeout(function() {
+					          scope.$apply();
+	                  scope.onChange();
+					        }, 0);
+					      }
+					    };
+					    scope.edit = function() {
+					      scope.editing = true;
+                scope.editor.value = scope.localValue;
+					    };
+					    scope.cancel = function() {
+					      scope.editing = false;
+                scope.editor.value = scope.localValue;
+					    };
+					    scope.keyPressed = function(event) {
+					      if (event.keyCode == 13) {
+					        scope.commit();
+					        event.preventDefault();
+					      } else if (event.keyCode == 27) {
+					        scope.cancel();
+					        event.preventDefault();
+					      }
+					    };
+					  },
+						templateUrl : 'js/editable_label/editable_label.html'
+					};
+				});
+});
 define('search_bar/search_bar', ['services'], function() {
 
   var extractEmail = function(value) {
@@ -30951,10 +31013,12 @@ define('item_list/item_list', ['flying/flying', 'services', 'utils'], function()
 define('order_details/order_details', [
     'address_editor/address_editor', 
     'districts/districts',
+    'editable_label/editable_label',
     'permission'], function() {
   return angular.module('OrderDetailsModule', [
       'AddressEditorModule',
       'DistrictsModule',
+      'EditableLabelModule',
       'PermissionModule'])
     .directive('orderDetails', function(perm) {
       return {
@@ -30975,7 +31039,7 @@ define('order_details/order_details', [
             return items.length > 1 && items.some(itemSelected);
           };
         },
-        templateUrl : 'js/order_details/order_details.html?tag=201809201851'
+        templateUrl : 'js/order_details/order_details.html?tag=201809231000'
       };
     });
 });
@@ -31462,7 +31526,7 @@ define('orders/orders', [
           $rootScope.$on('reload-orders', scope.reload);
           scope.$watch('user', scope.reload);
         },
-        templateUrl : 'js/orders/orders.html?tag=201809222301'
+        templateUrl : 'js/orders/orders.html?tag=201809231000'
       };
     });
 });

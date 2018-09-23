@@ -57,6 +57,7 @@
           <input ng-model="order.paypal_trans_id">
         </label>
         <div><label>已付: $<input ng-model="order.paid"></label></div>
+        <input type="button" value="取消" ng-click="order.editing = false">
         <input type="button" value="确认修改" ng-click="onUpdate()">
       </div>
     </div>
@@ -73,6 +74,8 @@
         <div>{{order.shipping_date}}</div>
       </div>
       <div ng-if="order.paid_date">付款日期：<div>{{order.paid_date}}</div></div>
+      <editable-label value="order.comment" on-change="onUpdate()" label="备注">
+      </editable-label>
     </div>
     <div class="css-table-cell">
       <div>订单号</div>

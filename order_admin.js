@@ -30987,10 +30987,12 @@ define('order_stats/order_stats', [
 define('order_details/order_details', [
     'address_editor/address_editor', 
     'districts/districts',
+    'editable_label/editable_label',
     'permission'], function() {
   return angular.module('OrderDetailsModule', [
       'AddressEditorModule',
       'DistrictsModule',
+      'EditableLabelModule',
       'PermissionModule'])
     .directive('orderDetails', function(perm) {
       return {
@@ -31011,7 +31013,7 @@ define('order_details/order_details', [
             return items.length > 1 && items.some(itemSelected);
           };
         },
-        templateUrl : 'js/order_details/order_details.html?tag=201809201851'
+        templateUrl : 'js/order_details/order_details.html?tag=201809231000'
       };
     });
 });
@@ -31498,7 +31500,7 @@ define('orders/orders', [
           $rootScope.$on('reload-orders', scope.reload);
           scope.$watch('user', scope.reload);
         },
-        templateUrl : 'js/orders/orders.html?tag=201809222301'
+        templateUrl : 'js/orders/orders.html?tag=201809231000'
       };
     });
 });

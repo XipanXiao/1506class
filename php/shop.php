@@ -83,7 +83,7 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
   
   $fields = ["id", "user_id", "status", "sub_total", "paid", "shipping",
       "int_shipping", "shipping_date", "paid_date", "created_time", "name",
-      "paypal_trans_id", "usps_track_id", "class_name", "district"];
+      "paypal_trans_id", "usps_track_id", "class_name", "district", "comment"];
   $address_fields = 
       ["phone", "email", "street", "city", "state", "country", "zip"];
   
@@ -91,7 +91,7 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
     $fields = array_merge($fields, $address_fields);
   }
 
-  ensure_local_group_column();
+  ensure_orders_column();
   $orders = $medoo->select("orders", $fields, ["AND" => 
       array_merge($userFilter, $statusFilter, $timeFilter, $classFilter)]); 
   if (!$withItems) return $orders;
@@ -104,10 +104,9 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
   return $orders;
 }
 
-function ensure_local_group_column() {
+function ensure_orders_column() {
   global $medoo;
-  $sql = "ALTER TABLE orders ADD district MEDIUMINT,".
-      "ADD FOREIGN KEY (district) REFERENCES districts(id);";
+  $sql = "ALTER TABLE orders ADD `comment` VARCHAR(256) CHARACTER SET utf8;";
   $medoo->query($sql);
 }
 
@@ -146,7 +145,7 @@ function place_order($order) {
   unset($order["items"]);
 
   $order = array_merge($order, sanitize_address());
-  ensure_local_group_column();
+  ensure_orders_column();
   ensure_shipping_column();
   $id = $medoo->insert("orders", $order);
   if (!$id || empty($items)) return $id;
@@ -205,7 +204,8 @@ function validate_order_post() {
 function update_order($order, $is_manager) {
   global $medoo;
 
-  $data = build_update_data(["paid", "paypal_trans_id", "paid_date"], $order);
+  $data = build_update_data(
+      ["paid", "paypal_trans_id", "paid_date", "comment"], $order);
   if ($is_manager) {
     $data = array_merge($data, build_update_data(["status", "shipping",
         "int_shipping", "sub_total", "usps_track_id"], $order));
@@ -218,6 +218,7 @@ function update_order($order, $is_manager) {
     $data["#paid_date"] = "CURDATE()";
   }
 
+  ensure_orders_column();
   return $medoo->update("orders", $data, ["id" => $order["id"]]);
 }
 
