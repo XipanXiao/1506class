@@ -30225,12 +30225,11 @@ define('services', ['utils'], function() {
           },
 
           get_orders: function(student_id, filters) {
-            var url = ('php/shop.php?rid=orders&student_id={0}&start={1}' +
-                       '&end={2}&items={3}&status={4}&class_id={5}')
-                          .format(
-                              student_id || '', filters.start || '',
-                              filters.end || '', filters.items || '',
-                              filters.status || '', filters.class_id || '');
+            var url = ('php/shop.php?rid=orders&student_id={0}&year={1}' +
+                       '&items={2}&status={3}&class_id={4}')
+                          .format(student_id || '', filters.year || '',
+                              filters.items || '', filters.status || '',
+                              filters.class_id || '');
             return $http.get(url);
           },
 

@@ -5,13 +5,6 @@ define('orders/orders', [
   return angular.module('OrdersModule', ['DistrictsModule',
       'OrderDetailsModule', 'ServicesModule', 'UtilsModule'])
     .directive('orders', function($rootScope, rpc, perm, utils) {
-      function getTimestampRange(year) {
-        if (!year) return {};
-
-        var start = Math.floor(Date.UTC(year, 0)/1000.0);
-        var end = Math.floor(Date.UTC(year+1, 0)/1000.0);
-        return {start: start, end: end};
-      }
       function parseMoney(value) {
         return value && parseFloat(value) || 0.00;
       }
@@ -24,7 +17,7 @@ define('orders/orders', [
         },
         link: function(scope) {
           scope.years = [];
-          scope.filters = {};
+          scope.filters = {year: scope.year};
 
           for (var year = 2017; year <= (scope.year || 0); year++) {
             scope.years.push(year);
@@ -37,8 +30,8 @@ define('orders/orders', [
           }
           
           function get_orders() {
-            var filters = {items: true, status: scope.status};
-            utils.mix_in(filters, getTimestampRange(scope.year));
+            var filters = {items: true, status: scope.status,
+                year: scope.filters.year};
             var user_id = !scope.admin && scope.user.id;
             if (!perm.isOrderAdmin()) {
               filters.class_id = scope.user.classId;

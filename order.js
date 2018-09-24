@@ -30225,12 +30225,11 @@ define('services', ['utils'], function() {
           },
 
           get_orders: function(student_id, filters) {
-            var url = ('php/shop.php?rid=orders&student_id={0}&start={1}' +
-                       '&end={2}&items={3}&status={4}&class_id={5}')
-                          .format(
-                              student_id || '', filters.start || '',
-                              filters.end || '', filters.items || '',
-                              filters.status || '', filters.class_id || '');
+            var url = ('php/shop.php?rid=orders&student_id={0}&year={1}' +
+                       '&items={2}&status={3}&class_id={4}')
+                          .format(student_id || '', filters.year || '',
+                              filters.items || '', filters.status || '',
+                              filters.class_id || '');
             return $http.get(url);
           },
 
@@ -31141,13 +31140,6 @@ define('orders/orders', [
   return angular.module('OrdersModule', ['DistrictsModule',
       'OrderDetailsModule', 'ServicesModule', 'UtilsModule'])
     .directive('orders', function($rootScope, rpc, perm, utils) {
-      function getTimestampRange(year) {
-        if (!year) return {};
-
-        var start = Math.floor(Date.UTC(year, 0)/1000.0);
-        var end = Math.floor(Date.UTC(year+1, 0)/1000.0);
-        return {start: start, end: end};
-      }
       function parseMoney(value) {
         return value && parseFloat(value) || 0.00;
       }
@@ -31160,7 +31152,7 @@ define('orders/orders', [
         },
         link: function(scope) {
           scope.years = [];
-          scope.filters = {};
+          scope.filters = {year: scope.year};
 
           for (var year = 2017; year <= (scope.year || 0); year++) {
             scope.years.push(year);
@@ -31173,8 +31165,8 @@ define('orders/orders', [
           }
           
           function get_orders() {
-            var filters = {items: true, status: scope.status};
-            utils.mix_in(filters, getTimestampRange(scope.year));
+            var filters = {items: true, status: scope.status,
+                year: scope.filters.year};
             var user_id = !scope.admin && scope.user.id;
             if (!perm.isOrderAdmin()) {
               filters.class_id = scope.user.classId;

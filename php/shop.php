@@ -69,16 +69,18 @@ function get_order($id) {
 function get_orders($user_id, $filters, $withItems, $withAddress) {
   global $medoo;
   
-  $timeFilter = ["created_time[><]" => [$filters["start"], $filters["end"]]];
+  $timeFilter = empty($filters["year"])
+      ? "TRUE"
+      : sprintf("YEAR(created_time)='%d'", $filters["year"]);
   $statusFilter = isset($filters["status"]) && $filters["status"] != ""
-      ? ["status" => intval($filters["status"])]
-      : ["status[!]" => OrderStatus::CLOSED];
-  $userFilter = $user_id ? ["user_id" => $user_id] : [];
-  $classFilter = [];
-  if (empty($userFilter) && !empty($filters["class_id"])) {
+      ? sprintf("status = %d", intval($filters["status"]))
+      : sprintf("status != %d", OrderStatus::CLOSED);
+  $userFilter = $user_id ? sprintf("user_id=%d", $user_id) : "TRUE";
+  $classFilter = "TRUE";
+  if (!$user_id && !empty($filters["class_id"])) {
     $userIds = $medoo->select("users", "id", 
         ["classId" => $filters["class_id"]]);
-    $classFilter = ["user_id" => $userIds];
+    $classFilter = sprintf("user_id in (%s)", join(", ", $userIds));
   }
   
   $fields = ["id", "user_id", "status", "sub_total", "paid", "shipping",
@@ -90,10 +92,16 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
   if ($withAddress) {
     $fields = array_merge($fields, $address_fields);
   }
+  
+  $sql = sprintf("SELECT %s FROM orders WHERE (%s) AND (%s) AND (%s) AND (%s);",
+  		join(", ", $fields),
+  		$userFilter,
+  		$statusFilter,
+  		$timeFilter,
+  		$classFilter);
 
   ensure_orders_column();
-  $orders = $medoo->select("orders", $fields, ["AND" => 
-      array_merge($userFilter, $statusFilter, $timeFilter, $classFilter)]); 
+  $orders = $medoo->query($sql)->fetchAll();
   if (!$withItems) return $orders;
 
   foreach ($orders as $index => $order) {
