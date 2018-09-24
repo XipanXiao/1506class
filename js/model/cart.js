@@ -3,8 +3,8 @@ define('model/cart', [], function() {
 
   var cart = {
     size: 0,
-    subTotal: 0.0,
-    shipping: 0.0,
+    subTotal: '0.00',
+    shipping: '0.00',
     items: {},
     add: function(item) {
       var existing = this.items[item.id];

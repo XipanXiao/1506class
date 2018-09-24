@@ -6,13 +6,15 @@ define('payment/payment', [
     .directive('payment', function(rpc, utils) {
       return {
         scope: {
-          cart: '='
+          order: '=',
+          onCancel: '&',
+          onPaid: '&'
         },
         link: function(scope) {
         	  // Render the PayPal button
         	  paypal.Button.render({
           // Set your environment
-            env: 'sandbox', // sandbox | production
+            env: 'production', // sandbox | production
 
         	  // Specify the style of the button
         	  style: {
@@ -40,7 +42,7 @@ define('payment/payment', [
 	        	// Create a PayPal app: https://developer.paypal.com/developer/applications/create
 	        	client: {
 	        	  sandbox: 'AShDzR3WfiCQg5WzQOjqET8_4CWE1Txmg5TQvKdrv8WlTiAVTo-Ll4zOyrloEfVfllK8_bA6GqdIONAC',
-	        	  production: '<insert production client id>'
+	        	  production: 'xs8wy8r8h8g74z64$08b1bdddaf4891a034e680067b36b394'
 	        	},
 	
 	        	payment: function (data, actions) {
@@ -49,7 +51,7 @@ define('payment/payment', [
 	        	      transactions: [
 	        	        {
 	        	          amount: {
-	        	            total: scope.cart.grand_total,
+	        	            total: scope.order.balance,
 	        	            currency: 'USD'
 	        	          }
 	        	        }
@@ -61,13 +63,15 @@ define('payment/payment', [
 	        	onAuthorize: function (data, actions) {
 	        	  return actions.payment.execute()
 	        	    .then(function (result) {
-	        	      scope.cart.paypal_trans_id = result.id;
-	        	      scope.cart.paid_date = result.create_time;
+	        	      scope.order.paid = result.transactions[0].amount.total;
+	        	      scope.order.paypal_trans_id = result.id;
+	        	      scope.order.paid_date = result.create_time;
+	        	      scope.onPaid();
 	        	    });
 	        	}
 	        	}, '#paypal-button-container');
         	},
-        templateUrl : 'js/payment/payment.html?tag=201809222258'
+        templateUrl : 'js/payment/payment.html?tag=201809242258'
       };
     });
 });

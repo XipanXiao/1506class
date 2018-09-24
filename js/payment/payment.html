@@ -1,29 +1,17 @@
-<div class="css-table">
-  <div class="css-table-row">
-    <div class="css-table-cell">
-      <label>Paypal
-        <input type="radio" name="payment-method" ng-model="payment_method"
-            value="paypal" checked>
-      </label>
-    </div>
-    <div class="css-table-cell">
-      <label>邮寄支票
-        <input type="radio" name="payment-method" ng-model="payment_method"
-            value="cheque">
-      </label>
-    </div>
+<iron-icon icon="close" ng-click="onCancel()" title="取消"
+    class="right clickable">
+</iron-icon>
+<div class="flex">
+  <div class="padded-element">
+    <div>Paypal</div>
+    <div id="paypal-button-container"></div>
   </div>
-  <div class="css-table-row">
-    <div class="css-table-cell">
-      <div id="paypal-button-container"></div>
-    </div>
-    <div class="css-table-cell">
-			<h3>美国智悲讲修菩提学会</h3>
-			<address-editor user="{name: 'BICW - SEATTLE', zip: '98040', country: 'US',
-          street: '8055 West Mercer Way', city: 'Mercer Island', state: 47}"
-			    with-contact="true">
-			</address-editor>
-    </div>
+  <div class="padded-element">
+    <div>邮寄支票</div>
+	  <h3>美国智悲讲修菩提学会</h3>
+	  <address-editor user="{name: 'BICW - SEATTLE', zip: '98040', country: 'US',
+        street: '8055 West Mercer Way', city: 'Mercer Island', state: 47}"
+	      with-contact="true">
+	  </address-editor>
   </div>
 </div>
-  

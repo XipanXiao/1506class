@@ -875,3 +875,11 @@ paper-dialog#email-dialog {
 .delete-group-icon {
   cursor: pointer;
 }
+
+payment {
+  position: absolute;
+  background: white;
+  border: 1px solid;
+  border-radius: 4px;
+  z-index: 1;
+}

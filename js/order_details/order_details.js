@@ -2,11 +2,13 @@ define('order_details/order_details', [
     'address_editor/address_editor', 
     'districts/districts',
     'editable_label/editable_label',
+    'payment/payment',
     'permission'], function() {
   return angular.module('OrderDetailsModule', [
       'AddressEditorModule',
       'DistrictsModule',
       'EditableLabelModule',
+      'PaymentModule',
       'PermissionModule'])
     .directive('orderDetails', function(perm) {
       return {
@@ -26,6 +28,13 @@ define('order_details/order_details', [
             var items = scope.order.items;
             return items.length > 1 && items.some(itemSelected);
           };
+          scope.onPaid = function() {
+            scope.order.showPayment = null;
+            scope.onUpdate();
+          };
+          scope.paid = function() {
+            return parseFloat(scope.order.balance) <= 0.0;
+          }
         },
         templateUrl : 'js/order_details/order_details.html?tag=201809231000'
       };

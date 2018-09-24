@@ -27,10 +27,11 @@
       <div>已付: ${{order.paid}}</div>
       <div>
         <strong>Balance: ${{order.balance}}</strong>
-        <a ng-if="!admin" href="https://www.paypal.me/bicwsea/{{order.balance}}"
-            target="_blank">
-          付款
-        </a>
+        <input type="button" ng-if="!admin && !paid()" value="付款" class="clickable"
+            ng-click="order.showPayment = !order.showPayment">
+        <payment ng-if="order.showPayment" order="order" on-paid="onPaid()"
+            on-cancel="order.showPayment = null">
+        </payment>  
       </div>
       <div ng-if="order.paypal_trans_id">
         <a href="https://www.paypal.com/myaccount/transaction/details/inline/{{order.paypal_trans_id}}"

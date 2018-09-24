@@ -30576,8 +30576,8 @@ define('model/cart', [], function() {
 
   var cart = {
     size: 0,
-    subTotal: 0.0,
-    shipping: 0.0,
+    subTotal: '0.00',
+    shipping: '0.00',
     items: {},
     add: function(item) {
       var existing = this.items[item.id];
@@ -30945,13 +30945,15 @@ define('payment/payment', [
     .directive('payment', function(rpc, utils) {
       return {
         scope: {
-          cart: '='
+          order: '=',
+          onCancel: '&',
+          onPaid: '&'
         },
         link: function(scope) {
         	  // Render the PayPal button
         	  paypal.Button.render({
           // Set your environment
-            env: 'sandbox', // sandbox | production
+            env: 'production', // sandbox | production
 
         	  // Specify the style of the button
         	  style: {
@@ -30979,7 +30981,7 @@ define('payment/payment', [
 	        	// Create a PayPal app: https://developer.paypal.com/developer/applications/create
 	        	client: {
 	        	  sandbox: 'AShDzR3WfiCQg5WzQOjqET8_4CWE1Txmg5TQvKdrv8WlTiAVTo-Ll4zOyrloEfVfllK8_bA6GqdIONAC',
-	        	  production: '<insert production client id>'
+	        	  production: 'xs8wy8r8h8g74z64$08b1bdddaf4891a034e680067b36b394'
 	        	},
 	
 	        	payment: function (data, actions) {
@@ -30988,7 +30990,7 @@ define('payment/payment', [
 	        	      transactions: [
 	        	        {
 	        	          amount: {
-	        	            total: scope.cart.grand_total,
+	        	            total: scope.order.balance,
 	        	            currency: 'USD'
 	        	          }
 	        	        }
@@ -31000,13 +31002,15 @@ define('payment/payment', [
 	        	onAuthorize: function (data, actions) {
 	        	  return actions.payment.execute()
 	        	    .then(function (result) {
-	        	      scope.cart.paypal_trans_id = result.id;
-	        	      scope.cart.paid_date = result.create_time;
+	        	      scope.order.paid = result.transactions[0].amount.total;
+	        	      scope.order.paypal_trans_id = result.id;
+	        	      scope.order.paid_date = result.create_time;
+	        	      scope.onPaid();
 	        	    });
 	        	}
 	        	}, '#paypal-button-container');
         	},
-        templateUrl : 'js/payment/payment.html?tag=201809222258'
+        templateUrl : 'js/payment/payment.html?tag=201809242258'
       };
     });
 });
@@ -31066,11 +31070,13 @@ define('order_details/order_details', [
     'address_editor/address_editor', 
     'districts/districts',
     'editable_label/editable_label',
+    'payment/payment',
     'permission'], function() {
   return angular.module('OrderDetailsModule', [
       'AddressEditorModule',
       'DistrictsModule',
       'EditableLabelModule',
+      'PaymentModule',
       'PermissionModule'])
     .directive('orderDetails', function(perm) {
       return {
@@ -31090,6 +31096,13 @@ define('order_details/order_details', [
             var items = scope.order.items;
             return items.length > 1 && items.some(itemSelected);
           };
+          scope.onPaid = function() {
+            scope.order.showPayment = null;
+            scope.onUpdate();
+          };
+          scope.paid = function() {
+            return parseFloat(scope.order.balance) <= 0.0;
+          }
         },
         templateUrl : 'js/order_details/order_details.html?tag=201809231000'
       };
@@ -31647,7 +31660,7 @@ define('shopping_cart/shopping_cart', [
             }
           };
         },
-        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809242258'
+        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809241253'
       };
     });
 });
