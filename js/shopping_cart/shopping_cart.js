@@ -1,9 +1,12 @@
 define('shopping_cart/shopping_cart', [
     'address_editor/address_editor',
     'districts/districts',
+    'payment/payment',
     'services', 'utils'], function() {
   return angular.module('ShoppingCartModule', [
-      'AddressEditorModule', 'DistrictsModule', 'ServicesModule', 'UtilsModule'])
+      'AddressEditorModule', 'DistrictsModule',
+      'PaymentModule',
+      'ServicesModule', 'UtilsModule'])
     .directive('shoppingCart', function(rpc, utils) {
       return {
         scope: {

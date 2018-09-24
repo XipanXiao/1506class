@@ -30,6 +30,7 @@ define('model/cart', [], function() {
       this.subTotal = 0.0;
       this.int_shipping = 0.0;
       this.shipping = 0.0;
+      this.grand_total = 0.0;
       for (var id in this.items) {
         var item = this.items[id];
         this.size += item.count;
@@ -37,6 +38,8 @@ define('model/cart', [], function() {
         this.int_shipping += item.count * item.int_shipping;
         this.shipping += item.count * item.shipping;
       }
+      this.grand_total = this.subTotal + this.shipping +
+          this.int_shipping;
       this.subTotal = this.subTotal.toFixed(2);
       this.int_shipping = this.int_shipping.toFixed(2);
       this.shipping = this.shipping.toFixed(2);

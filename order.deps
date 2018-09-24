@@ -11,6 +11,7 @@ js/editable_label/editable_label.js
 js/search_bar/search_bar.js
 js/app_bar/app_bar.js
 js/flying/flying.js
+js/payment/payment.js
 js/item_list/item_list.js
 js/order_details/order_details.js
 js/orders/orders.js
