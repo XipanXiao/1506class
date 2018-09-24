@@ -31316,7 +31316,7 @@ define('orders/orders', [
             return function() {
               return rpc.remove_order(order.id).then(function(response) {
                 if (!response.data.deleted) return false;
-                return orderDeleted(response, order);
+                return orderDeleted(order);
               });
             }
           };
