@@ -30650,7 +30650,7 @@ define('model/cart', [], function() {
       }
       var cart = this;
       return rpc.update_order(order).then(function(response) {
-        if (response.data.updated) {
+        if (parseInt(response.data.updated)) {
           cart.clear();
           rootScope.$broadcast('reload-orders');
           var toast = document.querySelector('#toast0');
@@ -30659,6 +30659,8 @@ define('model/cart', [], function() {
             scope.selectTab(2);
           }, 3000);
           return true;
+        } else {
+          alert('订单提交失败:{0}'.format(response.data.error));
         }
         return false;
       });
@@ -31622,9 +31624,14 @@ define('shopping_cart/shopping_cart', [
           refill: '@',
           user: '='
         },
-        link: function(scope) {
+        link: function(scope, element) {
+          scope.ME = 'me';
+          scope.GROUP = 'group';
+          scope.PICKUP = 'pickup';
+
           scope.confirming = false;
           scope.addrEditor = {};
+          scope.shipTo = scope.ME;
 
           scope.checkOut = function() {
             if (!scope.confirming) {
@@ -31632,7 +31639,7 @@ define('shopping_cart/shopping_cart', [
               return;
             }
             var user = scope.user;
-            if (scope.sendtoLocalGroup) {
+            if (scope.shipTo != scope.ME) {
               if (!user.district) {
                 alert('请选择地方组');
                 return;
@@ -31647,24 +31654,26 @@ define('shopping_cart/shopping_cart', [
             }
             var options = {
               refill: scope.refill,
-              localPickup: scope.sendtoLocalGroup == 2
+              localPickup: scope.shipTo == scope.PICKUP
             };
             scope.cart.checkOut(user, options).then(function(placed) {
               if (placed) scope.confirming = false;
             });
           };
 
-          scope.useLocalGroup = function(local) {
-            scope.sendtoLocalGroup = local;
-            if (local == 2) {
+          scope.updateShipMethod = function(shipTo) {
+            scope.shipTo = shipTo;
+            if (shipTo == scope.PICKUP) {
               scope.cart.shipping = 0.00;
-            } else if (!local) {
+            } else if (shipTo == scope.ME) {
               scope.user.district = null;
+              scope.cart.update();
+            } else {
               scope.cart.update();
             }
           };
         },
-        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809222258'
+        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809242258'
       };
     });
 });

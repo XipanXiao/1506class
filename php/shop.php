@@ -108,6 +108,13 @@ function ensure_orders_column() {
   global $medoo;
   $sql = "ALTER TABLE orders ADD `comment` VARCHAR(256) CHARACTER SET utf8;";
   $medoo->query($sql);
+  $sql = "ALTER TABLE orders MODIFY COLUMN
+    `street` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+  	MODIFY COLUMN `city` varchar(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+    MODIFY COLUMN `state` tinyint(4),
+    MODIFY COLUMN `country` char(2) CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+    MODIFY COLUMN `zip` char(6) CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
+  $medoo->query($sql);
 }
 
 function ensure_shipping_column() {
@@ -229,7 +236,6 @@ function sanitize_address() {
   foreach (["name", "phone", "street", "city", "zip"] as $key) {
     $data[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_STRING,
         FILTER_REQUIRE_SCALAR);
-    if (empty($data[$key])) exit();
   }
   return $data;
 }

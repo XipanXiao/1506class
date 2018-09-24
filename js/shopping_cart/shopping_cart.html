@@ -4,18 +4,20 @@
   <div class="css-table">
     <div class="css-table-row">
       <label class="css-table-cell address-column">
-        <input type="radio" name="localGroup" ng-click="useLocalGroup(0)"
-            checked>
+        <input type="radio" name="localGroup" ng-change="updateShipMethod(ME)"
+            ng-model="shipTo" value="{{ME}}">
         邮寄到我的地址
       </label>
 
       <label class="css-table-cell">
-        <input type="radio" name="localGroup" ng-click="useLocalGroup(1)" disabled>
+        <input type="radio" name="localGroup" ng-change="updateShipMethod(GROUP)"
+            ng-model="shipTo" value="{{GROUP}}" disabled>
         邮寄到我所在的地方组(暂不开放)
       </label>
 
       <label class="css-table-cell">
-        <input type="radio" name="localGroup" ng-click="useLocalGroup(2)">
+        <input type="radio" name="localGroup" ng-change="updateShipMethod(PICKUP)"
+            ng-model="shipTo" value="{{PICKUP}}">
         自己到地方组领取(免运费)
       </label>
     </div>
@@ -27,7 +29,7 @@
         <districts user="user"></districts>
       </div>
       <div class="css-table-cell">
-        <districts user="user" editable="sendtoLocalGroup == 2" stock="true">
+        <districts user="user" editable="shipTo == PICKUP" stock="true">
         </districts>
       </div>
     </div>
@@ -35,10 +37,11 @@
       <div class="padded-element css-table-cell">
         <label>
           <input type="checkbox" ng-model="addrEditor.editing"
-              ng-disabled="sendtoLocalGroup">
+              ng-disabled="shipTo != ME">
           修改地址
         </label>
-        <div ng-show="addrEditor.editing && !sendtoLocalGroup" class="padded-element">
+        <div ng-show="addrEditor.editing && shipTo == ME"
+            class="padded-element">
           <address-editor editing="true" user="user" with-contact="true">
           </address-editor>
         </div>
@@ -64,7 +67,7 @@
         <h3>{{item.name}}</h3> by {{item.producer}}
       </div>
       <div class="css-table-cell">${{item.price}}</div>
-      <div class="css-table-cell">${{user.district == 99 ? 0.00 : item.shipping}}</div>
+      <div class="css-table-cell">${{shipTo == PICKUP ? '0.00' : item.shipping}}</div>
       <div class="css-table-cell">
         <input type="number" min="1" ng-model="item.count" ng-change="cart.update()">
       </div>
