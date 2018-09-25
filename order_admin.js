@@ -30980,7 +30980,7 @@ define('payment/payment', [
 	        	// Create a PayPal app: https://developer.paypal.com/developer/applications/create
 	        	client: {
 	        	  sandbox: 'AShDzR3WfiCQg5WzQOjqET8_4CWE1Txmg5TQvKdrv8WlTiAVTo-Ll4zOyrloEfVfllK8_bA6GqdIONAC',
-	        	  production: ''
+	        	  production: 'AfX_o2WZgNPs66lY4AKwp7DZhrl4MA5Hcs2o5wLndK3qROPRM7agDBLZGTYaGaFzaGWh6VSlnzOjjR-8'
 	        	},
 	
 	        	payment: function (data, actions) {
@@ -31001,9 +31001,10 @@ define('payment/payment', [
 	        	onAuthorize: function (data, actions) {
 	        	  return actions.payment.execute()
 	        	    .then(function (result) {
-	        	      scope.order.paid = result.transactions[0].amount.total;
-	        	      scope.order.paypal_trans_id = result.id;
-	        	      scope.order.paid_date = result.create_time;
+                   var trans = result.transactions[0];
+	        	      scope.order.paid = trans.amount.total;
+	        	      scope.order.paypal_trans_id = trans.related_resources[0].sale.id;
+	        	      scope.order.paid_date = trans.related_resources[0].sale.create_time;
 	        	      scope.onPaid();
 	        	    });
 	        	}
