@@ -30980,7 +30980,7 @@ define('payment/payment', [
 	        	// Create a PayPal app: https://developer.paypal.com/developer/applications/create
 	        	client: {
 	        	  sandbox: 'AShDzR3WfiCQg5WzQOjqET8_4CWE1Txmg5TQvKdrv8WlTiAVTo-Ll4zOyrloEfVfllK8_bA6GqdIONAC',
-	        	  production: 'xs8wy8r8h8g74z64$08b1bdddaf4891a034e680067b36b394'
+	        	  production: ''
 	        	},
 	
 	        	payment: function (data, actions) {
