@@ -29425,7 +29425,11 @@ $provide.value("$locale", {
       return result;
     };
   }
-  
+
+  function parseMoney(value) {
+    return value && parseFloat(value) || 0.00;
+  }
+
   var enroll_tasks = ['welcomed', 'wechated', 'yyed', 'tested', 'bookordered'];
 
   return angular.module('UtilsModule', []).factory('utils', function($q) {
@@ -30001,6 +30005,31 @@ $provide.value("$locale", {
         };
         return [getFirstName(name), getLastName(name)];
       },
+      summarize_order: function(order) {
+        order.sub_total = 0.0;
+        order.shipping = 0.0;
+        for (let item of order.items) {
+          item.count = parseInt(item.count);
+          order.sub_total += item.count * parseMoney(item.price);
+          order.shipping += item.count * parseMoney(item.shipping);
+        }
+      },
+      calculate_order_values: function(order) {
+        order.status = parseInt(order.status);
+        utils.summarize_order(order);
+        order.district = parseInt(order.district) || 0;
+        order.sub_total = parseMoney(order.sub_total).toFixed(2);
+        order.shipping = parseMoney(order.shipping).toFixed(2);
+        order.int_shipping = parseMoney(order.int_shipping).toFixed(2);
+        order.paid = parseMoney(order.paid).toFixed(2);
+
+        order.grand_total = parseMoney(order.sub_total) + 
+            parseMoney(order.shipping);
+        order.grand_total = order.grand_total.toFixed(2);
+        order.balance = 
+            parseMoney(order.grand_total) - parseMoney(order.paid);
+        order.balance = order.balance.toFixed(2);
+      },
 
       // Index of bit in the user.enroll_tasks bits.
       // Indicating whether welcome letter is sent.
@@ -30571,7 +30600,7 @@ define('permission', ['utils'], function() {
   });
 });
 define('model/cart', [], function() {
-  var utils, rpc, rootScope, scope;
+  var utils, rpc, scope;
 
   var cart = {
     size: 0,
@@ -30649,26 +30678,21 @@ define('model/cart', [], function() {
       }
       var cart = this;
       return rpc.update_order(order).then(function(response) {
-        if (parseInt(response.data.updated)) {
+        var orderId = parseInt(response.data.updated);
+
+        if (orderId) {
           cart.clear();
-          rootScope.$broadcast('reload-orders');
-          var toast = document.querySelector('#toast0');
-          toast && toast.open();
-          scope && setTimeout(function() {
-            scope.selectTab(2);
-          }, 3000);
-          return true;
+          return orderId;
         } else {
           alert('订单提交失败:{0}'.format(response.data.error));
+          return 0;
         }
-        return false;
       });
     }
   };
   return function(params) {
     utils = params.utils;
     rpc = params.rpc;
-    rootScope = params.rootScope;
     scope = params.scope;
 
     utils.mix_in(this, cart);
@@ -30946,13 +30970,15 @@ define('payment/payment', [
         scope: {
           order: '=',
           onCancel: '&',
-          onPaid: '&'
+          onPaid: '&',
+          showCloseButton: '@'
         },
         link: function(scope) {
         	  // Render the PayPal button
         	  paypal.Button.render({
           // Set your environment
-            env: 'production', // sandbox | production
+            env: location.href.indexOf('localhost') >= 0 ?
+                'sandbox' : 'production', // sandbox | production
 
         	  // Specify the style of the button
         	  style: {
@@ -31010,7 +31036,7 @@ define('payment/payment', [
 	        	}
 	        	}, '#paypal-button-container');
         	},
-        templateUrl : 'js/payment/payment.html?tag=201809242258'
+        templateUrl : 'js/payment/payment.html?tag=201809252258'
       };
     });
 });
@@ -31151,7 +31177,7 @@ define('orders/orders', [
               orders.forEach(function(order) {
                 collect_order_info(order);
                 init_item_labels(order);
-                calculate_order_values(order);
+                utils.calculate_order_values(order);
               });
               orders.forEach(function(order) {
                 order.mergeable = !order.usps_track_id && 
@@ -31170,33 +31196,6 @@ define('orders/orders', [
             scope.phones[order.phone] = order.phone;
           }
           
-          function summarize_order(order) {
-            order.sub_total = 0.0;
-            order.shipping = 0.0;
-            for (let item of order.items) {
-              item.count = parseInt(item.count);
-              order.sub_total += item.count * parseMoney(item.price);
-              order.shipping += item.count * parseMoney(item.shipping);
-            }
-          }
-
-          function calculate_order_values(order) {
-            order.status = parseInt(order.status);
-            summarize_order(order);
-            order.district = parseInt(order.district) || 0;
-            order.sub_total = parseMoney(order.sub_total).toFixed(2);
-            order.shipping = parseMoney(order.shipping).toFixed(2);
-            order.int_shipping = parseMoney(order.int_shipping).toFixed(2);
-            order.paid = parseMoney(order.paid).toFixed(2);
-
-            order.grand_total = parseMoney(order.sub_total) + 
-                parseMoney(order.shipping);
-            order.grand_total = order.grand_total.toFixed(2);
-            order.balance = 
-                parseMoney(order.grand_total) - parseMoney(order.paid);
-            order.balance = order.balance.toFixed(2);
-          }
-
           function init_item_labels(order) {
             order.count = 0;
             order.shipping_estmt = 0.0;
@@ -31341,7 +31340,7 @@ define('orders/orders', [
                 $rootScope.$broadcast('reload-orders');
               } else {
                 order.editing = false;
-                calculate_order_values(order);
+                utils.calculate_order_values(order);
               }
             });
           };
@@ -31351,7 +31350,7 @@ define('orders/orders', [
               return rpc.get_order(order.id).then(function(response) {
                 utils.mix_in(order, response.data);
                 init_item_labels(order);
-                calculate_order_values(order);
+                utils.calculate_order_values(order);
                 return order;
               });
             }
@@ -31521,7 +31520,7 @@ define('orders/orders', [
               order.items.splice(index, 1);
 
               init_item_labels(order);
-              calculate_order_values(order);
+              utils.calculate_order_values(order);
 
               var data = {
                 id: order.id,
@@ -31597,7 +31596,7 @@ define('shopping_cart/shopping_cart', [
       'AddressEditorModule', 'DistrictsModule',
       'PaymentModule',
       'ServicesModule', 'UtilsModule'])
-    .directive('shoppingCart', function(rpc, utils) {
+    .directive('shoppingCart', function($rootScope, rpc, utils) {
       return {
         scope: {
           cart: '=',
@@ -31612,8 +31611,17 @@ define('shopping_cart/shopping_cart', [
           scope.confirming = false;
           scope.addrEditor = {};
           scope.shipTo = scope.ME;
+          
+          function showPaymentWindow(orderId) {
+            var toast = document.querySelector('#toast1');
+            toast && toast.open();
+            rpc.get_order(orderId).then(function(response) {
+              scope.order = response.data;
+              utils.calculate_order_values(scope.order);
+            });
+          }
 
-          scope.checkOut = function() {
+          scope.checkOut = function(payNow) {
             if (!scope.confirming) {
               scope.confirming = true;
               return;
@@ -31634,10 +31642,21 @@ define('shopping_cart/shopping_cart', [
             }
             var options = {
               refill: scope.refill,
+              payNow: payNow,
               localPickup: scope.shipTo == scope.PICKUP
             };
-            scope.cart.checkOut(user, options).then(function(placed) {
-              if (placed) scope.confirming = false;
+            scope.cart.checkOut(user, options).then(function(orderId) {
+              if (!orderId) return;
+              $rootScope.$broadcast('reload-orders');
+              if (payNow) {
+                showPaymentWindow(orderId);
+              } else if (scope.refill) {
+                clear();
+              } else {
+                var toast = document.querySelector('#toast0');
+                toast && toast.open();
+                scope.showOrders();
+              }
             });
           };
 
@@ -31652,8 +31671,35 @@ define('shopping_cart/shopping_cart', [
               scope.cart.update();
             }
           };
+
+          function clear() {
+            scope.order = null;
+            scope.confirming = false;
+          }
+
+          scope.showOrders = function() {
+            clear();
+
+            scope && setTimeout(function() {
+              document.querySelector('paper-tabs').selected = 2;
+            }, 3000);
+          };
+
+          scope.updateOrder = function() {
+            rpc.update_order(scope.order).then(function(response) {
+              clear();
+              if (response.data.updated) {
+                $rootScope.$broadcast('reload-orders');
+                var toast = document.querySelector('#toast2');
+                toast && toast.open();
+                scope.showOrders();
+              } else {
+                alert(response.data.error);
+              }
+            });
+          };
         },
-        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809241253'
+        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809251253'
       };
     });
 });
@@ -31876,8 +31922,7 @@ define('inventory/inventory', [
         },
         link: function(scope) {
           scope.year = new Date().getFullYear();
-          scope.cart = new Cart({rpc: rpc, utils: utils,
-              rootScope: $rootScope});
+          scope.cart = new Cart({rpc: rpc, utils: utils});
           scope.selected = {};
 
           function getItems() {

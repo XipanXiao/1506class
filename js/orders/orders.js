@@ -41,7 +41,7 @@ define('orders/orders', [
               orders.forEach(function(order) {
                 collect_order_info(order);
                 init_item_labels(order);
-                calculate_order_values(order);
+                utils.calculate_order_values(order);
               });
               orders.forEach(function(order) {
                 order.mergeable = !order.usps_track_id && 
@@ -60,33 +60,6 @@ define('orders/orders', [
             scope.phones[order.phone] = order.phone;
           }
           
-          function summarize_order(order) {
-            order.sub_total = 0.0;
-            order.shipping = 0.0;
-            for (let item of order.items) {
-              item.count = parseInt(item.count);
-              order.sub_total += item.count * parseMoney(item.price);
-              order.shipping += item.count * parseMoney(item.shipping);
-            }
-          }
-
-          function calculate_order_values(order) {
-            order.status = parseInt(order.status);
-            summarize_order(order);
-            order.district = parseInt(order.district) || 0;
-            order.sub_total = parseMoney(order.sub_total).toFixed(2);
-            order.shipping = parseMoney(order.shipping).toFixed(2);
-            order.int_shipping = parseMoney(order.int_shipping).toFixed(2);
-            order.paid = parseMoney(order.paid).toFixed(2);
-
-            order.grand_total = parseMoney(order.sub_total) + 
-                parseMoney(order.shipping);
-            order.grand_total = order.grand_total.toFixed(2);
-            order.balance = 
-                parseMoney(order.grand_total) - parseMoney(order.paid);
-            order.balance = order.balance.toFixed(2);
-          }
-
           function init_item_labels(order) {
             order.count = 0;
             order.shipping_estmt = 0.0;
@@ -231,7 +204,7 @@ define('orders/orders', [
                 $rootScope.$broadcast('reload-orders');
               } else {
                 order.editing = false;
-                calculate_order_values(order);
+                utils.calculate_order_values(order);
               }
             });
           };
@@ -241,7 +214,7 @@ define('orders/orders', [
               return rpc.get_order(order.id).then(function(response) {
                 utils.mix_in(order, response.data);
                 init_item_labels(order);
-                calculate_order_values(order);
+                utils.calculate_order_values(order);
                 return order;
               });
             }
@@ -411,7 +384,7 @@ define('orders/orders', [
               order.items.splice(index, 1);
 
               init_item_labels(order);
-              calculate_order_values(order);
+              utils.calculate_order_values(order);
 
               var data = {
                 id: order.id,

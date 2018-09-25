@@ -29962,7 +29962,11 @@ define('utils', [], function() {
       return result;
     };
   }
-  
+
+  function parseMoney(value) {
+    return value && parseFloat(value) || 0.00;
+  }
+
   var enroll_tasks = ['welcomed', 'wechated', 'yyed', 'tested', 'bookordered'];
 
   return angular.module('UtilsModule', []).factory('utils', function($q) {
@@ -30538,6 +30542,31 @@ define('utils', [], function() {
         };
         return [getFirstName(name), getLastName(name)];
       },
+      summarize_order: function(order) {
+        order.sub_total = 0.0;
+        order.shipping = 0.0;
+        for (let item of order.items) {
+          item.count = parseInt(item.count);
+          order.sub_total += item.count * parseMoney(item.price);
+          order.shipping += item.count * parseMoney(item.shipping);
+        }
+      },
+      calculate_order_values: function(order) {
+        order.status = parseInt(order.status);
+        utils.summarize_order(order);
+        order.district = parseInt(order.district) || 0;
+        order.sub_total = parseMoney(order.sub_total).toFixed(2);
+        order.shipping = parseMoney(order.shipping).toFixed(2);
+        order.int_shipping = parseMoney(order.int_shipping).toFixed(2);
+        order.paid = parseMoney(order.paid).toFixed(2);
+
+        order.grand_total = parseMoney(order.sub_total) + 
+            parseMoney(order.shipping);
+        order.grand_total = order.grand_total.toFixed(2);
+        order.balance = 
+            parseMoney(order.grand_total) - parseMoney(order.paid);
+        order.balance = order.balance.toFixed(2);
+      },
 
       // Index of bit in the user.enroll_tasks bits.
       // Indicating whether welcome letter is sent.
@@ -30701,25 +30730,13 @@ define('invoice_app', [
                 return scope.order = response.data;
               });
             }
-            function summarize_order(order) {
-              order.sub_total = 0.0;
-              order.shipping = 0.0;
-              order.paid = parseMoney(order.paid);
-              for (let item of order.items) {
-                item.count = parseInt(item.count);
-                order.sub_total += item.count * parseMoney(item.price);
-                order.shipping += item.count * parseMoney(item.shipping);
-              }
-              order.grand_total = order.sub_total + order.shipping;
-              order.balance = order.grand_total - order.paid; 
-            }
             function getItems() {
               var level = perm.isOrderAdmin() && 99;
               return rpc.get_items(null, level).then(function(response) {
                 var items = response.data;
 
                 var order = scope.order;
-                summarize_order(order);
+                utils.calculate_order_values(order);
 
                 order.items.forEach(function(item) {
                   item.name = items[item.item_id].name;

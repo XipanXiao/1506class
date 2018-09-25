@@ -8,13 +8,15 @@ define('payment/payment', [
         scope: {
           order: '=',
           onCancel: '&',
-          onPaid: '&'
+          onPaid: '&',
+          showCloseButton: '@'
         },
         link: function(scope) {
         	  // Render the PayPal button
         	  paypal.Button.render({
           // Set your environment
-            env: 'production', // sandbox | production
+            env: location.href.indexOf('localhost') >= 0 ?
+                'sandbox' : 'production', // sandbox | production
 
         	  // Specify the style of the button
         	  style: {
@@ -72,7 +74,7 @@ define('payment/payment', [
 	        	}
 	        	}, '#paypal-button-container');
         	},
-        templateUrl : 'js/payment/payment.html?tag=201809242258'
+        templateUrl : 'js/payment/payment.html?tag=201809252258'
       };
     });
 });

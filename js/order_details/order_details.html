@@ -30,7 +30,7 @@
         <input type="button" ng-if="!admin && !paid()" value="付款" class="clickable"
             ng-click="order.showPayment = !order.showPayment">
         <payment ng-if="order.showPayment" order="order" on-paid="onPaid()"
-            on-cancel="order.showPayment = null">
+            on-cancel="order.showPayment = null" show-close-button="true">
         </payment>  
       </div>
       <div ng-if="order.paypal_trans_id">

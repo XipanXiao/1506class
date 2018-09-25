@@ -37,25 +37,13 @@ define('invoice_app', [
                 return scope.order = response.data;
               });
             }
-            function summarize_order(order) {
-              order.sub_total = 0.0;
-              order.shipping = 0.0;
-              order.paid = parseMoney(order.paid);
-              for (let item of order.items) {
-                item.count = parseInt(item.count);
-                order.sub_total += item.count * parseMoney(item.price);
-                order.shipping += item.count * parseMoney(item.shipping);
-              }
-              order.grand_total = order.sub_total + order.shipping;
-              order.balance = order.grand_total - order.paid; 
-            }
             function getItems() {
               var level = perm.isOrderAdmin() && 99;
               return rpc.get_items(null, level).then(function(response) {
                 var items = response.data;
 
                 var order = scope.order;
-                summarize_order(order);
+                utils.calculate_order_values(order);
 
                 order.items.forEach(function(item) {
                   item.name = items[item.item_id].name;

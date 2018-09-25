@@ -18,13 +18,12 @@ define('order_app', [
       'PermissionModule',
       'UtilsModule',
       ])
-      .directive('body', function($rootScope, rpc, perm, utils) {
+      .directive('body', function(rpc, perm, utils) {
         return {
           link: function(scope) {
             scope.pageLoaded = [];
 
-            scope.cart = new Cart({rpc: rpc, utils: utils, 
-                rootScope: $rootScope, scope: scope});
+            scope.cart = new Cart({rpc: rpc, utils: utils, scope: scope});
 
             rpc.get_user().then(function(user) {
               perm.user = user;

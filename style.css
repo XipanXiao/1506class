@@ -703,7 +703,8 @@ body.white {
 }
 
 .check-out-button {
-  width: 100px;
+  min-width: 100px;
+  margin: 0 4px;
 }
 
 .right-align {
@@ -882,4 +883,8 @@ payment {
   border: 1px solid;
   border-radius: 4px;
   z-index: 1;
+}
+
+payment.in-shopping-cart {
+  border: none;
 }

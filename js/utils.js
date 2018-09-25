@@ -35,7 +35,11 @@ define('utils', [], function() {
       return result;
     };
   }
-  
+
+  function parseMoney(value) {
+    return value && parseFloat(value) || 0.00;
+  }
+
   var enroll_tasks = ['welcomed', 'wechated', 'yyed', 'tested', 'bookordered'];
 
   return angular.module('UtilsModule', []).factory('utils', function($q) {
@@ -610,6 +614,31 @@ define('utils', [], function() {
         	  return capitalize(pinyinTable[ch]);
         };
         return [getFirstName(name), getLastName(name)];
+      },
+      summarize_order: function(order) {
+        order.sub_total = 0.0;
+        order.shipping = 0.0;
+        for (let item of order.items) {
+          item.count = parseInt(item.count);
+          order.sub_total += item.count * parseMoney(item.price);
+          order.shipping += item.count * parseMoney(item.shipping);
+        }
+      },
+      calculate_order_values: function(order) {
+        order.status = parseInt(order.status);
+        utils.summarize_order(order);
+        order.district = parseInt(order.district) || 0;
+        order.sub_total = parseMoney(order.sub_total).toFixed(2);
+        order.shipping = parseMoney(order.shipping).toFixed(2);
+        order.int_shipping = parseMoney(order.int_shipping).toFixed(2);
+        order.paid = parseMoney(order.paid).toFixed(2);
+
+        order.grand_total = parseMoney(order.sub_total) + 
+            parseMoney(order.shipping);
+        order.grand_total = order.grand_total.toFixed(2);
+        order.balance = 
+            parseMoney(order.grand_total) - parseMoney(order.paid);
+        order.balance = order.balance.toFixed(2);
       },
 
       // Index of bit in the user.enroll_tasks bits.

@@ -7,7 +7,7 @@ define('shopping_cart/shopping_cart', [
       'AddressEditorModule', 'DistrictsModule',
       'PaymentModule',
       'ServicesModule', 'UtilsModule'])
-    .directive('shoppingCart', function(rpc, utils) {
+    .directive('shoppingCart', function($rootScope, rpc, utils) {
       return {
         scope: {
           cart: '=',
@@ -22,8 +22,17 @@ define('shopping_cart/shopping_cart', [
           scope.confirming = false;
           scope.addrEditor = {};
           scope.shipTo = scope.ME;
+          
+          function showPaymentWindow(orderId) {
+            var toast = document.querySelector('#toast1');
+            toast && toast.open();
+            rpc.get_order(orderId).then(function(response) {
+              scope.order = response.data;
+              utils.calculate_order_values(scope.order);
+            });
+          }
 
-          scope.checkOut = function() {
+          scope.checkOut = function(payNow) {
             if (!scope.confirming) {
               scope.confirming = true;
               return;
@@ -44,10 +53,21 @@ define('shopping_cart/shopping_cart', [
             }
             var options = {
               refill: scope.refill,
+              payNow: payNow,
               localPickup: scope.shipTo == scope.PICKUP
             };
-            scope.cart.checkOut(user, options).then(function(placed) {
-              if (placed) scope.confirming = false;
+            scope.cart.checkOut(user, options).then(function(orderId) {
+              if (!orderId) return;
+              $rootScope.$broadcast('reload-orders');
+              if (payNow) {
+                showPaymentWindow(orderId);
+              } else if (scope.refill) {
+                clear();
+              } else {
+                var toast = document.querySelector('#toast0');
+                toast && toast.open();
+                scope.showOrders();
+              }
             });
           };
 
@@ -62,8 +82,35 @@ define('shopping_cart/shopping_cart', [
               scope.cart.update();
             }
           };
+
+          function clear() {
+            scope.order = null;
+            scope.confirming = false;
+          }
+
+          scope.showOrders = function() {
+            clear();
+
+            scope && setTimeout(function() {
+              document.querySelector('paper-tabs').selected = 2;
+            }, 3000);
+          };
+
+          scope.updateOrder = function() {
+            rpc.update_order(scope.order).then(function(response) {
+              clear();
+              if (response.data.updated) {
+                $rootScope.$broadcast('reload-orders');
+                var toast = document.querySelector('#toast2');
+                toast && toast.open();
+                scope.showOrders();
+              } else {
+                alert(response.data.error);
+              }
+            });
+          };
         },
-        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809241253'
+        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809251253'
       };
     });
 });

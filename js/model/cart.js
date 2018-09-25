@@ -1,5 +1,5 @@
 define('model/cart', [], function() {
-  var utils, rpc, rootScope, scope;
+  var utils, rpc, scope;
 
   var cart = {
     size: 0,
@@ -77,26 +77,21 @@ define('model/cart', [], function() {
       }
       var cart = this;
       return rpc.update_order(order).then(function(response) {
-        if (parseInt(response.data.updated)) {
+        var orderId = parseInt(response.data.updated);
+
+        if (orderId) {
           cart.clear();
-          rootScope.$broadcast('reload-orders');
-          var toast = document.querySelector('#toast0');
-          toast && toast.open();
-          scope && setTimeout(function() {
-            scope.selectTab(2);
-          }, 3000);
-          return true;
+          return orderId;
         } else {
           alert('订单提交失败:{0}'.format(response.data.error));
+          return 0;
         }
-        return false;
       });
     }
   };
   return function(params) {
     utils = params.utils;
     rpc = params.rpc;
-    rootScope = params.rootScope;
     scope = params.scope;
 
     utils.mix_in(this, cart);

@@ -15,8 +15,7 @@ define('inventory/inventory', [
         },
         link: function(scope) {
           scope.year = new Date().getFullYear();
-          scope.cart = new Cart({rpc: rpc, utils: utils,
-              rootScope: $rootScope});
+          scope.cart = new Cart({rpc: rpc, utils: utils});
           scope.selected = {};
 
           function getItems() {
