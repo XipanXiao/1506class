@@ -31651,11 +31651,16 @@ define('shopping_cart/shopping_cart', [
           scope.addrEditor = {};
           scope.shipTo = scope.ME;
           
+          var items = {};
+          
           function showPaymentWindow(orderId) {
             var toast = document.querySelector('#toast1');
             toast && toast.open();
             rpc.get_order(orderId).then(function(response) {
               scope.order = response.data;
+              scope.order.items.forEach(function(item) {
+                item.name = items[item.item_id].name;
+              });
               utils.calculate_order_values(scope.order);
             });
           }
@@ -31684,6 +31689,7 @@ define('shopping_cart/shopping_cart', [
               payNow: payNow,
               localPickup: scope.shipTo == scope.PICKUP
             };
+            utils.mix_in(items, scope.cart.items);
             scope.cart.checkOut(user, options).then(function(orderId) {
               if (!orderId) return;
               $rootScope.$broadcast('reload-orders');
