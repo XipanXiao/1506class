@@ -12,6 +12,19 @@ define('payment/payment', [
           showCloseButton: '@'
         },
         link: function(scope) {
+          function parseMoney(value) {
+            return value && parseFloat(value) || 0.00;
+          }
+          function getItems(order) {
+            return order.items.map(function (item) {
+              return {
+                name: item.name,
+                quantity: item.count,
+                currency: 'USD',
+                price: parseMoney(item.price) + parseMoney(item.shipping)
+              };
+            });
+          }
         	  // Render the PayPal button
         	  paypal.Button.render({
           // Set your environment
@@ -48,14 +61,35 @@ define('payment/payment', [
 	        	},
 	
 	        	payment: function (data, actions) {
+	        	  var order = scope.order;
 	        	  return actions.payment.create({
 	        	    payment: {
+	        	      payer: {
+	        	        payer_info: {
+	        	          email: order.email,
+	        	          first_name: order.name,
+	        	          billing_address: {
+	        	            line1: order.street,
+	        	            city: order.city,
+	        	            country_code: order.country,
+	        	            postal_code: order.zip,
+	        	            state: order.stateLabel,
+	        	            phone: order.phone
+	        	          },
+	        	        },
+	        	      },
 	        	      transactions: [
 	        	        {
 	        	          amount: {
-	        	            total: scope.order.balance,
+	        	            total: order.balance,
 	        	            currency: 'USD'
-	        	          }
+	        	          },
+	        	          invoice_number: order.id,
+	        	          item_list: {
+	        	            items: getItems(order)
+	        	          },
+	        	          note_to_payee: '{0}: {1}{2}?order_id={3}'.format(order.name,
+	                        utils.getBaseUrl(), 'invoice_print.html', order.id)
 	        	        }
 	        	      ]
 	        	    }

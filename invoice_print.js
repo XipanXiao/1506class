@@ -30182,6 +30182,11 @@ define('utils', [], function() {
       redirect: function(url) {
         window.location.href = url;
       },
+      getBaseUrl: function() {
+        var index = location.pathname.lastIndexOf("/") + 1;
+        var filename = location.pathname.substr(index);
+        return location.href.substr(0, location.href.indexOf(filename));
+      },
       login: function() {
         var index = location.pathname.lastIndexOf("/") + 1;
         var filename = location.pathname.substr(index);
