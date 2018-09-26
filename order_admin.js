@@ -31731,6 +31731,7 @@ define('shopping_cart/shopping_cart', [
           };
 
           scope.updateOrder = function() {
+        	    scope.order.status = 2;
             rpc.update_order(scope.order).then(function(response) {
               clear();
               if (response.data.updated) {
@@ -31744,7 +31745,7 @@ define('shopping_cart/shopping_cart', [
             });
           };
         },
-        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809251253'
+        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809252001'
       };
     });
 });

@@ -887,4 +887,7 @@ payment {
 
 payment.in-shopping-cart {
   border: none;
+  display: block;
+  margin: 50px 300px;
+  position: relative;
 }
