@@ -31169,7 +31169,7 @@ define('order_details/order_details', [
             return parseFloat(scope.order.balance) <= 0.0;
           }
         },
-        templateUrl : 'js/order_details/order_details.html?tag=201809232230'
+        templateUrl : 'js/order_details/order_details.html?tag=201809261213'
       };
     });
 });
