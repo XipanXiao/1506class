@@ -33,8 +33,8 @@
             on-cancel="order.showPayment = null" show-close-button="true">
         </payment>  
       </div>
-      <div ng-if="order.paypal_trans_id">
-        <a href="https://www.paypal.com/myaccount/transaction/details/inline/{{order.paypal_trans_id}}"
+      <div ng-if="admin && order.paypal_trans_id">
+        <a href="https://www.paypal.com/activity/payment/{{order.paypal_trans_id}}"
             target="_blank">
           PayPal transaction
         </a>
