@@ -15,13 +15,16 @@ define('payment/payment', [
           function parseMoney(value) {
             return value && parseFloat(value) || 0.00;
           }
+          function addMoney(a, b) {
+            return parseMoney((parseMoney(a) + parseMoney(b)).toFixed(2));
+          }
           function getItems(order) {
             return order.items.map(function (item) {
               return {
                 name: item.name,
                 quantity: item.count,
                 currency: 'USD',
-                price: parseMoney(item.price) + parseMoney(item.shipping)
+                price: addMoney(item.price, item.shipping)
               };
             });
           }
