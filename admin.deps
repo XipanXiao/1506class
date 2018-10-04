@@ -27,6 +27,7 @@ js/task_history/task_history.js
 js/task_stats/task_stats.js
 js/new_user_dialog/new_user_dialog.js
 js/address_editor/address_editor.js
+js/districts/districts.js
 js/user_editor/user_editor.js
 js/zb_sync_button/zb_sync_button.js
 js/task_arrangements/task_arrangements.js

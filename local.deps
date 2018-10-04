@@ -11,6 +11,7 @@ js/app_bar/app_bar.js
 js/import_dialog/import_dialog.js
 js/classes/classes.js
 js/address_filter/address_filter.js
+js/districts/districts.js
 js/bit_editor/bit_editor.js
 js/address_editor/address_editor.js
 js/permission_editor/permission_editor.js

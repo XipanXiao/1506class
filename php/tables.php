@@ -310,15 +310,41 @@ function remove_user($id) {
 }
 
 
-function add_startyear_column($medoo) {
-  $query = "ALTER TABLE users ADD start_year YEAR";
+function add_users_columns($medoo) {
+	if (!empty($medoo->select("users", "district", ["LIMIT" => 1]))) return;
+
+	$medoo->delete("districts", ["id" => 99]);
+	$query = "ALTER TABLE users
+      ADD COLUMN district MEDIUMINT,
+      ADD FOREIGN KEY fk_district(district) REFERENCES districts(id)";
   $medoo->query($query);
+  $medoo->update("users", ["district" => 1], ["state" => 32]);
+  $medoo->update("users", ["district" => 2], ["state" => 47]);
+  $medoo->update("users", ["district" => 3], ["state" => 4]);
+  $medoo->update("users", ["district" => 5], ["state" => 30]);
+  $medoo->update("users", ["district" => 6], ["state" => 21]);
+  $medoo->update("users", ["district" => 7], ["state" => 43]);
+  
+  $sca_cities = ["Alhambra", "Arcadia", "Brea", "Chino", "Chino Hills",
+  		"Corona", "Diamond Bar", "El Monte", "Foothill Ranch", "Fountain Valley",
+  		"Glandora", "hacienda", "Hacienda Height", "Hacienda Heights",
+  		"Huntington beach", "Irvine", "LA", "La Puente", "La Verne",
+  		"Laguna Niguel", "Los Angeles", "los angels", "Los Angles",
+  		"Monterey Park, Los Angels", "murrieta", "Northridge", "Orange",
+  		"Orange County", "Pasadena", "Placentia", "rancho palos verdes",
+  		"Riverside", "Rosemead", "rowland", "Rowland Heights", "San Bernaden",
+  		"San Clemente", "San Diego", "San Dimas", "San Gabriel", "San Marino",
+  		"South Pasadena", "Temple City", "Torrance", "Ukiah", "Walnut",
+  		"West Covina", "west hills", "Yorba linda"
+  ];
+  
+  $medoo->update("users", ["district" => 4], ["city" => $sca_cities]);
 }
 
 function update_user($user) {
   global $medoo;
 
-  add_startyear_column($medoo);
+  add_users_columns($medoo);
 
   $datas = [];
   
