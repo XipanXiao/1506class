@@ -119,11 +119,15 @@ function checkCaptcha($captcha) {
 function insertOrUpdate($medoo, $table, $record) {
   $id = intval($record["id"]);
   if ($id) {
-    $medoo->update($table, $record, ["id" => $id]);
+    if (!$medoo->update($table, $record, ["id" => $id])) return 0;
     return $id;
   } else {
     return intval($medoo->insert($table, $record));
   }
+}
+
+function delete_record($medoo, $table, $id) {
+  return $medoo->delete($table, ["id" => $id]);
 }
 
 function run_sql_file($file, $medoo) {

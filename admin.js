@@ -30532,6 +30532,50 @@ define('services', ['utils'], function() {
               return map;
             });
           },
+          
+          get_elections: function() {
+            return $http.get('php/election.php?rid=elections');
+          },
+          
+          get_candidates: function(election) {
+            var url = 'php/election.php?rid=candidates' +
+                '&election={0}'.format(election);
+            return $http.get(url);
+          },
+          
+          get_votes: function(election, user) {
+            var url = 'php/election.php?rid=candidates' +
+                '&election={0}&user={1}'.format(election, user || '');
+            return $http.get(url);
+          },
+          
+          update_election: function(election) {
+            election.rid = 'elections';
+            return http_form_post(
+                $http, $httpParamSerializerJQLike(election), 'php/election.php');
+          },
+
+          update_candidate: function(candidate) {
+            candidate.rid = 'candidates';
+            return http_form_post(
+                $http, $httpParamSerializerJQLike(candidate), 'php/election.php');
+          },
+
+          vote: function(data) {
+            data.rid = 'votes';
+            return http_form_post(
+                $http, $httpParamSerializerJQLike(data), 'php/election.php');
+          },
+          
+          delete_election: function(election) {
+            var url = 'php/election.php?rid=elections&id={0}'.format(election);
+            return $http.delete(url);
+          },
+
+          delete_candidate: function(candidate) {
+            var url = 'php/election.php?rid=candidates&id={0}'.format(candidate);
+            return $http.delete(url);
+          }
         };
       });
 });
