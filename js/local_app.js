@@ -20,6 +20,24 @@ define('local_app', [
       .directive('body', function(rpc, perm, utils) {
         return {
           link: function($scope) {
+            $scope.roleOptions = [
+              {label: '退出', checked: false, department_id: 9},
+              {label: '功德会', checked: false, department_id: 8},
+              {label: '学会', checked: true}
+            ];
+            const isRegular = (user) => {
+              var depId = parseInt($scope.classes[user.classId].department_id);
+              for (let role of $scope.roleOptions) {
+                if (role.department_id == depId || !role.department_id) {
+                  return role.checked;
+                }
+              }
+            };
+            const isInYears = (user) => {
+              var classYear = $scope.classes[user.classId].start_year;
+              return $scope.classYears[classYear].checked;
+            };
+      
             rpc.get_user().then(function(user) {
               perm.user = user;
               if (!perm.isSysAdmin()) {
@@ -31,13 +49,11 @@ define('local_app', [
             });
             $scope.$on('users-selected', function(event, users) {
               $scope.allUsers = users;
-              $scope.users = users;
               $scope.aggregateClassYears();
             });
             $scope.classYearChanged = function() {
               $scope.users = utils.where($scope.allUsers, function(user) {
-                var classYear = $scope.classes[user.classId].start_year;
-                return $scope.classYears[classYear].checked;
+                return isInYears(user) && isRegular(user);
               });
             };
 
@@ -45,7 +61,7 @@ define('local_app', [
             /// [users].
             $scope.aggregateClassYears = function() {
               var classIds = {};
-              utils.forEach($scope.users, function(user) {
+              utils.forEach($scope.allUsers, function(user) {
                 classIds[user.classId] = user.classId;
               });
 
@@ -61,6 +77,7 @@ define('local_app', [
                   };
                 });
                 $scope.classYears = classYears;
+                $scope.users = utils.where($scope.allUsers, isRegular);
               });
             };
           }
