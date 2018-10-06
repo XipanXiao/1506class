@@ -2,6 +2,19 @@
 <input ng-if="isSysAdmin()" type="button" value="导出为tsv文件" ng-click="exportUsers()">
 <input type="button" value="分配学号..." ng-click="showSerialNumberDlg()">
 <a ng-if="exportedUrl" href="{{exportedUrl}}" download="user.txt">user.txt</a>
+<div ng-show="showMoreActions" class="actions right">
+  <iron-icon icon="more-vert" ng-click="showActions = !showActions"
+      class="clickable">
+  </iron-icon>
+  <div ng-show="showActions" class="backdrop" ng-click="showActions = false">
+  </div>
+  <div ng-if="showActions" class="popup-menu">
+    <div class="selectable clickable menu-item" ng-click="">
+      批量修改地区: 
+      <districts editable="true" user="batchChange"></districts>
+    </div>
+  </div>
+</div>
 <div class="users flex" ng-if="isNotEmpty">
   <div class="css-table section odd-even">
     <div class="css-table-row header">

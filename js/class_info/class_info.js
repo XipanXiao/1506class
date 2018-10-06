@@ -47,7 +47,7 @@ define('class_info/class_info', ['bit_editor/bit_editor',
         	    });
           }
         },
-        templateUrl : 'js/class_info/class_info.html'
+        templateUrl : 'js/class_info/class_info.html?tag=201810052245'
       };
     });
 });

@@ -30035,6 +30035,12 @@ $provide.value("$locale", {
             parseMoney(order.grand_total) - parseMoney(order.paid);
         order.balance = order.balance.toFixed(2);
       },
+      showInfo: function(message) {
+        var toast = document.querySelector('paper-toast');
+        toast.text = message;
+        toast.open();
+        return toast;
+      },
 
       // Index of bit in the user.enroll_tasks bits.
       // Indicating whether welcome letter is sent.
@@ -34219,10 +34225,12 @@ define('scores/scores', ['services',
 });
 define('users/users', ['bit_editor/bit_editor',
     'importers', 'permission', 'services',
+    'districts/districts',
     'user_editor/user_editor',
     'utils'], function() {
 
   return angular.module('UsersModule', ['BitEditorModule',
+    'DistrictsModule',
     'ImportersModule',
     'PermissionModule', 'ServicesModule',
     'UserEditorModule', 'UtilsModule'])
@@ -34231,6 +34239,7 @@ define('users/users', ['bit_editor/bit_editor',
         scope: {
           users: '=',
           classId: '=',
+          showMoreActions: '@',
           onDelete: '&'
         },
         restrict: 'E',
@@ -34239,6 +34248,29 @@ define('users/users', ['bit_editor/bit_editor',
           $scope.isNewClass = function() {
             return $scope.classId === 1;
           };
+          $scope.batchChange = {district: null};
+          $scope.$watch('batchChange.district', (district) => {
+            var message = ('您确定要移动{0}位用户的地区吗？' +
+                '该操作不能撤销。').format($scope.userCount());
+            if (!district || !confirm(message)) return;
+
+            $scope.showActions = false;
+            var updated = 0;
+            var requests = utils.map($scope.users, (user) => (() => {
+              var data = {id: user.id, district: district};
+              return rpc.update_user(data).then((response) => {
+                if (response.data.updated) {
+                  updated++;
+                  user.district = district;
+                }
+                return true;
+              });
+            }));
+            utils.requestOneByOne(requests).then(() => {
+              var toast = utils.showInfo('成功修改{0}位用户'.format(updated));
+              toast.style.top = '0';
+            });
+          });
 
           $scope.$watch('users', function(users) {
             $scope.isNotEmpty = !utils.isEmpty($scope.users);
@@ -34457,7 +34489,7 @@ define('class_info/class_info', ['bit_editor/bit_editor',
         	    });
           }
         },
-        templateUrl : 'js/class_info/class_info.html'
+        templateUrl : 'js/class_info/class_info.html?tag=201810052245'
       };
     });
 });

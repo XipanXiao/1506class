@@ -645,6 +645,12 @@ define('utils', [], function() {
             parseMoney(order.grand_total) - parseMoney(order.paid);
         order.balance = order.balance.toFixed(2);
       },
+      showInfo: function(message) {
+        var toast = document.querySelector('paper-toast');
+        toast.text = message;
+        toast.open();
+        return toast;
+      },
 
       // Index of bit in the user.enroll_tasks bits.
       // Indicating whether welcome letter is sent.
