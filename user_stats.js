@@ -31769,6 +31769,7 @@ define('users/users', ['bit_editor/bit_editor',
           users: '=',
           classId: '=',
           showMoreActions: '@',
+          showSerialButton: '@',
           onDelete: '&'
         },
         restrict: 'E',
@@ -31857,7 +31858,7 @@ define('users/users', ['bit_editor/bit_editor',
             document.querySelector('#serial-number-dlg').open();
           };
         },
-        templateUrl : 'js/users/users.html?tag=201810052307'
+        templateUrl : 'js/users/users.html?tag=201810062307'
       };
     });
 });
@@ -31893,20 +31894,16 @@ define('user_stats_app', [
               $scope.user = user;
             });
 
-            function filterUsers() {
+            $scope.filterUsers = () => {
               $scope.users = utils.where($scope.allUsers, function(user) {
+                var years = $scope.classYears;
                 var classInfo = classes[user.classId];
-                return $scope.classYears[classInfo.start_year].checked &&
+                var district = $scope.districts[parseInt(user.district)];
+                return district.checked &&
+                    (!years || years[classInfo.start_year].checked) &&
                     $scope.departments[classInfo.department_id].checked;
               });
               return utils.truePromise();
-            }
-            $scope.classYearChanged = function() {
-              filterUsers();
-            };
-            
-            $scope.depChanged = function() {
-              filterUsers();
             };
 
             var classes;
@@ -31936,9 +31933,24 @@ define('user_stats_app', [
                 $scope.departments = response.data;
                 utils.forEach($scope.departments, function(dep) {
                   dep.label = dep.name;
-                  dep.checked = dep.id != 9;// dep 9 have all quit people.
+                  // dep 8 = gongde hui.
+                  // dep 9 have all quit people.
+                  dep.checked = dep.id != 9 && dep.id != 8;
                 });
                 return $scope.departments;
+              });
+            }
+
+            function getDistricts() {
+              return rpc.get_districts().then((response) => {
+                $scope.districts = {};
+                utils.forEach(response.data, (district) => {
+                  district.label = district.name;
+                  district.checked = true;
+                  $scope.districts[parseInt(district.id)] = district;
+                });
+                $scope.districts[0] = {label: '未指定地区', checked: true};
+                return $scope.districts;
               });
             }
 
@@ -31956,16 +31968,18 @@ define('user_stats_app', [
                 utils.forEach(classes, function(classInfo) {
                   requests.push(function() {
                     return rpc.get_users(null, classInfo.id).then(function(response) {
-                      return $scope.users = $scope.allUsers = 
+                      $scope.allUsers = 
                           $scope.allUsers.concat(utils.toList(response.data));
+                      $scope.filterUsers();
+                      return $scope.allUsers.length;
                     });
                   });
                 });
                 return utils.requestOneByOne(requests);
               }
               
-              utils.requestOneByOne([getClassIds, collectClassUsers, 
-                  getDepartments, aggregateClassYears, filterUsers]);
+              utils.requestOneByOne([getDepartments, getDistricts, getClassIds,
+                  collectClassUsers, aggregateClassYears, $scope.filterUsers]);
             };
             
             $scope.fixCityNames = function() {

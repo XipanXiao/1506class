@@ -34240,6 +34240,7 @@ define('users/users', ['bit_editor/bit_editor',
           users: '=',
           classId: '=',
           showMoreActions: '@',
+          showSerialButton: '@',
           onDelete: '&'
         },
         restrict: 'E',
@@ -34328,7 +34329,7 @@ define('users/users', ['bit_editor/bit_editor',
             document.querySelector('#serial-number-dlg').open();
           };
         },
-        templateUrl : 'js/users/users.html?tag=201810052307'
+        templateUrl : 'js/users/users.html?tag=201810062307'
       };
     });
 });
@@ -34489,7 +34490,7 @@ define('class_info/class_info', ['bit_editor/bit_editor',
         	    });
           }
         },
-        templateUrl : 'js/class_info/class_info.html?tag=201810052245'
+        templateUrl : 'js/class_info/class_info.html?tag=201810062245'
       };
     });
 });

@@ -1,6 +1,7 @@
 <span class="padded-element">人数：{{userCount()}}</span>
 <input ng-if="isSysAdmin()" type="button" value="导出为tsv文件" ng-click="exportUsers()">
-<input type="button" value="分配学号..." ng-click="showSerialNumberDlg()">
+<input ng-if="showSerialButton" type="button" value="分配学号..."
+    ng-click="showSerialNumberDlg()">
 <a ng-if="exportedUrl" href="{{exportedUrl}}" download="user.txt">user.txt</a>
 <div ng-show="showMoreActions" class="actions right">
   <iron-icon icon="more-vert" ng-click="showActions = !showActions"
