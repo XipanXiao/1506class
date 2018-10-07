@@ -17,8 +17,8 @@
         href="index.html">
       考勤登记
     </a>
-    <a ng-if="!isIn('/admin.html') && (isAdmin() || isTeacher())" class="app-bar-link"
-        href="admin.html">
+    <a ng-if="!isIn('/admin.html') && (isAdmin() || isTeacher())"
+        class="app-bar-link" href="admin.html">
       学修管理
     </a>
     <a ng-if="!isIn('/order.html')" class="app-bar-link" href="order.html">
@@ -28,8 +28,8 @@
         href="local.html">
       地方小组
     </a>
-    <a ng-if="!isIn('/user_stats.html') && isSysAdmin()" class="app-bar-link" 
-        href="user_stats.html">
+    <a ng-if="!isIn('/user_stats.html') && isDistrictAdmin()"
+        class="app-bar-link" href="user_stats.html">
       用户统计
     </a>
     <a ng-if="!isIn('/assignment.html') && showAssignments()"

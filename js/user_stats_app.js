@@ -22,7 +22,7 @@ define('user_stats_app', [
           link: function($scope) {
             rpc.get_user().then(function(user) {
               perm.user = user;
-              if (!perm.isSysAdmin()) {
+              if (!perm.isDistrictAdmin()) {
                 utils.redirect('./index.html');
                 return;
               }
@@ -81,9 +81,12 @@ define('user_stats_app', [
               return rpc.get_districts().then((response) => {
                 $scope.districts = {};
                 utils.forEach(response.data, (district) => {
+                  var id = parseInt(district.id);
+                  if (!perm.canReadDistrict(id)) return;
+
                   district.label = district.name;
                   district.checked = true;
-                  $scope.districts[parseInt(district.id)] = district;
+                  $scope.districts[id] = district;
                 });
                 $scope.districts[0] = {label: '未指定地区', checked: true};
                 return $scope.districts;
@@ -106,8 +109,7 @@ define('user_stats_app', [
                     return rpc.get_users(null, classInfo.id).then(function(response) {
                       $scope.allUsers = 
                           $scope.allUsers.concat(utils.toList(response.data));
-                      $scope.filterUsers();
-                      return $scope.allUsers.length;
+                      return $scope.filterUsers();
                     });
                   });
                 });

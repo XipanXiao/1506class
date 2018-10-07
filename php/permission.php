@@ -1,6 +1,4 @@
 <?php
-define("INSPECTOR", 0x57);
-
 function isSysAdmin($user) {
   return ($user->permission & Roles::SYS_ADMIN) == Roles::SYS_ADMIN;
 }
@@ -9,8 +7,14 @@ function isCountryAdmin($user) {
   return ($user->permission & Roles::COUNTRY_ADMIN) == Roles::COUNTRY_ADMIN;
 }
 
+function isDistrictAdmin($user) {
+  return ($user->permission & Roles::DISTRICT_ADMIN) ==
+      Roles::DISTRICT_ADMIN;
+}
+
 function isInspector($user) {
-  return ($user->permission & Roles::INSPECTOR) == Roles::INSPECTOR;
+  return ($user->permission & Roles::COUNTRY_INSPECTOR) ==
+      Roles::COUNTRY_INSPECTOR;
 }
 
 function isYearLeader($user) {
@@ -22,12 +26,23 @@ function isClassLeader($user, $classId) {
       $user->classId == $classId;
 }
 
+function isClassReader($user, $classId) {
+  return ($user->permission & Roles::CLASS_READER) == Roles::CLASS_READER &&
+      $user->classId == $classId;
+}
+
 function isAdmin($user) {
-  return $user->permission > get_student_permission();
+  return ($user->permission & Roles::CLASS_LEADER) == Roles::CLASS_LEADER;
+}
+
+function isOrderReader($user) {
+  return ($user->permission & Roles::ORDER_INSPECTOR) ==
+      Roles::ORDER_INSPECTOR;
 }
 
 function isOrderManager($user) {
-  return ($user->permission & 0x103) == 0x103;
+  return ($user->permission & Roles::ORDER_ADMIN) ==
+      Roles::ORDER_ADMIN;
 }
 
 function canGrant($user, $perm) {
@@ -35,7 +50,7 @@ function canGrant($user, $perm) {
 }
 
 function canReadOrderAddress($user) {
-  return ($user->permission & 0x303) == 0x303;
+  return ($user->permission & Roles::ORDER_ADMIN) == Roles::ORDER_ADMIN;
 }
 
 function get_student_permission() {
@@ -68,8 +83,7 @@ function canRead($user, $classInfo) {
   if (!$perm) return false;
 
   return checkClass($user, $classInfo) || checkYear($user, $classInfo) ||
-      checkInspector($user, $classInfo) || checkDistrict($user, $classInfo) ||
-      isSysAdmin($user);
+      isInspector($user) || isCountryAdmin($user) || isSysAdmin($user);
 }
 
 function canWrite($user, $classInfo) {
@@ -79,12 +93,10 @@ function canWrite($user, $classInfo) {
   $perm = ($user->permission >> (($level - 1) * 2)) & 2;
   if (!$perm) return false;
 
-  return checkClass($user, $classInfo) || checkYear($user, $classInfo) ||
-      checkDistrict($user, $classInfo) || isSysAdmin($user);
-}
-
-function checkDistrict($user, $classInfo) {
-  return isCountryAdmin($user) && sameCountry($user, $classInfo);
+  return checkClass($user, $classInfo) ||
+      checkYear($user, $classInfo) ||
+      isCountryAdmin($user) ||
+      isSysAdmin($user);
 }
 
 function checkClass($user, $classInfo) {
@@ -97,10 +109,6 @@ function checkYear($user, $classInfo) {
       $user->classInfo["start_year"] == $classInfo["start_year"];
 }
 
-function checkInspector($user, $classInfo) {
-  return isInspector($user) && sameCountry($user, $classInfo);
-}
-
 function getStartPage($user) {
   if (isCountryAdmin($user)) return "admin.html";
   if (isOrderManager($user)) return "order_admin.html";
@@ -110,9 +118,13 @@ function getStartPage($user) {
 
 abstract class Roles {
   const SYS_ADMIN = 0xFFFF;
-  const COUNTRY_ADMIN = 0x3FF;
-  const INSPECTOR = 0x57;
+  const COUNTRY_ADMIN = 0xFFF;
+  const COUNTRY_INSPECTOR = 0x457;
+  const ORDER_ADMIN = 0x303;
+  const ORDER_INSPECTOR = 0x103;
+  const DISTRICT_ADMIN = 0xC3;
   const YEAR_LEADER = 0x3F;
   const CLASS_LEADER = 0xF;
+  const CLASS_READER = 0x7;
 }
 ?>

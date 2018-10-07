@@ -68,15 +68,27 @@ function isSameYear($another) {
   return $classes[$classId]["start_year"] == $user->classInfo["start_year"];
 }
 
-/// Whether [$another] is in the same country of the current [$user].
-/// System admins are considered to be everywhere.
 function isSameCountry($another) {
-  return true;
-//  global $user;
+  global $user;
+  $country = is_array($another) ? $another["country"] : $another->country;
+  return $country == $user->country;
+}
 
-//  if (isSysAdmin($user)) return true;
-//  $country = is_array($another) ? $another["country"] : $another->country;
-//  return $country == $user->country;
+/// Whether [$another] is in the same district of the current [$user].
+/// System admins are considered to be everywhere.
+function isSameDistrict($another) {
+  global $user;
+
+  if (isSysAdmin($user)) return true;
+  if (isCountryAdmin($user)) {
+    return isSameCountry($another);
+  } elseif (isDistrictAdmin($user)) {
+    $district = is_array($another) ? $another["district"] : $another->district;
+    return $district == $user->district;
+  }
+  // Class leaders and year leaders who can read the class should
+  // read the user anyway, despite of their districts.
+  return true;
 }
 
 function checkPermission($role) {
@@ -133,7 +145,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       $classInfo = get_class_info($classId);
 
       if ($classInfo && canRead($user, $classInfo)) {
-        $response = array_filter(get_users(null, $classId), "isSameCountry");
+        $response = array_filter(get_users(null, $classId), "isSameDistrict");
       }
     } elseif ($email || $sn) {
       $response = current($email ?
@@ -163,11 +175,15 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "search") {
     if (isYearLeader($user)) {
       $response = search($_GET["prefix"]);
-      if (!empty($response) && !isCountryAdmin($user)) {
-        // For year leaders they can only see students of the same year.
-        $response = array_filter($response, "isSameYear");
-      } else {
-        $response = array_filter($response, "isSameCountry");
+      if (!empty($response)) {
+        if (isCountryAdmin($user)) {
+          $response = array_filter($response, "isSameCountry");
+        } elseif (isDistrictAdmin($user)) {
+          $response = array_filter($response, "isSameDistrict");
+        } elseif (isYearLeader($user)) {
+          // For year leaders they can only see students of the same year.
+          $response = array_filter($response, "isSameYear");
+        }
       }
     }
   } elseif ($resource_id == "user_label") {
@@ -176,7 +192,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         : permision_denied_error();
   } elseif ($resource_id == "search_name") {
     $response = isAdmin($user) 
-        ? array_filter(searchByName($_GET["name"]), "isSameCountry") 
+        ? array_filter(searchByName($_GET["name"]), "isSameDistrict") 
         : permision_denied_error();
   } elseif ($resource_id == "task_stats") {
     $startTime =

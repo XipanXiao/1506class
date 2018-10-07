@@ -50,14 +50,14 @@
     </div>
   </div>
   <div class="css-table-row">
-    <div class="css-table-cell">读取所有班级信息</div>
+    <div class="css-table-cell">读取地区用户信息</div>
     <div class="css-table-cell">
       <input type="checkbox" ng-model="user.permission"
           ng-disabled="!customizing || !canGrant(6)" bit-index="6">
     </div>
   </div>
   <div class="css-table-row">
-    <div class="css-table-cell">修改所有班级信息</div>
+    <div class="css-table-cell">修改地区用户信息</div>
     <div class="css-table-cell">
       <input type="checkbox" ng-model="user.permission"
           ng-disabled="!customizing || !canGrant(7)" bit-index="7">
@@ -77,5 +77,18 @@
           ng-disabled="!customizing || !canGrant(9)" bit-index="9">
     </div>
   </div>
+  <div class="css-table-row">
+    <div class="css-table-cell">读取所有班级信息</div>
+    <div class="css-table-cell">
+      <input type="checkbox" ng-model="user.permission"
+          ng-disabled="!customizing || !canGrant(6)" bit-index="10">
+    </div>
+  </div>
+  <div class="css-table-row">
+    <div class="css-table-cell">修改所有班级信息</div>
+    <div class="css-table-cell">
+      <input type="checkbox" ng-model="user.permission"
+          ng-disabled="!customizing || !canGrant(7)" bit-index="11">
+    </div>
+  </div>
 </div>
-

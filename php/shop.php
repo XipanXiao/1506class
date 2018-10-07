@@ -34,14 +34,14 @@ function _canClose($order) {
   return $order["status"] == OrderStatus::COMPLETED;
 }
 
-/// Returns an array of class ID's managed by [$user].
+/// Returns an array of class ID's that can be read by [$user].
 function _getManagedClasses($user) {
   if (isYearLeader($user)) {
     global $medoo;
     return $medoo->select("classes", "id",
         ["start_year" => $user->classInfo["start_year"]]);
   }
-  if (isClassLeader($user, $user->classId)) return $user->classId;
+  if (isClassReader($user, $user->classId)) return $user->classId;
   return null;
 }
 
@@ -459,13 +459,13 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       $order = get_order($_GET["order_id"]);
       if (!$order) {
         $response = "{}";
-      } elseif (isOrderManager($user) || $order["user_id"] == $user->id) {
+      } elseif (isOrderReader($user) || $order["user_id"] == $user->id) {
         $response = $order;
       } else {
         $response = permision_denied_error();
       }
     } elseif (empty($_GET["student_id"])) {
-      if (isOrderManager($user)) {
+      if (isOrderReader($user)) {
         $response = get_orders(null, $_GET, $_GET["items"], 
             canReadOrderAddress($user));
       } else {
@@ -486,13 +486,13 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "item_categories") {
     $response = get_item_categories(get_requested_level($user, $_GET));
   } elseif ($resource_id == "order_stats") {
-    $response = isOrderManager($user) 
+    $response = isOrderReader($user) 
         ? get_order_stats($_GET["year"]) 
         : permision_denied_error();
   } elseif ($resource_id == "book_lists") {
     $response = get_book_list($_GET["dep_id"], $_GET["term"], $user->classId); 
   } elseif ($resource_id == "class_book_lists") {
-    $response = isOrderManager($user) 
+    $response = isOrderReader($user) 
         ? get_class_book_lists($_GET["year"]) 
         : permision_denied_error();
   }
@@ -538,7 +538,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 
   $record = get_single_record($medoo, $resource_id, $_REQUEST["id"]);
   error_log($user->email ." DELETE ". json_encode($record));
-  if (!isOrderManager($user) && $record["status"]) {
+  if ($record["status"] || 
+      !isOrderManager($user) && $record["user_id"] != $user->id) {
     $response = permision_denied_error();
   } elseif ($resource_id == "orders") {
     if (floatval($record["paid"]) >= 0.01 || 

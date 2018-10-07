@@ -24,6 +24,9 @@ define('admin_app',
             $scope.pageLoaded = [true];
             rpc.get_user().then(function(user) {
               perm.user = user;
+              if (!perm.isAdmin()) {
+                utils.redirect('./index.html');
+              }
               $scope.user = user;
               $scope.classId = user.classId;
             });
