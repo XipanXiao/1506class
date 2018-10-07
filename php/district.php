@@ -43,7 +43,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 	if ($resource_id == "districts") {
 		$response = get_districts($_GET["country"]);
 	} elseif ($resource_id == "users") {
-	  $district_id = $_GET["district"];
+	  $district_id = intval($_GET["district"]);
 	  return canReadDistrict($user, $district_id)
 	      ? get_district_users($district_id)
 	      : permission_denied_error();

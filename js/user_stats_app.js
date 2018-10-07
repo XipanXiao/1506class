@@ -101,6 +101,7 @@ define('user_stats_app', [
 
             function collectDistrictUsers() {
               var requests =  utils.map($scope.districts, (district) => () => {
+                if (!district.id) return utils.truePromise();
                 return rpc.get_district_users(district.id).then((response) => {
                   $scope.allUsers = $scope.allUsers.concat(response.data);
                   return $scope.filterUsers();
