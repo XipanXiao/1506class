@@ -116,6 +116,12 @@ function getStartPage($user) {
   return "index.html";
 }
 
+function canReadDistrict($user, $district_id) {
+  return isSysAdmin($user) ||
+      isCountryAdmin($user) ||
+      isDistrictAdmin($user) && $user->district == $district_id;
+}
+
 abstract class Roles {
   const SYS_ADMIN = 0xFFFF;
   const COUNTRY_ADMIN = 0xFFF;

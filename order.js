@@ -30559,6 +30559,12 @@ define('services', ['utils'], function() {
           delete_candidate: function(candidate) {
             var url = 'php/election.php?rid=candidates&id={0}'.format(candidate);
             return $http.delete(url);
+          },
+
+          get_district_users: function(district) {
+            var url = 'php/district.php?rid=users' +
+                '&district={0}'.format(district);
+            return $http.get(url);
           }
         };
       });

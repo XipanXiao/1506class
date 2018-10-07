@@ -93,31 +93,27 @@ define('user_stats_app', [
               });
             }
 
-            function loadAllUsers() {              
-              function getClassIds() {
-                return rpc.get_classes().then(function(response) {
-                  return classes = response.data;
+            function getClasses() {
+              return rpc.get_classes().then(function(response) {
+                return classes = response.data;
+              });
+            }
+
+            function collectDistrictUsers() {
+              var requests =  utils.map($scope.districts, (district) => () => {
+                return rpc.get_district_users(district.id).then((response) => {
+                  $scope.allUsers = $scope.allUsers.concat(response.data);
+                  return $scope.filterUsers();
                 });
-              }
-              
+              });
+              return utils.requestOneByOne(requests);
+            }
+
+            function loadAllUsers() {
               $scope.allUsers = [];
-              var requests = [getClassIds];
-              function collectClassUsers() {
-                var requests = [];
-                utils.forEach(classes, function(classInfo) {
-                  requests.push(function() {
-                    return rpc.get_users(null, classInfo.id).then(function(response) {
-                      $scope.allUsers = 
-                          $scope.allUsers.concat(utils.toList(response.data));
-                      return $scope.filterUsers();
-                    });
-                  });
-                });
-                return utils.requestOneByOne(requests);
-              }
-              
-              utils.requestOneByOne([getDepartments, getDistricts, getClassIds,
-                  collectClassUsers, aggregateClassYears, $scope.filterUsers]);
+
+              utils.requestOneByOne([getDepartments, getDistricts, getClasses,
+                collectDistrictUsers, aggregateClassYears, $scope.filterUsers]);
             };
             
             $scope.fixCityNames = function() {

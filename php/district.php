@@ -1,5 +1,6 @@
 <?php
 include_once "connection.php";
+include_once "permission.php";
 include_once "util.php";
 
 $medoo = get_medoo();
@@ -22,10 +23,30 @@ function remove_district($id) {
 	return $medoo->delete("districts", ["id" => $id]);
 }
 
+function get_district_users($district) {
+  global $medoo;
+
+  return $medoo->select("users", "*", ["district" => $district]);
+}
+
+$response = null;
+
+if (empty($_SESSION["user"])) {
+  echo '{"error": "login needed"}';
+  exit();
+} else {
+  $user = unserialize($_SESSION["user"]);
+}
+
 if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 	$resource_id = $_GET["rid"];
 	if ($resource_id == "districts") {
 		$response = get_districts($_GET["country"]);
+	} elseif ($resource_id == "users") {
+	  $district_id = $_GET["district"];
+	  return canReadDistrict($user, $district_id)
+	      ? get_district_users($district_id)
+	      : permission_denied_error();
 	}
 }
 
