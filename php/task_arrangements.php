@@ -8,15 +8,6 @@ include_once "tables.php";
 
 $medoo = get_medoo();
 
-function ensure_table() {
-  global $medoo;
-
-  if (!table_exists($medoo, "task_arrange")) {
-    run_sql_file("../data/task_arrange_table.php", $medoo);
-  }
-}
-
-
 function canWriteClass($user, $classId) {
   $classInfo = get_classes(["id" => $classId])[$classId];
   if (!classInfo) return false;
@@ -27,7 +18,6 @@ function canWriteClass($user, $classId) {
 function get_task_arrange($classId) {
   global $medoo;
 
-  ensure_table();
   return keyed_by_id($medoo->select("task_arrange", "*",
       ["class_id" => $classId]), "task_id");  
 }
@@ -36,7 +26,6 @@ function update_task_arrange($classId, $taskId,
     $start_half_term, $report_half_term) {
   global $medoo;
   
-  ensure_table();
   $where = ["class_id" => $classId, "task_id" => $taskId];
   $data = [
       "start_half_term" => $start_half_term,
@@ -52,7 +41,6 @@ function update_task_arrange($classId, $taskId,
 function delete_task_arrange($classId) {
   global $medoo;
     
-  ensure_table();
   return $medoo->delete("task_arrange", ["class_id" => $classId]);
 }
 

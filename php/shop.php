@@ -100,7 +100,6 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
   		$timeFilter,
   		$classFilter);
 
-  ensure_orders_column();
   $orders = $medoo->query($sql)->fetchAll();
   if (!$withItems) return $orders;
 
@@ -110,19 +109,6 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
     $orders[$index] = $order;
   }
   return $orders;
-}
-
-function ensure_orders_column() {
-  global $medoo;
-  $sql = "ALTER TABLE orders ADD `comment` VARCHAR(256) CHARACTER SET utf8;";
-  $medoo->query($sql);
-  $sql = "ALTER TABLE orders MODIFY COLUMN
-    `street` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci,
-  	MODIFY COLUMN `city` varchar(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci,
-    MODIFY COLUMN `state` tinyint(4),
-    MODIFY COLUMN `country` char(2) CHARACTER SET utf8 COLLATE utf8_unicode_ci,
-    MODIFY COLUMN `zip` char(6) CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
-  $medoo->query($sql);
 }
 
 function increase_stock($item, $sign = 1) {
@@ -148,7 +134,6 @@ function place_order($order) {
   unset($order["items"]);
 
   $order = array_merge($order, sanitize_address());
-  ensure_orders_column();
   $id = $medoo->insert("orders", $order);
   if (!$id || empty($items)) return $id;
 
@@ -220,7 +205,6 @@ function update_order($order, $is_manager) {
     $data["#paid_date"] = "CURDATE()";
   }
 
-  ensure_orders_column();
   return $medoo->update("orders", $data, ["id" => $order["id"]]);
 }
 
@@ -233,23 +217,6 @@ function sanitize_address() {
         FILTER_REQUIRE_SCALAR);
   }
   return $data;
-}
-
-function ensure_stock_column() {
-  global $medoo;
-
-  $sql = "SHOW COLUMNS FROM `items` LIKE 'stock'";
-  $result = $medoo->query($sql)->fetchAll();
-  if (!empty($result)) return;
-
-  $sql = "ALTER TABLE items ADD stock INT NOT NULL DEFAULT 0";
-  $medoo->query($sql);
-
-  $medoo->update("items", ["stock" => 45], ["name" => "预科系入行论教材(全9册)"]);
-  $medoo->update("items", ["stock" => 21], ["name" => "预科系加行教材(全7册)"]);
-  $medoo->update("items", ["stock" => 7], ["name" => "预科系净土教材(全7册)"]);
-  $medoo->update("items", ["stock" => 24], ["name" => "前行实修法"]);
-  $medoo->update("items", ["stock" => 5], ["name" => "大学演讲系列(1-18)"]);
 }
 
 function get_shop_items($category, $level) {
@@ -269,24 +236,12 @@ function get_shop_items($category, $level) {
     }
   }
 
-  ensure_stock_column();
   return keyed_by_id($medoo->select("items", "*", $filters));
-}
-
-function ensure_other_category() {
-  global $medoo;
-  
-  if (!$medoo->insert("item_categories", ["id" => 10, "name" => "非教材结缘物",
-      "level" => 1, "shared" => 1, "parent_id" => 2])) {
-    return;
-  }
-  $medoo->update("item_categories", ["parent_id" => 1], ["parent_id" => null]);
 }
 
 function get_item_categories($level) {
   global $medoo;
 
-  ensure_other_category();
   if ($level == 99) {
     return keyed_by_id($medoo->select("item_categories", "*"));
   }

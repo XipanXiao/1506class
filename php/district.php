@@ -4,39 +4,9 @@ include_once "util.php";
 
 $medoo = get_medoo();
 
-function ensure_district_tables() {
-	global $medoo;
-
-  $sql = "CREATE TABLE IF NOT EXISTS districts (".
-      "id MEDIUMINT PRIMARY KEY NOT NULL AUTO_INCREMENT,".
-      "name VARCHAR(64) NOT NULL,".
-      "country CHAR(2) NOT NULL DEFAULT 'US'".
-      ");";
-  if (!$medoo->query($sql)) return;
-  $sql = "ALTER TABLE `districts` ADD UNIQUE `unique_index`(`name`, `country`);";
-  $medoo->query($sql);
-
-  $medoo->insert("districts", ["id" => 1, "name" => "纽约地方组"]);
-  $medoo->insert("districts", ["id" => 2, "name" => "西雅图地方组"]);
-  $medoo->insert("districts", ["id" => 3, "name" => "北加州地方组"]);
-  $medoo->insert("districts", ["id" => 4, "name" => "南加州地方组"]);
-  $medoo->insert("districts", ["id" => 5, "name" => "新泽西地方组"]);
-  $medoo->insert("districts", ["id" => 6, "name" => "波士顿地方组"]);
-  $medoo->insert("districts", ["id" => 7, "name" => "德州地方组"]);
-  $medoo->insert("districts", ["id" => 8, "name" => "华盛顿DC地方组"]);
-
-  $sql = "CREATE TABLE IF NOT EXISTS zips (".
-      "zip CHAR(6) PRIMARY KEY NOT NULL,".
-      "district MEDIUMINT,".
-      "FOREIGN KEY (district) REFERENCES districts(id)".
-      ");";
-  $medoo->query($sql);
-}
-
 function get_districts($country = "US") {
 	global $medoo;
 
-	ensure_district_tables();
 	return keyed_by_id($medoo->select("districts", "*", ["country" => $country]));
 }
 
