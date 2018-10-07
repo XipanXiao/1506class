@@ -1,5 +1,4 @@
 <?php
-/// 订书模块
 include_once 'config.php';
 include_once "connection.php";
 include_once "datatype.php";
