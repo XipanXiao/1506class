@@ -55,7 +55,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       $classInfo = $classes[$classId];
       $response = canRead($user, $classInfo) 
           ? get_scores($classId) 
-          : permision_denied_error();
+          : permission_denied_error();
     }
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
@@ -70,7 +70,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $targetUser = current($users);
     $response = canWrite($user, $targetUser->classInfo)
         ? ["updated" => update_scores($_POST)]
-        : permision_denied_error();
+        : permission_denied_error();
   }
 }
 

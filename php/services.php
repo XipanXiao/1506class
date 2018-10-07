@@ -96,7 +96,7 @@ function checkPermission($role) {
 
   if (($user->permission & $role) == $role) return;
   
-  $response = permision_denied_error();
+  $response = permission_denied_error();
   echo json_encode($response);
   exit();
 }
@@ -165,7 +165,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     if ($whose == "class") {
       $classInfo = get_class_info($_GET["classId"]);
       if (!canRead($user, $classInfo)) {
-        $response = permision_denied_error();
+        $response = permission_denied_error();
       }
     }
     if (!$response) {
@@ -189,11 +189,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "user_label") {
     $response = isAdmin($user) 
         ? ["label" => getUserLabel($_GET["id"])] 
-        : permision_denied_error();
+        : permission_denied_error();
   } elseif ($resource_id == "search_name") {
     $response = isAdmin($user) 
         ? array_filter(searchByName($_GET["name"]), "isSameDistrict") 
-        : permision_denied_error();
+        : permission_denied_error();
   } elseif ($resource_id == "task_stats") {
     $startTime =
         empty($_GET["start_time"]) ? null : intval($_GET["start_time"]);
@@ -232,7 +232,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
           $duration);
       $response = get_last_task_record($task_user_id, $task_id, null);
     } else {
-      $response = permision_denied_error();
+      $response = permission_denied_error();
     }
   } elseif ($resource_id == "task") {
     if (!isSysAdmin($user)) return;
@@ -244,17 +244,17 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         empty($_POST["student_id"]) ? $student_id : $_POST["student_id"];
     $response = canWriteUser($user, $task_user_id)
         ? ["updated" => report_schedule_task($task_user_id, $_POST)]
-        : permision_denied_error();
+        : permission_denied_error();
   } elseif ($resource_id == "schedule") {
     $response = isAdmin($user) 
       ? ["updated" => update_schedule($_POST)] 
-      : permision_denied_error();
+      : permission_denied_error();
   }  elseif ($resource_id == "schedule_group") {
     error_log($user->email. " UPDATES ". $resource_id. ":". 
         (empty($_POST["id"]) ? "" : $_POST["id"]));
     $response = canWriteClass($user, $_POST["classId"]) 
         ? ["updated" => update_schedule_group($_POST)]
-        : permision_denied_error();
+        : permission_denied_error();
   } elseif ($resource_id == "class") {
     if (empty($_POST["id"]) && isYearLeader($user) ||
         canWriteClass($user, $_POST["id"])) {
@@ -263,7 +263,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       }
       $response = ["updated" => update_class($_POST)];
     } else {
-      $response = permision_denied_error();
+      $response = permission_denied_error();
     }
   } elseif ($resource_id == "course_group") {
     if (!isYearLeader($user)) return;
@@ -294,13 +294,13 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     }
 
     if (!canWriteUser($user, $targetUser)) {
-      $response = permision_denied_error();
+      $response = permission_denied_error();
     }
     
     if (isset($_POST["permission"]) &&
         (!canGrant($user, $targetUser->permission) || 
         !canGrant($user, intval($_POST["permission"])))) {
-      $response = permision_denied_error();
+      $response = permission_denied_error();
     }
     
     if (!$response) {
@@ -323,7 +323,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     error_log($user->email. " DELETE learning records of ". $_POST["user_id"]);
     $response = canWriteUser($user, $_POST["user_id"])
         ? ["updated" => clone_user($_POST["user_id"])] 
-        : permision_denied_error();
+        : permission_denied_error();
   }
 } elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE" &&
     isset ( $_REQUEST["rid"] )) {
@@ -358,7 +358,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $record = get_task_record($_REQUEST["id"]);
     if (!isAdmin($user) &&
         (empty($record) || $record["student_id"] != $student_id)) {
-        $response = permision_denied_error();
+        $response = permission_denied_error();
     } else {
       error_log($user->email. " DELETES ". $resource_id. ":". 
           (empty($_POST["id"]) ? "" : $_POST["id"]));

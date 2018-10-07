@@ -61,10 +61,10 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET") {
   $response = canWriteClass($user, $classId) ?
       ["updated" => update_task_arrange($classId, $_POST["task_id"], 
           $_POST["start_half_term"], $_POST["report_half_term"])] :
-      permision_denied_error();
+      permission_denied_error();
 } elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE") {
   $response = canWriteClass($user, $classId) ?
-      ["deleted" => delete_task_arrange($classId)] : permision_denied_error();
+      ["deleted" => delete_task_arrange($classId)] : permission_denied_error();
 }
 
 if (is_array($response) && empty($response)) {

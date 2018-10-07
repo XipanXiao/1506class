@@ -5,7 +5,7 @@ function table_exists($medoo, $table) {
   return !empty($result);
 }
 
-function permision_denied_error() {
+function permission_denied_error() {
   return ["error" => "permission denied"];
 }
 

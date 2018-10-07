@@ -462,7 +462,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       } elseif (isOrderReader($user) || $order["user_id"] == $user->id) {
         $response = $order;
       } else {
-        $response = permision_denied_error();
+        $response = permission_denied_error();
       }
     } elseif (empty($_GET["student_id"])) {
       if (isOrderReader($user)) {
@@ -473,12 +473,12 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         $response = $classIds ? get_orders(null, 
             array_merge($_GET, ["class_id" => $classIds]), 
             $_GET["items"],
-            TRUE) : permision_denied_error();
+            TRUE) : permission_denied_error();
       }
     } else {
       $response = $_GET["student_id"] == $user->id
       ? get_orders($user->id, $_GET, $_GET["items"], canReadOrderAddress($user))
-      : permision_denied_error();
+      : permission_denied_error();
     }
   } elseif ($resource_id == "items") {
     $level = get_requested_level($user, $_GET);
@@ -488,13 +488,13 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "order_stats") {
     $response = isOrderReader($user) 
         ? get_order_stats($_GET["year"]) 
-        : permision_denied_error();
+        : permission_denied_error();
   } elseif ($resource_id == "book_lists") {
     $response = get_book_list($_GET["dep_id"], $_GET["term"], $user->classId); 
   } elseif ($resource_id == "class_book_lists") {
     $response = isOrderReader($user) 
         ? get_class_book_lists($_GET["year"]) 
-        : permision_denied_error();
+        : permission_denied_error();
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];
@@ -504,7 +504,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $order = $_POST;
     validate_order_post();
     if ($order["user_id"] != $user->id && !isOrderManager($user)) {
-      $response = permision_denied_error();
+      $response = permission_denied_error();
     } elseif (empty($order["id"])) {
       if (empty($order["class_name"])) {
         $order["class_name"] = $user->classInfo["name"];
@@ -517,19 +517,19 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = isOrderManager($user)
       ? ["updated" => 
           move_order_items($_POST["from_order"], $_POST["to_order"])]
-      : permision_denied_error();
+      : permission_denied_error();
   } elseif ($resource_id == "book_lists") {
     $response = isOrderManager($user)
       ? ["updated" => update_book_list($_POST)]
-      : permision_denied_error();
+      : permission_denied_error();
   } elseif ($resource_id == "class_book_lists") {
     $response = isOrderManager($user)
       ? ["updated" => update_class_term($_POST)]
-      : permision_denied_error();
+      : permission_denied_error();
   } elseif ($resource_id == "items") {
     $response = isOrderManager($user)
         ? ["updated" => update_item($_POST)]
-        : permision_denied_error();
+        : permission_denied_error();
   }
 } elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE" &&
     isset ( $_REQUEST["rid"] )) {
@@ -540,7 +540,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   error_log($user->email ." DELETE ". json_encode($record));
   if ($record["status"] || 
       !isOrderManager($user) && $record["user_id"] != $user->id) {
-    $response = permision_denied_error();
+    $response = permission_denied_error();
   } elseif ($resource_id == "orders") {
     if (floatval($record["paid"]) >= 0.01 || 
         !empty($record["paypal_trans_id"]) || 

@@ -129,12 +129,12 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     if (empty($_GET["user"])) {
       $response = is_election_owner($election_id)
           ? get_votes($election_id)
-          : permision_denied_error();
+          : permission_denied_error();
     } else {
       $response = $user->id == intval($_GET["user"]) ||
           is_election_owner($election_id) 
           ? get_votes($_GET["election"], $_GET["user"])
-          : permision_denied_error();
+          : permission_denied_error();
     }
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
@@ -144,11 +144,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   if ($resource_id == "elections") {
     $response = is_election_owner($_POST["id"]) 
         ? ["updated" => update_election($_POST)] 
-        : permision_denied_error();
+        : permission_denied_error();
   } else if ($resource_id == "candidates") {
     $response = is_election_owner($_POST["election"])
         ? ["updated" => update_candidate($_POST)]
-        : permision_denied_error();
+        : permission_denied_error();
   } else if ($resource_id == "votes") {
     $response = ["updated" => vote($_POST)];
   }
@@ -166,11 +166,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   if ($resource_id == "elections") {
     $response = is_election_owner($id)
         ? ["updated" => delete_election($id)]
-        : permision_denied_error();
+        : permission_denied_error();
   } else if ($resource_id == "candidates") {
     $response = is_election_owner($record["election"])
         ? ["updated" => delete_candidate($id)]
-        : permision_denied_error();
+        : permission_denied_error();
   }
 }
 
