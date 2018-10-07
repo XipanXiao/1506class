@@ -1,4 +1,5 @@
 <?php
+include_once 'config.php';
 include_once "connection.php";
 include_once "permission.php";
 include_once "util.php";
