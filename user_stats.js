@@ -31922,35 +31922,28 @@ define('user_stats_app', [
 
             $scope.filterUsers = () => {
               $scope.users = utils.where($scope.allUsers, function(user) {
-                var years = $scope.classYears;
-                var classInfo = classes[user.classId];
+                var years = $scope.years;
                 var district = $scope.districts[parseInt(user.district)];
                 return district.checked &&
-                    (!years || years[classInfo.start_year].checked) &&
-                    $scope.departments[classInfo.department_id].checked;
+                    (!years || years[user.year].checked) &&
+                    $scope.departments[user.dep].checked;
               });
               return utils.truePromise();
             };
 
-            var classes;
-            /// Initializes the [classYears] list by aggregating over all
+            /// Initializes the [years] list by aggregating over all
             /// [users].
-            function aggregateClassYears() {
-              var classIds = {};
+            function aggregateUserYears() {
+              var years = {};
               utils.forEach($scope.allUsers, function(user) {
-                classIds[user.classId] = user.classId;
-              });
-
-              var classYears = {};
-              utils.forEach(classIds, function(classId) {
-                var start_year = classes[classId].start_year;
-                if (classYears[start_year]) return;
-                classYears[start_year] = {
-                  label: start_year,
+                var year = user.year;
+                if (years[year]) return;
+                years[year] = {
+                  label: year,
                   checked: true
                 };
               });
-              $scope.classYears = classYears;
+              $scope.years = years;
               return utils.truePromise();
             };
             
@@ -31983,12 +31976,6 @@ define('user_stats_app', [
               });
             }
 
-            function getClasses() {
-              return rpc.get_classes().then(function(response) {
-                return classes = response.data;
-              });
-            }
-
             function collectDistrictUsers() {
               var requests =  utils.map($scope.districts, (district) => () => {
                 if (!district.id) return utils.truePromise();
@@ -32003,8 +31990,8 @@ define('user_stats_app', [
             function loadAllUsers() {
               $scope.allUsers = [];
 
-              utils.requestOneByOne([getDepartments, getDistricts, getClasses,
-                collectDistrictUsers, aggregateClassYears, $scope.filterUsers]);
+              utils.requestOneByOne([getDepartments, getDistricts,
+                collectDistrictUsers, aggregateUserYears, $scope.filterUsers]);
             };
             
             $scope.fixCityNames = function() {

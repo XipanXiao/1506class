@@ -28,7 +28,22 @@ function remove_district($id) {
 function get_district_users($district) {
   global $medoo;
 
-  return $medoo->select("users", "*", ["district" => $district]);
+	$results = [];
+
+	$users = $medoo->select("users", "*", ["district" => $district]);
+	$classes = keyed_by_id($medoo->select("classes",
+			["id", "start_year", "department_id"],
+			["OR" => ["deleted[!]" => 1, "deleted" => NULL]]));
+
+	foreach ($users as $user) {
+		$classInfo = $classes[$user["classId"]];
+		if (!$classInfo) continue;
+
+		$user["year"] = $classInfo["start_year"];
+		$user["dep"] = $classInfo["department_id"];
+		array_push($results, $user);
+	}
+	return $results;
 }
 
 $response = null;
