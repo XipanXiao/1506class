@@ -56,27 +56,38 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
 
   session_start();
   $_SESSION['user'] = serialize($user);
-
-  if (is_merit_assoc_only($_POST) || $_POST["country"] != 'US') {
-    header("Location:../index.html");
-  } else {
-    $url = sprintf("../registered.html?name=%s&email=%s", $user->name,
-        $user->email);
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="refresh" content="2;url=<?=$url?>"/>
-<title>注册成功</title>
+<title>Redirecting</title>
+<script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js">
+</script>
+<script type="text/javascript">
+(function(){
+  emailjs.init('user_AZIJ32nwn6RJmV7EzdJy8');
+  emailjs.send('bicw_notifcation', 'new_user_notification', {
+    name: '<?=$user->name?>',
+    email: '<?=$user->email?>',
+    url: location.origin,
+    verify_url: location.origin
+  })
+  .then(
+    function(response) {
+      location.href = '../index.html';
+    },
+    function(error) {
+      location.href = '../index.html';
+    }
+  );
+})();
+</script>
+</head>
 <body>
-  注册成功。跳转中…如果您的浏览器没有跳转，请点击
-  <a href="<?=$url?>">这里</a>。
+注册成功。跳转中…
 </body>
 </html>
-
 <?php
-  }
 }
 ?>
-

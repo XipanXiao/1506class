@@ -6,27 +6,6 @@ include_once "util.php";
 
 $medoo = get_medoo();
 
-function create_class_pref_table() {
-  global $medoo;
-
-  $name = "class_prefs";
-  if (table_exists($medoo, $name)) return;
-  
-  $result = $medoo->query("CREATE TABLE ". $name. "(
-  		user_id INT,
-      FOREIGN KEY (user_id) REFERENCES users(id),
-  		pref1 INT,
-      FOREIGN KEY (pref1) REFERENCES classes(id),
-  		pref2 INT,
-      FOREIGN KEY (pref2) REFERENCES classes(id),
-  		department_id TINYINT,
-  		ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-  		)");
-  if (empty($result)) {
-  	error_log($medoo->error());
-  }
-}
-
 function trim_old_class_prefs() {
 	global $medoo;
 	
@@ -37,7 +16,6 @@ function trim_old_class_prefs() {
 function get_class_prefs($user_id, $department_id) {
 	global $medoo;
 
-	create_class_pref_table();
 	$results = $medoo->select("class_prefs", 
 			["user_id", "pref1", "pref2"], 
 			$user_id ? ["user_id" => $user_id] : 
@@ -57,7 +35,6 @@ function get_class_prefs($user_id, $department_id) {
 function update_class_pref($user_id, $prefs) {
 	global $medoo;
 
-	create_class_pref_table();
 	trim_old_class_prefs();
 
 	$data = [];

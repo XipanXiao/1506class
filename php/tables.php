@@ -1,7 +1,6 @@
 <?php
 include_once "datatype.php";
 include_once "connection.php";
-include_once "course_category.php";
 include_once "permission.php";
 include_once "util.php";
 
@@ -69,7 +68,6 @@ function update_course_group($group) {
     }
   }
 
-  init_course_category_column($medoo);
   $id = intval($group["id"]);
   if ($id == 0) {
     $id = $medoo->insert("course_groups", $datas);
