@@ -6,6 +6,42 @@
 <title>美国智悲讲修菩提学会注册</title>
 <script type="text/javascript">
   var submitting = false;
+
+  function initDistrict(state) {
+    var defaultValues = {
+      'New York': 1,
+      'Connecticut': 1,
+      'Rhode Island': 1,
+      'Hawaii': 1,
+      'California': 3,
+      'Nevada': 3,
+      'New Jersey': 5,
+      'Washington': 2,
+      'Oregon': 2,
+      'Idaho': 2,
+      'Montana': 2,
+      'Alaska': 2,
+      'Arizona': 4,
+      'Maine': 6,
+      'Vermont': 6,
+      'New Hampshire': 6,
+      'Massachusetts': 6,
+      'Pennsylvania': 6,
+      'Maryland': 6,
+      'Delaware': 6,
+      'West Virginia': 6,
+      'Virginia': 6,
+      'District of Columbia': 6
+    };
+    return defaultValues[state];
+  }
+
+  function validate(form) {
+    var select = form.state;
+    var state = select.options[select.selectedIndex].innerHTML;
+    form.district.value = initDistrict(state);
+    return checkPassword();
+  }
   function checkPassword() {
     submitting = true;
     var confirm = document.getElementById('confirm');
@@ -67,7 +103,7 @@
       </h3>
     </div>
     <form class="register-form" action="php/register.php" method="post"
-        onsubmit="return checkPassword()">
+        onsubmit="return validate(this)">
       <fieldset>
         <div class="css-table">
           <div class="css-table-row">
@@ -182,6 +218,7 @@
             </div>
             <div class="css-table-cell">
               <select id="state" name="state"></select>
+              <input type="hidden" name="district">
             </div>
           </div>
           <div id="country-chooser" class="css-table-row">

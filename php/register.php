@@ -37,9 +37,18 @@ if(! empty ( $_POST ['email'] ) && ! empty ( $_POST ['name'] )) {
   $users = get_users($_POST['email']);
 
   if (sizeof($users) > 0) {
-    header('Content-Type: text/html; charset=utf-8');
-    echo "<h1>Error</h1>";
-    echo "该地址". $_POST["email"]. "已经注册，请勿重复注册。如忘记密码请联系组长。";
+?>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Error</title>
+<body>
+<h1>Error</h1>
+该地址"<?=$_POST["email"]?>"已经注册，请勿重复注册。如忘记密码请联系组长。
+</body>
+</html>
+<?php
     exit();
   }
 
