@@ -15,6 +15,8 @@ rm -f order_admin.js
 for f in `cat order_admin.deps`; do cat $f >> order_admin.js; done;
 rm -f invoice_print.js
 for f in `cat invoice_print.deps`; do cat $f >> invoice_print.js; done;
+rm -f vote.js
+for f in `cat vote.deps`; do cat $f >> vote.js; done;
 
 #echo "RewriteEngine on" > .htaccess
 #echo "RewriteCond %{HTTP:X-Forwarded-Proto} !https" >> .htaccess

@@ -20,7 +20,6 @@ function create_election_tables() {
       name VARCHAR(32) CHARACTER SET utf8,
       description VARCHAR(256) CHARACTER SET utf8
     );";
-  if (!$medoo->query($sql)) return;
 
   $medoo->insert("elections", ["id" => 1, "organizer" => 53]);
   
