@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="style.css?tag=201809252001">
+<title>选举</title>
+<script src="bower_components/webcomponentsjs/webcomponents-lite.min.js">
+</script>
+<link rel="import" href="bower_components/paper-toast/paper-toast.html"/>
+</head>
+
+<body class="center white">
+
+<app-bar user="user"></app-bar>
+
+<div class="center page-container">
+</div>
+
+<paper-toast></paper-toast>
+
+<script type="text/javascript">
+  const define = (module, deps, f) => f();
+  const require = define;
+</script>
+<script type="text/javascript" src="vote.js?tag=201809261513"></script>
+</body>
+</html>
