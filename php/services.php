@@ -69,9 +69,10 @@ function isSameYear($another) {
 }
 
 function isSameCountry($another) {
-  global $user;
-  $country = is_array($another) ? $another["country"] : $another->country;
-  return $country == $user->country;
+  return true;
+//  global $user;
+//  $country = is_array($another) ? $another["country"] : $another->country;
+//  return $country == $user->country;
 }
 
 /// Whether [$another] is in the same district of the current [$user].
@@ -95,7 +96,7 @@ function checkPermission($role) {
   global $user;
 
   if (($user->permission & $role) == $role) return;
-  
+
   $response = permission_denied_error();
   echo json_encode($response);
   exit();
