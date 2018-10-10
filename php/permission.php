@@ -54,7 +54,7 @@ function canReadOrderAddress($user) {
 }
 
 function get_student_permission() {
-  return 3;
+  return Roles::STUDENT;
 }
 
 function sameCountry($user, $classInfo) {
@@ -132,5 +132,6 @@ abstract class Roles {
   const YEAR_LEADER = 0x3F;
   const CLASS_LEADER = 0xF;
   const CLASS_READER = 0x7;
+  const STUDENT = 0x3;
 }
 ?>

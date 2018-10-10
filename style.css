@@ -39,7 +39,7 @@ a.app-bar-link {
 
 div.page-container {
   background: transparent;
-  width: 1136px;  
+  width: 1136px;
 }
 
 div.login-page {
@@ -910,4 +910,18 @@ payment.in-shopping-cart {
   right: 0;
   top: 0;
   z-index: 1;
+}
+
+.elections {
+  border-right: solid 1px;
+  width: 300px;
+}
+
+.full-page {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0 200px;
+  position: absolute;
+  top: 48px;
 }

@@ -1,4 +1,4 @@
-define('editable_label/editable_label', function() {
+define('editable_label/editable_label', [], function() {
 	return angular.module('EditableLabelModule', [])
 		.directive('editableLabel',
 				function() {

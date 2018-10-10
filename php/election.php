@@ -14,14 +14,13 @@ function create_election_tables() {
       id INT AUTO_INCREMENT PRIMARY KEY,
       organizer INT,
         FOREIGN KEY (organizer) REFERENCES users(id),
-      start DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      end DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      start_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      end_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
       global TINYINT(1) NOT NULL DEFAULT 0,
       name VARCHAR(32) CHARACTER SET utf8,
       description VARCHAR(256) CHARACTER SET utf8
     );";
-
-  $medoo->insert("elections", ["id" => 1, "organizer" => 53]);
+  $medoo->query($sql);
   
   $sql = "CREATE TABLE candidates (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -109,9 +108,11 @@ if (empty($_SESSION["user"])) {
 
 function is_election_owner($election_id) {
   global $medoo;
-  if (isSysAdmin($user)) return TRUE;
+  global $user;
+
+  if (isCountryAdmin($user)) return true;
   $election = get_single_record($medoo, "elections", $election_id);
-  if (!$election) return FALSE;
+  if (!$election) return false;
   return intval($election["organizer"]) == $user->id;
 }
 
@@ -163,11 +164,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   
   if ($resource_id == "elections") {
     $response = is_election_owner($id)
-        ? ["updated" => delete_election($id)]
+        ? ["deleted" => delete_election($id)]
         : permission_denied_error();
   } else if ($resource_id == "candidates") {
     $response = is_election_owner($record["election"])
-        ? ["updated" => delete_candidate($id)]
+        ? ["deleted" => delete_candidate($id)]
         : permission_denied_error();
   }
 }
@@ -180,7 +181,7 @@ if (is_array($response) && empty($response)) {
 if ($response) {
   if (is_array($response) && isset($response["updated"]) &&
       intval($response["updated"]) == 0) {
-        $response["error"] = get_db_error2($medoo);
+        $response["error"] = get_db_error2($medoo) . $medoo->last_query();
       }
 
   echo json_encode($response);

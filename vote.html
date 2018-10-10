@@ -6,6 +6,8 @@
 <title>选举</title>
 <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js">
 </script>
+<link rel="import" href="bower_components/iron-icon/iron-icon.html"/>
+<link rel="import" href="bower_components/iron-icons/iron-icons.html"/>
 <link rel="import" href="bower_components/paper-toast/paper-toast.html"/>
 </head>
 
@@ -13,7 +15,35 @@
 
 <app-bar user="user"></app-bar>
 
-<div class="center page-container">
+<div class="center full-page flex">
+  <div class="elections" ng-switch="elections.length || 0">
+    <iron-icon icon="add-circle" class="add-icon clickable"
+        ng-click="createElection()" title="发起投票..."
+        ng-show="isSysAdmin() && editable">
+    </iron-icon>
+    <div ng-switch-when="0">
+      <strong>暂时没有任何选举活动。</strong>
+    </div>
+    <div ng-switch-default>
+      <div ng-repeat="election in elections | orderBy:'-start_time'"
+          class="selectable clickable deletable"
+          ng-click="currentElection = election">
+        {{election.label}}
+        <iron-icon icon="delete" ng-click="deleteElection(election)"
+            class="delete-button">
+        </iron-icon>
+      </div>
+    </div>
+  </div>
+  <div class="right-panel">
+    <div class="election-detail">
+      <editable-label value="currentElection.name" label="名称">
+      </editable-label>
+      <editable-label value="currentElection.description" label="简介">
+      </editable-label>
+    </div>
+    <div class="candidates"></div>
+  </div>
 </div>
 
 <paper-toast></paper-toast>
@@ -22,6 +52,6 @@
   const define = (module, deps, f) => f();
   const require = define;
 </script>
-<script type="text/javascript" src="vote.js?tag=201809261513"></script>
+<script type="text/javascript" src="vote.js?tag=201810091513"></script>
 </body>
 </html>
