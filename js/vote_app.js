@@ -7,10 +7,18 @@ angular.module('AppModule', [
   'UtilsModule',
 ]).directive('body', function(perm, rpc, utils) {
   return {
-    link: function(scope) {
+    link: function(scope, elements) {
       rpc.get_user().then(function(user) {
         scope.user = user;
         perm.user = user;
+      });
+
+      elements[0].querySelectorAll('.attributes-panel paper-input').forEach((input) => {
+        input.addEventListener('input', (event) => {
+          scope.currentElection[input.name] = event.target.value;
+          scope.dirty = true;
+          scope.$apply();
+        });      
       });
 
       function reload() {
@@ -57,6 +65,18 @@ angular.module('AppModule', [
                 scope.createElection.organizer == scope.user.id);
       };
 
+      scope.cancel = () => {
+        scope.dirty = false;
+        elements[0].querySelectorAll('.attributes-panel paper-input').forEach((input) => {
+          input.value = scope.currentElection[input.name];
+        });
+      };
+
+      scope.save = () => {
+        rpc.update_election(scope.currentElection).then((response) => {
+          scope.dirty = parseInt(response.data.updated) == 0;
+        });
+      };
       reload();
     }
   };

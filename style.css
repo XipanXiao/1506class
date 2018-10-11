@@ -716,6 +716,7 @@ body.white {
 }
 
 .elections > .css-table,
+.attributes-panel > .css-table,
 .order-details-header.css-table,
 .shopping-cart-list.css-table {
   width: 100%;
@@ -915,8 +916,11 @@ payment.in-shopping-cart {
 
 .elections {
   background: white;
-  padding: 16px;
   width: 300px;
+}
+
+.elections .css-table-cell {
+  padding: 8px 16px;
 }
 
 .full-page {
@@ -948,7 +952,15 @@ body.vote {
   width: 400px;
 }
 
+.attributes-panel > .buttons {
+  text-align: right;
+}
+
 .candidates > .add-icon {
   left: -40px;
   position: absolute;
+}
+
+paper-button.primary-action {
+  color: blue;
 }

@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" type="text/css" href="style.css?tag=201810102201">
+<link rel="stylesheet" type="text/css" href="style.css?tag=201810112201">
 <title>选举</title>
 <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js">
 </script>
@@ -18,7 +18,7 @@
 
 <div class="center full-page flex">
   <div class="elections" ng-switch="elections.length || 0">
-    <iron-icon icon="add" class="clickable"
+    <iron-icon icon="add" class="clickable padded-element"
         ng-click="createElection()" title="发起投票..."
         ng-show="isSysAdmin() && editable">
     </iron-icon>
@@ -43,13 +43,33 @@
     </iron-icon>
   </div>
   <div class="attributes-panel">
-    <div class="election-detail">
-      <editable-label value="currentElection.name" label="名称">
-      </editable-label>
-      <editable-label value="currentElection.description" label="简介">
-      </editable-label>
+    <div class="css-table">
+      <div class="css-table-row">
+        <div class="css-table-cell attribute-label">名称</div>
+        <div class="css-table-cell">
+          <paper-input value="{{currentElection.name}}" name="name"
+              laceholder="输入投票活动名称（例如：地方理事会选举）...">
+          </paper-input>
+        </div>
+      </div>
+      <div class="css-table-row">
+        <div class="css-table-cell attribute-label">简介</div>
+        <div class="css-table-cell">
+          <paper-input value="{{currentElection.description}}"
+              name="description">
+          </paper-input>
+        </div>
+      </div>
     </div>
-    <div class="candidates"></div>
+    <div class="buttons">
+      <paper-button ng-click="cancel()" raised ng-disabled="!dirty">
+        取消
+      </paper-button>
+      <paper-button ng-click="save()" class="primary-action" raised
+          ng-disabled="!dirty">
+        保存
+      </paper-button>
+    </div>
   </div>
 </div>
 
