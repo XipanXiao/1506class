@@ -7,9 +7,9 @@ function isCountryAdmin($user) {
   return ($user->permission & Roles::COUNTRY_ADMIN) == Roles::COUNTRY_ADMIN;
 }
 
-function isDistrictAdmin($user) {
-  return ($user->permission & Roles::DISTRICT_ADMIN) ==
-      Roles::DISTRICT_ADMIN;
+function isDistrictInspector($user) {
+  return ($user->permission & Roles::DISTRICT_INSPECTOR) ==
+      Roles::DISTRICT_INSPECTOR;
 }
 
 function isInspector($user) {
@@ -119,7 +119,7 @@ function getStartPage($user) {
 function canReadDistrict($user, $district_id) {
   return isSysAdmin($user) ||
       isCountryAdmin($user) ||
-      isDistrictAdmin($user) && $user->district == $district_id;
+      isDistrictInspector($user) && $user->district == $district_id;
 }
 
 abstract class Roles {
@@ -128,7 +128,7 @@ abstract class Roles {
   const COUNTRY_INSPECTOR = 0x457;
   const ORDER_ADMIN = 0x303;
   const ORDER_INSPECTOR = 0x103;
-  const DISTRICT_ADMIN = 0xC3;
+  const DISTRICT_INSPECTOR = 0x43;
   const YEAR_LEADER = 0x3F;
   const CLASS_LEADER = 0xF;
   const CLASS_READER = 0x7;

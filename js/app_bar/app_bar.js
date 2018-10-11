@@ -17,7 +17,7 @@ define('app_bar/app_bar', ['permission', 'search_bar/search_bar', 'utils'],
           scope.isSysAdmin = function() {
             return perm.isSysAdmin();
           };
-          scope.isDistrictAdmin = () => perm.isDistrictAdmin();
+          scope.isDistrictInspector = () => perm.isDistrictInspector();
           scope.isYearLeader = function() {
             return perm.isYearLeader();
           };

@@ -22,7 +22,7 @@ define('user_stats_app', [
           link: function($scope) {
             rpc.get_user().then(function(user) {
               perm.user = user;
-              if (!perm.isDistrictAdmin()) {
+              if (!perm.isDistrictInspector()) {
                 utils.redirect('./index.html');
                 return;
               }

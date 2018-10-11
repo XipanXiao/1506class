@@ -142,7 +142,7 @@ define('user_editor/user_editor',
         };
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201810031350'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201810101350'
     };
   });
 });

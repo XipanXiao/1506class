@@ -30602,7 +30602,7 @@ define('permission', ['utils'], function() {
         CLASS_READER: 0x7,
         LEADER: 0xF,
         YEAR_LEADER: 0x3F,
-        DISTRICT_ADMIN: 0xC3,
+        DISTRICT_INSPECTOR: 0x43,
         FINANCE: 0x103,
         ORDER_MANAGER: 0x303,
         COUNTRY_INSPECTOR: 0x457,
@@ -30615,7 +30615,7 @@ define('permission', ['utils'], function() {
         0x457:  /*01 00 01 01 01 11*/'理事会',    // r  country data
         0x303:  /*00 11 00 00 00 11*/'订单管理',  // rw orders.
         0x103:  /*00 01 00 00 00 11*/'财务',     // rw orders, but no address.
-        0xC3:   /*00 00 11 00 00 11*/'地区管理员',    // rw district data
+        0x43:   /*00 00 01 00 00 11*/'地区理事',    // r district data
         0x3F:   /*00 00 00 11 11 11*/'年级组长',  // rw classes of the year
         0xF:    /*00 00 00 00 11 11*/'组长',     // rw class data
         0x3:    /*00 00 00 00 00 11*/'学员'     // rw own data
@@ -30689,14 +30689,14 @@ define('permission', ['utils'], function() {
             (this.user.permission & this.ROLES.COUNTRY_INSPECTOR) ==
                 this.ROLES.COUNTRY_INSPECTOR;
       },
-      isDistrictAdmin: function() {
+      isDistrictInspector: function() {
         return this.user && 
-            (this.user.permission & this.ROLES.DISTRICT_ADMIN) ==
-                this.ROLES.DISTRICT_ADMIN;
+            (this.user.permission & this.ROLES.DISTRICT_INSPECTOR) ==
+                this.ROLES.DISTRICT_INSPECTOR;
       },
       canReadDistrict: function(district) {
         return this.isSysAdmin() || this.isCountryInspector() ||
-            this.isDistrictAdmin() && this.user.district == district;
+            this.isDistrictInspector() && this.user.district == district;
       }
     };
   });
@@ -31493,7 +31493,7 @@ define('app_bar/app_bar', ['permission', 'search_bar/search_bar', 'utils'],
           scope.isSysAdmin = function() {
             return perm.isSysAdmin();
           };
-          scope.isDistrictAdmin = () => perm.isDistrictAdmin();
+          scope.isDistrictInspector = () => perm.isDistrictInspector();
           scope.isYearLeader = function() {
             return perm.isYearLeader();
           };
@@ -32884,7 +32884,7 @@ define('user_editor/user_editor',
         };
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201810031350'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201810101350'
     };
   });
 });

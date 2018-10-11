@@ -83,7 +83,7 @@ function isSameDistrict($another) {
   if (isSysAdmin($user)) return true;
   if (isCountryAdmin($user)) {
     return isSameCountry($another);
-  } elseif (isDistrictAdmin($user)) {
+  } elseif (isDistrictInspector($user)) {
     $district = is_array($another) ? $another["district"] : $another->district;
     return $district == $user->district;
   }
@@ -179,7 +179,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       if (!empty($response)) {
         if (isCountryAdmin($user)) {
           $response = array_filter($response, "isSameCountry");
-        } elseif (isDistrictAdmin($user)) {
+        } elseif (isDistrictInspector($user)) {
           $response = array_filter($response, "isSameDistrict");
         } elseif (isYearLeader($user)) {
           // For year leaders they can only see students of the same year.
