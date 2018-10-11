@@ -29949,6 +29949,12 @@ $provide.value("$locale", {
         var scope = angular.element(dialog).scope();
         scope.classes = classes;
       },
+      showElectionDialog: function(onCreate) {
+        var dialog = document.getElementById('create-election-dialog');
+        dialog.open();
+        var scope = angular.element(dialog).scope();
+        scope.onCreate = onCreate;
+      },
       /// Given a Chinese name, return its pinyin.
       /// e.g. Input: 张三, output ['San', 'Zhang'].
       getPinyinName: function(name, pinyinTable) {
@@ -31240,6 +31246,12 @@ define('utils', [], function() {
         var scope = angular.element(dialog).scope();
         scope.classes = classes;
       },
+      showElectionDialog: function(onCreate) {
+        var dialog = document.getElementById('create-election-dialog');
+        dialog.open();
+        var scope = angular.element(dialog).scope();
+        scope.onCreate = onCreate;
+      },
       /// Given a Chinese name, return its pinyin.
       /// e.g. Input: 张三, output ['San', 'Zhang'].
       getPinyinName: function(name, pinyinTable) {
@@ -31327,6 +31339,110 @@ define('utils', [], function() {
     };
     return utils;
   });
+});
+define('user_input/user_input', ['services'], function() {
+  var users = {};
+  
+  return angular.module('UserInputModule', ['ServicesModule'])
+	.directive('userTypeAhead', function(rpc) {
+    return {
+      require: 'ngModel',
+      restrict: 'A',
+      link: function(scope, element, attrs, ngModel) {
+        var searchTimer;
+
+        ngModel.$formatters.push(function(userId) {
+          return users[userId];
+        });
+        ngModel.$parsers.push(function(userLabel) {
+          if (!userLabel) {
+            scope.$parent.userId = 0;
+            return 0;
+          }
+
+          var userId = users[userLabel];
+          if (userId) {
+            scope.$parent.userId = userId;
+            return userId;
+          }
+
+          if (searchTimer) {
+            clearTimeout(searchTimer);
+          }
+
+          searchTimer = setTimeout(function() {
+            searchTimer = null;            
+            rpc.searchByName(userLabel).then(function(response) {
+              if (!response.data) return;
+
+              scope.hints = [];
+              response.data.forEach(function(user) {
+                var label = user.nickname ? 
+                    '{0}({1})'.format(user.name, user.nickname) : user.name;
+                users[user.id] = label;
+                users[label] = user.id;
+                scope.hints.push(user);
+              });
+            });
+          }, 1000);
+        });
+      }
+    };
+  }).directive('userInput', function(rpc) {
+  	return {
+  	  scope: {
+        editing: '@',
+        userId: '='
+  	  },
+  	  link: function(scope) {
+  	    scope.editor = {editing: scope.editing};
+        scope.users = users;
+
+  	    function init(userId) {
+  	      if (!userId) return;
+
+  	      if (users[userId]) return;
+
+  	      rpc.getUserLabel(userId).then(function(response) {
+  	        users[userId] = response.data.label;
+  	      });
+  	    }
+  	    if (scope.userId) {
+  	      init(scope.userId);
+  	    }
+  	    scope.$watch('userId', init);
+  
+  	    scope.keyPressed = function(event) {
+  	      if (event.keyCode == 13 || event.keyCode == 27) {
+  	        scope.editor.editing = false;
+  	        event.preventDefault();
+  	      }
+  	    };
+  	  },
+  		templateUrl : 'js/user_input/user_input.html?tag=20181010'
+  	};
+  });
+});
+angular.module('CreateElectionDialogModule', [
+    'ServicesModule',
+    'UserInputModule',
+    'UtilsModule',
+  ]).directive('createElectionDialog', function(rpc, utils) {
+  return {
+    scope: {
+        onCreate: '&'
+    },
+    link: function(scope) {
+      scope.user = {};
+      scope.create = function() {
+        scope.onCreate({
+          organizer: scope.user.id,
+          name: document.querySelector('#election-name-input').value
+        });
+      };
+    },
+    templateUrl : 'js/create_election_dialog/create_election_dialog.html?tag=20180621'
+  };
 });
 define('editable_label/editable_label', [], function() {
 	return angular.module('EditableLabelModule', [])
@@ -31508,6 +31624,7 @@ define('app_bar/app_bar', ['permission', 'search_bar/search_bar', 'utils'],
 });
 angular.module('AppModule', [
   'AppBarModule',
+  'CreateElectionDialogModule',
   'EditableLabelModule',
   'PermissionModule',
   'ServicesModule',
@@ -31535,16 +31652,14 @@ angular.module('AppModule', [
       scope.isSysAdmin = () => perm.isSysAdmin();
 
       scope.createElection = () => {
-        var election = {
-          name: '点击修改名字...',
-          description: '点击输入描述...'
-        };
-        rpc.update_election(election).then((response) => {
-          if (response.data.updated) {
-            reload();
-          } else {
-            utils.showInfo(response.data.error);
-          }
+        utils.showElectionDialog((election) => {
+          rpc.update_election(election).then((response) => {
+            if (response.data.updated) {
+              reload();
+            } else {
+              utils.showInfo(response.data.error);
+            }
+          });
         });
       };
 
@@ -31553,8 +31668,17 @@ angular.module('AppModule', [
           if (response.data.deleted) {
             var index = scope.elections.indexOf(election);
             scope.elections.splice(index, 1);
+            if (election == scope.currentElection) {
+              scope.currentElection = null;
+            }
           }
         });
+      };
+
+      scope.isVoteOwner = () => {
+        return perm.isSysAdmin() ||
+            (scope.currentElection &&
+                scope.createElection.organizer == scope.user.id);
       };
 
       reload();

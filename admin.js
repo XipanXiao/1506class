@@ -29985,6 +29985,12 @@ $provide.value("$locale", {
         var scope = angular.element(dialog).scope();
         scope.classes = classes;
       },
+      showElectionDialog: function(onCreate) {
+        var dialog = document.getElementById('create-election-dialog');
+        dialog.open();
+        var scope = angular.element(dialog).scope();
+        scope.onCreate = onCreate;
+      },
       /// Given a Chinese name, return its pinyin.
       /// e.g. Input: 张三, output ['San', 'Zhang'].
       getPinyinName: function(name, pinyinTable) {
@@ -32128,10 +32134,11 @@ define('user_input/user_input', ['services'], function() {
   }).directive('userInput', function(rpc) {
   	return {
   	  scope: {
-  	    userId: '='
+        editing: '@',
+        userId: '='
   	  },
   	  link: function(scope) {
-  	    scope.editor = {};
+  	    scope.editor = {editing: scope.editing};
         scope.users = users;
 
   	    function init(userId) {
@@ -32155,7 +32162,7 @@ define('user_input/user_input', ['services'], function() {
   	      }
   	    };
   	  },
-  		templateUrl : 'js/user_input/user_input.html'
+  		templateUrl : 'js/user_input/user_input.html?tag=20181010'
   	};
   });
 });

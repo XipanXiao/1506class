@@ -1,0 +1,18 @@
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+
+<paper-dialog id="create-election-dialog" modal>
+  <h1>发起新的投票</h1>
+  <div class="padded-element">
+    <paper-input id="election-name-input" placeholder="输入投票活动名称...">
+    </paper-input>
+  </div>
+  <div class="padded-element">
+    负责人
+    <user-input user-id="user.id" editing="true"></user-input>
+  </div>
+  <div class="buttons">
+    <paper-button dialog-dismiss raised>取消</paper-button>
+    <paper-button dialog-dismiss ng-click="create()" raised>新建</paper-button>
+  </div>
+</paper-dialog>

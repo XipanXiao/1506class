@@ -1,5 +1,6 @@
 angular.module('AppModule', [
   'AppBarModule',
+  'CreateElectionDialogModule',
   'EditableLabelModule',
   'PermissionModule',
   'ServicesModule',
@@ -27,16 +28,14 @@ angular.module('AppModule', [
       scope.isSysAdmin = () => perm.isSysAdmin();
 
       scope.createElection = () => {
-        var election = {
-          name: '点击修改名字...',
-          description: '点击输入描述...'
-        };
-        rpc.update_election(election).then((response) => {
-          if (response.data.updated) {
-            reload();
-          } else {
-            utils.showInfo(response.data.error);
-          }
+        utils.showElectionDialog((election) => {
+          rpc.update_election(election).then((response) => {
+            if (response.data.updated) {
+              reload();
+            } else {
+              utils.showInfo(response.data.error);
+            }
+          });
         });
       };
 
@@ -45,8 +44,17 @@ angular.module('AppModule', [
           if (response.data.deleted) {
             var index = scope.elections.indexOf(election);
             scope.elections.splice(index, 1);
+            if (election == scope.currentElection) {
+              scope.currentElection = null;
+            }
           }
         });
+      };
+
+      scope.isVoteOwner = () => {
+        return perm.isSysAdmin() ||
+            (scope.currentElection &&
+                scope.createElection.organizer == scope.user.id);
       };
 
       reload();

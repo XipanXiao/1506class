@@ -715,6 +715,7 @@ body.white {
   vertical-align: top;
 }
 
+.elections > .css-table,
 .order-details-header.css-table,
 .shopping-cart-list.css-table {
   width: 100%;
@@ -913,7 +914,8 @@ payment.in-shopping-cart {
 }
 
 .elections {
-  border-right: solid 1px;
+  background: white;
+  padding: 16px;
   width: 300px;
 }
 
@@ -921,7 +923,32 @@ payment.in-shopping-cart {
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 0 200px;
   position: absolute;
   top: 48px;
+}
+
+body.vote {
+  max-width: none;
+}
+
+.candidates {
+  background: lightgray;
+  height: 100%;
+  left: 300px;
+  position: absolute;
+  right: 400px;
+}
+
+.attributes-panel {
+  background: white;
+  height: 100%;
+  padding: 16px;
+  position: absolute;
+  right: 0;
+  width: 400px;
+}
+
+.candidates > .add-icon {
+  left: -40px;
+  position: absolute;
 }

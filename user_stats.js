@@ -29985,6 +29985,12 @@ $provide.value("$locale", {
         var scope = angular.element(dialog).scope();
         scope.classes = classes;
       },
+      showElectionDialog: function(onCreate) {
+        var dialog = document.getElementById('create-election-dialog');
+        dialog.open();
+        var scope = angular.element(dialog).scope();
+        scope.onCreate = onCreate;
+      },
       /// Given a Chinese name, return its pinyin.
       /// e.g. Input: 张三, output ['San', 'Zhang'].
       getPinyinName: function(name, pinyinTable) {

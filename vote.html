@@ -2,40 +2,47 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" type="text/css" href="style.css?tag=201809252001">
+<link rel="stylesheet" type="text/css" href="style.css?tag=201810102201">
 <title>选举</title>
 <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js">
 </script>
 <link rel="import" href="bower_components/iron-icon/iron-icon.html"/>
 <link rel="import" href="bower_components/iron-icons/iron-icons.html"/>
+<link rel="import" href="bower_components/paper-button/paper-button.html">
 <link rel="import" href="bower_components/paper-toast/paper-toast.html"/>
 </head>
 
-<body class="center white">
+<body class="center white vote">
 
 <app-bar user="user"></app-bar>
 
 <div class="center full-page flex">
   <div class="elections" ng-switch="elections.length || 0">
-    <iron-icon icon="add-circle" class="add-icon clickable"
+    <iron-icon icon="add" class="clickable"
         ng-click="createElection()" title="发起投票..."
         ng-show="isSysAdmin() && editable">
     </iron-icon>
     <div ng-switch-when="0">
       <strong>暂时没有任何选举活动。</strong>
     </div>
-    <div ng-switch-default>
+    <div class="css-table" ng-switch-default>
       <div ng-repeat="election in elections | orderBy:'-start_time'"
-          class="selectable clickable deletable"
+          class="selectable clickable deletable css-table-row"
           ng-click="currentElection = election">
-        {{election.label}}
+        <div class="css-table-cell">{{election.label}}</div>
         <iron-icon icon="delete" ng-click="deleteElection(election)"
-            class="delete-button">
+            class="delete-button css-table-cell">
         </iron-icon>
       </div>
     </div>
   </div>
-  <div class="right-panel">
+  <div class="candidates">
+    <iron-icon icon="add-circle" class="add-icon clickable"
+      ng-click="createCandidate()" title="新建候选人..."
+      ng-show="isVoteOwner() && editable">
+    </iron-icon>
+  </div>
+  <div class="attributes-panel">
     <div class="election-detail">
       <editable-label value="currentElection.name" label="名称">
       </editable-label>
@@ -46,12 +53,13 @@
   </div>
 </div>
 
+<create-election-dialog></create-election-dialog>
 <paper-toast></paper-toast>
 
 <script type="text/javascript">
   const define = (module, deps, f) => f();
   const require = define;
 </script>
-<script type="text/javascript" src="vote.js?tag=201810091513"></script>
+<script type="text/javascript" src="vote.js?tag=201810101513"></script>
 </body>
 </html>

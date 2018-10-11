@@ -49,10 +49,11 @@ define('user_input/user_input', ['services'], function() {
   }).directive('userInput', function(rpc) {
   	return {
   	  scope: {
-  	    userId: '='
+        editing: '@',
+        userId: '='
   	  },
   	  link: function(scope) {
-  	    scope.editor = {};
+  	    scope.editor = {editing: scope.editing};
         scope.users = users;
 
   	    function init(userId) {
@@ -76,7 +77,7 @@ define('user_input/user_input', ['services'], function() {
   	      }
   	    };
   	  },
-  		templateUrl : 'js/user_input/user_input.html'
+  		templateUrl : 'js/user_input/user_input.html?tag=20181010'
   	};
   });
 });
