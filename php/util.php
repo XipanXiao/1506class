@@ -134,4 +134,11 @@ function run_sql_file($file, $medoo) {
   $sqls = file_get_contents($file);
   $medoo->query($sqls);
 }
+
+function ensure_graduated_column($medoo) {
+  $medoo->update("classes", ["deleted" => 0],
+      ["deleted" => NULL]);
+  $medoo->query("ALTER TABLE classes ADD COLUMN".
+      " graduated TINYINT(1) NOT NULL DEFAULT 0");
+}
 ?>
