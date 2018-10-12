@@ -76,20 +76,11 @@ function isSameCountry($another) {
 }
 
 /// Whether [$another] is in the same district of the current [$user].
-/// System admins are considered to be everywhere.
 function isSameDistrict($another) {
   global $user;
 
-  if (isSysAdmin($user)) return true;
-  if (isCountryAdmin($user)) {
-    return isSameCountry($another);
-  } elseif (isDistrictInspector($user)) {
-    $district = is_array($another) ? $another["district"] : $another->district;
-    return $district == $user->district;
-  }
-  // Class leaders and year leaders who can read the class should
-  // read the user anyway, despite of their districts.
-  return true;
+  $district = is_array($another) ? $another["district"] : $another->district;
+  return $district == $user->district;
 }
 
 function checkPermission($role) {
@@ -146,7 +137,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       $classInfo = get_class_info($classId);
 
       if ($classInfo && canRead($user, $classInfo)) {
-        $response = array_filter(get_users(null, $classId), "isSameDistrict");
+        $response = get_users(null, $classId);
       }
     } elseif ($email || $sn) {
       $response = current($email ?
@@ -177,9 +168,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     if (isYearLeader($user)) {
       $response = search($_GET["prefix"]);
       if (!empty($response)) {
-        if (isCountryAdmin($user)) {
-          $response = array_filter($response, "isSameCountry");
-        } elseif (isDistrictInspector($user)) {
+        if (!isInspector($user) && isDistrictInspector($user)) {
           $response = array_filter($response, "isSameDistrict");
         } elseif (isYearLeader($user)) {
           // For year leaders they can only see students of the same year.
@@ -192,8 +181,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         ? ["label" => getUserLabel($_GET["id"])] 
         : permission_denied_error();
   } elseif ($resource_id == "search_name") {
-    $response = isAdmin($user) 
-        ? array_filter(searchByName($_GET["name"]), "isSameDistrict") 
+    $response = isYearLeader($user) 
+        ? searchByName($_GET["name"])
         : permission_denied_error();
   } elseif ($resource_id == "task_stats") {
     $startTime =
