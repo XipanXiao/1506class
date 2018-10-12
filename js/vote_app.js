@@ -2,6 +2,7 @@ angular.module('AppModule', [
   'AppBarModule',
   'CreateElectionDialogModule',
   'EditableLabelModule',
+  'PaperBindingsModule',
   'PermissionModule',
   'ServicesModule',
   'UtilsModule',
@@ -11,14 +12,6 @@ angular.module('AppModule', [
       rpc.get_user().then(function(user) {
         scope.user = user;
         perm.user = user;
-      });
-
-      elements[0].querySelectorAll('.attributes-panel paper-input').forEach((input) => {
-        input.addEventListener('input', (event) => {
-          scope.currentElection[input.name] = event.target.value;
-          scope.dirty = true;
-          scope.$apply();
-        });      
       });
 
       function reload() {
@@ -65,11 +58,12 @@ angular.module('AppModule', [
                 scope.createElection.organizer == scope.user.id);
       };
 
+      var savedElection;
       scope.cancel = () => {
+        if (!scope.dirty) return;
+
         scope.dirty = false;
-        elements[0].querySelectorAll('.attributes-panel paper-input').forEach((input) => {
-          input.value = scope.currentElection[input.name];
-        });
+        utils.mix_in(scope.currentElection, savedElection);
       };
 
       scope.save = () => {
@@ -77,6 +71,16 @@ angular.module('AppModule', [
           scope.dirty = parseInt(response.data.updated) == 0;
         });
       };
+
+      scope.markDirty = (dirty) => { 
+        if (scope.dirty == dirty) return;
+
+        if (dirty) {
+          savedElection = angular.copy(scope.currentElection);
+        }
+
+        scope.dirty = dirty;
+      }
       reload();
     }
   };

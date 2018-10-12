@@ -4,6 +4,7 @@ js/utils.js
 js/services.js
 js/permission.js
 js/utils.js
+js/paper_bindings/paper_bindings.js
 js/user_input/user_input.js
 js/create_election_dialog/create_election_dialog.js
 js/editable_label/editable_label.js

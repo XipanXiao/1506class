@@ -47,7 +47,8 @@
       <div class="css-table-row">
         <div class="css-table-cell attribute-label">名称</div>
         <div class="css-table-cell">
-          <paper-input value="{{currentElection.name}}" name="name"
+          <paper-input bind-value="currentElection.name"
+              on-change="markDirty(true)"
               laceholder="输入投票活动名称（例如：地方理事会选举）...">
           </paper-input>
         </div>
@@ -55,8 +56,8 @@
       <div class="css-table-row">
         <div class="css-table-cell attribute-label">简介</div>
         <div class="css-table-cell">
-          <paper-input value="{{currentElection.description}}"
-              name="description">
+          <paper-input bind-value="currentElection.description"
+              on-change="markDirty(true)">
           </paper-input>
         </div>
       </div>

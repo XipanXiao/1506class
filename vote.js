@@ -31340,6 +31340,35 @@ define('utils', [], function() {
     return utils;
   });
 });
+angular.module('PaperBindingsModule', [
+  ]).directive('bindValue', function() {
+    return {
+      scope: {
+        bindValue: '=',
+        onChange: '&'
+      },
+      link: function(scope, elements, attrs, ngModel) {
+        var element = elements[0];
+        element.value = scope.bindValue;
+
+        scope.$watch('bindValue', () => {
+          if (scope.bindValue != element.value) {
+            var input = element.querySelector('input');
+            if (input) {
+              input.value = scope.bindValue || '';
+            } else {
+              element.setAttribute('value', scope.bindValue || '');
+            }
+          }
+        });
+        element.addEventListener('input', (event) => {
+          scope.bindValue = event.target.value;
+          scope.onChange();
+          scope.$apply();
+        });
+      }
+    };
+});
 define('user_input/user_input', ['services'], function() {
   var users = {};
   
@@ -31626,6 +31655,7 @@ angular.module('AppModule', [
   'AppBarModule',
   'CreateElectionDialogModule',
   'EditableLabelModule',
+  'PaperBindingsModule',
   'PermissionModule',
   'ServicesModule',
   'UtilsModule',
@@ -31635,14 +31665,6 @@ angular.module('AppModule', [
       rpc.get_user().then(function(user) {
         scope.user = user;
         perm.user = user;
-      });
-
-      elements[0].querySelectorAll('.attributes-panel paper-input').forEach((input) => {
-        input.addEventListener('input', (event) => {
-          scope.currentElection[input.name] = event.target.value;
-          scope.dirty = true;
-          scope.$apply();
-        });      
       });
 
       function reload() {
@@ -31689,18 +31711,29 @@ angular.module('AppModule', [
                 scope.createElection.organizer == scope.user.id);
       };
 
+      var savedElection;
       scope.cancel = () => {
+        if (!scope.dirty) return;
+
         scope.dirty = false;
-        elements[0].querySelectorAll('.attributes-panel paper-input').forEach((input) => {
-          input.value = scope.currentElection[input.name];
-        });
+        utils.mix_in(scope.currentElection, savedElection);
       };
 
       scope.save = () => {
         rpc.update_election(scope.currentElection).then((response) => {
-          scope.dirty = parseInt(response.data.updated);
+          scope.dirty = parseInt(response.data.updated) == 0;
         });
       };
+
+      scope.markDirty = (dirty) => { 
+        if (scope.dirty == dirty) return;
+
+        if (dirty) {
+          savedElection = angular.copy(scope.currentElection);
+        }
+
+        scope.dirty = dirty;
+      }
       reload();
     }
   };
