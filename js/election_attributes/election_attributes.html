@@ -1,0 +1,28 @@
+<div class="css-table">
+  <div class="css-table-row">
+    <div class="css-table-cell attribute-label">名称</div>
+    <div class="css-table-cell">
+      <paper-input bind-value="election.name"
+          on-change="markDirty(true)"
+          laceholder="输入投票活动名称（例如：地方理事会选举）...">
+      </paper-input>
+    </div>
+  </div>
+  <div class="css-table-row">
+    <div class="css-table-cell attribute-label">简介</div>
+    <div class="css-table-cell">
+      <paper-input bind-value="election.description"
+          on-change="markDirty(true)">
+      </paper-input>
+    </div>
+  </div>
+</div>
+<div class="buttons">
+  <paper-button ng-click="cancel()" raised ng-disabled="!dirty">
+    取消
+  </paper-button>
+  <paper-button ng-click="save()" class="primary-action" raised
+      ng-disabled="!dirty">
+    保存
+  </paper-button>
+</div>

@@ -2,6 +2,7 @@ angular.module('AppModule', [
   'AppBarModule',
   'CreateElectionDialogModule',
   'EditableLabelModule',
+  'ElectionAttributesModule',
   'PaperBindingsModule',
   'PermissionModule',
   'ServicesModule',
@@ -58,29 +59,6 @@ angular.module('AppModule', [
                 scope.createElection.organizer == scope.user.id);
       };
 
-      var savedElection;
-      scope.cancel = () => {
-        if (!scope.dirty) return;
-
-        scope.dirty = false;
-        utils.mix_in(scope.currentElection, savedElection);
-      };
-
-      scope.save = () => {
-        rpc.update_election(scope.currentElection).then((response) => {
-          scope.dirty = parseInt(response.data.updated) == 0;
-        });
-      };
-
-      scope.markDirty = (dirty) => { 
-        if (scope.dirty == dirty) return;
-
-        if (dirty) {
-          savedElection = angular.copy(scope.currentElection);
-        }
-
-        scope.dirty = dirty;
-      }
       reload();
     }
   };

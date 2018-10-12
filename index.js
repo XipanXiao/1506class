@@ -30887,7 +30887,6 @@ define('permission_editor/permission_editor',
       };
     });
 });
-
 define('setup_tasks/setup_tasks',
     ['bit_editor/bit_editor', 'services', 'utils'], function() {
   return angular.module('SetupTasksModule', ['BitEditorModule',

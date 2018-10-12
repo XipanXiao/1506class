@@ -31635,7 +31635,6 @@ define('permission_editor/permission_editor',
       };
     });
 });
-
 define('user_editor/user_editor',
     ['services', 'utils',
      'address_editor/address_editor',

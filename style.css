@@ -716,7 +716,7 @@ body.white {
 }
 
 .elections > .css-table,
-.attributes-panel > .css-table,
+election-attributes > .css-table,
 .order-details-header.css-table,
 .shopping-cart-list.css-table {
   width: 100%;
@@ -943,7 +943,7 @@ body.vote {
   right: 400px;
 }
 
-.attributes-panel {
+election-attributes {
   background: white;
   height: 100%;
   padding: 16px;
@@ -952,7 +952,7 @@ body.vote {
   width: 400px;
 }
 
-.attributes-panel > .buttons {
+election-attributes > .buttons {
   text-align: right;
 }
 

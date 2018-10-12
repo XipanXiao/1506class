@@ -59,4 +59,3 @@ define('permission_editor/permission_editor',
       };
     });
 });
-
