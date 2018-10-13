@@ -5,15 +5,15 @@ angular.module('CandidatesModule', [
   ]).directive('candidates', function(perm, rpc, utils) {
     return {
       scope: {
-        currentElection: '=',
+        election: '=',
         editable: '@',
         user: '='
       },
       link: function(scope) {
           scope.isVoteOwner = () => {
             return perm.isSysAdmin() ||
-                (scope.currentElection &&
-                    scope.createElection.organizer == scope.user.id);
+                (scope.election &&
+                    scope.election.organizer == scope.user.id);
           };
       },
       templateUrl : 'js/candidates/candidates.html?tag=201810060852'

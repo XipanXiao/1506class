@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" type="text/css" href="style.css?tag=201810122001">
+<link rel="stylesheet" type="text/css" href="style.css?tag=2018101322001">
 <title>选举</title>
 <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js">
 </script>
@@ -20,11 +20,9 @@
   <election-list user="user" editable="editable"
       current-election="currentElection">
   </election-list>
-  <candidates user="user" editable="editable"
-      current-election="currentElection">
+  <candidates user="user" editable="editable" election="currentElection">
   </candidates>
-  <election-attributes election="currentElection"
-      editable="editable">
+  <election-attributes election="currentElection" editable="editable">
   </election-attributes>
 </div>
 
@@ -35,6 +33,6 @@
   const define = (module, deps, f) => f();
   const require = define;
 </script>
-<script type="text/javascript" src="vote.js?tag=201810122232"></script>
+<script type="text/javascript" src="vote.js?tag=201810131045"></script>
 </body>
 </html>

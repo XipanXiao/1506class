@@ -964,3 +964,7 @@ candidates > .add-icon {
 paper-button.primary-action {
   color: blue;
 }
+
+.attribute-value > input {
+  width: 100%;
+}

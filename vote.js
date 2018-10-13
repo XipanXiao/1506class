@@ -31340,6 +31340,34 @@ define('utils', [], function() {
     return utils;
   });
 });
+define('time/time', [], function() {
+  return angular.module('TimeModule', [])
+    .directive('time', function() {
+      return {
+        require: 'ngModel',
+        restrict: 'A',
+        link: function(scope, elements, attrs, ngModel) {
+          ngModel.$formatters.push(function(timestring) {
+            return timestring && new Date(Date.parse(timestring));
+          });
+
+          ngModel.$parsers.push(function(date) {
+            var min = date.getMinutes();
+            if (min < 10) min = '0' + min;
+            var sec = date.getSeconds();
+            if (sec < 10) sec = '0' + sec;
+            var timestring = '' + date.getHours() + ':' + min + ':' + sec;
+            if (date.getFullYear() > 1900) {
+              return '{0}-{1}-{2} {3}'.format(date.getFullYear(),
+                  date.getMonth() + 1, date.getDate(), timestring);
+            } else {
+              return timestring;
+            }
+          });
+        }
+      };
+    });
+});
 angular.module('PaperBindingsModule', [
   ]).directive('bindValue', function() {
     return {
@@ -31656,15 +31684,15 @@ angular.module('ElectionListModule', [
   ]).directive('candidates', function(perm, rpc, utils) {
     return {
       scope: {
-        currentElection: '=',
+        election: '=',
         editable: '@',
         user: '='
       },
       link: function(scope) {
           scope.isVoteOwner = () => {
             return perm.isSysAdmin() ||
-                (scope.currentElection &&
-                    scope.createElection.organizer == scope.user.id);
+                (scope.election &&
+                    scope.election.organizer == scope.user.id);
           };
       },
       templateUrl : 'js/candidates/candidates.html?tag=201810060852'
@@ -31672,6 +31700,7 @@ angular.module('ElectionListModule', [
   });
   angular.module('ElectionAttributesModule', [
   'ServicesModule',
+  'TimeModule',
   'UtilsModule'
 ]).directive('electionAttributes', function(rpc, utils) {
   return {
@@ -31692,24 +31721,35 @@ angular.module('ElectionListModule', [
         var data = {
           id: scope.election.id,
           name: scope.election.name,
-          description: scope.election.description
+          description: scope.election.description,
+          start_time: scope.election.start_time,
+          end_time: scope.election.end_time
         };
         rpc.update_election(data).then((response) => {
           scope.dirty = parseInt(response.data.updated) == 0;
         });
       };
   
-      scope.markDirty = (dirty) => { 
-        if (scope.dirty == dirty) return;
+      const validate = () => {
+        var start = new Date(Date.parse(scope.election.start_time));
+        var end = new Date(Date.parse(scope.election.end_time));
+        return start <= end;
+      };
+
+      scope.markDirty = () => { 
+        if (scope.dirty) return;
   
-        if (dirty) {
+        scope.message = '';
+        if (validate()) {
           savedElection = angular.copy(scope.election);
+          scope.dirty = true;
+        } else {
+          scope.message = '开始时间必须早于结束时间';
         }
-  
-        scope.dirty = dirty;
-      };  
+      };
+
     },
-    templateUrl : 'js/election_attributes/election_attributes.html?tag=201810060852'
+    templateUrl : 'js/election_attributes/election_attributes.html?tag=201810131006'
   };
 });
 angular.module('AppModule', [
