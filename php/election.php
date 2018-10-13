@@ -68,6 +68,8 @@ function get_elections() {
 function update_election($election) {
   global $medoo;
   create_election_tables();
+  $election = build_update_data(["id", "name", "description",
+      "start_time", "end_time", "organizer", "global"], $election);
   return insertOrUpdate($medoo, "elections", $election);
 }
 

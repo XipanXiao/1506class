@@ -716,6 +716,7 @@ body.white {
 }
 
 .elections > .css-table,
+candidates > .css-table,
 election-attributes > .css-table,
 .order-details-header.css-table,
 .shopping-cart-list.css-table {
@@ -939,6 +940,7 @@ candidates {
   background: lightgray;
   height: 100%;
   left: 300px;
+  padding: 16px;
   position: absolute;
   right: 400px;
 }
@@ -959,10 +961,15 @@ election-attributes > .buttons {
 candidates > .add-icon {
   left: -40px;
   position: absolute;
+  top: -10px;
 }
 
 paper-button.primary-action {
   color: blue;
+}
+
+paper-button[disabled].primary-action {
+  color: gray;
 }
 
 .attribute-value > input {

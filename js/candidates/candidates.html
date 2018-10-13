@@ -1,5 +1,22 @@
+<h1>{{election.name}}候选人</h1>
 <iron-icon icon="add-circle" class="add-icon clickable"
-    ng-click="createCandidate()" title="新建候选人..."
+    ng-click="create()" title="新建候选人..."
     ng-show="isVoteOwner() && editable && election">
 </iron-icon>
-    
+<div class="css-table">
+  <div ng-repeat="candidate in candidates | filter: {deleted: false}"
+      class="css-table-row deletable">
+    <div class="css-table-cell">
+      <div class="profile"></div>
+      <strong>{{candidate.name}}</strong>
+    </div>
+    <div class="css-table-cell">
+      <editable-label value="candidate.description" on-change="markDirty()">
+      </editable-label>
+    </div>
+    <div class="css-table-cell clickable">
+      <iron-icon icon="delete" title="删除..." ng-click="remove(candidate)">
+      </iron-icon>
+    </div>
+  </div>
+</div>

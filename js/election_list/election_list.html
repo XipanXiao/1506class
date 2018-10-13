@@ -9,7 +9,8 @@
     <div class="css-table" ng-switch-default>
         <div ng-repeat="election in elections | orderBy:'-start_time'"
             class="selectable clickable deletable css-table-row"
-            ng-click="currentElection = election">
+            ng-click="currentElection = election"
+            ng-class="{'selected': currentElection == election}">
         <div class="css-table-cell">{{election.label}}</div>
         <iron-icon icon="delete" ng-click="deleteElection(election)"
             class="delete-button css-table-cell">

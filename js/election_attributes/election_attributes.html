@@ -21,20 +21,20 @@
       <div class="css-table-cell attribute-label">开始日期(凌晨)</div>
       <div class="css-table-cell attribute-value">
         <input type="date" ng-model="election.start_time" time
-            ng-change="markDirty()" ng-disabled="!editable || !election">
+            ng-change="validate()" ng-disabled="!editable || !election">
       </div>
   </div>
   <div class="css-table-row">
     <div class="css-table-cell attribute-label">结束日期(半夜)</div>
     <div class="css-table-cell attribute-value">
         <input type="date" ng-model="election.end_time" time
-            ng-change="markDirty()" ng-disabled="!editable || !election">
+            ng-change="validate()" ng-disabled="!editable || !election">
     </div>
   </div>
   <div class="css-table-row">
     <div class="css-table-cell attribute-label">负责人</div>
     <div class="css-table-cell attribute-value">
-      <user-input user-id="election.organizer" on-change="markDirty()"
+      <user-input user-id="election.organizer" on-change="onChange()"
           ng-disabled="!isVoteOwner() || !editable || !election">
       </user-input>
     </div>
@@ -42,10 +42,10 @@
 </div>
 <div class="buttons">
   <span class="error">{{message}}</span>
-  <paper-button ng-click="cancel()" raised ng-disabled="!dirty">
+  <paper-button ng-click="onCancel()" raised ng-disabled="!dirty">
     取消
   </paper-button>
-  <paper-button ng-click="save()" class="primary-action" raised
+  <paper-button ng-click="onSave()" class="primary-action" raised
       ng-disabled="!dirty">
     保存
   </paper-button>

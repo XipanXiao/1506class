@@ -17,11 +17,15 @@
 <app-bar user="user"></app-bar>
 
 <div class="center full-page flex">
-  <election-list editable="editable" current-election="currentElection">
+  <election-list editable="editable" elections="elections"
+      on-change="markDirty()" current-election="currentElection">
   </election-list>
-  <candidates editable="editable" election="currentElection">
+  <candidates editable="editable" election="currentElection"
+      on-change="markDirty()">
   </candidates>
-  <election-attributes election="currentElection" editable="editable">
+  <election-attributes election="currentElection" editable="editable"
+      dirty="dirty" on-change="markDirty()" on-save="save()"
+      on-cancel="cancel()">
   </election-attributes>
 </div>
 

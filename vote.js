@@ -31401,6 +31401,68 @@ angular.module('PaperBindingsModule', [
       }
     };
 });
+define('editable_label/editable_label', [], function() {
+	return angular.module('EditableLabelModule', [])
+		.directive('editableLabel',
+				function() {
+					return {
+					  scope: {
+              onChange: '&',
+					    label: '@',
+					    type: '@',
+					    value: '='
+					  },
+					  link: function(scope) {
+					    scope.convertValue = function(toLocal) {
+					      if (toLocal) {
+					        scope.localValue = scope.value;
+					      } else {
+					        scope.value = scope.localValue;
+					      }
+					    };
+
+					    scope.convertValue(true);
+
+					    scope.$watch('value', function() {
+					      scope.convertValue(true);
+					    });
+					    
+					    scope.editor = {
+					      value: scope.localValue
+					    };
+					    scope.commit = function() {
+					      scope.editing = false;
+					      scope.localValue = scope.editor.value;
+	              scope.convertValue(false);
+					      if (scope.onChange) {
+					        setTimeout(function() {
+					          scope.$apply();
+	                  scope.onChange();
+					        }, 0);
+					      }
+					    };
+					    scope.edit = function() {
+					      scope.editing = true;
+                scope.editor.value = scope.localValue;
+					    };
+					    scope.cancel = function() {
+					      scope.editing = false;
+                scope.editor.value = scope.localValue;
+					    };
+					    scope.keyPressed = function(event) {
+					      if (event.keyCode == 13) {
+					        scope.commit();
+					        event.preventDefault();
+					      } else if (event.keyCode == 27) {
+					        scope.cancel();
+					        event.preventDefault();
+					      }
+					    };
+					  },
+						templateUrl : 'js/editable_label/editable_label.html'
+					};
+				});
+});
 define('user_input/user_input', ['services'], function() {
   var users = {};
   
@@ -31641,50 +31703,40 @@ angular.module('ElectionListModule', [
     return {
       scope: {
         currentElection: '=',
-        editable: '='
+        editable: '=',
+        elections: '=',
+        onChange: '&'
       },
       link: function(scope) {
-        function reload() {
-            rpc.get_elections().then((response) => {
-              scope.elections = response.data;
-              utils.forEach(scope.elections, (election) => {
-                election.label = '{0}-{1}'.format(
-                    election.start_time.split('-')[0], election.name);
-              });
-              scope.currentElection = scope.elections[0];
-            });  
-          }
-    
-          scope.isSysAdmin = () => perm.isSysAdmin();
-    
-          scope.createElection = () => {
-            utils.showElectionDialog((election) => {
-              rpc.update_election(election).then((response) => {
-                if (response.data.updated) {
-                  reload();
-                } else {
-                  utils.showInfo(response.data.error);
-                }
-              });
-            });
-          };
-    
-          scope.deleteElection = (election) => {
-            rpc.delete_election(election.id).then((response) => {
-              if (response.data.deleted) {
-                var index = scope.elections.indexOf(election);
-                scope.elections.splice(index, 1);
-                if (election == scope.currentElection) {
-                  scope.currentElection = null;
-                }
+        scope.isSysAdmin = () => perm.isSysAdmin();
+  
+        scope.createElection = () => {
+          utils.showElectionDialog((election) => {
+            rpc.update_election(election).then((response) => {
+              if (response.data.updated) {
+                election.id = response.data.updated;
+                scope.elections.push(election);
+              } else {
+                utils.showInfo(response.data.error);
               }
             });
-          };
-    
-          scope.isVoteOwner = () => perm.isElectionOwner();
-    
-          reload();
-        },
+          });
+        };
+  
+        scope.deleteElection = (election) => {
+          rpc.delete_election(election.id).then((response) => {
+            if (response.data.deleted) {
+              var index = scope.elections.indexOf(election);
+              scope.elections.splice(index, 1);
+              if (election == scope.currentElection) {
+                scope.currentElection = null;
+              }
+            }
+          });
+        };
+  
+        scope.isVoteOwner = () => perm.isElectionOwner();
+      },
       templateUrl : 'js/election_list/election_list.html?tag=201810060852'
     };
   });
@@ -31696,10 +31748,47 @@ angular.module('ElectionListModule', [
     return {
       scope: {
         editable: '=',
-        election: '='
+        election: '=',
+        onChange: '&'
       },
-      link: function(scope) {
+      link: function(scope, elements) {
+        scope.candidates = [];
+        scope.$watch("election", reload);
         scope.isVoteOwner = () => perm.isElectionOwner();
+
+        function reload(election) {
+          if (!election) return;
+
+          rpc.get_candidates(election.id).then((response) => {
+            scope.candidates = response.data;
+            scope.election.candidates = scope.candidates;
+            scope.candidates.forEach((candidate) => {
+              candidate.deleted = false;
+            });
+            scope.selected = scope.candidates.length &&
+                scope.candidates[0];
+          });
+        }
+
+        scope.create = () => {
+          scope.candidates.push(scope.selected = {
+            deleted: false,
+            dirty: true
+          });
+          scope.onChange();
+        };
+
+        scope.remove = (candidate) => {
+          var index = scope.candidates.indexOf(candidate);
+          scope.candidates.splice(index, 1);
+          candidate.deleted = true;
+          scope.onChange();
+        };
+
+        scope.markDirty = (candidate) => {
+          candidate.dirty = true;
+          scope.onChange();
+        };
       },
       templateUrl : 'js/candidates/candidates.html?tag=201810060852'
     };
@@ -31713,52 +31802,31 @@ angular.module('ElectionListModule', [
 ]).directive('electionAttributes', function(perm, rpc, utils) {
   return {
     scope: {
+      dirty: '=',
       editable: '=',
       election: '=',
+      onChange: '&',
+      onCancel: '&',
+      onSave: '&'
     },
     link: function(scope) {
-      var savedElection;
-      scope.cancel = () => {
-        if (!scope.dirty) return;
-  
-        scope.dirty = false;
-        utils.mix_in(scope.election, savedElection);
-      };
-
       scope.isVoteOwner = () => perm.isElectionOwner();
   
-      scope.save = () => {
-        var data = {
-          id: scope.election.id,
-          name: scope.election.name,
-          description: scope.election.description,
-          start_time: scope.election.start_time,
-          end_time: scope.election.end_time,
-          organizer: scope.election.organizer
-        };
-        rpc.update_election(data).then((response) => {
-          scope.dirty = parseInt(response.data.updated) == 0;
-        });
-      };
-  
-      const validate = () => {
+      scope.validate = () => {
+        scope.message = '';
         var start = new Date(Date.parse(scope.election.start_time));
         var end = new Date(Date.parse(scope.election.end_time));
-        return start <= end;
-      };
-
-      scope.markDirty = () => { 
-        if (scope.dirty) return;
-  
-        scope.message = '';
-        if (validate()) {
-          savedElection = angular.copy(scope.election);
-          scope.dirty = true;
-        } else {
+        if (start > end) {
           scope.message = '开始时间必须早于结束时间';
+        } else {
+          scope.markDirty();
         }
       };
 
+      scope.markDirty = () => {
+        scope.election.dirty = true;
+        scope.onChange();
+      };
     },
     templateUrl : 'js/election_attributes/election_attributes.html?tag=201810131006'
   };
@@ -31779,8 +31847,49 @@ angular.module('AppModule', [
       rpc.get_user().then(function(user) {
         scope.user = user;
         perm.user = user;
+        reload();
       });
+
       scope.editable = location.search.indexOf('admin=true') >= 0;
+
+      function reload() {
+        rpc.get_elections().then((response) => {
+          scope.elections = response.data;
+          utils.forEach(scope.elections, (election) => {
+            election.label = '{0}-{1}'.format(
+                election.start_time.split('-')[0], election.name);
+          });
+          scope.currentElection = scope.elections[0];
+          scope.dirty = false;
+        });  
+      }
+
+      scope.cancel = () => reload();
+
+      scope.save = () => {
+        var requests = [];
+        for (let election of scope.elections) {
+          for (let candidate of election.candidates) {
+            if (!candidate.dirty && !candidate.deleted) continue;
+            if (candidate.deleted) {
+              requests.push(() => rpc.delete_candidate(candidate.id));
+            } else {
+              requests.push(() => rpc.update_candidate(candidate));
+            }
+          }
+
+          if (election.dirty) {
+            requests.push(() => rpc.update_election(election));
+          } else if (election.deleted) {
+            requests.push(() => rpc.delete_election(election.id));
+          }
+        }
+        utils.requestOneByOne(requests).then(reload);
+      };
+
+      scope.markDirty = () => {
+        scope.dirty = true;
+      };
     }
   };
 });
