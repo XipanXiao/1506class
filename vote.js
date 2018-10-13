@@ -30645,6 +30645,10 @@ define('permission', ['utils'], function() {
       canReadDistrict: function(district) {
         return this.isSysAdmin() || this.isCountryInspector() ||
             this.isDistrictInspector() && this.user.district == district;
+      },
+      isElectionOwner: function(election) {
+        return this.isSysAdmin() ||
+            election && election.organizer == this.user.id;
       }
     };
   });
@@ -31413,13 +31417,13 @@ define('user_input/user_input', ['services'], function() {
         });
         ngModel.$parsers.push(function(userLabel) {
           if (!userLabel) {
-            scope.$parent.userId = 0;
+            scope.$parent.update(0);
             return 0;
           }
 
           var userId = users[userLabel];
           if (userId) {
-            scope.$parent.userId = userId;
+            scope.$parent.update(userId);
             return userId;
           }
 
@@ -31436,6 +31440,7 @@ define('user_input/user_input', ['services'], function() {
               response.data.forEach(function(user) {
                 var label = user.nickname ? 
                     '{0}({1})'.format(user.name, user.nickname) : user.name;
+                label += '-' + user.email;
                 users[user.id] = label;
                 users[label] = user.id;
                 scope.hints.push(user);
@@ -31449,9 +31454,10 @@ define('user_input/user_input', ['services'], function() {
   	return {
   	  scope: {
         editing: '@',
+        onChange: '&',
         userId: '='
   	  },
-  	  link: function(scope) {
+  	  link: function(scope, elements, attrs) {
   	    scope.editor = {editing: scope.editing};
         scope.users = users;
 
@@ -31474,9 +31480,19 @@ define('user_input/user_input', ['services'], function() {
   	        scope.editor.editing = false;
   	        event.preventDefault();
   	      }
-  	    };
+        };
+        
+        scope.edit = () => {
+          if (attrs.disabled) return;
+          scope.editor.editing = true
+        };
+
+        scope.update = (userId) => {
+          scope.userId = userId;
+          scope.onChange();
+        };
   	  },
-  		templateUrl : 'js/user_input/user_input.html?tag=20181010'
+  		templateUrl : 'js/user_input/user_input.html?tag=20181013'
   	};
   });
 });
@@ -31625,8 +31641,7 @@ angular.module('ElectionListModule', [
     return {
       scope: {
         currentElection: '=',
-        editable: '@',
-        user: '='
+        editable: '='
       },
       link: function(scope) {
         function reload() {
@@ -31666,11 +31681,7 @@ angular.module('ElectionListModule', [
             });
           };
     
-          scope.isVoteOwner = () => {
-            return perm.isSysAdmin() ||
-                (scope.currentElection &&
-                    scope.createElection.organizer == scope.user.id);
-          };
+          scope.isVoteOwner = () => perm.isElectionOwner();
     
           reload();
         },
@@ -31684,29 +31695,26 @@ angular.module('ElectionListModule', [
   ]).directive('candidates', function(perm, rpc, utils) {
     return {
       scope: {
-        election: '=',
-        editable: '@',
-        user: '='
+        editable: '=',
+        election: '='
       },
       link: function(scope) {
-          scope.isVoteOwner = () => {
-            return perm.isSysAdmin() ||
-                (scope.election &&
-                    scope.election.organizer == scope.user.id);
-          };
+        scope.isVoteOwner = () => perm.isElectionOwner();
       },
       templateUrl : 'js/candidates/candidates.html?tag=201810060852'
     };
   });
   angular.module('ElectionAttributesModule', [
+  'PermissionModule',
   'ServicesModule',
   'TimeModule',
+  'UserInputModule',
   'UtilsModule'
-]).directive('electionAttributes', function(rpc, utils) {
+]).directive('electionAttributes', function(perm, rpc, utils) {
   return {
     scope: {
-      editable: '@',
-      election: '='
+      editable: '=',
+      election: '=',
     },
     link: function(scope) {
       var savedElection;
@@ -31716,6 +31724,8 @@ angular.module('ElectionListModule', [
         scope.dirty = false;
         utils.mix_in(scope.election, savedElection);
       };
+
+      scope.isVoteOwner = () => perm.isElectionOwner();
   
       scope.save = () => {
         var data = {
@@ -31723,7 +31733,8 @@ angular.module('ElectionListModule', [
           name: scope.election.name,
           description: scope.election.description,
           start_time: scope.election.start_time,
-          end_time: scope.election.end_time
+          end_time: scope.election.end_time,
+          organizer: scope.election.organizer
         };
         rpc.update_election(data).then((response) => {
           scope.dirty = parseInt(response.data.updated) == 0;

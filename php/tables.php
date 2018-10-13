@@ -724,8 +724,10 @@ function search($prefix) {
 function searchByName($name) {
   global $medoo;
   
-  return $medoo->select("users", ["id", "name", "nickname", "country"],
-      ["OR" => ["name[~]" => $name, "nickname[~]" => $name]]);
+  return $medoo->select("users",
+      ["id", "name", "nickname", "country", "email"],
+      ["OR" => ["name[~]" => $name, "nickname[~]" => $name,
+          "email[~]" => $name]]);
 }
 
 /// Returns "name(nickname)" for a user identified by [$id].

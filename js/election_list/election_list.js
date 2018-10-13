@@ -6,8 +6,7 @@ angular.module('ElectionListModule', [
     return {
       scope: {
         currentElection: '=',
-        editable: '@',
-        user: '='
+        editable: '='
       },
       link: function(scope) {
         function reload() {
@@ -47,11 +46,7 @@ angular.module('ElectionListModule', [
             });
           };
     
-          scope.isVoteOwner = () => {
-            return perm.isSysAdmin() ||
-                (scope.currentElection &&
-                    scope.createElection.organizer == scope.user.id);
-          };
+          scope.isVoteOwner = () => perm.isElectionOwner();
     
           reload();
         },

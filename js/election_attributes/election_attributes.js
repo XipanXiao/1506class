@@ -1,12 +1,14 @@
 angular.module('ElectionAttributesModule', [
+  'PermissionModule',
   'ServicesModule',
   'TimeModule',
+  'UserInputModule',
   'UtilsModule'
-]).directive('electionAttributes', function(rpc, utils) {
+]).directive('electionAttributes', function(perm, rpc, utils) {
   return {
     scope: {
-      editable: '@',
-      election: '='
+      editable: '=',
+      election: '=',
     },
     link: function(scope) {
       var savedElection;
@@ -16,6 +18,8 @@ angular.module('ElectionAttributesModule', [
         scope.dirty = false;
         utils.mix_in(scope.election, savedElection);
       };
+
+      scope.isVoteOwner = () => perm.isElectionOwner();
   
       scope.save = () => {
         var data = {
@@ -23,7 +27,8 @@ angular.module('ElectionAttributesModule', [
           name: scope.election.name,
           description: scope.election.description,
           start_time: scope.election.start_time,
-          end_time: scope.election.end_time
+          end_time: scope.election.end_time,
+          organizer: scope.election.organizer
         };
         rpc.update_election(data).then((response) => {
           scope.dirty = parseInt(response.data.updated) == 0;

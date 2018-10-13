@@ -31,6 +31,14 @@
             ng-change="markDirty()" ng-disabled="!editable || !election">
     </div>
   </div>
+  <div class="css-table-row">
+    <div class="css-table-cell attribute-label">负责人</div>
+    <div class="css-table-cell attribute-value">
+      <user-input user-id="election.organizer" on-change="markDirty()"
+          ng-disabled="!isVoteOwner() || !editable || !election">
+      </user-input>
+    </div>
+  </div>
 </div>
 <div class="buttons">
   <span class="error">{{message}}</span>

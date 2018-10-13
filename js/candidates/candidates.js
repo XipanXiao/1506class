@@ -5,16 +5,11 @@ angular.module('CandidatesModule', [
   ]).directive('candidates', function(perm, rpc, utils) {
     return {
       scope: {
-        election: '=',
-        editable: '@',
-        user: '='
+        editable: '=',
+        election: '='
       },
       link: function(scope) {
-          scope.isVoteOwner = () => {
-            return perm.isSysAdmin() ||
-                (scope.election &&
-                    scope.election.organizer == scope.user.id);
-          };
+        scope.isVoteOwner = () => perm.isElectionOwner();
       },
       templateUrl : 'js/candidates/candidates.html?tag=201810060852'
     };

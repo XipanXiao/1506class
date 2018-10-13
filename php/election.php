@@ -53,7 +53,16 @@ function create_election_tables() {
 function get_elections() {
   global $medoo;
   create_election_tables();
-  return $medoo->select("elections", "*");
+  $elections = $medoo->select("elections", "*");
+  foreach ($elections as $index => $election) {
+    $organizer = get_single_record($medoo, "users", $election["organizer"]);
+    if (!$organizer) continue;
+
+    $election["organizer_name"] = $organizer["name"];
+    $election["organizer_email"] = $organizer["email"];
+    $elections[$index] = $election;
+  }
+  return $elections;
 }
 
 function update_election($election) {

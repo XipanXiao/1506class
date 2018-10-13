@@ -968,3 +968,7 @@ paper-button.primary-action {
 .attribute-value > input {
   width: 100%;
 }
+
+[disabled] .clickable {
+  cursor: auto;
+}

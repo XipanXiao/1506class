@@ -29494,6 +29494,10 @@ $provide.value("$locale", {
       canReadDistrict: function(district) {
         return this.isSysAdmin() || this.isCountryInspector() ||
             this.isDistrictInspector() && this.user.district == district;
+      },
+      isElectionOwner: function(election) {
+        return this.isSysAdmin() ||
+            election && election.organizer == this.user.id;
       }
     };
   });
