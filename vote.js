@@ -31473,68 +31473,6 @@ angular.module('CreateElectionDialogModule', [
     templateUrl : 'js/create_election_dialog/create_election_dialog.html?tag=20180621'
   };
 });
-define('editable_label/editable_label', [], function() {
-	return angular.module('EditableLabelModule', [])
-		.directive('editableLabel',
-				function() {
-					return {
-					  scope: {
-              onChange: '&',
-					    label: '@',
-					    type: '@',
-					    value: '='
-					  },
-					  link: function(scope) {
-					    scope.convertValue = function(toLocal) {
-					      if (toLocal) {
-					        scope.localValue = scope.value;
-					      } else {
-					        scope.value = scope.localValue;
-					      }
-					    };
-
-					    scope.convertValue(true);
-
-					    scope.$watch('value', function() {
-					      scope.convertValue(true);
-					    });
-					    
-					    scope.editor = {
-					      value: scope.localValue
-					    };
-					    scope.commit = function() {
-					      scope.editing = false;
-					      scope.localValue = scope.editor.value;
-	              scope.convertValue(false);
-					      if (scope.onChange) {
-					        setTimeout(function() {
-					          scope.$apply();
-	                  scope.onChange();
-					        }, 0);
-					      }
-					    };
-					    scope.edit = function() {
-					      scope.editing = true;
-                scope.editor.value = scope.localValue;
-					    };
-					    scope.cancel = function() {
-					      scope.editing = false;
-                scope.editor.value = scope.localValue;
-					    };
-					    scope.keyPressed = function(event) {
-					      if (event.keyCode == 13) {
-					        scope.commit();
-					        event.preventDefault();
-					      } else if (event.keyCode == 27) {
-					        scope.cancel();
-					        event.preventDefault();
-					      }
-					    };
-					  },
-						templateUrl : 'js/editable_label/editable_label.html'
-					};
-				});
-});
 define('districts/districts',
     ['services', 'utils'], function() {
   return angular.module('DistrictsModule', ['ServicesModule',
@@ -31651,7 +31589,88 @@ define('app_bar/app_bar', ['permission', 'search_bar/search_bar', 'utils'],
       };
     });
 });
-angular.module('ElectionAttributesModule', [
+angular.module('ElectionListModule', [
+    'PermissionModule',
+    'ServicesModule',
+    'UtilsModule'
+  ]).directive('electionList', function(perm, rpc, utils) {
+    return {
+      scope: {
+        currentElection: '=',
+        editable: '@',
+        user: '='
+      },
+      link: function(scope) {
+        function reload() {
+            rpc.get_elections().then((response) => {
+              scope.elections = response.data;
+              utils.forEach(scope.elections, (election) => {
+                election.label = '{0}-{1}'.format(
+                    election.start_time.split('-')[0], election.name);
+              });
+              scope.currentElection = scope.elections[0];
+            });  
+          }
+    
+          scope.isSysAdmin = () => perm.isSysAdmin();
+    
+          scope.createElection = () => {
+            utils.showElectionDialog((election) => {
+              rpc.update_election(election).then((response) => {
+                if (response.data.updated) {
+                  reload();
+                } else {
+                  utils.showInfo(response.data.error);
+                }
+              });
+            });
+          };
+    
+          scope.deleteElection = (election) => {
+            rpc.delete_election(election.id).then((response) => {
+              if (response.data.deleted) {
+                var index = scope.elections.indexOf(election);
+                scope.elections.splice(index, 1);
+                if (election == scope.currentElection) {
+                  scope.currentElection = null;
+                }
+              }
+            });
+          };
+    
+          scope.isVoteOwner = () => {
+            return perm.isSysAdmin() ||
+                (scope.currentElection &&
+                    scope.createElection.organizer == scope.user.id);
+          };
+    
+          reload();
+        },
+      templateUrl : 'js/election_list/election_list.html?tag=201810060852'
+    };
+  });
+  angular.module('CandidatesModule', [
+    'PermissionModule',
+    'ServicesModule',
+    'UtilsModule'
+  ]).directive('candidates', function(perm, rpc, utils) {
+    return {
+      scope: {
+        currentElection: '=',
+        editable: '@',
+        user: '='
+      },
+      link: function(scope) {
+          scope.isVoteOwner = () => {
+            return perm.isSysAdmin() ||
+                (scope.currentElection &&
+                    scope.createElection.organizer == scope.user.id);
+          };
+      },
+      templateUrl : 'js/candidates/candidates.html?tag=201810060852'
+    };
+  });
+  angular.module('ElectionAttributesModule', [
   'ServicesModule',
   'UtilsModule'
 ]).directive('electionAttributes', function(rpc, utils) {
@@ -31695,9 +31714,10 @@ angular.module('ElectionAttributesModule', [
 });
 angular.module('AppModule', [
   'AppBarModule',
+  'CandidatesModule',
   'CreateElectionDialogModule',
-  'EditableLabelModule',
   'ElectionAttributesModule',
+  'ElectionListModule',
   'PaperBindingsModule',
   'PermissionModule',
   'ServicesModule',
@@ -31709,52 +31729,7 @@ angular.module('AppModule', [
         scope.user = user;
         perm.user = user;
       });
-
-      function reload() {
-        rpc.get_elections().then((response) => {
-          scope.elections = response.data;
-          utils.forEach(scope.elections, (election) => {
-            election.label = '{0}-{1}'.format(
-                election.start_time.split('-')[0], election.name);
-          });
-          scope.currentElection = scope.elections[0];
-        });  
-      }
-
       scope.editable = location.search.indexOf('admin=true') >= 0;
-      scope.isSysAdmin = () => perm.isSysAdmin();
-
-      scope.createElection = () => {
-        utils.showElectionDialog((election) => {
-          rpc.update_election(election).then((response) => {
-            if (response.data.updated) {
-              reload();
-            } else {
-              utils.showInfo(response.data.error);
-            }
-          });
-        });
-      };
-
-      scope.deleteElection = (election) => {
-        rpc.delete_election(election.id).then((response) => {
-          if (response.data.deleted) {
-            var index = scope.elections.indexOf(election);
-            scope.elections.splice(index, 1);
-            if (election == scope.currentElection) {
-              scope.currentElection = null;
-            }
-          }
-        });
-      };
-
-      scope.isVoteOwner = () => {
-        return perm.isSysAdmin() ||
-            (scope.currentElection &&
-                scope.createElection.organizer == scope.user.id);
-      };
-
-      reload();
     }
   };
 });

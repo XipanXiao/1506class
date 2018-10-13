@@ -1,0 +1,19 @@
+<div class="elections" ng-switch="elections.length || 0">
+    <iron-icon icon="add" class="clickable padded-element"
+        ng-click="createElection()" title="发起投票..."
+        ng-show="isSysAdmin() && editable">
+    </iron-icon>
+    <div ng-switch-when="0">
+        <strong>暂时没有任何选举活动。</strong>
+    </div>
+    <div class="css-table" ng-switch-default>
+        <div ng-repeat="election in elections | orderBy:'-start_time'"
+            class="selectable clickable deletable css-table-row"
+            ng-click="currentElection = election">
+        <div class="css-table-cell">{{election.label}}</div>
+        <iron-icon icon="delete" ng-click="deleteElection(election)"
+            class="delete-button css-table-cell">
+        </iron-icon>
+        </div>
+    </div>
+</div>

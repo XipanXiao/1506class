@@ -3,7 +3,7 @@
     <div class="css-table-cell attribute-label">名称</div>
     <div class="css-table-cell">
       <paper-input bind-value="election.name"
-          on-change="markDirty(true)"
+          on-change="markDirty(true)" ng-disabled="!editable"
           laceholder="输入投票活动名称（例如：地方理事会选举）...">
       </paper-input>
     </div>
@@ -12,7 +12,7 @@
     <div class="css-table-cell attribute-label">简介</div>
     <div class="css-table-cell">
       <paper-input bind-value="election.description"
-          on-change="markDirty(true)">
+          on-change="markDirty(true)" ng-disabled="!editable">
       </paper-input>
     </div>
   </div>

@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" type="text/css" href="style.css?tag=201810112001">
+<link rel="stylesheet" type="text/css" href="style.css?tag=201810122001">
 <title>选举</title>
 <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js">
 </script>
@@ -17,35 +17,15 @@
 <app-bar user="user"></app-bar>
 
 <div class="center full-page flex">
-  <div class="elections" ng-switch="elections.length || 0">
-    <iron-icon icon="add" class="clickable padded-element"
-        ng-click="createElection()" title="发起投票..."
-        ng-show="isSysAdmin() && editable">
-    </iron-icon>
-    <div ng-switch-when="0">
-      <strong>暂时没有任何选举活动。</strong>
-    </div>
-    <div class="css-table" ng-switch-default>
-      <div ng-repeat="election in elections | orderBy:'-start_time'"
-          class="selectable clickable deletable css-table-row"
-          ng-click="currentElection = election">
-        <div class="css-table-cell">{{election.label}}</div>
-        <iron-icon icon="delete" ng-click="deleteElection(election)"
-            class="delete-button css-table-cell">
-        </iron-icon>
-      </div>
-    </div>
-  </div>
-  <div class="candidates">
-    <iron-icon icon="add-circle" class="add-icon clickable"
-      ng-click="createCandidate()" title="新建候选人..."
-      ng-show="isVoteOwner() && editable">
-    </iron-icon>
-  </div>
-  <div class="attributes-panel">
-    <election-attributes election="currentElection">
-    </election-attributes>
-  </div>
+  <election-list user="user" editable="editable"
+      current-election="currentElection">
+  </election-list>
+  <candidates user="user" editable="editable"
+      current-election="currentElection">
+  </candidates>
+  <election-attributes election="currentElection"
+      editable="editable">
+  </election-attributes>
 </div>
 
 <create-election-dialog></create-election-dialog>
@@ -55,6 +35,6 @@
   const define = (module, deps, f) => f();
   const require = define;
 </script>
-<script type="text/javascript" src="vote.js?tag=201810101513"></script>
+<script type="text/javascript" src="vote.js?tag=201810122232"></script>
 </body>
 </html>

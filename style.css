@@ -935,7 +935,7 @@ body.vote {
   max-width: none;
 }
 
-.candidates {
+candidates {
   background: lightgray;
   height: 100%;
   left: 300px;
@@ -956,7 +956,7 @@ election-attributes > .buttons {
   text-align: right;
 }
 
-.candidates > .add-icon {
+candidates > .add-icon {
   left: -40px;
   position: absolute;
 }
