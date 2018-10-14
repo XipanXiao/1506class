@@ -31393,30 +31393,26 @@ define('time/time', [], function() {
     });
 });
 angular.module('PaperBindingsModule', [
-  ]).directive('bindValue', function() {
+  ]).directive('paperInput', function() {
     return {
-      scope: {
-        bindValue: '=',
-        onChange: '&'
-      },
+      restrict: 'E',
+      require: 'ngModel',
       link: function(scope, elements, attrs, ngModel) {
         var element = elements[0];
-        element.value = scope.bindValue;
+        element.value = ngModel.$modelValue;
 
-        scope.$watch('bindValue', () => {
-          if (scope.bindValue != element.value) {
-            var input = element.querySelector('input');
-            if (input) {
-              input.value = scope.bindValue || '';
-            } else {
-              element.setAttribute('value', scope.bindValue || '');
-            }
+        ngModel.$formatters.push((modelValue) => {
+          var value = modelValue || '';
+          var input = element.querySelector('input');
+          if (input) {
+            input.value = value;
+          } else {
+            element.setAttribute('value', value);
           }
         });
+
         element.addEventListener('input', (event) => {
-          scope.bindValue = event.target.value;
-          scope.onChange();
-          scope.$apply();
+          ngModel.$setViewValue(event.target.value);
         });
       }
     };
@@ -31483,120 +31479,95 @@ define('editable_label/editable_label', [], function() {
 					};
 				});
 });
-define('user_input/user_input', ['services'], function() {
+angular.module('PaperUserInputModule', [
+  'ServicesModule'
+]).directive('paperUserInput', function(rpc) {
   var users = {};
-  
-  return angular.module('UserInputModule', ['ServicesModule'])
-	.directive('userTypeAhead', function(rpc) {
-    return {
-      require: 'ngModel',
-      restrict: 'A',
-      link: function(scope, element, attrs, ngModel) {
-        var searchTimer;
-
-        ngModel.$formatters.push(function(userId) {
-          return users[userId];
-        });
-        ngModel.$parsers.push(function(userLabel) {
-          if (!userLabel) {
-            scope.$parent.update(0);
-            return 0;
-          }
-
-          var userId = users[userLabel];
-          if (userId) {
-            scope.$parent.update(userId);
-            return userId;
-          }
-
-          if (searchTimer) {
-            clearTimeout(searchTimer);
-          }
-
-          searchTimer = setTimeout(function() {
-            searchTimer = null;            
-            rpc.searchByName(userLabel).then(function(response) {
-              if (!response.data) return;
-
-              scope.hints = [];
-              response.data.forEach(function(user) {
-                var label = user.nickname ? 
-                    '{0}({1})'.format(user.name, user.nickname) : user.name;
-                label += '-' + user.email;
-                users[user.id] = label;
-                users[label] = user.id;
-                scope.hints.push(user);
-              });
-            });
-          }, 1000);
-        });
-      }
-    };
-  }).directive('userInput', function(rpc) {
-  	return {
-  	  scope: {
-        editing: '@',
-        onChange: '&',
-        userId: '='
-  	  },
-  	  link: function(scope, elements, attrs) {
-  	    scope.editor = {editing: scope.editing};
-        scope.users = users;
-
-  	    function init(userId) {
-  	      if (!userId) return;
-
-  	      if (users[userId]) return;
-
-  	      rpc.getUserLabel(userId).then(function(response) {
-  	        users[userId] = response.data.label;
-  	      });
-  	    }
-  	    if (scope.userId) {
-  	      init(scope.userId);
-  	    }
-  	    scope.$watch('userId', init);
-  
-  	    scope.keyPressed = function(event) {
-  	      if (event.keyCode == 13 || event.keyCode == 27) {
-  	        scope.editor.editing = false;
-  	        event.preventDefault();
-  	      }
-        };
-        
-        scope.edit = () => {
-          if (attrs.disabled) return;
-          scope.editor.editing = true
-        };
-
-        scope.update = (userId) => {
-          scope.userId = userId;
-          scope.onChange();
-        };
-  	  },
-  		templateUrl : 'js/user_input/user_input.html?tag=20181013'
-  	};
-  });
-});
-angular.module('CreateElectionDialogModule', [
-    'ServicesModule',
-    'UserInputModule',
-    'UtilsModule',
-  ]).directive('createElectionDialog', function(rpc, utils) {
   return {
     scope: {
-        onCreate: '&'
+      userId: '=',
+      onChange: '&',
     },
+    restrict: 'E',
     link: function(scope) {
+      var searchTimer;
+
+      scope.users = users;
+
+      function update(id) {
+        scope.userId = id;
+        scope.onChange();
+      };
+
+      function init(userId) {
+        if (!userId) return;
+        if (scope.name = users[userId]) return;
+
+        rpc.getUserLabel(userId).then(function(response) {
+          scope.name = users[userId] = response.data.label;
+        });
+      }
+
+      if (scope.userId) {
+        init(scope.userId);
+      }
+      scope.$watch('userId', init);
+
+      scope.search = function() {
+        var userLabel = scope.name;
+        if (!userLabel) {
+          return update(0);
+        }
+
+        var userId = users[userLabel];
+        if (userId) {
+          return update(userId);
+        }
+
+        if (searchTimer) {
+          clearTimeout(searchTimer);
+        }
+
+        searchTimer = setTimeout(() => {
+          searchTimer = null;            
+          rpc.searchByName(userLabel).then((response) => {
+            if (!response.data) return;
+
+            scope.hints = [];
+            response.data.forEach(function(user) {
+              var label = user.nickname ? 
+                  '{0}({1})'.format(user.name, user.nickname) : user.name;
+              label += '-' + user.email;
+              users[user.id] = label;
+              users[label] = user.id;
+              scope.hints.push(user);
+            });
+          });
+        }, 1000);
+      };
+    },
+    templateUrl: 'js/paper_user_input/paper_user_input.html?tag=20180621'
+  };
+});
+angular.module('CreateElectionDialogModule', [
+  'ServicesModule',
+  'PaperUserInputModule',
+  'UtilsModule',
+]).directive('createElectionDialog', function (rpc, utils) {
+  return {
+    scope: {
+      onCreate: '&'
+    },
+    link: function (scope) {
       scope.user = {};
-      scope.create = function() {
+      scope.create = function () {
         scope.onCreate({
           organizer: scope.user.id,
-          name: document.querySelector('#election-name-input').value
+          name: scope.name
         });
       };
     },
-    templateUrl : 'js/create_election_dialog/create_election_dialog.html?tag=20180621'
+    templateUrl: 'js/create_election_dialog/create_election_dialog.html?tag=20180621'
   };
 });
 define('districts/districts',
@@ -31766,7 +31737,7 @@ angular.module('ElectionListModule', [
   angular.module('CandidatesModule', [
     'PermissionModule',
     'ServicesModule',
-    'UserInputModule',
+    'PaperUserInputModule',
     'UtilsModule'
   ]).directive('candidates', function(perm, rpc, utils) {
     return {
@@ -31798,8 +31769,7 @@ angular.module('ElectionListModule', [
           scope.candidates.push(scope.selected = {
             deleted: false,
             dirty: true,
-            election: scope.election.id,
-            description: '请点击输入候选人简介...'
+            election: scope.election.id
           });
           scope.onChange();
         };
@@ -31820,6 +31790,7 @@ angular.module('ElectionListModule', [
           rpc.upload_image(input.files[0]).then((url) => {
             scope.selected.profile = url;
             scope.markDirty(scope.selected);
+            scope.$apply();
           });
         };
       },
@@ -31830,9 +31801,10 @@ angular.module('ElectionListModule', [
   'PermissionModule',
   'ServicesModule',
   'TimeModule',
-  'UserInputModule',
+  'PaperBindingsModule',
+  'PaperUserInputModule',
   'UtilsModule'
-]).directive('electionAttributes', function(perm, rpc, utils) {
+]).directive('electionAttributes', function (perm, rpc, utils) {
   return {
     scope: {
       dirty: '=',
@@ -31842,9 +31814,9 @@ angular.module('ElectionListModule', [
       onCancel: '&',
       onSave: '&'
     },
-    link: function(scope) {
+    link: function (scope) {
       scope.isVoteOwner = () => perm.isElectionOwner();
-  
+
       scope.validate = () => {
         scope.message = '';
         var start = new Date(Date.parse(scope.election.start_time));
@@ -31861,7 +31833,7 @@ angular.module('ElectionListModule', [
         scope.onChange();
       };
     },
-    templateUrl : 'js/election_attributes/election_attributes.html?tag=201810131006'
+    templateUrl: 'js/election_attributes/election_attributes.html?tag=201810131006'
   };
 });
 angular.module('AppModule', [
@@ -31886,18 +31858,25 @@ angular.module('AppModule', [
       scope.editable = location.search.indexOf('admin=true') >= 0;
 
       function reload() {
-        rpc.get_elections().then((response) => {
+        return rpc.get_elections().then((response) => {
           scope.elections = response.data;
           utils.forEach(scope.elections, (election) => {
             election.label = '{0}-{1}'.format(
                 election.start_time.split('-')[0], election.name);
           });
-          scope.currentElection = scope.elections[0];
+          scope.currentElection =
+              scope.elections[scope.elections.length - 1];
           scope.dirty = false;
+          return true;
         });  
       }
 
       scope.cancel = () => reload();
+
+      const checkResponse = (response) => {
+        return parseInt(response.data.updated) ||
+            parseInt(response.data.deleted);
+      };
 
       scope.save = () => {
         var requests = [];
@@ -31905,19 +31884,24 @@ angular.module('AppModule', [
           for (let candidate of election.candidates) {
             if (!candidate.dirty && !candidate.deleted) continue;
             if (candidate.deleted) {
-              requests.push(() => rpc.delete_candidate(candidate.id));
+              requests.push(() =>
+                  rpc.delete_candidate(candidate.id).then(checkResponse));
             } else {
-              requests.push(() => rpc.update_candidate(candidate));
+              requests.push(() =>
+                  rpc.update_candidate(candidate).then(checkResponse));
             }
           }
 
           if (election.dirty) {
-            requests.push(() => rpc.update_election(election));
+            requests.push(() =>
+                rpc.update_election(election).then(checkResponse));
           } else if (election.deleted) {
-            requests.push(() => rpc.delete_election(election.id));
+            requests.push(() =>
+                rpc.delete_election(election.id).then(checkResponse));
           }
         }
-        utils.requestOneByOne(requests).then(reload);
+        requests.push(reload);
+        utils.requestOneByOne(requests);
       };
 
       scope.markDirty = () => {

@@ -2,9 +2,10 @@ angular.module('ElectionAttributesModule', [
   'PermissionModule',
   'ServicesModule',
   'TimeModule',
-  'UserInputModule',
+  'PaperBindingsModule',
+  'PaperUserInputModule',
   'UtilsModule'
-]).directive('electionAttributes', function(perm, rpc, utils) {
+]).directive('electionAttributes', function (perm, rpc, utils) {
   return {
     scope: {
       dirty: '=',
@@ -14,9 +15,9 @@ angular.module('ElectionAttributesModule', [
       onCancel: '&',
       onSave: '&'
     },
-    link: function(scope) {
+    link: function (scope) {
       scope.isVoteOwner = () => perm.isElectionOwner();
-  
+
       scope.validate = () => {
         scope.message = '';
         var start = new Date(Date.parse(scope.election.start_time));
@@ -33,6 +34,6 @@ angular.module('ElectionAttributesModule', [
         scope.onChange();
       };
     },
-    templateUrl : 'js/election_attributes/election_attributes.html?tag=201810131006'
+    templateUrl: 'js/election_attributes/election_attributes.html?tag=201810131006'
   };
 });

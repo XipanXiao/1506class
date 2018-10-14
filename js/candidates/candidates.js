@@ -1,7 +1,7 @@
 angular.module('CandidatesModule', [
     'PermissionModule',
     'ServicesModule',
-    'UserInputModule',
+    'PaperUserInputModule',
     'UtilsModule'
   ]).directive('candidates', function(perm, rpc, utils) {
     return {
@@ -33,8 +33,7 @@ angular.module('CandidatesModule', [
           scope.candidates.push(scope.selected = {
             deleted: false,
             dirty: true,
-            election: scope.election.id,
-            description: '请点击输入候选人简介...'
+            election: scope.election.id
           });
           scope.onChange();
         };
@@ -55,6 +54,7 @@ angular.module('CandidatesModule', [
           rpc.upload_image(input.files[0]).then((url) => {
             scope.selected.profile = url;
             scope.markDirty(scope.selected);
+            scope.$apply();
           });
         };
       },

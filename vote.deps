@@ -7,7 +7,7 @@ js/utils.js
 js/time/time.js
 js/paper_bindings/paper_bindings.js
 js/editable_label/editable_label.js
-js/user_input/user_input.js
+js/paper_user_input/paper_user_input.js
 js/create_election_dialog/create_election_dialog.js
 js/districts/districts.js
 js/search_bar/search_bar.js

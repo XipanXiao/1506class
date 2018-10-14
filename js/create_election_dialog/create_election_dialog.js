@@ -1,21 +1,21 @@
 angular.module('CreateElectionDialogModule', [
-    'ServicesModule',
-    'UserInputModule',
-    'UtilsModule',
-  ]).directive('createElectionDialog', function(rpc, utils) {
+  'ServicesModule',
+  'PaperUserInputModule',
+  'UtilsModule',
+]).directive('createElectionDialog', function (rpc, utils) {
   return {
     scope: {
-        onCreate: '&'
+      onCreate: '&'
     },
-    link: function(scope) {
+    link: function (scope) {
       scope.user = {};
-      scope.create = function() {
+      scope.create = function () {
         scope.onCreate({
           organizer: scope.user.id,
-          name: document.querySelector('#election-name-input').value
+          name: scope.name
         });
       };
     },
-    templateUrl : 'js/create_election_dialog/create_election_dialog.html?tag=20180621'
+    templateUrl: 'js/create_election_dialog/create_election_dialog.html?tag=20180621'
   };
 });

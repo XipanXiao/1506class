@@ -940,9 +940,10 @@ candidates {
   background: lightgray;
   height: 100%;
   left: 300px;
+  overflow: auto;
   padding: 16px;
   position: absolute;
-  right: 400px;
+  right: 432px;
 }
 
 election-attributes {
@@ -959,9 +960,9 @@ election-attributes > .buttons {
 }
 
 candidates > .add-icon {
-  left: -40px;
-  position: absolute;
-  top: -10px;
+  left: 260px;
+  position: fixed;
+  top: -2px;
 }
 
 paper-button.primary-action {
@@ -981,11 +982,10 @@ paper-button[disabled].primary-action {
 }
 
 .profile {
-  background-image: url("images/background.png");
-  color: blue;
   cursor: pointer;
-  height: 200px;
+  display: block;
+  max-height: 200px;
+  max-width: 150px;
   overflow: hidden;
   text-align: center;
-  width: 150px;
 }

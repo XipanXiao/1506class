@@ -1,0 +1,7 @@
+<paper-input ng-model="name" ng-change="search()" list="paper-user-hints"
+    placeholder="输入名字或者email查找...">
+</paper-input>
+<datalist id="paper-user-hints">
+  <option ng-repeat="user in hints" value="{{users[user.id]}}">
+  </option>
+</datalist>

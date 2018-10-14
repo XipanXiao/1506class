@@ -3,8 +3,8 @@
   <div class="css-table-row">
     <div class="css-table-cell attribute-label">名称</div>
     <div class="css-table-cell">
-      <paper-input bind-value="election.name" no-label-float
-          on-change="markDirty()" ng-disabled="!editable || !election"
+      <paper-input ng-model="election.name" no-label-float
+          ng-change="markDirty()" ng-disabled="!editable || !election"
           laceholder="输入投票活动名称（例如：地方理事会选举）...">
       </paper-input>
     </div>
@@ -12,8 +12,8 @@
   <div class="css-table-row">
     <div class="css-table-cell attribute-label">简介</div>
     <div class="css-table-cell">
-      <paper-input bind-value="election.description" no-label-float
-          on-change="markDirty()" ng-disabled="!editable || !election">
+      <paper-input ng-model="election.description" no-label-float
+          ng-change="markDirty()" ng-disabled="!editable || !election">
       </paper-input>
     </div>
   </div>
@@ -34,9 +34,9 @@
   <div class="css-table-row">
     <div class="css-table-cell attribute-label">负责人</div>
     <div class="css-table-cell attribute-value">
-      <user-input user-id="election.organizer" on-change="onChange()"
+      <paper-user-input user-id="election.organizer" on-change="onChange()"
           ng-disabled="!isVoteOwner() || !editable || !election">
-      </user-input>
+      </paper-user-input>
     </div>
   </div>
 </div>
