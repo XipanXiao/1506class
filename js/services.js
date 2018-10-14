@@ -15,12 +15,14 @@ define('services', ['utils'], function() {
   // Promise of http.get('/data/Uni2Pinyin.txt'); 
   var pinyinTablePromise;
 
-  function http_form_post($http, data, url) {
+  function http_form_post($http, data, url, headers) {
+    headers = headers || {};
+    headers['Content-Type'] = 'application/x-www-form-urlencoded';
     return $http({
       method: 'POST',
       url: url || serviceUrl,
       data: data,
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      headers: headers
     });
   }
 
@@ -490,6 +492,24 @@ define('services', ['utils'], function() {
             var url = 'php/district.php?rid=users' +
                 '&district={0}'.format(district);
             return $http.get(url);
+          },
+
+          upload_image: function(file) {
+            return new Promise((resolve) => {
+              var reader = new FileReader();
+              reader.onload = (event) => {
+                var data = {
+                  image: event.target.result.split(',')[1]
+                };
+                http_form_post($http, $httpParamSerializerJQLike(data),
+                  'https://api.imgur.com/3/upload', {
+                    'Authorization': 'Client-ID 716d920ab67e2e0'
+                  }).then((response) => {
+                    resolve(response.data.data.link);
+                  });
+              };
+              reader.readAsDataURL(file);
+            });
           }
         };
       });

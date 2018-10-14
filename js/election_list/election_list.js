@@ -17,8 +17,11 @@ angular.module('ElectionListModule', [
           utils.showElectionDialog((election) => {
             rpc.update_election(election).then((response) => {
               if (response.data.updated) {
-                election.id = response.data.updated;
+                election = response.data.updated;
+                election.label = '{0}-{1}'.format(
+                  election.start_time.split('-')[0], election.name);
                 scope.elections.push(election);
+                scope.currentElection = election;
               } else {
                 utils.showInfo(response.data.error);
               }

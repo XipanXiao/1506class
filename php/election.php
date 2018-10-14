@@ -29,8 +29,9 @@ function create_election_tables() {
       user INT NOT NULL,
         FOREIGN KEY (user) REFERENCES users(id),
       profile VARCHAR(256) CHARACTER SET utf8,
-      UNIQUE KEY `unique_index` (`election`,`user`),
-      description VARCHAR(256) CHARACTER SET utf8
+        UNIQUE KEY `unique_index` (`election`,`user`),
+      slogan VARCHAR(64) CHARACTER SET utf8,
+      description VARCHAR(1024) CHARACTER SET utf8
     );";
 
   $medoo->query($sql);
@@ -70,7 +71,8 @@ function update_election($election) {
   create_election_tables();
   $election = build_update_data(["id", "name", "description",
       "start_time", "end_time", "organizer", "global"], $election);
-  return insertOrUpdate($medoo, "elections", $election);
+  $id = insertOrUpdate($medoo, "elections", $election);
+  return get_single_record($medoo, "elections", $id);
 }
 
 function delete_election($id) {
@@ -85,6 +87,8 @@ function get_candidates($election) {
 
 function update_candidate($candidate) {
   global $medoo;
+  $candidate = build_update_data(["id", "election", "user",
+      "profile", "slogan", "description"], $candidate);
   return insertOrUpdate($medoo, "candidates", $candidate);
 }
 

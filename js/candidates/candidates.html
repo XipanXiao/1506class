@@ -3,16 +3,42 @@
     ng-click="create()" title="新建候选人..."
     ng-show="isVoteOwner() && editable && election">
 </iron-icon>
-<div class="css-table">
+<div class="css-table" ng-if="candidates.length">
+  <div class="css-table-row">
+    <div class="css-table-cell">候选人姓名</div>
+    <div class="css-table-cell">照片</div>
+    <div class="css-table-cell">口号</div>
+    <div class="css-table-cell">简介</div>
+    <div class="css-table-cell"></div>
+  </div>
   <div ng-repeat="candidate in candidates | filter: {deleted: false}"
       class="css-table-row deletable">
     <div class="css-table-cell">
-      <div class="profile"></div>
-      <strong>{{candidate.name}}</strong>
+      <paper-input bind-value="candidate.user" on-change="markDirty(candidate)"
+        placeholder="输入姓名、法名或email查找..." user-type-ahead
+        ng-model="candidate.user">
+      </paper-input>
     </div>
     <div class="css-table-cell">
-      <editable-label value="candidate.description" on-change="markDirty()">
-      </editable-label>
+      <div class="profile">
+        <img ng-if="candidate.profile" src={{candidate.profile}}>
+      </div>
+      <label>点击上传候选人照片...<br>
+        <input type="file" ng-click="selected = candidate"
+            onchange="uploadImage(this)"
+            ng-if="isVoteOwner() && editable">
+      </label>
+    </div>
+    <div class="css-table-cell">
+      <paper-input bind-value="candidate.slogan" on-change="markDirty(candidate)"
+          placeholder="输入竞选口号...">
+      </paper-input>
+    </div>
+    <div class="css-table-cell">
+      <paper-input bind-value="candidate.description"
+          on-change="markDirty(candidate)"
+          placeholder="输入候选人简介...">
+      </paper-input>
     </div>
     <div class="css-table-cell clickable">
       <iron-icon icon="delete" title="删除..." ng-click="remove(candidate)">

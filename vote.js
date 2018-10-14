@@ -30060,12 +30060,14 @@ define('services', ['utils'], function() {
   // Promise of http.get('/data/Uni2Pinyin.txt'); 
   var pinyinTablePromise;
 
-  function http_form_post($http, data, url) {
+  function http_form_post($http, data, url, headers) {
+    headers = headers || {};
+    headers['Content-Type'] = 'application/x-www-form-urlencoded';
     return $http({
       method: 'POST',
       url: url || serviceUrl,
       data: data,
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      headers: headers
     });
   }
 
@@ -30535,6 +30537,24 @@ define('services', ['utils'], function() {
             var url = 'php/district.php?rid=users' +
                 '&district={0}'.format(district);
             return $http.get(url);
+          },
+
+          upload_image: function(file) {
+            return new Promise((resolve) => {
+              var reader = new FileReader();
+              reader.onload = (event) => {
+                var data = {
+                  image: event.target.result.split(',')[1]
+                };
+                http_form_post($http, $httpParamSerializerJQLike(data),
+                  'https://api.imgur.com/3/upload', {
+                    'Authorization': 'Client-ID 716d920ab67e2e0'
+                  }).then((response) => {
+                    resolve(response.data.data.link);
+                  });
+              };
+              reader.readAsDataURL(file);
+            });
           }
         };
       });
@@ -31714,8 +31734,11 @@ angular.module('ElectionListModule', [
           utils.showElectionDialog((election) => {
             rpc.update_election(election).then((response) => {
               if (response.data.updated) {
-                election.id = response.data.updated;
+                election = response.data.updated;
+                election.label = '{0}-{1}'.format(
+                  election.start_time.split('-')[0], election.name);
                 scope.elections.push(election);
+                scope.currentElection = election;
               } else {
                 utils.showInfo(response.data.error);
               }
@@ -31743,6 +31766,7 @@ angular.module('ElectionListModule', [
   angular.module('CandidatesModule', [
     'PermissionModule',
     'ServicesModule',
+    'UserInputModule',
     'UtilsModule'
   ]).directive('candidates', function(perm, rpc, utils) {
     return {
@@ -31773,7 +31797,9 @@ angular.module('ElectionListModule', [
         scope.create = () => {
           scope.candidates.push(scope.selected = {
             deleted: false,
-            dirty: true
+            dirty: true,
+            election: scope.election.id,
+            description: '请点击输入候选人简介...'
           });
           scope.onChange();
         };
@@ -31788,6 +31814,13 @@ angular.module('ElectionListModule', [
         scope.markDirty = (candidate) => {
           candidate.dirty = true;
           scope.onChange();
+        };
+
+        window.uploadImage = function(input) {
+          rpc.upload_image(input.files[0]).then((url) => {
+            scope.selected.profile = url;
+            scope.markDirty(scope.selected);
+          });
         };
       },
       templateUrl : 'js/candidates/candidates.html?tag=201810060852'
