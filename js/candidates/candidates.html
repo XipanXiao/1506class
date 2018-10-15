@@ -33,15 +33,21 @@
       </div>
     </div>
     <div class="css-table-cell">
-      <textarea ng-model="candidate.description" rows="6" cols="50"
+      <textarea ng-model="candidate.description" rows="6" cols="45"
           ng-change="markDirty(candidate)" class="candidate-description"
           placeholder="输入候选人简介..." ng-disabled="!editable">
       </textarea>
     </div>
     <div class="css-table-cell clickable">
-      <iron-icon icon="delete" title="删除..." ng-click="remove(candidate)"
-          class="delete-button">
-      </iron-icon>
+      <div class="right" ng-switch="editable">
+        <iron-icon icon="delete" title="删除..." ng-click="remove(candidate)"
+            class="delete-button" ng-switch-when="true">
+        </iron-icon>
+        <paper-button ng-click="vote(candidate)" class="vote"
+            ng-switch-default raised>
+          <iron-icon icon="check"></iron-icon>投票给他
+        </paper-button>
+      </div>
     </div>
   </div>
 </div>

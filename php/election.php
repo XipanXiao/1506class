@@ -28,6 +28,8 @@ function create_election_tables() {
         FOREIGN KEY (election) REFERENCES elections(id),
       user INT NOT NULL,
         FOREIGN KEY (user) REFERENCES users(id),
+      district MEDIUMINT NOT NULL,
+        FOREIGN KEY (district) REFERENCES districts(id),
       profile VARCHAR(256) CHARACTER SET utf8,
         UNIQUE KEY `unique_index` (`election`,`user`),
       slogan VARCHAR(64) CHARACTER SET utf8,
@@ -80,15 +82,24 @@ function delete_election($id) {
   return delete_record($medoo, "elections", $id);
 }
 
-function get_candidates($election) {
+function get_candidates($election, $district = null) {
   global $medoo;
-  return $medoo->select("candidates", "*", ["election" => $election]);
+  if (!$district) {
+    return $medoo->select("candidates", "*", ["election" => $election]);
+  } else {
+    return $medoo->select("candidates", "*",
+        ["AND" => ["election" => $election, "district" => $district]]);
+  }
 }
 
 function update_candidate($candidate) {
   global $medoo;
   $candidate = build_update_data(["id", "election", "user",
       "profile", "slogan", "description"], $candidate);
+  if (empty($candidate["id"])) {
+    $user = get_single_record($medoo, "users", $candidate["user"]);
+    $candidate["district"] = $user["district"];
+  }
   return insertOrUpdate($medoo, "candidates", $candidate);
 }
 
@@ -136,7 +147,14 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   if ($resource_id == "elections") {
     $response = get_elections();
   } else if ($resource_id == "candidates") {
-    $response = get_candidates($_GET["election"]);
+    $election = $_GET["election"];
+    $district = $_GET["district"];
+    if (is_election_owner($election) || 
+        $district && $district == $user->district) {
+      $response = get_candidates($election, $district);
+    } else {
+      $response = permission_denied_error();
+    }
   } else if ($resource_id == "votes") {
     $election_id = $_GET["election"];
     // Get all votes

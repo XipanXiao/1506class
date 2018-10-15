@@ -31400,9 +31400,6 @@ angular.module('PaperBindingsModule', [
       link: function(scope, elements, attrs, ngModel) {
         var element = elements[0];
         element.value = ngModel.$modelValue;
-        if (!attrs.readonly) {
-          element.removeAttribute('readonly');
-        }
 
         ngModel.$formatters.push((modelValue) => {
           var value = modelValue || '';

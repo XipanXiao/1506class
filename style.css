@@ -937,7 +937,6 @@ body.vote {
 }
 
 candidates {
-  background: lightgray;
   height: 100%;
   left: 300px;
   padding: 16px;
@@ -1000,4 +999,13 @@ paper-button[disabled].primary-action {
 
 .candidate-name {
   float: left;
+}
+
+paper-button.vote {
+  background-color: white;
+  color: blue;
+}
+
+election-list {
+  background-color: white;
 }
