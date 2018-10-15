@@ -31400,6 +31400,9 @@ angular.module('PaperBindingsModule', [
       link: function(scope, elements, attrs, ngModel) {
         var element = elements[0];
         element.value = ngModel.$modelValue;
+        if (!attrs.readonly) {
+          element.removeAttribute('readonly');
+        }
 
         ngModel.$formatters.push((modelValue) => {
           var value = modelValue || '';
@@ -31479,20 +31482,21 @@ define('editable_label/editable_label', [], function() {
 					};
 				});
 });
+var userInputCache = {};
+
 angular.module('PaperUserInputModule', [
   'ServicesModule'
 ]).directive('paperUserInput', function(rpc) {
-  var users = {};
+  var users = userInputCache;
   return {
     scope: {
-      userId: '=',
+      editable: '=',
       onChange: '&',
+      userId: '=',
     },
     restrict: 'E',
     link: function(scope) {
       var searchTimer;
-
-      scope.users = users;
 
       function update(id) {
         scope.userId = id;
@@ -31533,15 +31537,17 @@ angular.module('PaperUserInputModule', [
           rpc.searchByName(userLabel).then((response) => {
             if (!response.data) return;
 
-            scope.hints = [];
+            var hints = [];
             response.data.forEach(function(user) {
               var label = user.nickname ? 
                   '{0}({1})'.format(user.name, user.nickname) : user.name;
               label += '-' + user.email;
               users[user.id] = label;
               users[label] = user.id;
-              scope.hints.push(user);
+              hints.push(label);
             });
+            var dataList = document.querySelector('#user-input-list');
+            angular.element(dataList).scope().hints = hints;
           });
         }, 1000);
       };

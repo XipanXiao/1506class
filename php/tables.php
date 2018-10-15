@@ -727,7 +727,7 @@ function searchByName($name) {
   return $medoo->select("users",
       ["id", "name", "nickname", "country", "email"],
       ["OR" => ["name[~]" => $name, "nickname[~]" => $name,
-          "email[~]" => $name]]);
+          "email[~]" => $name], "LIMIT" => 30]);
 }
 
 /// Returns "name(nickname)" for a user identified by [$id].

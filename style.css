@@ -940,7 +940,6 @@ candidates {
   background: lightgray;
   height: 100%;
   left: 300px;
-  overflow: auto;
   padding: 16px;
   position: absolute;
   right: 432px;
@@ -960,9 +959,9 @@ election-attributes > .buttons {
 }
 
 candidates > .add-icon {
-  left: 260px;
-  position: fixed;
-  top: -2px;
+  left: -40px;
+  position: absolute;
+  top: -20px;
 }
 
 paper-button.primary-action {
@@ -988,4 +987,17 @@ paper-button[disabled].primary-action {
   max-width: 150px;
   overflow: hidden;
   text-align: center;
+}
+
+.candidate-description {
+  border: none;
+  font-size: 1.1em;
+}
+
+[disabled].candidate-description {
+  background-color: lightgray;
+}
+
+.candidate-name {
+  float: left;
 }

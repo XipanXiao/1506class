@@ -1,46 +1,42 @@
 <h1>{{election.name}}候选人</h1>
 <iron-icon icon="add-circle" class="add-icon clickable"
     ng-click="create()" title="新建候选人..."
-    ng-show="isVoteOwner() && editable && election">
+    ng-show="editable && election">
 </iron-icon>
 <div class="css-table" ng-if="candidates.length">
   <div class="css-table-row header">
     <div class="css-table-cell">候选人姓名</div>
     <div class="css-table-cell">照片</div>
-    <div class="css-table-cell">口号</div>
     <div class="css-table-cell">简介</div>
     <div class="css-table-cell"></div>
   </div>
   <div ng-repeat="candidate in candidates | filter: {deleted: false}"
       class="css-table-row deletable">
-    <div class="css-table-cell">
-      <paper-user-input user-id="candidate.user" on-change="markDirty(candidate)">
+    <div class="css-table-cell candidate-name">
+      <paper-user-input user-id="candidate.user" on-change="markDirty(candidate)"
+          editable="editable">
       </paper-user-input>
       <div ng-if="!candidate.user" class="error">姓名不能为空</div>
+      <paper-input ng-model="candidate.slogan" ng-change="markDirty(candidate)"
+          placeholder="输入竞选口号..." ng-disabled="!editable"  label="竞选口号">
+      </paper-input>
     </div>
     <div class="css-table-cell">
       <a ng-if="candidate.profile" href="{{candidate.profile}}">
         <img ng-if="candidate.profile" src={{candidate.profile}} class="profile">
       </a>
-      <paper-input ng-model="candidate.profile" ng-change="markDirty(candidate)"
-          placeholder="输入URL或者上传...">
-      </paper-input>
-      <label>点击上传候选人照片...<br>
-        <input type="file" ng-click="selected = candidate"
-            onchange="uploadImage(this)"
-            ng-if="isVoteOwner() && editable">
-      </label>
+      <div ng-if="editable">
+        <label>点击上传候选人照片...<br>
+          <input type="file" ng-click="selected = candidate"
+              onchange="uploadImage(this)">
+        </label>
+      </div>
     </div>
     <div class="css-table-cell">
-      <paper-input ng-model="candidate.slogan" ng-change="markDirty(candidate)"
-          placeholder="输入竞选口号...">
-      </paper-input>
-    </div>
-    <div class="css-table-cell">
-      <paper-input ng-model="candidate.description"
-          ng-change="markDirty(candidate)"
-          placeholder="输入候选人简介...">
-      </paper-input>
+      <textarea ng-model="candidate.description" rows="6" cols="50"
+          ng-change="markDirty(candidate)" class="candidate-description"
+          placeholder="输入候选人简介..." ng-disabled="!editable">
+      </textarea>
     </div>
     <div class="css-table-cell clickable">
       <iron-icon icon="delete" title="删除..." ng-click="remove(candidate)"
