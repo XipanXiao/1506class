@@ -3,6 +3,7 @@
     ng-click="create()" title="新建候选人..."
     ng-show="editable && election">
 </iron-icon>
+<span ng-if="!editable">您还剩{{voteCap - voted}}张选票。</span>
 <div class="css-table odd-even" ng-if="candidates.length">
   <div class="css-table-row header">
     <div class="css-table-cell">候选人姓名</div>
@@ -40,7 +41,7 @@
       </div>
     </div>
     <div class="css-table-cell">
-      <textarea ng-model="candidate.description" rows="6" cols="45"
+      <textarea ng-model="candidate.description" rows="6"
           ng-change="markDirty(candidate)" class="candidate-description"
           placeholder="输入候选人简介..." ng-disabled="!editable">
       </textarea>
@@ -50,7 +51,7 @@
         <iron-icon icon="delete" title="删除..." ng-click="remove(candidate)"
             class="delete-button" ng-switch-when="true">
         </iron-icon>
-        <div ng-switch-default ng-switch="voted(candidate)">
+        <div ng-switch-default ng-switch="candidate.voted">
           <iron-icon icon="check-box" class="voted" title="您已经投过票了，感谢"
               ng-switch-when="true">
           </iron-icon>

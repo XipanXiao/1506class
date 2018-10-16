@@ -10,6 +10,10 @@ $medoo = get_medoo();
 function create_election_tables() {
   global $medoo;
   
+//   $medoo->query("drop table votes");
+//   $medoo->query("drop table candidates");
+//   $medoo->query("drop table elections");
+  
   $sql = "CREATE TABLE elections (
       id INT AUTO_INCREMENT PRIMARY KEY,
       organizer INT,
@@ -28,7 +32,8 @@ function create_election_tables() {
         FOREIGN KEY (election) REFERENCES elections(id),
       user INT NOT NULL,
         FOREIGN KEY (user) REFERENCES users(id),
-      district MEDIUMINT NOT NULL,
+      name VARCHAR(32) CHARACTER SET utf8 NOT NULL,
+  		district MEDIUMINT NOT NULL,
         FOREIGN KEY (district) REFERENCES districts(id),
       profile VARCHAR(256) CHARACTER SET utf8,
         UNIQUE KEY `unique_index` (`election`,`user`),
@@ -85,16 +90,11 @@ function delete_election($id) {
 function get_candidates($election, $district = null) {
   global $medoo;
   if (!$district) {
-    $candidates = $medoo->select("candidates", "*", ["election" => $election]);
+    return $medoo->select("candidates", "*", ["election" => $election]);
   } else {
-    $candidates = $medoo->select("candidates", "*",
+    return $medoo->select("candidates", "*",
         ["AND" => ["election" => $election, "district" => $district]]);
   }
-  foreach ($candidates as $index => $candidate) {
-    $candidate["name"] = get_user_label($medoo, $candidate["user"]);
-    $candidates[$index] = $candidate;
-  }
-  return $candidates;
 }
 
 function update_candidate($candidate) {
@@ -104,6 +104,8 @@ function update_candidate($candidate) {
   if (empty($candidate["id"])) {
     $user = get_single_record($medoo, "users", $candidate["user"]);
     $candidate["district"] = $user["district"];
+    $candidate["name"] = $user["name"].
+        ($user["nickname"] ? ('(' . $user["nickname"]. ')') : '');
   }
   return insertOrUpdate($medoo, "candidates", $candidate);
 }
@@ -125,6 +127,12 @@ function get_votes($election, $user_id = NULL) {
 
 function vote($vote) {
   global $medoo;
+  $voted = $medoo->count("votes", ["AND" => [
+  	"election" => $vote["election"],
+  	"candidate" => $vote["candidate"],
+  	"user" => $vote["user"]
+  ]]);
+  if ($voted >= 3) return 0;
   return $medoo->insert("votes", $vote);
 }
 

@@ -30500,7 +30500,7 @@ define('services', ['utils'], function() {
           },
           
           get_votes: function(election, user) {
-            var url = 'php/election.php?rid=candidates' +
+            var url = 'php/election.php?rid=votes' +
                 '&election={0}&user={1}'.format(election, user || '');
             return $http.get(url);
           },
@@ -31752,21 +31752,42 @@ angular.module('ElectionListModule', [
       link: function(scope, elements) {
         scope.candidates = [];
         scope.$watch("election", reload);
+        scope.voteCap = 3;
+        scope.voted = 0;
         scope.isVoteOwner = () => perm.isElectionOwner();
-
-        function reload(election) {
-          if (!election) return;
-
+        
+        function getVotes() {
+          var electionId = scope.election.id;
+          return rpc.get_votes(electionId, perm.user.id).then((response) => {
+            var votes = {};
+            for (let vote of response.data) {
+              votes[vote.candidate] = true;
+            }
+            for (let candidate of scope.candidates) {
+              candidate.voted = votes[candidate.id] || false;
+              if (candidate.voted) scope.voted++;
+            }
+            return true;
+          });
+        }
+        
+        function getCandidates() {
+          var election = scope.election;
           var district = !scope.editable && perm.user.district;
-          rpc.get_candidates(election.id, district).then((response) => {
+          return rpc.get_candidates(election.id, district).then((response) => {
             scope.candidates = response.data;
             scope.election.candidates = scope.candidates;
             scope.candidates.forEach((candidate) => {
               candidate.deleted = false;
             });
-            scope.selected = scope.candidates.length &&
+            return scope.selected = scope.candidates.length &&
                 scope.candidates[0];
           });
+        }
+
+        function reload(election) {
+          if (!election) return;
+          utils.requestOneByOne([getCandidates, getVotes]);
         }
 
         scope.create = () => {
@@ -31795,6 +31816,26 @@ angular.module('ElectionListModule', [
             scope.selected.profile = url;
             scope.markDirty(scope.selected);
             scope.$apply();
+          });
+        };
+
+        scope.vote = (candidate) => {
+          if (scope.voted >= 3) {
+            alert('每人限投3票');
+            return;
+          }
+          var data = {
+            election: scope.election.id,
+            user: perm.user.id,
+            candidate: candidate.id
+          };
+          rpc.vote(data).then((response) => {
+            if (response.data.updated) {
+              candidate.voted = true;
+              scope.voted++;
+            } else {
+              alert(response.data.error);
+            }
           });
         };
       },

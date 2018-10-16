@@ -455,7 +455,7 @@ define('services', ['utils'], function() {
           },
           
           get_votes: function(election, user) {
-            var url = 'php/election.php?rid=candidates' +
+            var url = 'php/election.php?rid=votes' +
                 '&election={0}&user={1}'.format(election, user || '');
             return $http.get(url);
           },
