@@ -15,11 +15,13 @@
       class="css-table-row deletable">
     <div class="css-table-cell candidate-name" ng-switch="editable">
       <div ng-switch-when="true">
-        <paper-user-input user-id="candidate.user" on-change="markDirty(candidate)"
+        <paper-user-input user-id="candidate.user"
+            on-change="markDirty(candidate)"
             editable="isVoteOwner() && editable">
         </paper-user-input>
         <div ng-if="!candidate.user" class="error">姓名不能为空</div>
-        <paper-input ng-model="candidate.slogan" ng-change="markDirty(candidate)"
+        <paper-input ng-model="candidate.slogan"
+            ng-change="markDirty(candidate)"
             placeholder="输入竞选口号..." ng-disabled="!editable"  label="竞选口号">
         </paper-input>
       </div>
@@ -27,6 +29,7 @@
         <h2>{{candidate.name}}</h2>
         <strong>{{candidate.slogan}}</strong>
       </div>
+      <districts district="candidate.district"></districts>
     </div>
     <div class="css-table-cell">
       <a ng-if="candidate.profile" href="{{candidate.profile}}">

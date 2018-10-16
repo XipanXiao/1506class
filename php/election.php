@@ -129,7 +129,6 @@ function vote($vote) {
   global $medoo;
   $voted = $medoo->count("votes", ["AND" => [
   	"election" => $vote["election"],
-  	"candidate" => $vote["candidate"],
   	"user" => $vote["user"]
   ]]);
   if ($voted >= 3) return 0;

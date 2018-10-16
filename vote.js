@@ -31738,6 +31738,7 @@ angular.module('ElectionListModule', [
     };
   });
   angular.module('CandidatesModule', [
+    'DistrictsModule',
     'PermissionModule',
     'ServicesModule',
     'PaperUserInputModule',
@@ -31779,6 +31780,7 @@ angular.module('ElectionListModule', [
             scope.election.candidates = scope.candidates;
             scope.candidates.forEach((candidate) => {
               candidate.deleted = false;
+              candidate.district = parseInt(candidate.district);
             });
             return scope.selected = scope.candidates.length &&
                 scope.candidates[0];
