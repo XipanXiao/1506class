@@ -141,4 +141,14 @@ function ensure_graduated_column($medoo) {
   $medoo->query("ALTER TABLE classes ADD COLUMN".
       " graduated TINYINT(1) NOT NULL DEFAULT 0");
 }
+
+function get_user_label($medoo, $id) {
+  $users = $medoo->select("users", ["name", "nickname"], ["id" => $id]);
+  if (empty($users)) return "";
+
+  $user = current($users);
+  $name = $user["name"];
+  $nickname = $user["nickname"];
+  return $nickname ? sprintf("%s(%s)", $name, $nickname) : $name; 
+}
 ?>

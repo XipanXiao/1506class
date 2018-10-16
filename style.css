@@ -994,18 +994,41 @@ paper-button[disabled].primary-action {
 }
 
 [disabled].candidate-description {
-  background-color: lightgray;
+  background-color: transparent;
 }
 
 .candidate-name {
   float: left;
 }
 
-paper-button.vote {
+.vote-actions {
+  position: relative;
+}
+
+.vote-actions paper-button {
+  align-items: center;
   background-color: white;
   color: blue;
+  display: flex;
+  padding: 0 4px;
 }
 
 election-list {
   background-color: white;
+}
+
+body.vote {
+  background-color: whitesmoke;
+}
+
+.vote-actions img {
+  height: 36px;
+  width: 36px;
+}
+
+.voted {
+  color: green;
+  position: absolute;
+  right: 0;
+  top: 0;
 }

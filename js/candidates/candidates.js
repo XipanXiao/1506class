@@ -18,7 +18,8 @@ angular.module('CandidatesModule', [
         function reload(election) {
           if (!election) return;
 
-          rpc.get_candidates(election.id).then((response) => {
+          var district = !scope.editable && perm.user.district;
+          rpc.get_candidates(election.id, district).then((response) => {
             scope.candidates = response.data;
             scope.election.candidates = scope.candidates;
             scope.candidates.forEach((candidate) => {

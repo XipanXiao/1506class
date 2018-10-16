@@ -3,7 +3,7 @@
     ng-click="create()" title="新建候选人..."
     ng-show="editable && election">
 </iron-icon>
-<div class="css-table" ng-if="candidates.length">
+<div class="css-table odd-even" ng-if="candidates.length">
   <div class="css-table-row header">
     <div class="css-table-cell">候选人姓名</div>
     <div class="css-table-cell">照片</div>
@@ -12,18 +12,25 @@
   </div>
   <div ng-repeat="candidate in candidates | filter: {deleted: false}"
       class="css-table-row deletable">
-    <div class="css-table-cell candidate-name">
-      <paper-user-input user-id="candidate.user" on-change="markDirty(candidate)"
-          editable="editable">
-      </paper-user-input>
-      <div ng-if="!candidate.user" class="error">姓名不能为空</div>
-      <paper-input ng-model="candidate.slogan" ng-change="markDirty(candidate)"
-          placeholder="输入竞选口号..." ng-disabled="!editable"  label="竞选口号">
-      </paper-input>
+    <div class="css-table-cell candidate-name" ng-switch="editable">
+      <div ng-switch-when="true">
+        <paper-user-input user-id="candidate.user" on-change="markDirty(candidate)"
+            editable="isVoteOwner() && editable">
+        </paper-user-input>
+        <div ng-if="!candidate.user" class="error">姓名不能为空</div>
+        <paper-input ng-model="candidate.slogan" ng-change="markDirty(candidate)"
+            placeholder="输入竞选口号..." ng-disabled="!editable"  label="竞选口号">
+        </paper-input>
+      </div>
+      <div ng-switch-default>
+        <h2>{{candidate.name}}</h2>
+        <strong>{{candidate.slogan}}</strong>
+      </div>
     </div>
     <div class="css-table-cell">
       <a ng-if="candidate.profile" href="{{candidate.profile}}">
-        <img ng-if="candidate.profile" src={{candidate.profile}} class="profile">
+        <img ng-if="candidate.profile" src={{candidate.profile}}
+            class="profile">
       </a>
       <div ng-if="editable">
         <label>点击上传候选人照片...<br>
@@ -38,15 +45,20 @@
           placeholder="输入候选人简介..." ng-disabled="!editable">
       </textarea>
     </div>
-    <div class="css-table-cell clickable">
+    <div class="css-table-cell clickable vote-actions">
       <div class="right" ng-switch="editable">
         <iron-icon icon="delete" title="删除..." ng-click="remove(candidate)"
             class="delete-button" ng-switch-when="true">
         </iron-icon>
-        <paper-button ng-click="vote(candidate)" class="vote"
-            ng-switch-default raised>
-          <iron-icon icon="check"></iron-icon>投票给他
-        </paper-button>
+        <div ng-switch-default ng-switch="voted(candidate)">
+          <iron-icon icon="check-box" class="voted" title="您已经投过票了，感谢"
+              ng-switch-when="true">
+          </iron-icon>
+          <paper-button ng-switch-default ng-click="vote(candidate)" raised>
+            <img src="images/vote.png">
+            <span class="padded-element">投票给他</span>
+          </paper-button>
+        </div>
       </div>
     </div>
   </div>

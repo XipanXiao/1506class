@@ -30493,9 +30493,9 @@ define('services', ['utils'], function() {
             return $http.get('php/election.php?rid=elections');
           },
           
-          get_candidates: function(election) {
+          get_candidates: function(election, district) {
             var url = 'php/election.php?rid=candidates' +
-                '&election={0}'.format(election);
+                '&election={0}&district={1}'.format(election, district || '');
             return $http.get(url);
           },
           
@@ -31757,7 +31757,8 @@ angular.module('ElectionListModule', [
         function reload(election) {
           if (!election) return;
 
-          rpc.get_candidates(election.id).then((response) => {
+          var district = !scope.editable && perm.user.district;
+          rpc.get_candidates(election.id, district).then((response) => {
             scope.candidates = response.data;
             scope.election.candidates = scope.candidates;
             scope.candidates.forEach((candidate) => {

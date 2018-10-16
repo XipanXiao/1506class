@@ -733,14 +733,7 @@ function searchByName($name) {
 /// Returns "name(nickname)" for a user identified by [$id].
 function getUserLabel($id) {
   global $medoo;
-
-  $users = $medoo->select("users", ["name", "nickname"], ["id" => $id]);
-  if (empty($users)) return "";
-
-  $user = current($users);
-  $name = $user["name"];
-  $nickname = $user["nickname"];
-  return $nickname ? sprintf("%s(%s)", $name, $nickname) : $name;
+  return get_user_label($medoo, $id);
 }
 
 /// Returns the distribution of people in each state of the country.

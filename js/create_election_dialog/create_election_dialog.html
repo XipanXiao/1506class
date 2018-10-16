@@ -1,6 +1,3 @@
-<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="bower_components/paper-input/paper-input.html">
-
 <paper-dialog id="create-election-dialog" modal>
   <h1>发起新的投票</h1>
   <div class="padded-element">
@@ -10,7 +7,8 @@
   </div>
   <div class="padded-element">
     负责人
-    <paper-user-input user-id="user.id"></paper-user-input>
+    <paper-user-input user-id="user.id" editable="true">
+    </paper-user-input>
   </div>
   <div class="buttons">
     <paper-button dialog-dismiss raised>取消</paper-button>

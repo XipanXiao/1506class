@@ -29952,9 +29952,9 @@ define('services', ['utils'], function() {
             return $http.get('php/election.php?rid=elections');
           },
           
-          get_candidates: function(election) {
+          get_candidates: function(election, district) {
             var url = 'php/election.php?rid=candidates' +
-                '&election={0}'.format(election);
+                '&election={0}&district={1}'.format(election, district || '');
             return $http.get(url);
           },
           

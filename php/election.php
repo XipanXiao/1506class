@@ -85,11 +85,16 @@ function delete_election($id) {
 function get_candidates($election, $district = null) {
   global $medoo;
   if (!$district) {
-    return $medoo->select("candidates", "*", ["election" => $election]);
+    $candidates = $medoo->select("candidates", "*", ["election" => $election]);
   } else {
-    return $medoo->select("candidates", "*",
+    $candidates = $medoo->select("candidates", "*",
         ["AND" => ["election" => $election, "district" => $district]]);
   }
+  foreach ($candidates as $index => $candidate) {
+    $candidate["name"] = get_user_label($medoo, $candidate["user"]);
+    $candidates[$index] = $candidate;
+  }
+  return $candidates;
 }
 
 function update_candidate($candidate) {
