@@ -7,6 +7,7 @@ angular.module('CandidatesModule', [
   ]).directive('candidates', function(perm, rpc, utils) {
     return {
       scope: {
+        district: '=',
         editable: '=',
         election: '=',
         onChange: '&'
@@ -63,8 +64,6 @@ angular.module('CandidatesModule', [
         };
 
         scope.remove = (candidate) => {
-          var index = scope.candidates.indexOf(candidate);
-          scope.candidates.splice(index, 1);
           candidate.deleted = true;
           scope.onChange();
         };

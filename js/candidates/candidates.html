@@ -3,7 +3,7 @@
     ng-click="create()" title="新建候选人..."
     ng-show="editable && election">
 </iron-icon>
-<span ng-if="!editable">您还剩{{voteCap - voted}}张选票。</span>
+<span ng-if="!editable && !district">您还剩{{voteCap - voted}}张选票。</span>
 <div class="css-table odd-even" ng-if="candidates.length">
   <div class="css-table-row header">
     <div class="css-table-cell">候选人姓名</div>
@@ -11,8 +11,8 @@
     <div class="css-table-cell">简介</div>
     <div class="css-table-cell"></div>
   </div>
-  <div ng-repeat="candidate in candidates | filter: {deleted: false}"
-      class="css-table-row deletable">
+  <div ng-repeat="candidate in candidates | filter: {deleted: false, 
+      district: district}" class="css-table-row deletable">
     <div class="css-table-cell candidate-name" ng-switch="editable">
       <div ng-switch-when="true">
         <paper-user-input user-id="candidate.user"
@@ -29,7 +29,7 @@
         <h2>{{candidate.name}}</h2>
         <strong>{{candidate.slogan}}</strong>
       </div>
-      <districts district="candidate.district"></districts>
+      <districts user="candidate" class="padded-element"></districts>
     </div>
     <div class="css-table-cell">
       <a ng-if="candidate.profile" href="{{candidate.profile}}">

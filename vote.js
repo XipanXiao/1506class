@@ -29955,6 +29955,12 @@ $provide.value("$locale", {
         var scope = angular.element(dialog).scope();
         scope.onCreate = onCreate;
       },
+      showVoteMailDialog: function(election) {
+        var dialog = document.getElementById('vote-mail-dialog');
+        dialog.open();
+        var scope = angular.element(dialog).scope();
+        scope.election = election;
+      },
       /// Given a Chinese name, return its pinyin.
       /// e.g. Input: 张三, output ['San', 'Zhang'].
       getPinyinName: function(name, pinyinTable) {
@@ -31276,6 +31282,12 @@ define('utils', [], function() {
         var scope = angular.element(dialog).scope();
         scope.onCreate = onCreate;
       },
+      showVoteMailDialog: function(election) {
+        var dialog = document.getElementById('vote-mail-dialog');
+        dialog.open();
+        var scope = angular.element(dialog).scope();
+        scope.election = election;
+      },
       /// Given a Chinese name, return its pinyin.
       /// e.g. Input: 张三, output ['San', 'Zhang'].
       getPinyinName: function(name, pinyinTable) {
@@ -31719,6 +31731,10 @@ angular.module('ElectionListModule', [
             });
           });
         };
+
+        scope.select = function(election) {
+          scope.currentElection = election;
+        };
   
         scope.deleteElection = (election) => {
           rpc.delete_election(election.id).then((response) => {
@@ -31746,6 +31762,7 @@ angular.module('ElectionListModule', [
   ]).directive('candidates', function(perm, rpc, utils) {
     return {
       scope: {
+        district: '=',
         editable: '=',
         election: '=',
         onChange: '&'
@@ -31802,8 +31819,6 @@ angular.module('ElectionListModule', [
         };
 
         scope.remove = (candidate) => {
-          var index = scope.candidates.indexOf(candidate);
-          scope.candidates.splice(index, 1);
           candidate.deleted = true;
           scope.onChange();
         };
@@ -31844,13 +31859,60 @@ angular.module('ElectionListModule', [
       templateUrl : 'js/candidates/candidates.html?tag=201810060852'
     };
   });
-  angular.module('ElectionAttributesModule', [
+  angular.module('VoteMailDialogModule', [
+    'CandidatesModule',
+    'DistrictsModule',
+    'ServicesModule',
+    'UtilsModule',
+]).directive('voteMailDialog', function (rpc, utils) {
+  return {
+    scope: {
+      election: '='
+    },
+    link: function (scope) {
+      rpc.get_districts().then((response) => {
+        scope.districts = response.data;
+        scope.selected = utils.first(scope.districts);
+      });
+
+      scope.select = function(district) {
+        scope.selected = district;
+      };
+    },
+    templateUrl: 'js/vote_mail_dialog/vote_mail_dialog.html?tag=20180621'
+  };
+});
+angular.module('VoteMailModule', [
+    'PermissionModule',
+    'ServicesModule',
+    'UtilsModule',
+    'VoteMailDialogModule',
+]).directive('voteMail', function (perm, rpc, utils) {
+  return {
+    scope: {
+      election: '='
+    },
+    link: function (scope) {
+      scope.sendMail = function() {
+        var start = new Date(Date.parse(scope.election.start_time));
+        if (new Date() >= start) {
+          alert('投票已经开始了.');
+          return;
+        }
+        utils.showVoteMailDialog(scope.election);
+      };
+    },
+    templateUrl: 'js/vote_mail/vote_mail.html?tag=201810131006'
+  };
+});
+angular.module('ElectionAttributesModule', [
   'PermissionModule',
   'ServicesModule',
   'TimeModule',
   'PaperBindingsModule',
   'PaperUserInputModule',
-  'UtilsModule'
+  'UtilsModule',
+  'VoteMailModule',
 ]).directive('electionAttributes', function (perm, rpc, utils) {
   return {
     scope: {

@@ -28,6 +28,10 @@ angular.module('ElectionListModule', [
             });
           });
         };
+
+        scope.select = function(election) {
+          scope.currentElection = election;
+        };
   
         scope.deleteElection = (election) => {
           rpc.delete_election(election.id).then((response) => {

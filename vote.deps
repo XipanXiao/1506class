@@ -14,5 +14,7 @@ js/search_bar/search_bar.js
 js/app_bar/app_bar.js
 js/election_list/election_list.js
 js/candidates/candidates.js
+js/vote_mail_dialog/vote_mail_dialog.js
+js/vote_mail/vote_mail.js
 js/election_attributes/election_attributes.js
 js/vote_app.js

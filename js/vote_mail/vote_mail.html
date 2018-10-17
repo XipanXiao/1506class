@@ -1,0 +1,12 @@
+<div class="actions right">
+  <iron-icon icon="more-vert" ng-click="showActions = !showActions"
+      class="clickable">
+  </iron-icon>
+  <div ng-show="showActions" class="backdrop" ng-click="showActions = false">
+  </div>
+  <div ng-if="showActions" class="popup-menu">
+    <div class="selectable clickable menu-item" ng-click="sendMail()">
+      发送投票通知...
+    </div>
+  </div>
+</div>

@@ -1032,3 +1032,23 @@ body.vote {
   right: 0;
   top: 0;
 }
+
+election-attributes .popup-menu {
+  right: 0;
+}
+
+candidates.in-dialog {
+  left: auto;
+  position: relative;
+  right: auto;
+  width: 600px;
+}
+
+#vote-mail-dialog {
+  height: 600px;
+  width: 840px;
+}
+
+.districts {
+  width: 200px;
+}

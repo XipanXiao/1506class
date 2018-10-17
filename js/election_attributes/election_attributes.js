@@ -4,7 +4,8 @@ angular.module('ElectionAttributesModule', [
   'TimeModule',
   'PaperBindingsModule',
   'PaperUserInputModule',
-  'UtilsModule'
+  'UtilsModule',
+  'VoteMailModule',
 ]).directive('electionAttributes', function (perm, rpc, utils) {
   return {
     scope: {

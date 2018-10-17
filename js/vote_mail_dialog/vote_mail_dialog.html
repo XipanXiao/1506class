@@ -1,0 +1,21 @@
+<paper-dialog id="vote-mail-dialog" modal>
+  <h1>发送投票通知</h1>
+  <div class="flex">
+    <div class="districts">
+      <div ng-repeat="district in districts" ng-click="select(district)"
+          class="selectable clickable padded-element"
+          ng-class="{'selected': selected == district}">
+        {{district.name}}
+      </div>
+    </div>
+    <candidates election="election" district="selected.id"
+        class="in-dialog">
+    </candidates>
+  </div>
+  <div class="buttons">
+    <paper-button dialog-dismiss raised>取消</paper-button>
+    <paper-button dialog-dismiss ng-click="send()" raised>
+      发送<districts user="{district: selected.id}"></districts>地区通知
+    </paper-button>
+  </div>
+</paper-dialog>
