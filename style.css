@@ -716,7 +716,7 @@ body.white {
 }
 
 .elections > .css-table,
-candidates > .css-table,
+candidates .css-table,
 election-attributes > .css-table,
 .order-details-header.css-table,
 .shopping-cart-list.css-table {
@@ -1033,7 +1033,7 @@ body.vote {
   top: 0;
 }
 
-election-attributes .popup-menu {
+candidates .popup-menu {
   right: 0;
 }
 
@@ -1051,4 +1051,15 @@ candidates.in-dialog {
 
 .districts {
   width: 200px;
+}
+
+#vote-mail-dialog input[type="submit"] {
+  cursor: pointer;
+  float: right;
+  font-size: 150%;
+  width: 100px;
+}
+
+.email-chips {
+  max-width: 600px;
 }

@@ -1,61 +1,26 @@
 angular.module('CandidatesModule', [
     'DistrictsModule',
+    'FileInputModule',
     'PermissionModule',
     'ServicesModule',
     'PaperUserInputModule',
-    'UtilsModule'
+    'UtilsModule',
+    'VoteMailModule',
   ]).directive('candidates', function(perm, rpc, utils) {
     return {
       scope: {
         district: '=',
         editable: '=',
         election: '=',
+        inEmail: '@',
         onChange: '&'
       },
       link: function(scope, elements) {
-        scope.candidates = [];
-        scope.$watch("election", reload);
         scope.voteCap = 3;
-        scope.voted = 0;
         scope.isVoteOwner = () => perm.isElectionOwner();
-        
-        function getVotes() {
-          var electionId = scope.election.id;
-          return rpc.get_votes(electionId, perm.user.id).then((response) => {
-            var votes = {};
-            for (let vote of response.data) {
-              votes[vote.candidate] = true;
-            }
-            for (let candidate of scope.candidates) {
-              candidate.voted = votes[candidate.id] || false;
-              if (candidate.voted) scope.voted++;
-            }
-            return true;
-          });
-        }
-        
-        function getCandidates() {
-          var election = scope.election;
-          var district = !scope.editable && perm.user.district;
-          return rpc.get_candidates(election.id, district).then((response) => {
-            scope.candidates = response.data;
-            scope.election.candidates = scope.candidates;
-            scope.candidates.forEach((candidate) => {
-              candidate.deleted = false;
-              candidate.district = parseInt(candidate.district);
-            });
-            return scope.selected = scope.candidates.length &&
-                scope.candidates[0];
-          });
-        }
-
-        function reload(election) {
-          if (!election) return;
-          utils.requestOneByOne([getCandidates, getVotes]);
-        }
 
         scope.create = () => {
-          scope.candidates.push(scope.selected = {
+          scope.election.candidates.push({
             deleted: false,
             dirty: true,
             election: scope.election.id
@@ -73,16 +38,16 @@ angular.module('CandidatesModule', [
           scope.onChange();
         };
 
-        window.uploadImage = function(input) {
-          rpc.upload_image(input.files[0]).then((url) => {
-            scope.selected.profile = url;
-            scope.markDirty(scope.selected);
+        scope.uploadImage = (event, candidate) => {
+          rpc.upload_image(event.target.files[0]).then((url) => {
+            candidate.profile = url;
+            scope.markDirty(candidate);
             scope.$apply();
           });
         };
 
         scope.vote = (candidate) => {
-          if (scope.voted >= 3) {
+          if (scope.election.voted >= 3) {
             alert('每人限投3票');
             return;
           }
@@ -94,7 +59,7 @@ angular.module('CandidatesModule', [
           rpc.vote(data).then((response) => {
             if (response.data.updated) {
               candidate.voted = true;
-              scope.voted++;
+              scope.election.voted++;
             } else {
               alert(response.data.error);
             }

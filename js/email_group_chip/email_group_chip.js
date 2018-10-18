@@ -4,6 +4,7 @@ define('email_group_chip/email_group_chip', ['services', 'utils'], function() {
     return {
       scope: {
         classInfo: '=',
+        group: '=',
         remove: '&'
       },
       link: function(scope, element) {
@@ -14,6 +15,7 @@ define('email_group_chip/email_group_chip', ['services', 'utils'], function() {
         	  delete scope.classInfo.users[user.id];
         };
         scope.$watch('classInfo', function(classInfo) {
+          scope.group = classInfo;
           if (classInfo.users) return;
           rpc.get_users(null, classInfo.id).then(function(response) {
             classInfo.users = response.data;

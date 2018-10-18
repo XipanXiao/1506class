@@ -1,14 +1,14 @@
 <div class="clickable" ng-switch="expanded" ng-click="toggleExpand()">
   <iron-icon icon="cancel" ng-click="remove()" class="delete-group-icon">
   </iron-icon>
-  {{classInfo.name}}
+  {{group.name}}
   <iron-icon icon="expand-more" ng-switch-when="true" title="收起详细名单">
   </iron-icon>
   <iron-icon icon="chevron-right" ng-switch-default title="展开详细名单">
   </iron-icon>
 </div>
-<div ng-if="expanded">
-  <div ng-repeat="user in classInfo.users" class="email-chip">
+<div ng-if="expanded" class="email-chips">
+  <div ng-repeat="user in group.users" class="email-chip">
     {{user.name || user.email}}
     <iron-icon icon="cancel" ng-click="removeUser(user)" class="clickable">
     </iron-icon>

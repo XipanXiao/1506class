@@ -5,8 +5,10 @@ js/services.js
 js/permission.js
 js/utils.js
 js/time/time.js
+js/file_input/file_input.js
 js/paper_bindings/paper_bindings.js
 js/editable_label/editable_label.js
+js/email_group_chip/email_group_chip.js
 js/paper_user_input/paper_user_input.js
 js/create_election_dialog/create_election_dialog.js
 js/districts/districts.js

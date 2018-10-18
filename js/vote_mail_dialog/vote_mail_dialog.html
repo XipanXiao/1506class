@@ -8,9 +8,15 @@
         {{district.name}}
       </div>
     </div>
-    <candidates election="election" district="selected.id"
-        class="in-dialog">
-    </candidates>
+    <div>
+      <label>
+        收件人: 
+        <email-group-chip group="selected"></email-group-chip>
+      </label>
+      <candidates election="election" district="selected.id"
+          class="in-dialog" in-email="true">
+      </candidates>
+  </div>
   </div>
   <div class="buttons">
     <paper-button dialog-dismiss raised>取消</paper-button>

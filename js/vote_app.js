@@ -26,8 +26,6 @@ angular.module('AppModule', [
             election.label = '{0}-{1}'.format(
                 election.start_time.split('-')[0], election.name);
           });
-          scope.currentElection =
-              scope.elections[scope.elections.length - 1];
           scope.dirty = false;
           return true;
         });  
@@ -36,7 +34,8 @@ angular.module('AppModule', [
       scope.cancel = () => reload();
 
       const checkResponse = (response) => {
-        return parseInt(response.data.updated) ||
+        return response.data.updated && response.data.updated.id ||
+            parseInt(response.data.updated) ||
             parseInt(response.data.deleted);
       };
 

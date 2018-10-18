@@ -31404,6 +31404,25 @@ define('time/time', [], function() {
       };
     });
 });
+angular.module('FileInputModule', [
+]).directive('ngUploadChange',function () {
+  return {
+    scope: {
+      ngUploadChange: '&'
+    },
+    restrict: 'A',
+    link: function($scope, $element) {
+      $element.on('change', function(event) {
+        $scope.$apply(function() {
+          $scope.ngUploadChange({$event: event});
+        });
+      });
+      $scope.$on('$destroy',function() {
+        $element.off();
+      });
+    }
+  };
+});
 angular.module('PaperBindingsModule', [
   ]).directive('paperInput', function() {
     return {
@@ -31490,6 +31509,34 @@ define('editable_label/editable_label', [], function() {
 						templateUrl : 'js/editable_label/editable_label.html'
 					};
 				});
+});
+define('email_group_chip/email_group_chip', ['services', 'utils'], function() {
+  return angular.module('EmailGroupChipModule', ['ServicesModule', 'UtilsModule'])
+      .directive('emailGroupChip', function(rpc, utils) {
+    return {
+      scope: {
+        classInfo: '=',
+        group: '=',
+        remove: '&'
+      },
+      link: function(scope, element) {
+        scope.toggleExpand = function() {
+          scope.expanded = !scope.expanded;
+        };
+        scope.removeUser = function(user) {
+        	  delete scope.classInfo.users[user.id];
+        };
+        scope.$watch('classInfo', function(classInfo) {
+          scope.group = classInfo;
+          if (classInfo.users) return;
+          rpc.get_users(null, classInfo.id).then(function(response) {
+            classInfo.users = response.data;
+          });
+        });
+      },
+      templateUrl : 'js/email_group_chip/email_group_chip.html?tag=20180621'
+    };
+  });
 });
 var userInputCache = {};
 
@@ -31715,6 +31762,16 @@ angular.module('ElectionListModule', [
       },
       link: function(scope) {
         scope.isSysAdmin = () => perm.isSysAdmin();
+
+        scope.$watch('elections', selectLastElection);
+
+        function selectLastElection(elections) {
+          if (!elections || !elections.length) return;
+          var election = elections[elections.length - 1];
+          scope.select(election);
+        }
+
+        selectLastElection(scope.elections);
   
         scope.createElection = () => {
           utils.showElectionDialog((election) => {
@@ -31732,8 +31789,39 @@ angular.module('ElectionListModule', [
           });
         };
 
+        function getCandidates(election) {
+          var district = !scope.editable && perm.user.district;
+          return rpc.get_candidates(election.id, district).then((response) => {
+            election.candidates = response.data;
+            election.candidates.forEach((candidate) => {
+              candidate.deleted = false;
+              candidate.district = parseInt(candidate.district);
+            });
+            return election.candidates.length;
+          });
+        }
+
+        function getVotes(election) {
+          if (scope.editable) return utils.truePromise();
+          return rpc.get_votes(election.id, perm.user.id).then((response) => {
+            var votes = {};
+            for (let vote of response.data) {
+              votes[vote.candidate] = true;
+            }
+            for (let candidate of election.candidates) {
+              candidate.voted = votes[candidate.id] || false;
+              if (candidate.voted) election.voted++;
+            }
+            return true;
+          });
+        }
+
         scope.select = function(election) {
-          scope.currentElection = election;
+          utils.requestOneByOne([
+            () => getCandidates(election),
+            () => getVotes(election),
+            () => scope.currentElection = election
+          ]);
         };
   
         scope.deleteElection = (election) => {
@@ -31755,62 +31843,27 @@ angular.module('ElectionListModule', [
   });
   angular.module('CandidatesModule', [
     'DistrictsModule',
+    'FileInputModule',
     'PermissionModule',
     'ServicesModule',
     'PaperUserInputModule',
-    'UtilsModule'
+    'UtilsModule',
+    'VoteMailModule',
   ]).directive('candidates', function(perm, rpc, utils) {
     return {
       scope: {
         district: '=',
         editable: '=',
         election: '=',
+        inEmail: '@',
         onChange: '&'
       },
       link: function(scope, elements) {
-        scope.candidates = [];
-        scope.$watch("election", reload);
         scope.voteCap = 3;
-        scope.voted = 0;
         scope.isVoteOwner = () => perm.isElectionOwner();
-        
-        function getVotes() {
-          var electionId = scope.election.id;
-          return rpc.get_votes(electionId, perm.user.id).then((response) => {
-            var votes = {};
-            for (let vote of response.data) {
-              votes[vote.candidate] = true;
-            }
-            for (let candidate of scope.candidates) {
-              candidate.voted = votes[candidate.id] || false;
-              if (candidate.voted) scope.voted++;
-            }
-            return true;
-          });
-        }
-        
-        function getCandidates() {
-          var election = scope.election;
-          var district = !scope.editable && perm.user.district;
-          return rpc.get_candidates(election.id, district).then((response) => {
-            scope.candidates = response.data;
-            scope.election.candidates = scope.candidates;
-            scope.candidates.forEach((candidate) => {
-              candidate.deleted = false;
-              candidate.district = parseInt(candidate.district);
-            });
-            return scope.selected = scope.candidates.length &&
-                scope.candidates[0];
-          });
-        }
-
-        function reload(election) {
-          if (!election) return;
-          utils.requestOneByOne([getCandidates, getVotes]);
-        }
 
         scope.create = () => {
-          scope.candidates.push(scope.selected = {
+          scope.election.candidates.push({
             deleted: false,
             dirty: true,
             election: scope.election.id
@@ -31828,16 +31881,16 @@ angular.module('ElectionListModule', [
           scope.onChange();
         };
 
-        window.uploadImage = function(input) {
-          rpc.upload_image(input.files[0]).then((url) => {
-            scope.selected.profile = url;
-            scope.markDirty(scope.selected);
+        scope.uploadImage = (event, candidate) => {
+          rpc.upload_image(event.target.files[0]).then((url) => {
+            candidate.profile = url;
+            scope.markDirty(candidate);
             scope.$apply();
           });
         };
 
         scope.vote = (candidate) => {
-          if (scope.voted >= 3) {
+          if (scope.election.voted >= 3) {
             alert('每人限投3票');
             return;
           }
@@ -31849,7 +31902,7 @@ angular.module('ElectionListModule', [
           rpc.vote(data).then((response) => {
             if (response.data.updated) {
               candidate.voted = true;
-              scope.voted++;
+              scope.election.voted++;
             } else {
               alert(response.data.error);
             }
@@ -31862,6 +31915,7 @@ angular.module('ElectionListModule', [
   angular.module('VoteMailDialogModule', [
     'CandidatesModule',
     'DistrictsModule',
+    'EmailGroupChipModule',
     'ServicesModule',
     'UtilsModule',
 ]).directive('voteMailDialog', function (rpc, utils) {
@@ -31872,11 +31926,14 @@ angular.module('ElectionListModule', [
     link: function (scope) {
       rpc.get_districts().then((response) => {
         scope.districts = response.data;
-        scope.selected = utils.first(scope.districts);
+        scope.select(utils.first(scope.districts));
       });
 
       scope.select = function(district) {
         scope.selected = district;
+        if (district.users) return;
+        rpc.get_district_users(district.id).then((response) =>
+          district.users = response.data);
       };
     },
     templateUrl: 'js/vote_mail_dialog/vote_mail_dialog.html?tag=20180621'
@@ -31895,6 +31952,7 @@ angular.module('VoteMailModule', [
     link: function (scope) {
       scope.sendMail = function() {
         var start = new Date(Date.parse(scope.election.start_time));
+        scope.showActions = false;
         if (new Date() >= start) {
           alert('投票已经开始了.');
           return;
@@ -31911,8 +31969,7 @@ angular.module('ElectionAttributesModule', [
   'TimeModule',
   'PaperBindingsModule',
   'PaperUserInputModule',
-  'UtilsModule',
-  'VoteMailModule',
+  'UtilsModule'
 ]).directive('electionAttributes', function (perm, rpc, utils) {
   return {
     scope: {
@@ -31973,8 +32030,6 @@ angular.module('AppModule', [
             election.label = '{0}-{1}'.format(
                 election.start_time.split('-')[0], election.name);
           });
-          scope.currentElection =
-              scope.elections[scope.elections.length - 1];
           scope.dirty = false;
           return true;
         });  
@@ -31983,7 +32038,8 @@ angular.module('AppModule', [
       scope.cancel = () => reload();
 
       const checkResponse = (response) => {
-        return parseInt(response.data.updated) ||
+        return response.data.updated && response.data.updated.id ||
+            parseInt(response.data.updated) ||
             parseInt(response.data.deleted);
       };
 

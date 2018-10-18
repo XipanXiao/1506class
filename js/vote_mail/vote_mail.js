@@ -11,6 +11,7 @@ angular.module('VoteMailModule', [
     link: function (scope) {
       scope.sendMail = function() {
         var start = new Date(Date.parse(scope.election.start_time));
+        scope.showActions = false;
         if (new Date() >= start) {
           alert('投票已经开始了.');
           return;
