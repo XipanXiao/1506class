@@ -1,4 +1,4 @@
-define('progress_bar/progress_bar', function() {
+define('progress_bar/progress_bar', [], function() {
   return angular.module('ProgressBarModule', [])
     .directive('progressBar', function() {
       return {

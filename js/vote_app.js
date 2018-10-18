@@ -68,6 +68,10 @@ angular.module('AppModule', [
       scope.markDirty = () => {
         scope.dirty = true;
       };
+
+      if (scope.editable) {
+        emailjs.init("user_ZAqyLkjaj5MHdbn3alvEx");
+      }
     }
   };
 });

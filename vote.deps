@@ -7,6 +7,7 @@ js/utils.js
 js/time/time.js
 js/file_input/file_input.js
 js/paper_bindings/paper_bindings.js
+js/progress_bar/progress_bar.js
 js/editable_label/editable_label.js
 js/email_group_chip/email_group_chip.js
 js/paper_user_input/paper_user_input.js

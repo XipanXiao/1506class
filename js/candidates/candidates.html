@@ -5,17 +5,17 @@
 </iron-icon>
 <vote-mail ng-if="editable" election="election"></vote-mail>
 <span ng-if="!editable && !inEmail">您还剩{{voteCap - election.voted}}张选票。</span>
-<form action="../php/election.php?rid=email_vote" target="_blank" method="POST">
-<div class="css-table odd-even" ng-if="election.candidates.length">
-  <div class="css-table-row header">
-    <div class="css-table-cell">候选人姓名</div>
-    <div class="css-table-cell">照片</div>
-    <div class="css-table-cell">简介</div>
-    <div class="css-table-cell"></div>
-  </div>
-  <div ng-repeat="candidate in election.candidates | filter: {deleted: false, 
-      district: district}" class="css-table-row deletable">
-    <div class="css-table-cell candidate-name" ng-switch="editable">
+
+<table class="odd-even" style="width:100%;" ng-if="election.candidates.length">
+  <tr style="background-color: gray;color: white;">
+    <td>候选人姓名</td>
+    <td>照片</td>
+    <td>简介</td>
+    <td></td>
+  </tr>
+  <tr ng-repeat="candidate in election.candidates | filter: {deleted: false, 
+      district: district}" class="deletable">
+    <td ng-switch="editable">
       <div ng-switch-when="true">
         <paper-user-input user-id="candidate.user"
             on-change="markDirty(candidate)"
@@ -31,45 +31,51 @@
         <h2>{{candidate.name}}</h2>
         <strong>{{candidate.slogan}}</strong>
       </div>
-      <districts user="candidate" class="padded-element"></districts>
-    </div>
-    <div class="css-table-cell">
+      <districts user="candidate" style="padding: 16px"></districts>
+    </td>
+    <td>
       <a ng-if="candidate.profile" href="{{candidate.profile}}">
         <img ng-if="candidate.profile" src={{candidate.profile}}
-            class="profile">
+            style="cursor: pointer;
+            display: block;
+            max-height: 200px;
+            max-width: 150px;
+            overflow: hidden;
+            text-align: center;
+          ">
       </a>
       <div ng-if="editable">
         <label>点击上传候选人照片...<br>
           <input type="file" ng-upload-change="uploadImage($event, candidate)">
         </label>
       </div>
-    </div>
-    <div class="css-table-cell">
-      <textarea ng-model="candidate.description" rows="6"
-          ng-change="markDirty(candidate)" class="candidate-description"
+    </td>
+    <td ng-switch="editable" style="font-size: 1.1em;">
+      <textarea ng-switch-when="true" ng-model="candidate.description" rows="6"
+          ng-change="markDirty(candidate)" style="border: none;width:92%;padding:4px"
           placeholder="输入候选人简介..." ng-disabled="!editable">
       </textarea>
-    </div>
-    <div class="css-table-cell clickable vote-actions">
-      <div class="right" ng-switch="editable">
-        <iron-icon icon="delete" title="删除..." ng-click="remove(candidate)"
-            class="delete-button" ng-switch-when="true">
+      <span ng-switch-default>{{candidate.description}}</span>
+    </td>
+    <td class="clickable vote-actions" ng-switch="editable">
+      <iron-icon icon="delete" title="删除..." ng-click="remove(candidate)"
+          class="delete-button" ng-switch-when="true">
+      </iron-icon>
+      <div ng-switch-default ng-switch="candidate.voted">
+        <iron-icon icon="check-box" class="voted" title="您已经投过票了，感谢"
+            ng-switch-when="true">
         </iron-icon>
-        <div ng-switch-default ng-switch="candidate.voted">
-          <iron-icon icon="check-box" class="voted" title="您已经投过票了，感谢"
-              ng-switch-when="true">
-          </iron-icon>
-          <div ng-switch-default ng-switch="inEmail">
-            <input ng-switch-when="true" type="checkbox" ng-model="candidate.checked">
-            <paper-button ng-switch-default ng-click="vote(candidate)" raised>
-              <img src="images/vote.png">
-              <span class="padded-element">投票给他</span>
-            </paper-button>
-          </div>
+        <div ng-switch-default ng-switch="inEmail">
+          <a ng-switch-when="true" class="vote-link"
+              href="php/election.php?rid=email_vote&candidate={{candidate.id}}">
+            投票给他!
+          </a>
+          <paper-button ng-switch-default ng-click="vote(candidate)" raised>
+            <img src="images/vote.png">
+            <span style="padding: 16px">投票给他</span>
+          </paper-button>
         </div>
       </div>
-    </div>
-  </div>
-</div>
-<input ng-if="inEmail" type="submit" value="投票">
-</form>
+    </td>
+  </tr>
+</table>

@@ -15,6 +15,7 @@ define('email_group_chip/email_group_chip', ['services', 'utils'], function() {
         	  delete scope.classInfo.users[user.id];
         };
         scope.$watch('classInfo', function(classInfo) {
+          if (!classInfo) return;
           scope.group = classInfo;
           if (classInfo.users) return;
           rpc.get_users(null, classInfo.id).then(function(response) {

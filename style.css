@@ -74,6 +74,7 @@ tasks {
 }
 
 .order-details-header,
+table.odd-even tr:nth-child(odd),
 .css-table.odd-even > div:nth-child(odd) {
   background-color: #CCC;
 }
@@ -979,26 +980,8 @@ paper-button[disabled].primary-action {
   cursor: auto;
 }
 
-.profile {
-  cursor: pointer;
-  display: block;
-  max-height: 200px;
-  max-width: 150px;
-  overflow: hidden;
-  text-align: center;
-}
-
-.candidate-description {
-  border: none;
-  font-size: 1.1em;
-}
-
 [disabled].candidate-description {
   background-color: transparent;
-}
-
-.candidate-name {
-  float: left;
 }
 
 .vote-actions {
@@ -1062,4 +1045,9 @@ candidates.in-dialog {
 
 .email-chips {
   max-width: 600px;
+}
+
+.vote-mail-container {
+  padding: 16px;
+  width: 600px;
 }

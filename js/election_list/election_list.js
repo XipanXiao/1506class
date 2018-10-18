@@ -47,7 +47,7 @@ angular.module('ElectionListModule', [
               candidate.deleted = false;
               candidate.district = parseInt(candidate.district);
             });
-            return election.candidates.length;
+            return scope.currentElection = election;
           });
         }
 
@@ -69,8 +69,7 @@ angular.module('ElectionListModule', [
         scope.select = function(election) {
           utils.requestOneByOne([
             () => getCandidates(election),
-            () => getVotes(election),
-            () => scope.currentElection = election
+            () => getVotes(election)
           ]);
         };
   

@@ -30597,6 +30597,12 @@ define('services', ['utils'], function() {
               };
               reader.readAsDataURL(file);
             });
+          },
+
+          get_vote_users(election, district) {
+            var url = 'php/election.php?rid=users' +
+                '&election={0}&district={1}'.format(election, district);
+            return $http.get(url);
           }
         };
       });
@@ -30959,7 +30965,7 @@ define('setup_tasks/setup_tasks',
       };
     });
 });
-define('progress_bar/progress_bar', function() {
+define('progress_bar/progress_bar', [], function() {
   return angular.module('ProgressBarModule', [])
     .directive('progressBar', function() {
       return {

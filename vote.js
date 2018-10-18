@@ -30561,6 +30561,12 @@ define('services', ['utils'], function() {
               };
               reader.readAsDataURL(file);
             });
+          },
+
+          get_vote_users(election, district) {
+            var url = 'php/election.php?rid=users' +
+                '&election={0}&district={1}'.format(election, district);
+            return $http.get(url);
           }
         };
       });
@@ -31448,6 +31454,18 @@ angular.module('PaperBindingsModule', [
       }
     };
 });
+define('progress_bar/progress_bar', [], function() {
+  return angular.module('ProgressBarModule', [])
+    .directive('progressBar', function() {
+      return {
+        scope: {
+          max: '@',
+          value: '@'
+        },
+        templateUrl: 'js/progress_bar/progress_bar.html'
+      };
+    });
+});
 define('editable_label/editable_label', [], function() {
 	return angular.module('EditableLabelModule', [])
 		.directive('editableLabel',
@@ -31527,6 +31545,7 @@ define('email_group_chip/email_group_chip', ['services', 'utils'], function() {
         	  delete scope.classInfo.users[user.id];
         };
         scope.$watch('classInfo', function(classInfo) {
+          if (!classInfo) return;
           scope.group = classInfo;
           if (classInfo.users) return;
           rpc.get_users(null, classInfo.id).then(function(response) {
@@ -31797,7 +31816,7 @@ angular.module('ElectionListModule', [
               candidate.deleted = false;
               candidate.district = parseInt(candidate.district);
             });
-            return election.candidates.length;
+            return scope.currentElection = election;
           });
         }
 
@@ -31819,8 +31838,7 @@ angular.module('ElectionListModule', [
         scope.select = function(election) {
           utils.requestOneByOne([
             () => getCandidates(election),
-            () => getVotes(election),
-            () => scope.currentElection = election
+            () => getVotes(election)
           ]);
         };
   
@@ -31916,26 +31934,72 @@ angular.module('ElectionListModule', [
     'CandidatesModule',
     'DistrictsModule',
     'EmailGroupChipModule',
+    'PermissionModule',
+    'ProgressBarModule',
     'ServicesModule',
     'UtilsModule',
-]).directive('voteMailDialog', function (rpc, utils) {
+]).directive('voteMailDialog', function (perm, rpc, utils) {
   return {
     scope: {
       election: '='
     },
     link: function (scope) {
-      rpc.get_districts().then((response) => {
-        scope.districts = response.data;
-        scope.select(utils.first(scope.districts));
+      scope.$watch('election', (election) => {
+        if (!election || scope.districts) return;
+
+        rpc.get_districts().then((response) => {
+          scope.districts = response.data;
+          scope.select(utils.first(scope.districts));
+        });  
       });
 
       scope.select = function(district) {
         scope.selected = district;
         if (district.users) return;
-        rpc.get_district_users(district.id).then((response) =>
+        rpc.get_vote_users(scope.election.id, district.id).then((response) =>
           district.users = response.data);
       };
-    },
+
+      scope.send = function() {
+        scope.sent = 0;
+        scope.error = 0;
+        scope.messages = [];
+        var users = scope.selected.users;
+
+        users = utils.toList(utils.where(users, (user) =>
+            user.email.indexOf('xxp9@') >= 0 || user.email.indexOf('xiaoxipan@') >= 0));
+        scope.total = users.length;
+
+        var mailContent = document.querySelector('#vote-mail-body');
+
+        function sendEmail(user) {
+          return () => {
+            const setVoteLink = (a) => {
+              a.href += '&election={0}&user={1}&token={2}'.format(
+                  scope.election.id, user.id, user.token);
+            };
+      
+            mailContent.querySelectorAll('.vote-link').forEach(setVoteLink);
+
+            return emailjs.send("bicw_notification", "bicw_group", {
+              subject: scope.election.name,
+              to: user.email,
+              body: mailContent.innerHTML,
+              sender: perm.user.email,
+              sender_name: perm.user.name
+            }).then(function(response) {
+              scope.sent++;
+              return true;
+            }, function(error) {
+              scope.error++;
+              scope.messages.push(error);
+              return true;
+            });
+          }
+        }
+        utils.requestOneByOne(users.map(sendEmail));
+      };
+  },
     templateUrl: 'js/vote_mail_dialog/vote_mail_dialog.html?tag=20180621'
   };
 });
@@ -32072,6 +32136,10 @@ angular.module('AppModule', [
       scope.markDirty = () => {
         scope.dirty = true;
       };
+
+      if (scope.editable) {
+        emailjs.init("user_ZAqyLkjaj5MHdbn3alvEx");
+      }
     }
   };
 });

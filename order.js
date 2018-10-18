@@ -30597,6 +30597,12 @@ define('services', ['utils'], function() {
               };
               reader.readAsDataURL(file);
             });
+          },
+
+          get_vote_users(election, district) {
+            var url = 'php/election.php?rid=users' +
+                '&election={0}&district={1}'.format(election, district);
+            return $http.get(url);
           }
         };
       });
