@@ -31886,6 +31886,7 @@ angular.module('ElectionListModule', [
         onChange: '&'
       },
       link: function(scope, elements) {
+        scope.self = scope;
         scope.isVoteOwner = () => perm.isElectionOwner();
 
         scope.$watch('election', (election) => {
@@ -31940,6 +31941,12 @@ angular.module('ElectionListModule', [
               alert(response.data.error);
             }
           });
+        };
+
+        scope.toggleDistrictFilter = () => {
+          if (!scope.filterByDistrict) {
+            delete scope.district;
+          }
         };
       },
       templateUrl : 'js/candidates/candidates.html?tag=201810060852'

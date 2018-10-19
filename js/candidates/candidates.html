@@ -1,14 +1,25 @@
 <h1>{{election.name}}候选人</h1>
-<iron-icon icon="add-circle" class="add-icon clickable"
-    ng-click="create()" title="新建候选人..."
-    ng-show="editable && election">
-</iron-icon>
-<vote-mail ng-if="editable && election.candidates.length"
-    election="election">
-</vote-mail>
-<span ng-if="!editable && !inEmail">
-  您还剩{{election.max_vote - election.voted}}张选票。
-</span>
+
+<div ng-switch="editable">
+  <div ng-switch-when="true">
+    <iron-icon icon="add-circle" class="add-icon clickable"
+        ng-click="create()" title="新建候选人...">
+    </iron-icon>
+    <vote-mail ng-if="election.candidates.length" election="election">
+    </vote-mail>
+    <label>
+      按地区过滤<input type="checkbox" ng-model="filterByDistrict"
+          ng-change="toggleDistrictFilter()">
+      <districts ng-if="filterByDistrict" user="self" editable="true">
+      </districts>
+    </label>
+  </div>
+  <div ng-switch-default>
+    <span ng-if="!inEmail">
+      您还剩{{election.max_vote - election.voted}}张选票。
+    </span>
+  </div>
+</div>
 
 <table class="odd-even" style="width:100%;" ng-if="election.candidates.length">
   <tr style="background-color: gray;color: white;">

@@ -24,7 +24,7 @@
       on-change="markDirty()" current-election="currentElection">
   </election-list>
   <candidates editable="editable" election="currentElection"
-      on-change="markDirty()">
+      on-change="markDirty()" ng-if="currentElection">
   </candidates>
   <election-attributes election="currentElection"
       editable="editable" dirty="dirty" on-change="markDirty()"
