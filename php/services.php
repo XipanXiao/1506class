@@ -167,14 +167,6 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "search") {
     if (isYearLeader($user)) {
       $response = search($_GET["prefix"]);
-      if (!empty($response)) {
-        if (!isInspector($user) && isDistrictInspector($user)) {
-          $response = array_filter($response, "isSameDistrict");
-        } elseif (isYearLeader($user)) {
-          // For year leaders they can only see students of the same year.
-          $response = array_filter($response, "isSameYear");
-        }
-      }
     }
   } elseif ($resource_id == "user_label") {
     $response = isAdmin($user) 

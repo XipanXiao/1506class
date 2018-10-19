@@ -31518,7 +31518,7 @@ define('search_bar/search_bar', ['services'], function() {
                 }
               };
             },
-            templateUrl : 'js/search_bar/search_bar.html'
+            templateUrl : 'js/search_bar/search_bar.html?tag=2018'
           };
         });
 });
