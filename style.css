@@ -1028,8 +1028,8 @@ candidates.in-dialog {
 }
 
 #vote-mail-dialog {
-  height: 600px;
-  width: 840px;
+  height: 768px;
+  width: 1024px;
 }
 
 .districts {
@@ -1050,4 +1050,8 @@ candidates.in-dialog {
 .vote-mail-container {
   padding: 16px;
   width: 600px;
+}
+
+#create-election-dialog {
+  width: 400px;
 }
