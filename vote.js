@@ -31959,6 +31959,8 @@ angular.module('ElectionListModule', [
       election: '='
     },
     link: function (scope) {
+      scope.vote_url = utils.getBaseUrl() + 'vote.html';
+
       scope.$watch('election', (election) => {
         if (!election || scope.districts) return;
 
@@ -32105,7 +32107,12 @@ angular.module('AppModule', [
       rpc.get_user().then(function(user) {
         scope.user = user;
         perm.user = user;
-        reload();
+        if (perm.user.classInfo.department_id == 8 ||
+            perm.user.classInfo.department_id == 9) {
+          utils.login();
+        } else {
+          reload();
+        }
       });
 
       scope.editable = location.search.indexOf('admin=true') >= 0;

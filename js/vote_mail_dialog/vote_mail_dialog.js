@@ -12,6 +12,8 @@ angular.module('VoteMailDialogModule', [
       election: '='
     },
     link: function (scope) {
+      scope.vote_url = utils.getBaseUrl() + 'vote.html';
+
       scope.$watch('election', (election) => {
         if (!election || scope.districts) return;
 

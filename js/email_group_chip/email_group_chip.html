@@ -1,7 +1,7 @@
 <div class="clickable" ng-switch="expanded" ng-click="toggleExpand()">
   <iron-icon icon="cancel" ng-click="remove()" class="delete-group-icon">
   </iron-icon>
-  {{group.name}}
+  {{group.name}}({{group.users.length}})
   <iron-icon icon="expand-more" ng-switch-when="true" title="收起详细名单">
   </iron-icon>
   <iron-icon icon="chevron-right" ng-switch-default title="展开详细名单">

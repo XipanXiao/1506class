@@ -14,7 +14,12 @@ angular.module('AppModule', [
       rpc.get_user().then(function(user) {
         scope.user = user;
         perm.user = user;
-        reload();
+        if (perm.user.classInfo.department_id == 8 ||
+            perm.user.classInfo.department_id == 9) {
+          utils.login();
+        } else {
+          reload();
+        }
       });
 
       scope.editable = location.search.indexOf('admin=true') >= 0;

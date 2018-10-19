@@ -148,13 +148,25 @@ function vote($vote) {
 function get_vote_users($election_id, $district) {
   global $medoo;
   $election = get_single_record($medoo, "elections", $election_id);
-  $users = $medoo->select("users", ["id", "name", "email"],
+  $users = $medoo->select("users",
+      ["id", "name", "email", "classId"],
       ["district" => $district]);
+  $classes = keyed_by_id($medoo->select("classes", ["id"],
+      ["AND" => [
+        "deleted" => 0,
+        "graduated" => 0,
+        "department_id[!]" => [8, 9]
+      ]]));
+
+  $filtered = [];
   foreach ($users as $index => $user) {
+    if (!$classes[$user["classId"]]) {
+      continue;
+    }
     $user["token"] = generate_token($user["id"], $election["token"]);
-    $users[$index] = $user;
+    array_push($filtered, $user);
   }
-  return $users;
+  return $filtered;
 }
 
 function is_voting_from_email() {
