@@ -724,10 +724,12 @@ election-attributes > .css-table,
   width: 100%;
 }
 
+tr.deletable .delete-button,
 .css-table-row.deletable .delete-button {
   visibility: hidden;
 }
 
+tr.deletable:hover .delete-button,
 .css-table-row.deletable:hover .delete-button {
   cursor: pointer;
   visibility: visible;

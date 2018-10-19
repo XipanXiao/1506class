@@ -3,8 +3,12 @@
     ng-click="create()" title="新建候选人..."
     ng-show="editable && election">
 </iron-icon>
-<vote-mail ng-if="editable" election="election"></vote-mail>
-<span ng-if="!editable && !inEmail">您还剩{{voteCap - election.voted}}张选票。</span>
+<vote-mail ng-if="editable && election.candidates.length"
+    election="election">
+</vote-mail>
+<span ng-if="!editable && !inEmail">
+  您还剩{{election.max_vote - election.voted}}张选票。
+</span>
 
 <table class="odd-even" style="width:100%;" ng-if="election.candidates.length">
   <tr style="background-color: gray;color: white;">
@@ -68,11 +72,11 @@
         <div ng-switch-default ng-switch="inEmail">
           <a ng-switch-when="true" class="vote-link"
               href="php/election.php?rid=email_vote&candidate={{candidate.id}}">
-            投票给他!
+            投票
           </a>
           <paper-button ng-switch-default ng-click="vote(candidate)" raised>
             <img src="images/vote.png">
-            <span style="padding: 16px">投票给他</span>
+            <span style="padding: 16px">投票</span>
           </paper-button>
         </div>
       </div>

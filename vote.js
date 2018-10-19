@@ -31799,6 +31799,8 @@ angular.module('ElectionListModule', [
                 election = response.data.updated;
                 election.label = '{0}-{1}'.format(
                   election.start_time.split('-')[0], election.name);
+                election.candidates = [];
+                election.voted = 0;
                 scope.elections.push(election);
                 scope.currentElection = election;
               } else {
@@ -31844,10 +31846,16 @@ angular.module('ElectionListModule', [
         };
   
         scope.deleteElection = (election) => {
+          if (!confirm('请确认您要删除"{0}"的全部数据'
+              .format(election.label))) {
+            return;
+          }
           rpc.delete_election(election.id).then((response) => {
             if (response.data.deleted) {
               var index = scope.elections.indexOf(election);
               scope.elections.splice(index, 1);
+              election.deleted = 1;
+              election.candidates.length = 0;
               if (election == scope.currentElection) {
                 scope.currentElection = null;
               }
@@ -31878,8 +31886,14 @@ angular.module('ElectionListModule', [
         onChange: '&'
       },
       link: function(scope, elements) {
-        scope.voteCap = 3;
         scope.isVoteOwner = () => perm.isElectionOwner();
+
+        scope.$watch('election', (election) => {
+          if (election && parseInt(election.deleted)) {
+            election.name = '';
+            election.candidates = [];
+          }
+        });
 
         scope.create = () => {
           scope.election.candidates.push({
@@ -31909,8 +31923,8 @@ angular.module('ElectionListModule', [
         };
 
         scope.vote = (candidate) => {
-          if (scope.election.voted >= 3) {
-            alert('每人限投3票');
+          if (scope.election.voted >= scope.election.max_vote) {
+            alert('每人限投{0}}票'.format(scope.election.max_vote));
             return;
           }
           var data = {
@@ -32048,6 +32062,14 @@ angular.module('ElectionAttributesModule', [
     link: function (scope) {
       scope.isVoteOwner = () => perm.isElectionOwner();
 
+      scope.$watch('election', (election) => {
+        if (election && parseInt(election.deleted)) {
+          for (var key in election) {
+            delete election[key];
+          }
+        }
+      });
+
       scope.validate = () => {
         scope.message = '';
         var start = new Date(Date.parse(scope.election.start_time));
@@ -32092,6 +32114,7 @@ angular.module('AppModule', [
         return rpc.get_elections().then((response) => {
           scope.elections = response.data;
           utils.forEach(scope.elections, (election) => {
+            election.max_vote = parseInt(election.max_vote);
             election.label = '{0}-{1}'.format(
                 election.start_time.split('-')[0], election.name);
           });
@@ -32125,9 +32148,6 @@ angular.module('AppModule', [
           if (election.dirty) {
             requests.push(() =>
                 rpc.update_election(election).then(checkResponse));
-          } else if (election.deleted) {
-            requests.push(() =>
-                rpc.delete_election(election.id).then(checkResponse));
           }
         }
         requests.push(reload);

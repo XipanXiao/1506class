@@ -23,6 +23,7 @@ angular.module('AppModule', [
         return rpc.get_elections().then((response) => {
           scope.elections = response.data;
           utils.forEach(scope.elections, (election) => {
+            election.max_vote = parseInt(election.max_vote);
             election.label = '{0}-{1}'.format(
                 election.start_time.split('-')[0], election.name);
           });
@@ -56,9 +57,6 @@ angular.module('AppModule', [
           if (election.dirty) {
             requests.push(() =>
                 rpc.update_election(election).then(checkResponse));
-          } else if (election.deleted) {
-            requests.push(() =>
-                rpc.delete_election(election.id).then(checkResponse));
           }
         }
         requests.push(reload);

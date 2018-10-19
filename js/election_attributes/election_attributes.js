@@ -18,6 +18,14 @@ angular.module('ElectionAttributesModule', [
     link: function (scope) {
       scope.isVoteOwner = () => perm.isElectionOwner();
 
+      scope.$watch('election', (election) => {
+        if (election && parseInt(election.deleted)) {
+          for (var key in election) {
+            delete election[key];
+          }
+        }
+      });
+
       scope.validate = () => {
         scope.message = '';
         var start = new Date(Date.parse(scope.election.start_time));

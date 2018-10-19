@@ -16,8 +16,14 @@ angular.module('CandidatesModule', [
         onChange: '&'
       },
       link: function(scope, elements) {
-        scope.voteCap = 3;
         scope.isVoteOwner = () => perm.isElectionOwner();
+
+        scope.$watch('election', (election) => {
+          if (election && parseInt(election.deleted)) {
+            election.name = '';
+            election.candidates = [];
+          }
+        });
 
         scope.create = () => {
           scope.election.candidates.push({
@@ -47,8 +53,8 @@ angular.module('CandidatesModule', [
         };
 
         scope.vote = (candidate) => {
-          if (scope.election.voted >= 3) {
-            alert('每人限投3票');
+          if (scope.election.voted >= scope.election.max_vote) {
+            alert('每人限投{0}}票'.format(scope.election.max_vote));
             return;
           }
           var data = {
