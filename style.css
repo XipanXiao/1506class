@@ -918,7 +918,7 @@ payment.in-shopping-cart {
 
 .elections {
   background: white;
-  width: 300px;
+  width: 250px;
 }
 
 .elections .css-table-cell {
@@ -939,10 +939,10 @@ body.vote {
 
 candidates {
   height: 100%;
-  left: 300px;
+  left: 250px;
   padding: 16px;
   position: absolute;
-  right: 432px;
+  right: 392px;
 }
 
 election-attributes {
@@ -951,7 +951,7 @@ election-attributes {
   padding: 16px;
   position: absolute;
   right: 0;
-  width: 400px;
+  width: 360px;
 }
 
 election-attributes > .buttons {

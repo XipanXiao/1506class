@@ -31822,6 +31822,7 @@ angular.module('ElectionListModule', [
 
         function getVotes(election) {
           if (scope.editable) return utils.truePromise();
+          election.voted = 0;
           return rpc.get_votes(election.id, perm.user.id).then((response) => {
             var votes = {};
             for (let vote of response.data) {
