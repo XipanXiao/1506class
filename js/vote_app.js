@@ -60,6 +60,10 @@ angular.module('AppModule', [
           }
 
           if (election.dirty) {
+            election.start_time = election.start_time.
+                replace(/ [\d]{2}:[\d]{2}:[\d]{2}/, ' 00:00:00');
+            election.end_time = election.end_time.
+                replace(/ [\d]{2}:[\d]{2}:[\d]{2}/, ' 23:59:59');
             requests.push(() =>
                 rpc.update_election(election).then(checkResponse));
           }

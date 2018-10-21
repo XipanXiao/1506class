@@ -189,6 +189,13 @@ function generate_token($user_id, $election_token) {
   return md5("". $user_id. $election_token);
 }
 
+function in_time_range($start_time, $end_time) {
+  $current = new DateTime();
+  $start = DateTime::createFromFormat('Y-m-d H:i:s', $start_time);
+  $end = DateTime::createFromFormat('Y-m-d H:i:s', $end_time);
+  return $start <= $current && $current < $end;
+}
+
 function check_and_vote($data, $user_district) {
   global $medoo;
   $candidate = get_single_record($medoo, "candidates", $data["candidate"]);
@@ -199,11 +206,15 @@ function check_and_vote($data, $user_district) {
     return ["error" => "only vote a candidate from the same district"];
   }
 
+  $election = get_single_record($medoo, "elections", $data["election"]);
+  if (!in_time_range($election["start_time"], $election["end_time"])) {
+    return ["error" => "not an ongoing event"];
+  }
+
   $voted = $medoo->count("votes", ["AND" => [
     "election" => $data["election"],
     "user" => $data["user"]
   ]]);
-  $election = get_single_record($medoo, "elections", $data["election"]);
   $max_vote = intval($election["max_vote"]);
   if ($voted >= $max_vote) {
     return ["error" => "only ". $max_vote.  " votes please"];
@@ -259,9 +270,34 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $election = get_single_record($medoo, "elections",  $_GET["election"]);
     if ($election) {
       $user = get_single_record($medoo, "users", $_GET["user"]);
-      $response = generate_token($_GET["user"], $election["token"]) == $_GET["token"]
-          ? check_and_vote($_GET, $user["district"])
-          : permission_denied_error();
+      if ($user) {
+        $classInfo = get_single_record($medoo, "classes", $user["classId"]);
+        $dep = intval($classInfo["department_id"]);
+        if ($dep == 8 || $dep == 9) {
+          $response = permission_denied_error();
+        } else {
+          $response = generate_token($_GET["user"], $election["token"]) == $_GET["token"]
+              ? check_and_vote($_GET, $user["district"])
+              : permission_denied_error();
+          if (intval($response["updated"])) {
+?>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>投票成功</title>
+</head>
+<body>
+投票成功。您可以到<a href="../vote.html">投票页面</a>查看。
+</body>
+</html>
+<?php
+            return;
+          }
+        }
+      } else {
+        $response = ["error" => "invalid user"];
+      }
     } else {
       $response = ['error' => 'missing election id'];
     }
@@ -279,7 +315,10 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         ? ["updated" => update_candidate($_POST)]
         : permission_denied_error();
   } else if ($resource_id == "votes") {
-    $response = check_and_vote($_POST, $user->district);
+    $dep = intval($user->classInfo["department_id"]);
+    $response = ($dep == 8 || $dep == 9)
+        ? permission_denied_error()
+        : check_and_vote($_POST, $user->district);
   }
 } elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE" &&
     isset ( $_REQUEST["rid"] )) {
