@@ -32,6 +32,7 @@ angular.module('CandidatesModule', [
             dirty: true,
             election: scope.election.id
           });
+          elements[0].querySelector('tr:last-child').scrollIntoView();
           scope.onChange();
         };
 

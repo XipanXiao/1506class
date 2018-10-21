@@ -51,8 +51,10 @@ angular.module('AppModule', [
           for (let candidate of election.candidates) {
             if (!candidate.dirty && !candidate.deleted) continue;
             if (candidate.deleted) {
-              requests.push(() =>
-                  rpc.delete_candidate(candidate.id).then(checkResponse));
+              if (candidate.id) {
+                requests.push(() =>
+                    rpc.delete_candidate(candidate.id).then(checkResponse));
+              }
             } else {
               requests.push(() =>
                   rpc.update_candidate(candidate).then(checkResponse));

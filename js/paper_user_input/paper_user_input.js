@@ -1,9 +1,9 @@
-var userInputCache = {};
+window.userInputCache = {};
 
 angular.module('PaperUserInputModule', [
   'ServicesModule'
 ]).directive('paperUserInput', function(rpc) {
-  var users = userInputCache;
+  var users = window.userInputCache;
   return {
     scope: {
       editable: '=',

@@ -31557,12 +31557,12 @@ define('email_group_chip/email_group_chip', ['services', 'utils'], function() {
     };
   });
 });
-var userInputCache = {};
+window.userInputCache = {};
 
 angular.module('PaperUserInputModule', [
   'ServicesModule'
 ]).directive('paperUserInput', function(rpc) {
-  var users = userInputCache;
+  var users = window.userInputCache;
   return {
     scope: {
       editable: '=',
@@ -31817,6 +31817,7 @@ angular.module('ElectionListModule', [
             election.candidates.forEach((candidate) => {
               candidate.deleted = false;
               candidate.district = parseInt(candidate.district);
+              window.userInputCache[candidate.user] = candidate.name;
             });
             return scope.currentElection = election;
           });
@@ -31902,6 +31903,7 @@ angular.module('ElectionListModule', [
             dirty: true,
             election: scope.election.id
           });
+          elements[0].querySelector('tr:last-child').scrollIntoView();
           scope.onChange();
         };
 
@@ -32151,8 +32153,10 @@ angular.module('AppModule', [
           for (let candidate of election.candidates) {
             if (!candidate.dirty && !candidate.deleted) continue;
             if (candidate.deleted) {
-              requests.push(() =>
-                  rpc.delete_candidate(candidate.id).then(checkResponse));
+              if (candidate.id) {
+                requests.push(() =>
+                    rpc.delete_candidate(candidate.id).then(checkResponse));
+              }
             } else {
               requests.push(() =>
                   rpc.update_candidate(candidate).then(checkResponse));
