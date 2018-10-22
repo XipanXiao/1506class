@@ -82,6 +82,7 @@ angular.module('AppModule', [
         emailjs.init("user_ZAqyLkjaj5MHdbn3alvEx");
       } else {
         if (window.outerWidth < 250 + 600 + 392) {
+          scope.electionsCollapsed = true;
           scope.attributesCollapsed = true;
         }
       }

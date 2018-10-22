@@ -918,12 +918,17 @@ payment.in-shopping-cart {
   z-index: 1;
 }
 
-.elections {
+election-list {
   background: white;
+  position: relative;
   width: 250px;
 }
 
-.elections .css-table-cell {
+election-list.collapsed {
+  width: 20px;
+}
+
+election-list .css-table-cell {
   padding: 8px 16px;
 }
 
@@ -950,6 +955,10 @@ candidates {
 
 candidates.expanded {
   right: 52px;
+}
+
+candidates.left-expanded {
+  left: 20px;
 }
 
 election-attributes {
@@ -1005,10 +1014,6 @@ paper-button[disabled].primary-action {
   color: blue;
   display: flex;
   padding: 0 4px;
-}
-
-election-list {
-  background-color: white;
 }
 
 body.vote {
@@ -1070,7 +1075,14 @@ candidates.in-dialog {
 .collapse-button {
   background-color: lightgray;
   border-radius: 16px;
-  left: -10px;
   position: absolute;
   top: 200px;
+}
+
+election-attributes .collapse-button {
+  left: -10px;
+}
+
+election-list .collapse-button {
+  right: -10px;
 }

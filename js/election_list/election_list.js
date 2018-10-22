@@ -5,6 +5,7 @@ angular.module('ElectionListModule', [
   ]).directive('electionList', function(perm, rpc, utils) {
     return {
       scope: {
+        collapsed: '=',
         currentElection: '=',
         editable: '=',
         elections: '=',
@@ -96,6 +97,10 @@ angular.module('ElectionListModule', [
         };
   
         scope.isVoteOwner = () => perm.isElectionOwner();
+
+        scope.toggleCollapsed = () => {
+          scope.collapsed = !scope.collapsed;
+        };
       },
       templateUrl : 'js/election_list/election_list.html?tag=201810060852'
     };

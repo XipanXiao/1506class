@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" type="text/css" href="style.css?tag=2018101321101">
+<link rel="stylesheet" type="text/css" href="style.css?tag=2018102021101">
 <title>选举</title>
 <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js">
 </script>
@@ -21,10 +21,13 @@
 
 <div class="center full-page flex">
   <election-list editable="editable" elections="elections"
-      on-change="markDirty()" current-election="currentElection">
+      ng-class="{'collapsed': electionsCollapsed}"
+      on-change="markDirty()" current-election="currentElection"
+      collapsed="electionsCollapsed">
   </election-list>
   <candidates editable="editable" election="currentElection"
-      ng-class="{'expanded': attributesCollapsed}"
+      ng-class="{'expanded': attributesCollapsed,
+          'left-expanded': electionsCollapsed}"
       on-change="markDirty()" ng-if="currentElection">
   </candidates>
   <election-attributes election="currentElection"

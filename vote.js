@@ -31774,6 +31774,7 @@ angular.module('ElectionListModule', [
   ]).directive('electionList', function(perm, rpc, utils) {
     return {
       scope: {
+        collapsed: '=',
         currentElection: '=',
         editable: '=',
         elections: '=',
@@ -31865,6 +31866,10 @@ angular.module('ElectionListModule', [
         };
   
         scope.isVoteOwner = () => perm.isElectionOwner();
+
+        scope.toggleCollapsed = () => {
+          scope.collapsed = !scope.collapsed;
+        };
       },
       templateUrl : 'js/election_list/election_list.html?tag=201810060852'
     };
@@ -32189,6 +32194,7 @@ angular.module('AppModule', [
         emailjs.init("user_ZAqyLkjaj5MHdbn3alvEx");
       } else {
         if (window.outerWidth < 250 + 600 + 392) {
+          scope.electionsCollapsed = true;
           scope.attributesCollapsed = true;
         }
       }
