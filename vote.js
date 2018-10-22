@@ -32157,7 +32157,7 @@ angular.module('ElectionAttributesModule', [
         scope.collapsed = !scope.collapsed;
       };
     },
-    templateUrl: 'js/election_attributes/election_attributes.html?tag=201810131006'
+    templateUrl: 'js/election_attributes/election_attributes.html?tag=201810201006'
   };
 });
 angular.module('AppModule', [
