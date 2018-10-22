@@ -30062,6 +30062,19 @@ define('utils', [], function() {
     };
   }
 
+  if (!Array.prototype.filter) {
+    Array.prototype.filter = function(callback) {
+      var result = [];
+      for (var idx in this) {
+        if(callback(this[idx])) {
+          result.push(this[idx]);
+        }
+      }
+      
+      return result;
+    };
+  }
+
   function parseMoney(value) {
     return value && parseFloat(value) || 0.00;
   }

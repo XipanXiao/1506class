@@ -12,9 +12,11 @@
           ng-change="toggleDistrictFilter()">
       <districts ng-if="filterByDistrict" user="self" editable="true">
       </districts>
+      共{{filtered}}位候选人。
     </label>
   </div>
   <div ng-switch-default>
+    共{{filtered}}位候选人。
     <span ng-if="!inEmail">
       您还剩{{election.max_vote - election.voted}}张选票。
     </span>

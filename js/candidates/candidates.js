@@ -18,11 +18,17 @@ angular.module('CandidatesModule', [
       link: function(scope, elements) {
         scope.self = scope;
         scope.isVoteOwner = () => perm.isElectionOwner();
+        scope.filtered = scope.election &&
+            scope.election.candidates.length || 0;
 
         scope.$watch('election', (election) => {
-          if (election && parseInt(election.deleted)) {
+          if (!election) return;
+          if (parseInt(election.deleted)) {
             election.name = '';
             election.candidates = [];
+            scope.filtered = 0;
+          } else {
+            scope.filtered = election.candidates.length;
           }
         });
 
@@ -73,6 +79,17 @@ angular.module('CandidatesModule', [
             }
           });
         };
+
+        scope.$watch('district', (district) => {
+          if (district) {
+            const inDistrict = (candidate) =>
+                candidate.district == scope.district;
+            scope.filtered = scope.election.
+                candidates.filter(inDistrict).length;
+          } else {
+            scope.filtered = scope.election.candidates.length;
+          }
+        });
 
         scope.toggleDistrictFilter = () => {
           if (!scope.filterByDistrict) {

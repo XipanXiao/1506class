@@ -29390,6 +29390,19 @@ $provide.value("$locale", {
     };
   }
 
+  if (!Array.prototype.filter) {
+    Array.prototype.filter = function(callback) {
+      var result = [];
+      for (var idx in this) {
+        if(callback(this[idx])) {
+          result.push(this[idx]);
+        }
+      }
+      
+      return result;
+    };
+  }
+
   function parseMoney(value) {
     return value && parseFloat(value) || 0.00;
   }
@@ -30723,6 +30736,19 @@ define('utils', [], function() {
     };
   }
 
+  if (!Array.prototype.filter) {
+    Array.prototype.filter = function(callback) {
+      var result = [];
+      for (var idx in this) {
+        if(callback(this[idx])) {
+          result.push(this[idx]);
+        }
+      }
+      
+      return result;
+    };
+  }
+
   function parseMoney(value) {
     return value && parseFloat(value) || 0.00;
   }
@@ -31894,11 +31920,17 @@ angular.module('ElectionListModule', [
       link: function(scope, elements) {
         scope.self = scope;
         scope.isVoteOwner = () => perm.isElectionOwner();
+        scope.filtered = scope.election &&
+            scope.election.candidates.length || 0;
 
         scope.$watch('election', (election) => {
-          if (election && parseInt(election.deleted)) {
+          if (!election) return;
+          if (parseInt(election.deleted)) {
             election.name = '';
             election.candidates = [];
+            scope.filtered = 0;
+          } else {
+            scope.filtered = election.candidates.length;
           }
         });
 
@@ -31949,6 +31981,17 @@ angular.module('ElectionListModule', [
             }
           });
         };
+
+        scope.$watch('district', (district) => {
+          if (district) {
+            const inDistrict = (candidate) =>
+                candidate.district == scope.district;
+            scope.filtered = scope.election.
+                candidates.filter(inDistrict).length;
+          } else {
+            scope.filtered = scope.election.candidates.length;
+          }
+        });
 
         scope.toggleDistrictFilter = () => {
           if (!scope.filterByDistrict) {
