@@ -75,9 +75,12 @@
       <span ng-switch-default>{{candidate.description}}</span>
     </td>
     <td class="vote-actions" ng-switch="editable" style="width: 150px">
-      <iron-icon icon="delete" title="删除..." ng-click="remove(candidate)"
-          class="delete-button" ng-switch-when="true">
-      </iron-icon>
+      <div ng-switch-when="true">
+        <iron-icon icon="delete" title="删除..." ng-click="remove(candidate)"
+            class="delete-button" ng-if="!candidate.votes">
+        </iron-icon>
+        <span class="voted">{{candidate.votes}}</span>
+      </div>
       <div ng-switch-default ng-switch="candidate.voted">
         <iron-icon icon="check-box" class="voted" title="您已经投过票了，感谢"
             ng-switch-when="true">

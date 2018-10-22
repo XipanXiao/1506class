@@ -56,15 +56,19 @@ angular.module('ElectionListModule', [
         }
 
         function getVotes(election) {
-          if (scope.editable) return utils.truePromise();
           election.voted = 0;
-          return rpc.get_votes(election.id, perm.user.id).then((response) => {
-            var votes = {};
+          var userId = !scope.editable && perm.user.id;
+          return rpc.get_votes(election.id, userId).then((response) => {
+            var votes = {}, myvotes = {};
             for (let vote of response.data) {
-              votes[vote.candidate] = true;
+              votes[vote.candidate] = (votes[vote.candidate] || 0) + 1;
+              if (vote.user == perm.user.id) {
+                myvotes[vote.candidate] = true;
+              }
             }
             for (let candidate of election.candidates) {
-              candidate.voted = votes[candidate.id] || false;
+              candidate.voted = myvotes[candidate.id] || false;
+              candidate.votes = votes[candidate.id];
               if (candidate.voted) election.voted++;
             }
             return true;

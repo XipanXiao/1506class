@@ -87,7 +87,8 @@ angular.module('CandidatesModule', [
             scope.filtered = scope.election.
                 candidates.filter(inDistrict).length;
           } else {
-            scope.filtered = scope.election.candidates.length;
+            scope.filtered = scope.election &&
+                scope.election.candidates.length || 0;
           }
         });
 
