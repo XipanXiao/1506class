@@ -35,7 +35,7 @@ angular.module('AppModule', [
           });
           scope.dirty = false;
           return true;
-        });  
+        });
       }
 
       scope.cancel = () => reload();
@@ -83,11 +83,10 @@ angular.module('AppModule', [
       if (scope.editable) {
         emailjs.init("user_ZAqyLkjaj5MHdbn3alvEx");
         window.onbeforeunload = () => scope.dirty ? '' : null;
-      } else {
-        if (window.outerWidth < 250 + 600 + 392) {
-          scope.electionsCollapsed = true;
-          scope.attributesCollapsed = true;
-        }
+      }
+      if (window.outerWidth < 250 + 700 + 392) {
+        scope.electionsCollapsed = true;
+        scope.attributesCollapsed = true;
       }
     }
   };

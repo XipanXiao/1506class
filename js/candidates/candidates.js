@@ -98,7 +98,7 @@ angular.module('CandidatesModule', [
           }
         };
       },
-      templateUrl : 'js/candidates/candidates.html?tag=201810060852'
+      templateUrl : 'js/candidates/candidates.html?tag=201810220852'
     };
   });
-  
+

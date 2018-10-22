@@ -32006,10 +32006,11 @@ angular.module('ElectionListModule', [
           }
         };
       },
-      templateUrl : 'js/candidates/candidates.html?tag=201810060852'
+      templateUrl : 'js/candidates/candidates.html?tag=201810220852'
     };
   });
-  angular.module('VoteMailDialogModule', [
+
+angular.module('VoteMailDialogModule', [
     'CandidatesModule',
     'DistrictsModule',
     'EmailGroupChipModule',
@@ -32197,7 +32198,7 @@ angular.module('AppModule', [
           });
           scope.dirty = false;
           return true;
-        });  
+        });
       }
 
       scope.cancel = () => reload();
@@ -32245,11 +32246,10 @@ angular.module('AppModule', [
       if (scope.editable) {
         emailjs.init("user_ZAqyLkjaj5MHdbn3alvEx");
         window.onbeforeunload = () => scope.dirty ? '' : null;
-      } else {
-        if (window.outerWidth < 250 + 600 + 392) {
-          scope.electionsCollapsed = true;
-          scope.attributesCollapsed = true;
-        }
+      }
+      if (window.outerWidth < 250 + 700 + 392) {
+        scope.electionsCollapsed = true;
+        scope.attributesCollapsed = true;
       }
     }
   };

@@ -30,7 +30,7 @@
     <td>简介</td>
     <td></td>
   </tr>
-  <tr ng-repeat="candidate in election.candidates | filter: {deleted: false, 
+  <tr ng-repeat="candidate in election.candidates | filter: {deleted: false,
       district: district}" class="deletable">
     <td ng-switch="editable" style="min-width:100px">
       <div ng-switch-when="true">
@@ -72,7 +72,9 @@
           ng-change="markDirty(candidate)" style="border: none;width:92%;padding:4px"
           placeholder="输入候选人简介..." ng-disabled="!editable">
       </textarea>
-      <span ng-switch-default>{{candidate.description}}</span>
+      <div ng-switch-default style="max-height:200px;overflow-y:auto">
+        {{candidate.description}}
+      </div>
     </td>
     <td class="vote-actions" ng-switch="editable" style="width: 150px">
       <div ng-switch-when="true">
