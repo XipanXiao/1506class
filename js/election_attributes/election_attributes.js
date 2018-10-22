@@ -8,6 +8,7 @@ angular.module('ElectionAttributesModule', [
 ]).directive('electionAttributes', function (perm, rpc, utils) {
   return {
     scope: {
+      collapsed: '=',
       dirty: '=',
       editable: '=',
       election: '=',
@@ -40,6 +41,10 @@ angular.module('ElectionAttributesModule', [
       scope.markDirty = () => {
         scope.election.dirty = true;
         scope.onChange();
+      };
+
+      scope.toggleCollapsed = () => {
+        scope.collapsed = !scope.collapsed;
       };
     },
     templateUrl: 'js/election_attributes/election_attributes.html?tag=201810131006'

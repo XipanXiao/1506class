@@ -80,6 +80,10 @@ angular.module('AppModule', [
 
       if (scope.editable) {
         emailjs.init("user_ZAqyLkjaj5MHdbn3alvEx");
+      } else {
+        if (window.outerWidth < 250 + 600 + 392) {
+          scope.attributesCollapsed = true;
+        }
       }
     }
   };

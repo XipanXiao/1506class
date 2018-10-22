@@ -948,6 +948,10 @@ candidates {
   right: 392px;
 }
 
+candidates.expanded {
+  right: 52px;
+}
+
 election-attributes {
   background: white;
   height: 100%;
@@ -955,6 +959,10 @@ election-attributes {
   position: absolute;
   right: 0;
   width: 360px;
+}
+
+election-attributes.collapsed {
+  width: 20px;
 }
 
 election-attributes > .buttons {
@@ -1057,4 +1065,12 @@ candidates.in-dialog {
 
 #create-election-dialog {
   width: 400px;
+}
+
+.collapse-button {
+  background-color: lightgray;
+  border-radius: 16px;
+  left: -10px;
+  position: absolute;
+  top: 200px;
 }

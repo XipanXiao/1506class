@@ -1,5 +1,10 @@
-<h1>概况</h1>
-<div class="css-table">
+<h1 ng-if="!collapsed">概况</h1>
+<div class="collapse-button">
+  <iron-icon icon="{{collapsed ? 'chevron-left' : 'chevron-right'}}"
+      class="clickable" ng-click="toggleCollapsed()">
+  </iron-icon>
+</div>
+<div class="css-table" ng-if="!collapsed">
   <div class="css-table-row">
     <div class="css-table-cell attribute-label">名称</div>
     <div class="css-table-cell">

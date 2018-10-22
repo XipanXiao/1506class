@@ -24,11 +24,14 @@
       on-change="markDirty()" current-election="currentElection">
   </election-list>
   <candidates editable="editable" election="currentElection"
+      ng-class="{'expanded': attributesCollapsed}"
       on-change="markDirty()" ng-if="currentElection">
   </candidates>
   <election-attributes election="currentElection"
+      ng-class="{'collapsed': attributesCollapsed}"
       editable="editable" dirty="dirty" on-change="markDirty()"
-      on-save="save()" on-cancel="cancel()">
+      on-save="save()" on-cancel="cancel()"
+      collapsed="attributesCollapsed">
   </election-attributes>
 </div>
 
