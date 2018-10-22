@@ -199,14 +199,14 @@ function in_time_range($start_time, $end_time) {
 function check_and_vote($data, $user_district) {
   global $medoo;
   $candidate = get_single_record($medoo, "candidates", $data["candidate"]);
+  $election = get_single_record($medoo, "elections", $data["election"]);
 
   if (!$candidate ||
-      $user_district != $candidate["district"] ||
+      !intval($election["global"]) && $user_district != $candidate["district"] ||
       $data["election"] != $candidate["election"]) {
     return ["error" => "only vote a candidate from the same district"];
   }
 
-  $election = get_single_record($medoo, "elections", $data["election"]);
   if (!in_time_range($election["start_time"], $election["end_time"])) {
     return ["error" => "not an ongoing event"];
   }
@@ -242,11 +242,14 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } else if ($resource_id == "candidates") {
     $election = $_GET["election"];
     $district = $_GET["district"];
-    if (is_election_owner($election) || 
+    if (is_election_owner($election) ||
         $district && $district == $user->district) {
       $response = get_candidates($election, $district);
     } else {
-      $response = permission_denied_error();
+      $election = get_single_record($medoo, "elections", $election);
+      $response = intval($election["global"])
+          ? get_candidates($election)
+          : permission_denied_error();
     }
   } elseif ($resource_id == "votes") {
     $election_id = $_GET["election"];

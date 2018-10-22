@@ -43,7 +43,9 @@ angular.module('ElectionListModule', [
         };
 
         function getCandidates(election) {
-          var district = !scope.editable && perm.user.district;
+          var district = !scope.editable &&
+              !election.global &&
+              perm.user.district;
           return rpc.get_candidates(election.id, district).then((response) => {
             election.candidates = response.data;
             election.candidates.forEach((candidate) => {

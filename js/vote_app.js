@@ -29,6 +29,7 @@ angular.module('AppModule', [
           scope.elections = response.data;
           utils.forEach(scope.elections, (election) => {
             election.max_vote = parseInt(election.max_vote);
+            election.global = !!parseInt(election.global);
             election.label = '{0}-{1}'.format(
                 election.start_time.split('-')[0], election.name);
           });
@@ -66,6 +67,7 @@ angular.module('AppModule', [
                 replace(/ [\d]{2}:[\d]{2}:[\d]{2}/, ' 00:00:00');
             election.end_time = election.end_time.
                 replace(/ [\d]{2}:[\d]{2}:[\d]{2}/, ' 23:59:59');
+            election.global = election.global ? 1 : 0;
             requests.push(() =>
                 rpc.update_election(election).then(checkResponse));
           }

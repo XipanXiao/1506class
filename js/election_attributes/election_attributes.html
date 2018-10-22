@@ -31,6 +31,14 @@
       </div>
   </div>
   <div class="css-table-row">
+    <div class="css-table-cell attribute-label">能否跨区投票</div>
+      <div class="css-table-cell">
+        <input ng-model="election.global" type="checkbox"
+            ng-change="markDirty()" ng-disabled="!editable || !election">
+      </div>
+    </div>
+  </div>
+  <div class="css-table-row">
     <div class="css-table-cell attribute-label">开始日期(凌晨)</div>
     <div class="css-table-cell attribute-value">
       <input type="date" ng-model="election.start_time" time
