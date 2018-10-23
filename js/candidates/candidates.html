@@ -10,10 +10,10 @@
     <label>
       按地区过滤<input type="checkbox" ng-model="filterByDistrict"
           ng-change="toggleDistrictFilter()">
-      <districts ng-if="filterByDistrict" user="self" editable="true">
-      </districts>
-      共{{filtered}}位候选人。
     </label>
+    <districts ng-if="filterByDistrict" user="self" editable="true">
+    </districts>
+    共{{filtered}}位候选人。
   </div>
   <div ng-switch-default>
     共{{filtered}}位候选人。

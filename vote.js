@@ -31858,6 +31858,7 @@ angular.module('ElectionListModule', [
           return rpc.get_votes(election.id, userId).then((response) => {
             var votes = {}, myvotes = {};
             for (let vote of response.data) {
+              if (!vote.candidate) continue;
               votes[vote.candidate] = (votes[vote.candidate] || 0) + 1;
               if (vote.user == perm.user.id) {
                 myvotes[vote.candidate] = true;
@@ -31930,6 +31931,10 @@ angular.module('ElectionListModule', [
         scope.filtered = scope.election &&
             scope.election.candidates.length || 0;
 
+        // Vote an empty candidate to record 'I am here'.
+        const visited = (election) =>
+          rpc.vote({election: election.id, user: perm.user.id});
+
         scope.$watch('election', (election) => {
           if (!election) return;
           if (parseInt(election.deleted)) {
@@ -31938,6 +31943,9 @@ angular.module('ElectionListModule', [
             scope.filtered = 0;
           } else {
             scope.filtered = election.candidates.length;
+            if (!scope.editable && !scope.inEmail) {
+              visited(election);
+            }
           }
         });
 
@@ -31971,7 +31979,7 @@ angular.module('ElectionListModule', [
 
         scope.vote = (candidate) => {
           if (scope.election.voted >= scope.election.max_vote) {
-            alert('每人限投{0}}票'.format(scope.election.max_vote));
+            alert('每人限投{0}票'.format(scope.election.max_vote));
             return;
           }
           var data = {
@@ -32083,7 +32091,7 @@ angular.module('VoteMailDialogModule', [
         utils.requestOneByOne(users.map(sendEmail));
       };
   },
-    templateUrl: 'js/vote_mail_dialog/vote_mail_dialog.html?tag=20180621'
+    templateUrl: 'js/vote_mail_dialog/vote_mail_dialog.html?tag=20181022'
   };
 });
 angular.module('VoteMailModule', [
@@ -32098,10 +32106,10 @@ angular.module('VoteMailModule', [
     },
     link: function (scope) {
       scope.sendMail = function() {
-        var start = new Date(Date.parse(scope.election.start_time));
+        var end = new Date(Date.parse(scope.election.end_time));
         scope.showActions = false;
-        if (new Date() >= start) {
-          alert('投票已经开始了.');
+        if (new Date() >= end) {
+          alert('投票已经结束了.');
           return;
         }
         utils.showVoteMailDialog(scope.election);

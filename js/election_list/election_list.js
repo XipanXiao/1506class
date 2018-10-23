@@ -63,6 +63,7 @@ angular.module('ElectionListModule', [
           return rpc.get_votes(election.id, userId).then((response) => {
             var votes = {}, myvotes = {};
             for (let vote of response.data) {
+              if (!vote.candidate) continue;
               votes[vote.candidate] = (votes[vote.candidate] || 0) + 1;
               if (vote.user == perm.user.id) {
                 myvotes[vote.candidate] = true;

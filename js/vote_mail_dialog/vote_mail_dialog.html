@@ -13,12 +13,12 @@
         收件人: 
         <email-group-chip group="selected"></email-group-chip>
       </label>
-      <progress-bar max="{{total}}" value="{{sent}}"></progress-bar>
       <div id="vote-mail-body">
         <div class="style-container"></div>
         <p><strong>本邮件包含个人信息，请勿转发。</strong>如果您转发，收件人将可以使用您的身份投票。</p>
         <p>您可以点击邮件中，每个候选人右边的投票链接投票，也可以直接到
-          <a href="{{vote_url}}">投票网站</a>投票。
+          <a href="{{vote_url}}">投票网站</a>投票。也可以
+          <a href="php/election.php?rid=email_vote" class="vote-link">弃权</a>。
         </p>
         <candidates election="election" district="selected.id"
             class="in-dialog" in-email="true">
@@ -26,6 +26,7 @@
       </div>
     </div>
   </div>
+  <progress-bar max="{{total}}" value="{{sent}}"></progress-bar>
   <div class="buttons">
     <paper-button dialog-dismiss raised>关闭</paper-button>
     <paper-button ng-click="send()" raised>

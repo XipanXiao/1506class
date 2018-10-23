@@ -70,6 +70,6 @@ angular.module('VoteMailDialogModule', [
         utils.requestOneByOne(users.map(sendEmail));
       };
   },
-    templateUrl: 'js/vote_mail_dialog/vote_mail_dialog.html?tag=20180621'
+    templateUrl: 'js/vote_mail_dialog/vote_mail_dialog.html?tag=20181022'
   };
 });

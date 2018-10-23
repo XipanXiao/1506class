@@ -48,7 +48,7 @@ function create_election_tables() {
         FOREIGN KEY (election) REFERENCES elections(id),
       user INT NOT NULL,
         FOREIGN KEY (user) REFERENCES users(id),
-      candidate INT NOT NULL,
+      candidate INT,
         FOREIGN KEY (candidate) REFERENCES candidates(id),
       UNIQUE KEY `unique_index` (`election`,`user`, `candidate`),
       ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -194,23 +194,27 @@ function in_time_range($start_time, $end_time) {
 
 function check_and_vote($data, $user_district) {
   global $medoo;
-  $candidate = get_single_record($medoo, "candidates", $data["candidate"]);
   $election = get_single_record($medoo, "elections", $data["election"]);
+  if (!in_time_range($election["start_time"], $election["end_time"])) {
+    return ["error" => "not an ongoing event"];
+  }
+  $voted = $medoo->count("votes", ["AND" => [
+    "election" => $data["election"],
+    "user" => $data["user"],
+    "candidate[!]" => null,
+  ]]);
 
+  if (empty($data["candidate"])) {
+    return $voted || vote($data);
+  }
+
+  $candidate = get_single_record($medoo, "candidates", $data["candidate"]);
   if (!$candidate ||
       !intval($election["global"]) && $user_district != $candidate["district"] ||
       $data["election"] != $candidate["election"]) {
     return ["error" => "only vote a candidate from the same district"];
   }
 
-  if (!in_time_range($election["start_time"], $election["end_time"])) {
-    return ["error" => "not an ongoing event"];
-  }
-
-  $voted = $medoo->count("votes", ["AND" => [
-    "election" => $data["election"],
-    "user" => $data["user"]
-  ]]);
   $max_vote = intval($election["max_vote"]);
   if ($voted >= $max_vote) {
     return ["error" => "only ". $max_vote.  " votes please"];

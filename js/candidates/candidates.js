@@ -21,6 +21,10 @@ angular.module('CandidatesModule', [
         scope.filtered = scope.election &&
             scope.election.candidates.length || 0;
 
+        // Vote an empty candidate to record 'I am here'.
+        const visited = (election) =>
+          rpc.vote({election: election.id, user: perm.user.id});
+
         scope.$watch('election', (election) => {
           if (!election) return;
           if (parseInt(election.deleted)) {
@@ -29,6 +33,9 @@ angular.module('CandidatesModule', [
             scope.filtered = 0;
           } else {
             scope.filtered = election.candidates.length;
+            if (!scope.editable && !scope.inEmail) {
+              visited(election);
+            }
           }
         });
 
@@ -62,7 +69,7 @@ angular.module('CandidatesModule', [
 
         scope.vote = (candidate) => {
           if (scope.election.voted >= scope.election.max_vote) {
-            alert('每人限投{0}}票'.format(scope.election.max_vote));
+            alert('每人限投{0}票'.format(scope.election.max_vote));
             return;
           }
           var data = {
