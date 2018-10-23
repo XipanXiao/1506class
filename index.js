@@ -29667,7 +29667,7 @@ $provide.value("$locale", {
         var index = location.pathname.lastIndexOf("/") + 1;
         var filename = location.pathname.substr(index);
         location.href = 'login.html?redirect=' + filename +
-            encodeURIComponent(location.search);
+            encodeURIComponent(location.search) + '&tag=20181023';
       },
       refresh: function() {
         window.location.reload();
