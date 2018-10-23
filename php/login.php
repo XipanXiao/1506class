@@ -40,7 +40,7 @@ if(!empty($_POST["email"])) {
     $url_parts = explode("?", urldecode($page));
     $file_name = $url_parts[0];
     $validPages = ["admin.html", "index.html", "local.html", "order.html",
-        "order_admin.html", "assignment.html"];
+        "order_admin.html", "assignment.html", "vote.html"];
     if (!in_array($file_name, $validPages)) {
       $page = "index.html";
     }
