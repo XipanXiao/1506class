@@ -32006,7 +32006,7 @@ angular.module('ElectionListModule', [
           }
         };
       },
-      templateUrl : 'js/candidates/candidates.html?tag=201810221952'
+      templateUrl : 'js/candidates/candidates.html?tag=201810221942'
     };
   });
 

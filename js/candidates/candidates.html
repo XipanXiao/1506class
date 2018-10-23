@@ -27,8 +27,8 @@
   <tr style="background-color: gray;color: white;">
     <td>候选人姓名</td>
     <td>照片</td>
+    <td>操作</td>
     <td>简介</td>
-    <td></td>
   </tr>
   <tr ng-repeat="candidate in election.candidates | filter: {deleted: false,
       district: district}" class="deletable">
@@ -67,34 +67,36 @@
         </label>
       </div>
     </td>
-    <td ng-switch="editable" style="font-size: 1.1em;">
+    <td class="vote-actions" ng-switch="editable" style="width:150px">
+        <div ng-switch-when="true">
+          <iron-icon icon="delete" title="删除..." ng-click="remove(candidate)"
+              class="delete-button" ng-if="!candidate.votes">
+          </iron-icon>
+          <span class="voted">{{candidate.votes}}</span>
+        </div>
+        <div ng-switch-default ng-switch="candidate.voted">
+          <iron-icon icon="check-box" class="voted" title="您已经投过票了，感谢"
+              ng-switch-when="true">
+          </iron-icon>
+          <div ng-switch-default ng-switch="inEmail">
+            <a ng-switch-when="true" class="vote-link"
+                href="php/election.php?rid=email_vote&candidate={{candidate.id}}">
+              投票
+            </a>
+            <paper-button ng-switch-default ng-click="vote(candidate)" raised>
+              <img src="images/vote.png">
+              <span style="padding: 16px">投票</span>
+            </paper-button>
+          </div>
+        </div>
+      </td>
+      <td ng-switch="editable" style="font-size: 1.1em;">
       <textarea ng-switch-when="true" ng-model="candidate.description" rows="6"
           ng-change="markDirty(candidate)" style="border: none;width:92%;padding:4px"
           placeholder="输入候选人简介..." ng-disabled="!editable">
       </textarea>
-      <span ng-switch-default>{{candidate.description}}</span>
-    </td>
-    <td class="vote-actions" ng-switch="editable" style="width:150px">
-      <div ng-switch-when="true">
-        <iron-icon icon="delete" title="删除..." ng-click="remove(candidate)"
-            class="delete-button" ng-if="!candidate.votes">
-        </iron-icon>
-        <span class="voted">{{candidate.votes}}</span>
-      </div>
-      <div ng-switch-default ng-switch="candidate.voted">
-        <iron-icon icon="check-box" class="voted" title="您已经投过票了，感谢"
-            ng-switch-when="true">
-        </iron-icon>
-        <div ng-switch-default ng-switch="inEmail">
-          <a ng-switch-when="true" class="vote-link"
-              href="php/election.php?rid=email_vote&candidate={{candidate.id}}">
-            投票
-          </a>
-          <paper-button ng-switch-default ng-click="vote(candidate)" raised>
-            <img src="images/vote.png">
-            <span style="padding: 16px">投票</span>
-          </paper-button>
-        </div>
+      <div ng-switch-default style="max-height:200px;overflow-y:auto">
+        {{candidate.description}}
       </div>
     </td>
   </tr>
