@@ -87,8 +87,6 @@ angular.module('AppModule', [
       if (window.outerWidth < 250 + 700 + 392) {
         scope.electionsCollapsed = true;
         scope.attributesCollapsed = true;
-        document.querySelector('candidates').style.
-            maxWidth = '{0}px'.format(window.outerWidth - 20 * 2);
       }
     }
   };

@@ -72,11 +72,9 @@
           ng-change="markDirty(candidate)" style="border: none;width:92%;padding:4px"
           placeholder="输入候选人简介..." ng-disabled="!editable">
       </textarea>
-      <div ng-switch-default style="max-height:200px;overflow-y:auto">
-        {{candidate.description}}
-      </div>
+      <span ng-switch-default>{{candidate.description}}</span>
     </td>
-    <td class="vote-actions" ng-switch="editable" style="width: 150px">
+    <td class="vote-actions" ng-switch="editable" style="width:150px">
       <div ng-switch-when="true">
         <iron-icon icon="delete" title="删除..." ng-click="remove(candidate)"
             class="delete-button" ng-if="!candidate.votes">

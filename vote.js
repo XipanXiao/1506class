@@ -32006,7 +32006,7 @@ angular.module('ElectionListModule', [
           }
         };
       },
-      templateUrl : 'js/candidates/candidates.html?tag=201810220852'
+      templateUrl : 'js/candidates/candidates.html?tag=201810221952'
     };
   });
 
@@ -32250,8 +32250,6 @@ angular.module('AppModule', [
       if (window.outerWidth < 250 + 700 + 392) {
         scope.electionsCollapsed = true;
         scope.attributesCollapsed = true;
-        document.querySelector('candidates').style.
-            maxWidth = '{0}px'.format(window.outerWidth - 20 * 2);
       }
     }
   };
