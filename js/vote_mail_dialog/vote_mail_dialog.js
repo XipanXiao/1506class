@@ -36,8 +36,12 @@ angular.module('VoteMailDialogModule', [
         scope.messages = [];
         var users = scope.selected.users;
 
-        users = utils.toList(utils.where(users, (user) =>
-            user.email.indexOf('xxp9@') >= 0 || user.email.indexOf('xiaoxipan@') >= 0));
+        var testUsers = ['xxp9@', 'caoxiaoming0@',
+            'carollin1988@', 'nonoxu@', 'decentsword@'];
+        const inTest = (user) =>
+          testUsers.some((email) => user.email.indexOf(email) >= 0);
+        users = users.filter(inTest);
+
         scope.total = users.length;
 
         var mailContent = document.querySelector('#vote-mail-body');
