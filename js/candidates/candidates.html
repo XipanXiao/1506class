@@ -18,7 +18,9 @@
   <div ng-switch-default>
     共{{filtered}}位候选人。
     <span ng-if="!inEmail">
-      您还剩{{election.max_vote - election.voted}}张选票。
+      您还剩<span class="remaining">
+        {{election.max_vote - election.voted}}
+      </span>张选票。投票不能更改，请慎重。
     </span>
   </div>
 </div>
@@ -74,9 +76,9 @@
           </iron-icon>
           <span class="voted">{{candidate.votes}}</span>
         </div>
-        <div ng-switch-default ng-switch="candidate.voted">
+        <div ng-switch-default ng-switch="candidate.voted > 0">
           <iron-icon icon="check-box" class="voted" title="您已经投过票了，感谢"
-              ng-switch-when="true">
+              ng-switch-when="true" ng-dblclick="unvote(candidate)">
           </iron-icon>
           <div ng-switch-default ng-switch="inEmail">
             <a ng-switch-when="true" class="vote-link"

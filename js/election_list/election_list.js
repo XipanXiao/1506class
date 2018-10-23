@@ -66,11 +66,11 @@ angular.module('ElectionListModule', [
               if (!vote.candidate) continue;
               votes[vote.candidate] = (votes[vote.candidate] || 0) + 1;
               if (vote.user == perm.user.id) {
-                myvotes[vote.candidate] = true;
+                myvotes[vote.candidate] = vote.id;
               }
             }
             for (let candidate of election.candidates) {
-              candidate.voted = myvotes[candidate.id] || false;
+              candidate.voted = myvotes[candidate.id] || 0;
               candidate.votes = votes[candidate.id];
               if (candidate.voted) election.voted++;
             }

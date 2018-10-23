@@ -30640,10 +30640,15 @@ define('services', ['utils'], function() {
             });
           },
 
-          get_vote_users(election, district) {
+          get_vote_users: function(election, district) {
             var url = 'php/election.php?rid=users' +
                 '&election={0}&district={1}'.format(election, district);
             return $http.get(url);
+          },
+          
+          delete_vote: function(id) {
+            var url = 'php/election.php?rid=votes&id={0}'.format(id);
+            return $http.delete(url);
           }
         };
       });

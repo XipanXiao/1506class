@@ -9,7 +9,11 @@ $medoo = get_medoo();
 
 function create_election_tables() {
   global $medoo;
-
+  
+//   $medoo->query("drop table votes");
+//   $medoo->query("drop table candidates");
+//   $medoo->query("drop table elections");
+  
   $sql = "CREATE TABLE elections (
       id INT AUTO_INCREMENT PRIMARY KEY,
       organizer INT,
@@ -139,6 +143,11 @@ function vote($vote) {
   global $medoo;
   return $medoo->insert("votes",
       build_update_data(["election", "user", "candidate"], $vote));
+}
+
+function delete_vote($id) {
+	global $medoo;
+  return $medoo->delete("votes", ["id" => $id]);
 }
 
 function get_vote_users($election_id, $district) {
@@ -342,10 +351,17 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = is_election_owner($id)
         ? ["deleted" => delete_election($id)]
         : permission_denied_error();
-  } else if ($resource_id == "candidates") {
+  } elseif ($resource_id == "candidates") {
     $response = is_election_owner($record["election"])
         ? ["deleted" => delete_candidate($id)]
         : permission_denied_error();
+  } elseif ($resource_id == "votes") {
+  	if ($user->id == intval($record["user"])) {
+  		$election = get_single_record($medoo, "elections", $record["election"]);
+  		if (in_time_range($election["start_time"], $election["end_time"])) {
+  			$response = ["deleted" => delete_vote($id)];
+  		}
+  	}
   }
 }
 

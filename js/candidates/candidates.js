@@ -78,8 +78,9 @@ angular.module('CandidatesModule', [
             candidate: candidate.id
           };
           rpc.vote(data).then((response) => {
-            if (response.data.updated) {
-              candidate.voted = true;
+            var voteId = parseInt(response.data.updated);
+            if (voteId) {
+              candidate.voted = voteId;
               scope.election.voted++;
             } else {
               alert(response.data.error);
@@ -103,6 +104,17 @@ angular.module('CandidatesModule', [
           if (!scope.filterByDistrict) {
             delete scope.district;
           }
+        };
+        
+        scope.unvote = function(candidate) {
+          rpc.delete_vote(candidate.voted).then((response) => {
+            if (response.data.deleted) {
+              candidate.voted = 0;
+              scope.election.voted--;
+            } else {
+              alert(response.data.error);
+            }
+          });
         };
       },
       templateUrl : 'js/candidates/candidates.html?tag=201810221942'

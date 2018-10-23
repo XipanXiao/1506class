@@ -30576,10 +30576,15 @@ define('services', ['utils'], function() {
             });
           },
 
-          get_vote_users(election, district) {
+          get_vote_users: function(election, district) {
             var url = 'php/election.php?rid=users' +
                 '&election={0}&district={1}'.format(election, district);
             return $http.get(url);
+          },
+          
+          delete_vote: function(id) {
+            var url = 'php/election.php?rid=votes&id={0}'.format(id);
+            return $http.delete(url);
           }
         };
       });
@@ -31861,11 +31866,11 @@ angular.module('ElectionListModule', [
               if (!vote.candidate) continue;
               votes[vote.candidate] = (votes[vote.candidate] || 0) + 1;
               if (vote.user == perm.user.id) {
-                myvotes[vote.candidate] = true;
+                myvotes[vote.candidate] = vote.id;
               }
             }
             for (let candidate of election.candidates) {
-              candidate.voted = myvotes[candidate.id] || false;
+              candidate.voted = myvotes[candidate.id] || 0;
               candidate.votes = votes[candidate.id];
               if (candidate.voted) election.voted++;
             }
@@ -31988,8 +31993,9 @@ angular.module('ElectionListModule', [
             candidate: candidate.id
           };
           rpc.vote(data).then((response) => {
-            if (response.data.updated) {
-              candidate.voted = true;
+            var voteId = parseInt(response.data.updated);
+            if (voteId) {
+              candidate.voted = voteId;
               scope.election.voted++;
             } else {
               alert(response.data.error);
@@ -32013,6 +32019,17 @@ angular.module('ElectionListModule', [
           if (!scope.filterByDistrict) {
             delete scope.district;
           }
+        };
+        
+        scope.unvote = function(candidate) {
+          rpc.delete_vote(candidate.voted).then((response) => {
+            if (response.data.deleted) {
+              candidate.voted = 0;
+              scope.election.voted--;
+            } else {
+              alert(response.data.error);
+            }
+          });
         };
       },
       templateUrl : 'js/candidates/candidates.html?tag=201810221942'

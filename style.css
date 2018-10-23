@@ -1083,3 +1083,7 @@ election-attributes .collapse-button {
 election-list .collapse-button {
   right: -10px;
 }
+
+.remaining {
+  font-size: 200%;
+}
