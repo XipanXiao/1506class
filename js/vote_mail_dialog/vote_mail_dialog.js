@@ -30,6 +30,14 @@ angular.module('VoteMailDialogModule', [
           district.users = response.data);
       };
 
+      function replaceUrlParam(url, data) {
+        for (var key in data) {
+          var pattern = new RegExp('&{0}=([^&]*)'.format(key));
+          url = url.replace(pattern, '&{0}={1}'.format(key, data[key]));
+        }
+        return url;
+      }
+
       scope.send = function() {
         scope.sent = 0;
         scope.error = 0;
@@ -38,6 +46,7 @@ angular.module('VoteMailDialogModule', [
 
         var testUsers = ['xxp9@', 'caoxiaoming0@', 'jessiedeng911@',
             'carollin1988@', 'nonoxu@', 'decentsword@', 'ftang2009@'];
+        // testUsers = ['xxp9'];
         const inTest = (user) =>
           testUsers.some((email) => user.email.indexOf(email) >= 0);
         users = users.filter(inTest);
@@ -49,8 +58,8 @@ angular.module('VoteMailDialogModule', [
         function sendEmail(user) {
           return () => {
             const setVoteLink = (a) => {
-              a.href += '&election={0}&user={1}&token={2}'.format(
-                  scope.election.id, user.id, user.token);
+              a.href = replaceUrlParam(a.href,
+                  {user: user.id, token: user.token});
             };
       
             mailContent.querySelectorAll('.vote-link').forEach(setVoteLink);
@@ -63,10 +72,12 @@ angular.module('VoteMailDialogModule', [
               sender_name: perm.user.name
             }).then(function(response) {
               scope.sent++;
+              scope.$apply();
               return true;
             }, function(error) {
               scope.error++;
               scope.messages.push(error);
+              scope.$apply();
               return true;
             });
           }
@@ -74,6 +85,6 @@ angular.module('VoteMailDialogModule', [
         utils.requestOneByOne(users.map(sendEmail));
       };
   },
-    templateUrl: 'js/vote_mail_dialog/vote_mail_dialog.html?tag=20181022'
+    templateUrl: 'js/vote_mail_dialog/vote_mail_dialog.html?tag=201810222257'
   };
 });

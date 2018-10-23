@@ -18,7 +18,8 @@
         <p><strong>本邮件包含个人信息，请勿转发。</strong>如果您转发，收件人将可以使用您的身份投票。</p>
         <p>您可以点击邮件中，每个候选人右边的投票链接投票，也可以直接到
           <a href="{{vote_url}}">投票网站</a>投票。也可以
-          <a href="php/election.php?rid=email_vote" class="vote-link">弃权</a>。
+          <a href="php/election.php?rid=email_vote&election={{election.id}}&user=&token="
+              class="vote-link">弃权</a>。
         </p>
         <candidates election="election" district="selected.id"
             class="in-dialog" in-email="true">
