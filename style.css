@@ -954,7 +954,7 @@ candidates {
 }
 
 candidates.expanded {
-  right: 52px;
+  right: 20px;
 }
 
 candidates.left-expanded {
@@ -971,6 +971,7 @@ election-attributes {
 }
 
 election-attributes.collapsed {
+  padding: 0;
   width: 20px;
 }
 
@@ -998,10 +999,6 @@ paper-button[disabled].primary-action {
 
 [disabled] .clickable {
   cursor: auto;
-}
-
-[disabled].candidate-description {
-  background-color: transparent;
 }
 
 .vote-actions {

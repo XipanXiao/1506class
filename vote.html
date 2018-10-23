@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" type="text/css" href="style.css?tag=2018102021101">
+<link rel="stylesheet" type="text/css" href="style.css?tag=2018102221101">
 <title>选举</title>
 <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js">
 </script>
@@ -28,7 +28,7 @@
   <candidates editable="editable" election="currentElection"
       ng-class="{'expanded': attributesCollapsed,
           'left-expanded': electionsCollapsed}"
-      on-change="markDirty()" ng-if="currentElection">
+      on-change="markDirty()" ng-show="currentElection">
   </candidates>
   <election-attributes election="currentElection"
       ng-class="{'collapsed': attributesCollapsed}"
@@ -50,7 +50,7 @@
   const define = (module, deps, f) => f();
   const require = define;
 </script>
-<script type="text/javascript" src="vote.js?tag=201810221045"></script>
+<script type="text/javascript" src="vote.js?tag=201810221845"></script>
 <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js">
 </script>
 </body>

@@ -32158,7 +32158,7 @@ angular.module('ElectionAttributesModule', [
         scope.collapsed = !scope.collapsed;
       };
     },
-    templateUrl: 'js/election_attributes/election_attributes.html?tag=201810201006'
+    templateUrl: 'js/election_attributes/election_attributes.html?tag=201810221006'
   };
 });
 angular.module('AppModule', [
@@ -32250,6 +32250,8 @@ angular.module('AppModule', [
       if (window.outerWidth < 250 + 700 + 392) {
         scope.electionsCollapsed = true;
         scope.attributesCollapsed = true;
+        document.querySelector('candidates').style.
+            maxWidth = '{0}px'.format(window.outerWidth - 20 * 2);
       }
     }
   };
