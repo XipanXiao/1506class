@@ -102,7 +102,8 @@ angular.module('ElectionListModule', [
           });
         };
   
-        scope.isVoteOwner = () => perm.isElectionOwner();
+        scope.isVoteOwner = () =>
+            perm.isElectionOwner(scope.currentElection);
 
         scope.toggleCollapsed = () => {
           scope.collapsed = !scope.collapsed;

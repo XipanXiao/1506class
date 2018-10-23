@@ -17,7 +17,7 @@ angular.module('CandidatesModule', [
       },
       link: function(scope, elements) {
         scope.self = scope;
-        scope.isVoteOwner = () => perm.isElectionOwner();
+        scope.isVoteOwner = () => perm.isElectionOwner(scope.election);
         scope.filtered = scope.election &&
             scope.election.candidates.length || 0;
 

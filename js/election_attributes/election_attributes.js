@@ -17,7 +17,7 @@ angular.module('ElectionAttributesModule', [
       onSave: '&'
     },
     link: function (scope) {
-      scope.isVoteOwner = () => perm.isElectionOwner();
+      scope.isVoteOwner = () => perm.isElectionOwner(scope.election);
 
       scope.$watch('election', (election) => {
         if (election && parseInt(election.deleted)) {

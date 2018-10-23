@@ -31897,7 +31897,8 @@ angular.module('ElectionListModule', [
           });
         };
   
-        scope.isVoteOwner = () => perm.isElectionOwner();
+        scope.isVoteOwner = () =>
+            perm.isElectionOwner(scope.currentElection);
 
         scope.toggleCollapsed = () => {
           scope.collapsed = !scope.collapsed;
@@ -31925,7 +31926,7 @@ angular.module('ElectionListModule', [
       },
       link: function(scope, elements) {
         scope.self = scope;
-        scope.isVoteOwner = () => perm.isElectionOwner();
+        scope.isVoteOwner = () => perm.isElectionOwner(scope.election);
         scope.filtered = scope.election &&
             scope.election.candidates.length || 0;
 
@@ -32128,7 +32129,7 @@ angular.module('ElectionAttributesModule', [
       onSave: '&'
     },
     link: function (scope) {
-      scope.isVoteOwner = () => perm.isElectionOwner();
+      scope.isVoteOwner = () => perm.isElectionOwner(scope.election);
 
       scope.$watch('election', (election) => {
         if (election && parseInt(election.deleted)) {
