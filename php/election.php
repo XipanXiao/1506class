@@ -198,14 +198,13 @@ function check_and_vote($data, $user_district) {
   if (!in_time_range($election["start_time"], $election["end_time"])) {
     return ["error" => "not an ongoing event"];
   }
-  $voted = $medoo->count("votes", ["AND" => [
-    "election" => $data["election"],
-    "user" => $data["user"],
-    "candidate[!]" => null,
-  ]]);
 
   if (empty($data["candidate"])) {
-    return $voted || vote($data);
+    $voted = $medoo->count("votes", ["AND" => [
+      "election" => $data["election"],
+      "user" => $data["user"]
+    ]]);
+    return ["updated" => ($voted ? $voted : vote($data))];
   }
 
   $candidate = get_single_record($medoo, "candidates", $data["candidate"]);
@@ -215,6 +214,11 @@ function check_and_vote($data, $user_district) {
     return ["error" => "only vote a candidate from the same district"];
   }
 
+  $voted = $medoo->count("votes", ["AND" => [
+    "election" => $data["election"],
+    "user" => $data["user"],
+    "candidate[!]" => null,
+  ]]);
   $max_vote = intval($election["max_vote"]);
   if ($voted >= $max_vote) {
     return ["error" => "only ". $max_vote.  " votes please"];
@@ -288,10 +292,10 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 <html>
 <head>
 <meta charset="UTF-8">
-<title>投票成功</title>
+<title>操作成功</title>
 </head>
 <body>
-投票成功。您可以到<a href="../vote.html">投票页面</a>查看。
+操作成功。您可以到<a href="../vote.html">投票页面</a>查看。
 </body>
 </html>
 <?php
