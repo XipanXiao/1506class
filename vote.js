@@ -32057,8 +32057,8 @@ angular.module('VoteMailDialogModule', [
         scope.messages = [];
         var users = scope.selected.users;
 
-        var testUsers = ['xxp9@', 'caoxiaoming0@',
-            'carollin1988@', 'nonoxu@', 'decentsword@'];
+        var testUsers = ['xxp9@', 'caoxiaoming0@', 'jessiedeng911@',
+            'carollin1988@', 'nonoxu@', 'decentsword@', 'ftang2009@'];
         const inTest = (user) =>
           testUsers.some((email) => user.email.indexOf(email) >= 0);
         users = users.filter(inTest);
