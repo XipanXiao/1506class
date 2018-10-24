@@ -37,14 +37,15 @@ angular.module('VoteActionsModule', [
         };
 
         var votes = scope.election.allVotes;
-        var candidates = scope.election.candidates;
+        var candidates = utils.toMap(scope.election.candidates);
+        var sources = ['网站', '邮件'];
 
         const doExport = () => {
-          var data = '';
+          var data = '投票人\t候选人\t来源\t时间\n';
           for (let vote of votes) {
             var can = candidates[vote.candidate];
-            data += '{0}\t{1}\t{2}\n'.format(users[vote.user],
-              can && can.name || '到此一游', vote.ts);
+            data += '{0}\t{1}\t{2}\t{3}\n'.format(users[vote.user],
+              can && can.name || '到此一游', sources[vote.source], vote.ts);
           }
           scope.election.exportedDataUrl = utils.createDataUrl(data,
               scope.election.exportedDataUrl);

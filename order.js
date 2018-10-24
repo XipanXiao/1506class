@@ -29655,6 +29655,14 @@ $provide.value("$locale", {
         
         return list;
       },
+      toMap: function(list, key) {
+        var m = {};
+        key = key || 'id';
+        for (let item of list) {
+          m[item[key]] = item;
+        }
+        return m;
+      },
       redirect: function(url) {
         window.location.href = url;
       },
