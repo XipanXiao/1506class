@@ -52,6 +52,7 @@ function create_election_tables() {
         FOREIGN KEY (user) REFERENCES users(id),
       candidate INT,
         FOREIGN KEY (candidate) REFERENCES candidates(id),
+      source INT NOT NULL DEFAULT 0,
       UNIQUE KEY `unique_index` (`election`,`user`, `candidate`),
       ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       );";
@@ -140,7 +141,7 @@ function get_votes($election, $user_id = NULL) {
 function vote($vote) {
   global $medoo;
   return $medoo->insert("votes",
-      build_update_data(["election", "user", "candidate"], $vote));
+      build_update_data(["election", "user", "candidate", "source"], $vote));
 }
 
 function delete_vote($id) {

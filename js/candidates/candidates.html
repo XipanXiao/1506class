@@ -84,7 +84,7 @@
           </iron-icon>
           <div ng-switch-default ng-switch="inEmail">
             <a ng-switch-when="true" class="vote-link"
-                href="php/election.php?rid=email_vote&election={{election.id}}&candidate={{candidate.id}}&user=&token=">
+                href="php/election.php?rid=email_vote&source=1&election={{election.id}}&candidate={{candidate.id}}&user=&token=">
               投票
             </a>
             <paper-button ng-switch-default ng-click="vote(candidate)" raised>
