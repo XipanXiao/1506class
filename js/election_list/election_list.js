@@ -25,6 +25,8 @@ angular.module('ElectionListModule', [
         selectLastElection(scope.elections);
   
         scope.createElection = () => {
+          if (!perm.isSysAdmin()) return;
+
           utils.showElectionDialog((election) => {
             rpc.update_election(election).then((response) => {
               if (response.data.updated) {
@@ -57,11 +59,18 @@ angular.module('ElectionListModule', [
           });
         }
 
+        // Vote an empty candidate to record 'I am here'.
+        const visited = (election) =>
+          rpc.vote({election: election.id, user: perm.user.id});
+
         function getVotes(election) {
           election.voted = 0;
           var userId = !scope.editable && perm.user.id;
           return rpc.get_votes(election.id, userId).then((response) => {
             var votes = {}, myvotes = {};
+            if (!response.data.length && !scope.editable) {
+              visited(election);
+            }
             for (let vote of response.data) {
               if (!vote.candidate) continue;
               votes[vote.candidate] = (votes[vote.candidate] || 0) + 1;
@@ -71,7 +80,7 @@ angular.module('ElectionListModule', [
             }
             for (let candidate of election.candidates) {
               candidate.voted = myvotes[candidate.id] || 0;
-              candidate.votes = votes[candidate.id];
+              candidate.votes = votes[candidate.id] || 0;
               if (candidate.voted) election.voted++;
             }
             return true;

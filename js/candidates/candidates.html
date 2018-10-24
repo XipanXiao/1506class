@@ -3,7 +3,7 @@
 <div ng-switch="editable">
   <div ng-switch-when="true">
     <iron-icon icon="add-circle" class="add-icon clickable"
-        ng-click="create()" title="新建候选人...">
+        ng-click="create()" title="新建候选人..." ng-if="isVoteOwner()">
     </iron-icon>
     <vote-mail ng-if="election.candidates.length" election="election">
     </vote-mail>
@@ -33,7 +33,7 @@
     <td>简介</td>
   </tr>
   <tr ng-repeat="candidate in election.candidates | filter: {deleted: false,
-      district: district}" class="deletable">
+      district: district} | orderBy: '-votes'" class="deletable">
     <td ng-switch="editable" style="min-width:100px">
       <div ng-switch-when="true">
         <paper-user-input user-id="candidate.user"
@@ -53,7 +53,7 @@
       <districts user="candidate" style="padding: 16px"></districts>
     </td>
     <td>
-      <a ng-if="candidate.profile" href="{{candidate.profile}}">
+      <a ng-if="candidate.profile" href="{{candidate.profile}}" target="_blank">
         <img ng-if="candidate.profile" src={{candidate.profile}}
             style="cursor: pointer;
             display: block;
