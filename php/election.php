@@ -11,8 +11,6 @@ function create_election_tables() {
   global $medoo;
   
 //   $medoo->query("drop table votes");
-//   $medoo->query("drop table candidates");
-//   $medoo->query("drop table elections");
   
   $sql = "CREATE TABLE elections (
       id INT AUTO_INCREMENT PRIMARY KEY,

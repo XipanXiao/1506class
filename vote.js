@@ -31929,7 +31929,7 @@ angular.module('ElectionListModule', [
     'ServicesModule',
     'PaperUserInputModule',
     'UtilsModule',
-    'VoteMailModule',
+    'VoteActionsModule',
   ]).directive('candidates', function(perm, rpc, utils) {
     return {
       scope: {
@@ -32128,12 +32128,12 @@ angular.module('VoteMailDialogModule', [
     templateUrl: 'js/vote_mail_dialog/vote_mail_dialog.html?tag=201810222257'
   };
 });
-angular.module('VoteMailModule', [
+angular.module('VoteActionsModule', [
     'PermissionModule',
     'ServicesModule',
     'UtilsModule',
     'VoteMailDialogModule',
-]).directive('voteMail', function (perm, rpc, utils) {
+]).directive('voteActions', function (perm, rpc, utils) {
   return {
     scope: {
       election: '='
@@ -32149,7 +32149,7 @@ angular.module('VoteMailModule', [
         utils.showVoteMailDialog(scope.election);
       };
     },
-    templateUrl: 'js/vote_mail/vote_mail.html?tag=201810131006'
+    templateUrl: 'js/vote_actions/vote_actions.html?tag=201810131006'
   };
 });
 angular.module('ElectionAttributesModule', [

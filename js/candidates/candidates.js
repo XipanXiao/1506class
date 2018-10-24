@@ -5,7 +5,7 @@ angular.module('CandidatesModule', [
     'ServicesModule',
     'PaperUserInputModule',
     'UtilsModule',
-    'VoteMailModule',
+    'VoteActionsModule',
   ]).directive('candidates', function(perm, rpc, utils) {
     return {
       scope: {

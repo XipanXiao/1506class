@@ -5,8 +5,8 @@
     <iron-icon icon="add-circle" class="add-icon clickable"
         ng-click="create()" title="新建候选人..." ng-if="isVoteOwner()">
     </iron-icon>
-    <vote-mail ng-if="election.candidates.length" election="election">
-    </vote-mail>
+    <vote-actions ng-if="election.candidates.length" election="election">
+    </vote-actions>
     <label>
       按地区过滤<input type="checkbox" ng-model="filterByDistrict"
           ng-change="toggleDistrictFilter()">
