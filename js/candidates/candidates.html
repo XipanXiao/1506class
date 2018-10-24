@@ -14,6 +14,8 @@
     <districts ng-if="filterByDistrict" user="self" editable="true">
     </districts>
     共{{filtered}}位候选人。
+    <a ng-if="election.exportedDataUrl" href="{{election.exportedDataUrl}}"
+        download="{{election.name}}.tsv">所有投票记录</a>
   </div>
   <div ng-switch-default>
     共{{filtered}}位候选人。

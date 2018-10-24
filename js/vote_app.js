@@ -90,7 +90,9 @@ angular.module('AppModule', [
       }
     }
   };
-});
+}).config( ['$compileProvider', function( $compileProvider ) {
+  $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|blob):/);
+}]);
 
 angular.element(document).ready(function() {
   angular.bootstrap(document, ['AppModule']);

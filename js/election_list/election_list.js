@@ -83,6 +83,7 @@ angular.module('ElectionListModule', [
               candidate.votes = votes[candidate.id] || 0;
               if (candidate.voted) election.voted++;
             }
+            election.allVotes = response.data;
             return true;
           });
         }
