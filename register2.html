@@ -33,7 +33,7 @@
       'Virginia': 6,
       'District of Columbia': 6
     };
-    return defaultValues[state];
+    return defaultValues[state] || 7;
   }
 
   function validate(form) {
