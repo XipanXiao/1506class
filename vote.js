@@ -31706,6 +31706,7 @@ define('districts/districts',
     return {
       scope: {
         editable: '=',
+        onChange: '&',
         stock: '@',
         user: '='
       },
@@ -31871,7 +31872,7 @@ angular.module('ElectionListModule', [
               candidate.district = parseInt(candidate.district);
               window.userInputCache[candidate.user] = candidate.name;
             });
-            return scope.currentElection = election;
+            return true;
           });
         }
 
@@ -31900,11 +31901,14 @@ angular.module('ElectionListModule', [
               if (candidate.voted) election.voted++;
             }
             election.allVotes = response.data;
-            return true;
+            return scope.currentElection = election;
           });
         }
 
         scope.select = function(election) {
+          if (scope.editable && !perm.isElectionOwner(election)) {
+            return utils.login();
+          }
           utils.requestOneByOne([
             () => getCandidates(election),
             () => getVotes(election)
@@ -32034,9 +32038,14 @@ angular.module('ElectionListModule', [
           }
         });
 
+        scope.districtFilterChanged = (district) => {
+          scope.election.district = district;
+        };
+
         scope.toggleDistrictFilter = () => {
           if (!scope.filterByDistrict) {
             delete scope.district;
+            delete scope.election.district;
           }
         };
         
@@ -32183,22 +32192,28 @@ angular.module('VoteActionsModule', [
               users[vote.user] = response.data.label);
         };
 
+        const getDistricts = () =>
+            rpc.get_districts().then((response) => districts = response.data);
+
+        var districts;
         var votes = scope.election.allVotes;
         var candidates = utils.toMap(scope.election.candidates);
         var sources = ['网站', '邮件'];
 
         const doExport = () => {
-          var data = '投票人\t候选人\t来源\t时间\n';
+          var data = '时间\t投票人\t候选人\t地区\t来源\n';
           for (let vote of votes) {
             var can = candidates[vote.candidate];
-            data += '{0}\t{1}\t{2}\t{3}\n'.format(users[vote.user],
-              can && can.name || '到此一游', sources[vote.source], vote.ts);
+            var district = can && districts[can.district].name || '';
+            data += '{0}\t{1}\t{2}\t{3}\t{4}\n'.format(vote.ts, users[vote.user],
+              can && can.name || '到此一游', district, sources[vote.source]);
           }
           scope.election.exportedDataUrl = utils.createDataUrl(data,
               scope.election.exportedDataUrl);
           return utils.truePromise();
         };
         var requests = scope.election.allVotes.map(userLabelRequest);
+        requests.push(getDistricts);
         requests.push(doExport);
         utils.requestOneByOne(requests);
       };
@@ -32218,6 +32233,7 @@ angular.module('ElectionAttributesModule', [
     scope: {
       collapsed: '=',
       dirty: '=',
+      district: '=',
       editable: '=',
       election: '=',
       onChange: '&',
@@ -32227,11 +32243,38 @@ angular.module('ElectionAttributesModule', [
     link: function (scope) {
       scope.isVoteOwner = () => perm.isElectionOwner(scope.election);
 
+      function calcStats(election) {
+        if (!scope.editable || !election) return;
+        console.log('re-calculating election stats');
+        var voters;
+
+        function getVoters() {
+          return rpc.get_vote_users(scope.election.id,
+              scope.election.district).then((response) => {
+                voters = response.data;
+              });
+        }
+
+        const inDistrict = (candidate) =>
+            candidate.district == election.district;
+        var filtered = election.candidates.filter(inDistrict);
+        scope.stats = {
+          candidates: filtered.length,
+        };
+      }
+
+      scope.$watch('election.district', (district) => {
+        calcStats(scope.election);
+      });
+
       scope.$watch('election', (election) => {
-        if (election && parseInt(election.deleted)) {
+        if (!election) return;
+        if (parseInt(election.deleted)) {
           for (var key in election) {
             delete election[key];
           }
+        } else {
+          calcStats(election);
         }
       });
 

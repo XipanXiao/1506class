@@ -71,7 +71,7 @@
   </paper-button>
 </div>
 
-<div ng-if="editable && !collapsed && election.stats">
+<div ng-if="editable && !collapsed && stats">
   <h1>统计</h1>
   <div class="css-table">
     <div class="css-table-row">
@@ -80,25 +80,25 @@
     </div>
     <div class="css-table-row">
       <div class="css-table-cell attribute-label">候选人总数</div>
-      <div class="css-table-cell">{{election.stats.candidates}}</div>
+      <div class="css-table-cell">{{stats.candidates}}</div>
     </div>
     <div class="css-table-row">
       <div class="css-table-cell attribute-label">选民总数（投票/弃权/未响应）</div>
       <div class="css-table-cell">
-        {{election.stats.total}}({{election.stats.voter}}/{{election.stats.waiver}}/{{election.stats.unresponded}})
+        {{stats.total}}({{stats.voter}}/{{stats.waiver}}/{{stats.unresponded}})
       </div>
     </div>
     <div class="css-table-row">
       <div class="css-table-cell attribute-label">投票/选民总数，投票/响应数</div>
-      <div class="css-table-cell">{{election.stats.ratio}}，{{election.stats.effectiveRatio}}</div>
+      <div class="css-table-cell">{{stats.ratio}}，{{stats.effectiveRatio}}</div>
     </div>
     <div class="css-table-row">
       <div class="css-table-cell attribute-label">总票数(邮件/网络)</div>
-      <div class="css-table-cell">{{election.stats.votes}}({{election.stats.emails}}/{{election.stats.webs}})</div>
+      <div class="css-table-cell">{{stats.votes}}({{stats.emails}}/{{stats.webs}})</div>
     </div>
     <div class="css-table-row">
       <div class="css-table-cell attribute-label">前3名</div>
-      <div class="css-table-cell">{{election.stats.winner1}}, {{election.stats.winner2}}, {{election.stats.winner3}}</div>
+      <div class="css-table-cell">{{stats.winner1}}, {{stats.winner2}}, {{stats.winner3}}</div>
     </div>
   </div>
 </div>

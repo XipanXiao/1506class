@@ -1,6 +1,7 @@
 <label ng-if="editable" for="district-list">请选择地方组</label>
 <select ng-options="localGroups[id].name for id in localGroupIds"
     ng-model="user.district" id="district-list"
+    ng-change="onChange({'district': user.district})"
     ng-if="editable">
 </select>
 <span ng-if="!editable">{{localGroups[user.district].name}}</span>

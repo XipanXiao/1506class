@@ -32814,6 +32814,7 @@ define('districts/districts',
     return {
       scope: {
         editable: '=',
+        onChange: '&',
         stock: '@',
         user: '='
       },

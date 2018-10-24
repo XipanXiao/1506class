@@ -55,7 +55,7 @@ angular.module('ElectionListModule', [
               candidate.district = parseInt(candidate.district);
               window.userInputCache[candidate.user] = candidate.name;
             });
-            return scope.currentElection = election;
+            return true;
           });
         }
 
@@ -84,11 +84,14 @@ angular.module('ElectionListModule', [
               if (candidate.voted) election.voted++;
             }
             election.allVotes = response.data;
-            return true;
+            return scope.currentElection = election;
           });
         }
 
         scope.select = function(election) {
+          if (scope.editable && !perm.isElectionOwner(election)) {
+            return utils.login();
+          }
           utils.requestOneByOne([
             () => getCandidates(election),
             () => getVotes(election)

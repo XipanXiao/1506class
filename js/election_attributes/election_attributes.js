@@ -10,6 +10,7 @@ angular.module('ElectionAttributesModule', [
     scope: {
       collapsed: '=',
       dirty: '=',
+      district: '=',
       editable: '=',
       election: '=',
       onChange: '&',
@@ -19,11 +20,38 @@ angular.module('ElectionAttributesModule', [
     link: function (scope) {
       scope.isVoteOwner = () => perm.isElectionOwner(scope.election);
 
+      function calcStats(election) {
+        if (!scope.editable || !election) return;
+        console.log('re-calculating election stats');
+        var voters;
+
+        function getVoters() {
+          return rpc.get_vote_users(scope.election.id,
+              scope.election.district).then((response) => {
+                voters = response.data;
+              });
+        }
+
+        const inDistrict = (candidate) =>
+            candidate.district == election.district;
+        var filtered = election.candidates.filter(inDistrict);
+        scope.stats = {
+          candidates: filtered.length,
+        };
+      }
+
+      scope.$watch('election.district', (district) => {
+        calcStats(scope.election);
+      });
+
       scope.$watch('election', (election) => {
-        if (election && parseInt(election.deleted)) {
+        if (!election) return;
+        if (parseInt(election.deleted)) {
           for (var key in election) {
             delete election[key];
           }
+        } else {
+          calcStats(election);
         }
       });
 

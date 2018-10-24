@@ -36,22 +36,28 @@ angular.module('VoteActionsModule', [
               users[vote.user] = response.data.label);
         };
 
+        const getDistricts = () =>
+            rpc.get_districts().then((response) => districts = response.data);
+
+        var districts;
         var votes = scope.election.allVotes;
         var candidates = utils.toMap(scope.election.candidates);
         var sources = ['网站', '邮件'];
 
         const doExport = () => {
-          var data = '投票人\t候选人\t来源\t时间\n';
+          var data = '时间\t投票人\t候选人\t地区\t来源\n';
           for (let vote of votes) {
             var can = candidates[vote.candidate];
-            data += '{0}\t{1}\t{2}\t{3}\n'.format(users[vote.user],
-              can && can.name || '到此一游', sources[vote.source], vote.ts);
+            var district = can && districts[can.district].name || '';
+            data += '{0}\t{1}\t{2}\t{3}\t{4}\n'.format(vote.ts, users[vote.user],
+              can && can.name || '到此一游', district, sources[vote.source]);
           }
           scope.election.exportedDataUrl = utils.createDataUrl(data,
               scope.election.exportedDataUrl);
           return utils.truePromise();
         };
         var requests = scope.election.allVotes.map(userLabelRequest);
+        requests.push(getDistricts);
         requests.push(doExport);
         utils.requestOneByOne(requests);
       };

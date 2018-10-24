@@ -93,9 +93,14 @@ angular.module('CandidatesModule', [
           }
         });
 
+        scope.districtFilterChanged = (district) => {
+          scope.election.district = district;
+        };
+
         scope.toggleDistrictFilter = () => {
           if (!scope.filterByDistrict) {
             delete scope.district;
+            delete scope.election.district;
           }
         };
         

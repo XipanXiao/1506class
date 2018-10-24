@@ -11,7 +11,8 @@
       按地区过滤<input type="checkbox" ng-model="filterByDistrict"
           ng-change="toggleDistrictFilter()">
     </label>
-    <districts ng-if="filterByDistrict" user="self" editable="true">
+    <districts ng-if="filterByDistrict" user="self" editable="true"
+        on-change="districtFilterChanged(district)">
     </districts>
     共{{filtered}}位候选人。
     <a ng-if="election.exportedDataUrl" href="{{election.exportedDataUrl}}"
