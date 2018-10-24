@@ -31936,7 +31936,7 @@ angular.module('ElectionListModule', [
           scope.collapsed = !scope.collapsed;
         };
       },
-      templateUrl : 'js/election_list/election_list.html?tag=201810060852'
+      templateUrl : 'js/election_list/election_list.html?tag=201810230852'
     };
   });
   angular.module('CandidatesModule', [

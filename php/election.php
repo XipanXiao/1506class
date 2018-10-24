@@ -347,7 +347,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   if (empty($record)) return;
 
   if ($resource_id == "elections") {
-    $response = is_election_owner($id)
+    $response = isCountryAdmin()
         ? ["deleted" => delete_election($id)]
         : permission_denied_error();
   } elseif ($resource_id == "candidates") {

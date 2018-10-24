@@ -19,7 +19,8 @@
       ng-class="{'selected': currentElection == election}">
     <div class="css-table-cell">{{election.label}}</div>
     <iron-icon icon="delete" ng-click="deleteElection(election)"
-      class="delete-button css-table-cell">
+      class="delete-button css-table-cell"
+      ng-if="editable && isSysAdmin()">
     </iron-icon>
     </div>
   </div>
