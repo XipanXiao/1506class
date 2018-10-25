@@ -69,7 +69,7 @@ angular.module('VoteMailDialogModule', [
               to: user.email,
               body: mailContent.innerHTML,
               sender: perm.user.email,
-              sender_name: perm.user.name
+              sender_name: 'BSA-US'
             }).then(function(response) {
               scope.sent++;
               scope.$apply();
