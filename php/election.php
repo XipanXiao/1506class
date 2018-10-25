@@ -154,7 +154,7 @@ function get_vote_users($election_id, $district) {
   $election = get_single_record($medoo, "elections", $election_id);
   $users = $medoo->select("users",
       ["id", "name", "email", "classId"],
-      ["district" => $district]);
+      empty($district) ? null : ["district" => $district]);
   $classes = keyed_by_id($medoo->select("classes", ["id"],
       ["AND" => [
         "deleted" => 0,

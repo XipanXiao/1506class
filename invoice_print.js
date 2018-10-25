@@ -30018,7 +30018,7 @@ define('services', ['utils'], function() {
 
           get_vote_users: function(election, district) {
             var url = 'php/election.php?rid=users' +
-                '&election={0}&district={1}'.format(election, district);
+                '&election={0}&district={1}'.format(election, district || '');
             return $http.get(url);
           },
           

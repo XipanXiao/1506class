@@ -23,21 +23,71 @@ angular.module('ElectionAttributesModule', [
       function calcStats(election) {
         if (!scope.editable || !election) return;
         console.log('re-calculating election stats');
-        var voters;
+        var voters, votersById = {};
 
         function getVoters() {
           return rpc.get_vote_users(scope.election.id,
               scope.election.district).then((response) => {
-                voters = response.data;
+                for (let voter of response.data) {
+                  votersById[voter.id] = voter;
+                }
+                return voters = response.data;
               });
         }
 
         const inDistrict = (candidate) =>
             candidate.district == election.district;
-        var filtered = election.candidates.filter(inDistrict);
-        scope.stats = {
-          candidates: filtered.length,
-        };
+        var filtered = election.district ?
+            election.candidates.filter(inDistrict) :
+            election.candidates;
+
+        function doCalculate() {
+          var stats = scope.stats = {
+            candidates: filtered.length,
+            total: voters.length,
+            voter: 0,
+            waiver: 0,
+            votes: 0,
+            email: 0,
+            web: 0
+          };
+
+          var votedVoters = {};
+          var waivers = {};
+          // First collect all voted voters.
+          for (let vote of election.allVotes) {
+            if (!filtered[vote.candidate]) continue;
+
+            stats.votes++;
+            if (parseInt(vote.source)) {
+              stats.email++;
+            } else {
+              stats.web++;
+            }
+            if (!votedVoters[vote.user]) {
+              votedVoters[vote.user] = true;
+              stats.voter++;
+            }            
+          }
+          // Then collect all waived voters.
+          for (let vote of election.allVotes) {
+            if (vote.candidate ||
+                votedVoters[vote.user] ||
+                waivers[vote.user] ||
+                !votersById[vote.user]) {
+              continue;
+            }
+            waivers[vote.user] = true;
+            stats.waiver++;
+          }
+
+          stats.unresponded = stats.total - (stats.voter + stats.waiver);
+          stats.ratio = (stats.voter * 100.0 / stats.total).toFixed(2) + '%';
+          stats.effectiveRatio = (stats.voter * 100.0 / (stats.total - stats.waiver)).toFixed(2) + '%';
+          return utils.truePromise();
+        }
+
+        utils.requestOneByOne([getVoters, doCalculate]);
       }
 
       scope.$watch('election.district', (district) => {
