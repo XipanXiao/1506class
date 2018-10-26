@@ -29719,6 +29719,10 @@ $provide.value("$locale", {
         
         return this.unixTimestamp(date);
       },
+      toEST: function(date) {
+          var utc = date.getTime() + (date.getTimezoneOffset() * 60000);
+          return new Date(utc - (3600000 * 5));
+      },
       nextTerm: function(date, direction) {
         var next = new Date(date.getTime());
         next.setUTCMonth(date.getUTCMonth() + direction * 6);
@@ -31078,6 +31082,10 @@ define('utils', [], function() {
         
         return this.unixTimestamp(date);
       },
+      toEST: function(date) {
+          var utc = date.getTime() + (date.getTimezoneOffset() * 60000);
+          return new Date(utc - (3600000 * 5));
+      },
       nextTerm: function(date, direction) {
         var next = new Date(date.getTime());
         next.setUTCMonth(date.getUTCMonth() + direction * 6);
@@ -32176,7 +32184,7 @@ angular.module('VoteActionsModule', [
         scope.showActions = false;
         if (!perm.isElectionOwner(scope.election)) return;
 
-        var now = new Date();
+        var now = utils.toEST(new Date());
         var start = new Date(Date.parse(scope.election.start_time));
         var end = new Date(Date.parse(scope.election.end_time));
         if (now < start || end < now) {

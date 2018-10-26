@@ -194,6 +194,7 @@ function generate_token($user_id, $election_token) {
 }
 
 function in_time_range($start_time, $end_time) {
+  date_default_timezone_set("America/New_York");
   $current = new DateTime();
   $start = DateTime::createFromFormat('Y-m-d H:i:s', $start_time);
   $end = DateTime::createFromFormat('Y-m-d H:i:s', $end_time);
@@ -359,7 +360,9 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   		$election = get_single_record($medoo, "elections", $record["election"]);
   		if (in_time_range($election["start_time"], $election["end_time"])) {
   			$response = ["deleted" => delete_vote($id)];
-  		}
+  		} else {
+        $response = ["error" => "not an ongoing event"];
+      }
   	}
   }
 }

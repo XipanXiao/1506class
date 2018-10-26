@@ -29755,6 +29755,10 @@ $provide.value("$locale", {
         
         return this.unixTimestamp(date);
       },
+      toEST: function(date) {
+          var utc = date.getTime() + (date.getTimezoneOffset() * 60000);
+          return new Date(utc - (3600000 * 5));
+      },
       nextTerm: function(date, direction) {
         var next = new Date(date.getTime());
         next.setUTCMonth(date.getUTCMonth() + direction * 6);

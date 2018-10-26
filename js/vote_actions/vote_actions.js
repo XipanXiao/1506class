@@ -13,7 +13,7 @@ angular.module('VoteActionsModule', [
         scope.showActions = false;
         if (!perm.isElectionOwner(scope.election)) return;
 
-        var now = new Date();
+        var now = utils.toEST(new Date());
         var start = new Date(Date.parse(scope.election.start_time));
         var end = new Date(Date.parse(scope.election.end_time));
         if (now < start || end < now) {
