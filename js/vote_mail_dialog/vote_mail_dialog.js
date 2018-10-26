@@ -25,7 +25,11 @@ angular.module('VoteMailDialogModule', [
 
       scope.select = function(district) {
         scope.selected = district;
-        if (district.users) return;
+        const inDistrict = (candidate) =>
+            candidate.district == district.id;
+        scope.filtered = scope.election.
+            candidates.filter(inDistrict).length;
+      if (district.users) return;
         rpc.get_vote_users(scope.election.id, district.id).then((response) =>
           district.users = response.data);
       };
@@ -42,11 +46,10 @@ angular.module('VoteMailDialogModule', [
         scope.sent = 0;
         scope.error = 0;
         scope.messages = [];
+        scope.sending = true;
         var users = scope.selected.users;
 
-        var testUsers = ['xxp9@', 'caoxiaoming0@', 'jessiedeng911@',
-            'carollin1988@', 'nonoxu@', 'decentsword@', 'ftang2009@'];
-        // testUsers = ['xxp9'];
+        testUsers = ['xxp9'];
         const inTest = (user) =>
           testUsers.some((email) => user.email.indexOf(email) >= 0);
         users = users.filter(inTest);
@@ -76,13 +79,17 @@ angular.module('VoteMailDialogModule', [
               return true;
             }, function(error) {
               scope.error++;
-              scope.messages.push(error);
+              scope.messages.push('发送邮件到{0}({1})失败: {2}'.
+                  format(user.name, user.email, '' + error));
               scope.$apply();
               return true;
             });
           }
         }
-        utils.requestOneByOne(users.map(sendEmail));
+        utils.requestOneByOne(users.map(sendEmail)).then(() => {
+          scope.sending = false;
+          scope.$apply();
+        });
       };
   },
     templateUrl: 'js/vote_mail_dialog/vote_mail_dialog.html?tag=201810222257'

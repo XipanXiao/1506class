@@ -1046,14 +1046,7 @@ candidates.in-dialog {
 }
 
 .districts {
-  width: 200px;
-}
-
-#vote-mail-dialog input[type="submit"] {
-  cursor: pointer;
-  float: right;
-  font-size: 150%;
-  width: 100px;
+  width: 120px;
 }
 
 .email-chips {
@@ -1062,7 +1055,12 @@ candidates.in-dialog {
 
 .vote-mail-container {
   padding: 16px;
-  width: 600px;
+  width: 800px;
+}
+
+#vote-mail-body {
+  height: 500px;
+  overflow-y: auto;
 }
 
 #create-election-dialog {

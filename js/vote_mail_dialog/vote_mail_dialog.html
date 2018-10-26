@@ -28,9 +28,15 @@
     </div>
   </div>
   <progress-bar max="{{total}}" value="{{sent}}"></progress-bar>
+  <div ng-if="sending">
+    总邮件数{{total}}封，成功发送{{sent}}封，{{error}}封出错。正在发送第{{sent+error+1}}封...
+  </div>
+  <div class="error">
+    <div ng-repeat="error in messages">{{error}}</div>
+  </div>
   <div class="buttons">
     <paper-button dialog-dismiss raised>关闭</paper-button>
-    <paper-button ng-click="send()" raised>
+    <paper-button ng-click="send()" raised ng-disabled="!filtered">
       发送<districts user="{district: selected.id}"></districts> 地区通知
     </paper-button>
   </div>

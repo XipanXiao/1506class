@@ -13,10 +13,11 @@ angular.module('VoteActionsModule', [
         scope.showActions = false;
         if (!perm.isElectionOwner(scope.election)) return;
 
+        var now = new Date();
+        var start = new Date(Date.parse(scope.election.start_time));
         var end = new Date(Date.parse(scope.election.end_time));
-        scope.showActions = false;
-        if (new Date() >= end) {
-          alert('投票已经结束了.');
+        if (now < start || end < now) {
+          alert('还没有开始，或已经结束.');
           return;
         }
         utils.showVoteMailDialog(scope.election);

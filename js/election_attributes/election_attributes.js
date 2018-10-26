@@ -22,7 +22,7 @@ angular.module('ElectionAttributesModule', [
 
       function calcStats(election) {
         if (!scope.editable || !election) return;
-        console.log('re-calculating election stats');
+
         var voters, votersById = {};
 
         function getVoters() {
