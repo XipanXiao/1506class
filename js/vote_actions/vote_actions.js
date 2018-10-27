@@ -27,16 +27,6 @@ angular.module('VoteActionsModule', [
         scope.showActions = false;
         if (!perm.isElectionOwner(scope.election)) return;
 
-        var users = window.userInputCache;
-
-        const userLabelRequest = (vote) => {
-          if (users[vote.user]) {
-            return () => utils.futureValue(users[vote.user]);
-          }
-          return () => rpc.getUserLabel(vote.user).then((response) =>
-              users[vote.user] = response.data.label);
-        };
-
         const getDistricts = () =>
             rpc.get_districts().then((response) => districts = response.data);
 
@@ -47,20 +37,19 @@ angular.module('VoteActionsModule', [
 
         const doExport = () => {
           var data = '时间\t投票人\t候选人\t地区\t来源\n';
+          var users = scope.election.votersById;
           for (let vote of votes) {
             var can = candidates[vote.candidate];
             var district = can && districts[can.district].name || '';
-            data += '{0}\t{1}\t{2}\t{3}\t{4}\n'.format(vote.ts, users[vote.user],
+            var user = users[vote.user];
+            data += '{0}\t{1}\t{2}\t{3}\t{4}\n'.format(vote.ts, user && user.name,
               can && can.name || '到此一游', district, sources[vote.source]);
           }
           scope.election.exportedDataUrl = utils.createDataUrl(data,
               scope.election.exportedDataUrl);
           return utils.truePromise();
         };
-        var requests = scope.election.allVotes.map(userLabelRequest);
-        requests.push(getDistricts);
-        requests.push(doExport);
-        utils.requestOneByOne(requests);
+        utils.requestOneByOne([getDistricts, doExport]);
       };
     },
     templateUrl: 'js/vote_actions/vote_actions.html?tag=201810131006'

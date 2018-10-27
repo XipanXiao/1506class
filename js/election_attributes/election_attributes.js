@@ -61,6 +61,7 @@ angular.module('ElectionAttributesModule', [
               votersById[voter.id] = voter;
               voter.district = parseInt(voter.district);
             }
+            scope.election.votersById = votersById;
             return voters = filterVoters();
           });
         }
