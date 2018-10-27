@@ -32249,7 +32249,6 @@ angular.module('ElectionAttributesModule', [
     scope: {
       collapsed: '=',
       dirty: '=',
-      district: '=',
       editable: '=',
       election: '=',
       onChange: '&',
@@ -32259,43 +32258,80 @@ angular.module('ElectionAttributesModule', [
     link: function (scope) {
       scope.isVoteOwner = () => perm.isElectionOwner(scope.election);
 
+      var votersById;
+      var allDistrcits;
+      var districts;
+
+      const getDistricts = () => {
+        if (districts) return utils.futureValue(districts);
+        return rpc.get_districts().then((response) => {
+          return districts = response.data;
+        });
+      };
+
       function calcStats(election) {
         if (!scope.editable || !election) return;
 
-        var voters, votersById = {};
+        const inDistrict = (user) => {
+          if (election.district) {
+            return user.district == election.district;
+          } else {
+            return allDistrcits[user.district];
+          }
+        };
+  
+        const filterVoters = () =>
+            utils.toList(utils.where(votersById, inDistrict));
 
-        function getVoters() {
-          return rpc.get_vote_users(scope.election.id,
-              scope.election.district).then((response) => {
-                for (let voter of response.data) {
-                  votersById[voter.id] = voter;
-                }
-                return voters = response.data;
-              });
+        allDistrcits = {};
+        for (let candidate of election.candidates) {
+          allDistrcits[candidate.district] = true;
         }
 
-        const inDistrict = (candidate) =>
-            candidate.district == election.district;
-        var filtered = election.district ?
-            election.candidates.filter(inDistrict) :
-            election.candidates;
+        var voters;
+
+        function getVoters() {
+          if (votersById) {
+            return utils.futureValue(voters = filterVoters());
+          }
+          return rpc.get_vote_users(scope.election.id).then((response) => {
+            votersById = {};
+            for (let voter of response.data) {
+              votersById[voter.id] = voter;
+              voter.district = parseInt(voter.district);
+            }
+            return voters = filterVoters();
+          });
+        }
 
         function doCalculate() {
+          var districtIds = election.district ?
+              [election.district] : utils.keys(allDistrcits);
+          scope.districtNames = districtIds.map(
+              (districtId) => districts[districtId].name).join(',');
+
           var stats = scope.stats = {
-            candidates: filtered.length,
             total: voters.length,
+            candidates: 0,
             voter: 0,
             waiver: 0,
             votes: 0,
             email: 0,
             web: 0
           };
+          var candidatesMap = {};
+          for (let candidate of election.candidates) {
+            if (inDistrict(candidate)) {
+              candidatesMap[candidate.id] = candidate;
+              stats.candidates++;
+            }
+          }
 
           var votedVoters = {};
           var waivers = {};
           // First collect all voted voters.
           for (let vote of election.allVotes) {
-            if (!filtered[vote.candidate]) continue;
+            if (!candidatesMap[vote.candidate]) continue;
 
             stats.votes++;
             if (parseInt(vote.source)) {
@@ -32312,10 +32348,12 @@ angular.module('ElectionAttributesModule', [
           for (let vote of election.allVotes) {
             if (vote.candidate ||
                 votedVoters[vote.user] ||
-                waivers[vote.user] ||
-                !votersById[vote.user]) {
+                waivers[vote.user]) {
               continue;
             }
+            var user = votersById[vote.user];
+            if (!user || !inDistrict(user)) continue;
+
             waivers[vote.user] = true;
             stats.waiver++;
           }
@@ -32326,7 +32364,7 @@ angular.module('ElectionAttributesModule', [
           return utils.truePromise();
         }
 
-        utils.requestOneByOne([getVoters, doCalculate]);
+        utils.requestOneByOne([getDistricts, getVoters, doCalculate]);
       }
 
       scope.$watch('election.district', (district) => {
@@ -32364,7 +32402,7 @@ angular.module('ElectionAttributesModule', [
         scope.collapsed = !scope.collapsed;
       };
     },
-    templateUrl: 'js/election_attributes/election_attributes.html?tag=201810221006'
+    templateUrl: 'js/election_attributes/election_attributes.html?tag=201810261006'
   };
 });
 angular.module('AppModule', [
