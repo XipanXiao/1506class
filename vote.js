@@ -32125,7 +32125,6 @@ angular.module('VoteMailDialogModule', [
           user: user.id,
           token: user.token
         });
-        url = url.replace('?', '_').replaceAll('&', '_') + '.gif';
         return '<img src="{0}">'.format(url);
       }
 
@@ -32136,10 +32135,10 @@ angular.module('VoteMailDialogModule', [
         scope.sending = true;
         var users = scope.selected.users;
 
-        testUsers = ['xxp9'];
-        const inTest = (user) =>
-          testUsers.some((email) => user.email.indexOf(email) >= 0);
-        users = users.filter(inTest);
+        // testUsers = ['xxp9'];
+        // const inTest = (user) =>
+        //   testUsers.some((email) => user.email.indexOf(email) >= 0);
+        // users = users.filter(inTest);
 
         scope.total = users.length;
 
