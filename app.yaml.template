@@ -16,7 +16,7 @@ handlers:
   upload: images/.+\.(jpg|png)$
   secure: always
 - url: /(images/blank\.gif)$
-  script: election.php
+  script: /php/election.php
   secure: always
 - url: /
   static_files: index.html
