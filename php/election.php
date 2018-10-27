@@ -296,6 +296,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
               ? check_and_vote($_GET, $user["district"])
               : permission_denied_error();
           if (intval($response["updated"])) {
+            if (empty($_GET["img"])) {
 ?>
 <!DOCTYPE html>
 <html>
@@ -308,7 +309,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 </body>
 </html>
 <?php
-            return;
+              return;
+            } else {
+              echo file_get_contents("../images/blank.gif");
+              return;
+            }
           }
         }
       } else {

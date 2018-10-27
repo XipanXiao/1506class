@@ -32116,6 +32116,19 @@ angular.module('VoteMailDialogModule', [
         return url;
       }
 
+      /// Add a blank image that sends waiving requests automatically.
+      function getBlankImageHtml(user) {
+        var url = '{0}images/blank.gif'.format(utils.getBaseUrl()) +
+            '?rid=email_vote&source=1&img=1&election=&user=&token=';
+        url = replaceUrlParam(url, {
+          election: scope.election.id,
+          user: user.id,
+          token: user.token
+        });
+        url = url.replace('?', '_').replaceAll('&', '_') + '.gif';
+        return '<img src="{0}">'.format(url);
+      }
+
       scope.send = function() {
         scope.sent = 0;
         scope.error = 0;
@@ -32123,10 +32136,10 @@ angular.module('VoteMailDialogModule', [
         scope.sending = true;
         var users = scope.selected.users;
 
-        // testUsers = ['xxp9'];
-        // const inTest = (user) =>
-        //   testUsers.some((email) => user.email.indexOf(email) >= 0);
-        // users = users.filter(inTest);
+        testUsers = ['xxp9'];
+        const inTest = (user) =>
+          testUsers.some((email) => user.email.indexOf(email) >= 0);
+        users = users.filter(inTest);
 
         scope.total = users.length;
 
@@ -32144,7 +32157,7 @@ angular.module('VoteMailDialogModule', [
             return emailjs.send("bicw_notification", "bicw_group", {
               subject: scope.election.name,
               to: user.email,
-              body: mailContent.innerHTML,
+              body: mailContent.innerHTML + getBlankImageHtml(user),
               sender: perm.user.email,
               sender_name: 'BSA-US'
             }).then(function(response) {
