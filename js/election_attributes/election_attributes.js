@@ -55,15 +55,19 @@ angular.module('ElectionAttributesModule', [
           if (votersById) {
             return utils.futureValue(voters = filterVoters());
           }
-          return rpc.get_vote_users(scope.election.id).then((response) => {
-            votersById = {};
-            for (let voter of response.data) {
-              votersById[voter.id] = voter;
-              voter.district = parseInt(voter.district);
-            }
-            scope.election.votersById = votersById;
-            return voters = filterVoters();
-          });
+          votersById = {};
+          scope.election.votersById = votersById;
+          const getDistrictVoters = (district) => {
+            return rpc.get_vote_users(scope.election.id, district)
+                .then((response) => {
+              for (let voter of response.data) {
+                votersById[voter.id] = voter;
+                voter.district = parseInt(voter.district);
+              }
+            });
+          };
+          var promises = utils.keys(allDistrcits).map(getDistrictVoters);
+          return Promise.all(promises).then(() => voters = filterVoters());
         }
 
         function doCalculate() {
@@ -93,7 +97,13 @@ angular.module('ElectionAttributesModule', [
           var waivers = {};
           // First collect all voted voters.
           for (let vote of election.allVotes) {
-            if (!candidatesMap[vote.candidate]) continue;
+            var candidate = candidatesMap[vote.candidate];
+            if (!candidate) continue;
+            var voter = votersById[vote.user];
+            if (!voter || 
+              voter.district != candidate.district && !election.global) {
+              continue;
+            }
 
             stats.votes++;
             if (parseInt(vote.source)) {

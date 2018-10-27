@@ -152,6 +152,8 @@ function delete_vote($id) {
 function get_vote_users($election_id, $district) {
   global $medoo;
   $election = get_single_record($medoo, "elections", $election_id);
+  if (!$election) return [];
+
   $users = $medoo->select("users",
       ["id", "name", "email", "classId", "district"],
       empty($district) ? null : ["district" => $district]);
@@ -278,7 +280,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
           : permission_denied_error();
     }
   } elseif ($resource_id == "users") {
-    $election_id = $_GET["election"];
+    $election_id = intval($_GET["election"]);
     $response = is_election_owner($election_id)
         ? get_vote_users($election_id, $_GET["district"])
         : permission_denied_error();

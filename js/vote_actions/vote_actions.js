@@ -38,12 +38,24 @@ angular.module('VoteActionsModule', [
         const doExport = () => {
           var data = '时间\t投票人\t候选人\t地区\t来源\n';
           var users = scope.election.votersById;
+          var votedUser = {};
           for (let vote of votes) {
-            var can = candidates[vote.candidate];
-            var district = can && districts[can.district].name || '';
+            if (!vote.candidate) continue;
             var user = users[vote.user];
-            data += '{0}\t{1}\t{2}\t{3}\t{4}\n'.format(vote.ts, user && user.name,
-              can && can.name || '到此一游', district, sources[vote.source]);
+            if (!user) continue;
+            votedUser[vote.user] = true;
+            var can = candidates[vote.candidate];
+            var district = districts[can.district].name;
+            data += '{0}\t{1}\t{2}\t{3}\t{4}\n'.format(vote.ts, user.name,
+              can.name, district, sources[vote.source]);
+          }
+          for (let vote of votes) {
+            if (vote.candidate) continue;
+            var user = users[vote.user];
+            if (!user || votedUser[user.id]) continue;
+            var district = districts[user.district].name;
+            data += '{0}\t{1}\t{2}\t{3}\t{4}\n'.format(vote.ts, user.name,
+              '弃权', district, sources[vote.source]);
           }
           scope.election.exportedDataUrl = utils.createDataUrl(data,
               scope.election.exportedDataUrl);
