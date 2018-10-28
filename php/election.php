@@ -313,7 +313,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 <?php
               return;
             } else {
-              echo file_get_contents("../images/blank.gif");
+              header("Content-type: image/gif");
+              readfile("../images/blank.gif");
               return;
             }
           }
