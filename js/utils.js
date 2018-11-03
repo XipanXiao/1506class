@@ -367,7 +367,8 @@ define('utils', [], function() {
       },
       toEST: function(date) {
           var utc = date.getTime() + (date.getTimezoneOffset() * 60000);
-          return new Date(utc - (3600000 * 5));
+          var diff = utils.isDst() ? 4 : 5;
+          return new Date(utc - (3600000 * diff));
       },
       nextTerm: function(date, direction) {
         var next = new Date(date.getTime());
