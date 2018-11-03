@@ -8,10 +8,9 @@ include_once "util.php";
 $medoo = get_medoo();
 
 function create_election_tables() {
+  return;
   global $medoo;
-  
-//   $medoo->query("drop table votes");
-  
+    
   $sql = "CREATE TABLE elections (
       id INT AUTO_INCREMENT PRIMARY KEY,
       organizer INT,
@@ -82,7 +81,7 @@ function update_election($election) {
   global $medoo;
   create_election_tables();
   $election = build_update_data(["id", "name", "description", "deleted",
-      "start_time", "end_time", "organizer", "global"], $election);
+      "start_time", "end_time", "organizer", "global", "max_vote"], $election);
   if (!$election["id"]) {
     $election["token"] = rand(100, 100000000);
   }

@@ -63,13 +63,20 @@ angular.module('AppModule', [
           }
 
           if (election.dirty) {
-            election.start_time = election.start_time.
-                replace(/ [\d]{2}:[\d]{2}:[\d]{2}/, ' 00:00:00');
-            election.end_time = election.end_time.
-                replace(/ [\d]{2}:[\d]{2}:[\d]{2}/, ' 23:59:59');
-            election.global = election.global ? 1 : 0;
+            var data = {
+              id: election.id,
+              start_time: election.start_time.
+                  replace(/ [\d]{2}:[\d]{2}:[\d]{2}/, ' 00:00:00'),
+              end_time: election.end_time.
+                  replace(/ [\d]{2}:[\d]{2}:[\d]{2}/, ' 23:59:59'),
+              global: election.global ? 1 : 0,
+              organizer: election.organizer,
+              max_vote: election.max_vote,
+              name: election.name,
+              description: election.description
+            };
             requests.push(() =>
-                rpc.update_election(election).then(checkResponse));
+                rpc.update_election(data).then(checkResponse));
           }
         }
         requests.push(reload);
