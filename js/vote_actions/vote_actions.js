@@ -29,8 +29,10 @@ angular.module('VoteActionsModule', [
 
         const getDistricts = () =>
             rpc.get_districts().then((response) => districts = response.data);
+        const getClasses = () =>
+            rpc.get_classes().then((response) => classes = response.data);
 
-        var districts;
+        var districts, classes;
         var votes = scope.election.allVotes;
         var candidates = utils.toMap(scope.election.candidates);
         var sources = ['网站', '邮件'];
@@ -57,11 +59,22 @@ angular.module('VoteActionsModule', [
             data += '{0}\t{1}\t{2}\t{3}\t{4}\n'.format(vote.ts, user.name,
               '弃权', district, sources[vote.source]);
           }
+
           scope.election.exportedDataUrl = utils.createDataUrl(data,
               scope.election.exportedDataUrl);
-          return utils.truePromise();
+          
+          data = '姓名\t邮件\t地区\t班级\n';
+          for (var id in users) {
+            if (votedUser[id]) continue;
+            var user = users[id];
+            data += '{0}\t{1}\t{2}\t{3}\n'.format(user.name, user.email,
+                districts[user.district].name, classes[user.classId].name);
+          }
+          scope.election.unVotedUserDataUrl = utils.createDataUrl(data,
+            scope.election.unVotedUserDataUrl);
+        return utils.truePromise();
         };
-        utils.requestOneByOne([getDistricts, doExport]);
+        utils.requestOneByOne([getDistricts, getClasses, doExport]);
       };
     },
     templateUrl: 'js/vote_actions/vote_actions.html?tag=201810131006'
