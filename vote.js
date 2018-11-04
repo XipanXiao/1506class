@@ -32226,6 +32226,7 @@ angular.module('VoteActionsModule', [
           var data = '时间\t投票人\t候选人\t地区\t来源\n';
           var users = scope.election.votersById;
           var votedUser = {};
+          var waived = {};
           for (let vote of votes) {
             if (!vote.candidate) continue;
             var user = users[vote.user];
@@ -32240,6 +32241,7 @@ angular.module('VoteActionsModule', [
             if (vote.candidate) continue;
             var user = users[vote.user];
             if (!user || votedUser[user.id]) continue;
+            waived[user.id] = true;
             var district = districts[user.district].name;
             data += '{0}\t{1}\t{2}\t{3}\t{4}\n'.format(vote.ts, user.name,
               '弃权', district, sources[vote.source]);
@@ -32250,7 +32252,7 @@ angular.module('VoteActionsModule', [
           
           data = '姓名\t邮件\t地区\t班级\n';
           for (var id in users) {
-            if (votedUser[id]) continue;
+            if (votedUser[id] || waived[id]) continue;
             var user = users[id];
             data += '{0}\t{1}\t{2}\t{3}\n'.format(user.name, user.email,
                 districts[user.district].name, classes[user.classId].name);
