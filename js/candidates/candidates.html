@@ -19,7 +19,7 @@
         download="{{election.name}}.tsv">所有投票记录</a>
     <a ng-if="election.unVotedUserDataUrl"
         href="{{election.unVotedUserDataUrl}}"
-        download="{{election.name}}.unvoted.tsv">未响应用户名单</a>
+        download="{{election.name}}.unresponded.tsv">未响应用户名单</a>
   </div>
   <div ng-switch-default>
     共{{filtered}}位候选人。
