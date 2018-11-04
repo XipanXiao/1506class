@@ -32401,7 +32401,7 @@ angular.module('ElectionAttributesModule', [
 
           stats.unresponded = stats.total - (stats.voter + stats.waiver);
           stats.ratio = (stats.voter * 100.0 / stats.total).toFixed(2) + '%';
-          stats.effectiveRatio = (stats.voter * 100.0 / (stats.total - stats.waiver)).toFixed(2) + '%';
+          stats.effectiveRatio = ((stats.voter + stats.waiver) * 100.0 / stats.total).toFixed(2) + '%';
           return utils.truePromise();
         }
 
@@ -32443,7 +32443,7 @@ angular.module('ElectionAttributesModule', [
         scope.collapsed = !scope.collapsed;
       };
     },
-    templateUrl: 'js/election_attributes/election_attributes.html?tag=201810261006'
+    templateUrl: 'js/election_attributes/election_attributes.html?tag=201811041006'
   };
 });
 angular.module('AppModule', [
