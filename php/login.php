@@ -29,7 +29,7 @@ if(!empty($_POST["email"])) {
       exit();
     }
 
-    $user = undelete($user);
+    // $user = undelete($user);
     $user->password = null;
     $user->is_teacher = is_teacher($user->id);
     $_SESSION["user"] = serialize($user);
