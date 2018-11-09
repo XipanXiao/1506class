@@ -651,7 +651,8 @@ define('zb_sync_button/zb_sync_button',
                 var start_cut_time = isFirstTime
                     ? getStartTime(task.starting_half_term) 
                     : (scope.lastReportTime || (startTerm + extraReportTime));
-                var start_time = fistHalf ? start_cut_time : midTerm;
+                var start_time = isFirstTime ? 
+                    start_cut_time : (fistHalf ? start_cut_time : midTerm);
                 var end_time = fistHalf ? midTerm : end_cut_time;
                 return scope.getTaskStats(task, start_time, end_time);
               });
