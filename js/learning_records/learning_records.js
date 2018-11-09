@@ -34,7 +34,8 @@ define('learning_records/learning_records', [
                 });
               };
               
-              $scope.reportTask = function(user, course_id) {
+              $scope.reportTask = function($event, user, course_id) {
+                $event.stopPropagation();
                 var record = user.records[course_id];
                 record.student_id = user.id;
                 record.course_id = course_id;

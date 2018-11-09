@@ -33042,6 +33042,12 @@ define('zb_sync_button/zb_sync_button',
               }
             };
             scope.errors = [];
+            scope.selectedUsers = utils.where(scope.users,
+                (user) => user.selected);
+            if (utils.isEmpty(scope.selectedUsers)) {
+              scope.selectedUsers = scope.users;
+            }
+
             switch (scope.type) {
             case 'schedule_task':
               var half_terms = scope.getHalfTerms();
@@ -33214,7 +33220,7 @@ define('zb_sync_button/zb_sync_button',
           };
           scope.report_schedule_task = function() {
             var taskKey = '传承';
-            var users = scope.users;
+            var users = scope.selectedUsers;
 
             var requests = [];
             scope.totalTasks = 0;
@@ -33412,7 +33418,7 @@ define('zb_sync_button/zb_sync_button',
             var taskKey = '观修';
 
             var requests = [];
-            utils.forEach(scope.users, function(user) {
+            utils.forEach(scope.selectedUsers, function(user) {
               var stats = user.guanxiuStats;
               if (utils.isEmpty(stats)) return;
               if (scope.checkUserTask(user, taskKey)) return;
@@ -33444,7 +33450,7 @@ define('zb_sync_button/zb_sync_button',
 
           scope.report_jx_task = function() {
             var requests = [];
-            utils.forEach(scope.users, function(user) {
+            utils.forEach(scope.selectedUsers, function(user) {
               requests.push(function() {
                 return scope.report_jx_task_for_user(user);
               });
@@ -33705,7 +33711,7 @@ define('zb_sync_button/zb_sync_button',
                 scope.getAllTaskStats,
                 scope.saveReportTime
             ];
-            utils.forEach(scope.users, function(user) {
+            utils.forEach(scope.selectedUsers, function(user) {
               requests.push(function() {
                 return scope.report_attendance_for_user(user);
               });
@@ -34667,7 +34673,8 @@ define('learning_records/learning_records', [
                 });
               };
               
-              $scope.reportTask = function(user, course_id) {
+              $scope.reportTask = function($event, user, course_id) {
+                $event.stopPropagation();
                 var record = user.records[course_id];
                 record.student_id = user.id;
                 record.course_id = course_id;
