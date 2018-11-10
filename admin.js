@@ -33518,8 +33518,11 @@ define('zb_sync_button/zb_sync_button',
                 .then(function(tasks) {
                   return scope.tasks = utils.where(tasks,
                       function(task) {
-                        return task.zb_name &&
-                            task.report_half_term <= scope.half_term;
+                        if (!task.zb_name) return false;
+                        var parts = task.zb_name.split('_');
+                        var countKey = parts[0] + '_count';
+                        var zbstat = utils.firstElement(scope.zbTaskStats);
+                        return zbstat && (zbstat[countKey] || zbstat[countKey] == 0);
                       });
                 });
           };
