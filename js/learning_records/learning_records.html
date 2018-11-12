@@ -22,7 +22,7 @@
                 class="css-table-cell">
               <input type="checkbox" ng-model="user.records[schedule.course_id].attended"
                   title="{{user.name + '/' + group.courses[schedule.course_id].name}}"
-                  ng-change="reportTask($event, user, schedule.course_id)">
+                  ng-click="reportTask($event, user, schedule.course_id)">
             </div>
           </div>
         </div>
