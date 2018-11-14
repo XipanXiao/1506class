@@ -151,4 +151,10 @@ function get_user_label($medoo, $id) {
   $nickname = $user["nickname"];
   return $nickname ? sprintf("%s(%s)", $name, $nickname) : $name; 
 }
+
+/// Returns an array of excluded (deleted, graduated or quit) classes.
+function get_excluded_classes($medoo) {
+  return $medoo->select("classes", "id",
+      ["OR" => ["deleted" => 1, "graduated" => 1, "department_id" => 9]]);
+}
 ?>

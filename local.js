@@ -32092,7 +32092,6 @@ define('local_app', [
         return {
           link: function($scope) {
             $scope.roleOptions = [
-              {label: '退出', checked: false, department_id: 9},
               {label: '功德会', checked: false, department_id: 8},
               {label: '学会', checked: true}
             ];

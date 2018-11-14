@@ -744,8 +744,9 @@ function get_state_stats($countryCode) {
 
   if (!is_country_code($countryCode)) return [];
 
-  $sql = sprintf("SELECT COUNT(id) as sum, state FROM users WHERE country='%s' ".
-      " GROUP BY state", $countryCode);
+  $sql = sprintf("SELECT COUNT(id) as sum, state FROM users WHERE (country='%s') ".
+      " AND (classId NOT IN (%s)) GROUP BY state",
+      $countryCode, join(",", get_excluded_classes($medoo)));
   $result = $medoo->query($sql)->fetchAll();
   
   $states = [];
@@ -759,13 +760,11 @@ function get_state_users($countryCode, $stateIndex) {
   global $medoo;
   
   ensure_graduated_column($medoo);
-  $excludedClassId = $medoo->select("classes", "id",
-      ["OR" => ["deleted" => 1, "graduated" => 1]]);
   return $medoo->select("users", "*",
       ["AND" => [
           "country" => $countryCode, 
           "state" => $stateIndex,
-          "classId[!]" => $excludedClassId
+          "classId[!]" => get_excluded_classes($medoo)
       ]]);
 }
 
