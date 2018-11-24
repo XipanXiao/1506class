@@ -30690,7 +30690,7 @@ define('permission', ['utils'], function() {
         0x457:  /*01 00 01 01 01 11*/'理事会',    // r  country data
         0x303:  /*00 11 00 00 00 11*/'订单管理',  // rw orders.
         0x103:  /*00 01 00 00 00 11*/'财务',     // rw orders, but no address.
-        0x43:   /*00 00 01 00 00 11*/'地区理事',    // r district data
+        0x43:   /*00 00 01 00 00 11*/'常务理事',    // r district data
         0x3F:   /*00 00 00 11 11 11*/'年级组长',  // rw classes of the year
         0xF:    /*00 00 00 00 11 11*/'组长',     // rw class data
         0x3:    /*00 00 00 00 00 11*/'学员'     // rw own data
