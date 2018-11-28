@@ -32065,7 +32065,7 @@ define('users/users', ['bit_editor/bit_editor',
             document.querySelector('#serial-number-dlg').open();
           };
         },
-        templateUrl : 'js/users/users.html?tag=201810062307'
+        templateUrl : 'js/users/users.html?tag=201811272307'
       };
     });
 });

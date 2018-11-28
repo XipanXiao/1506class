@@ -37,7 +37,8 @@ function get_district_users($district) {
 			["AND" => ["deleted" => 0, "graduated" => 0]]));
 
 	foreach ($users as $user) {
-		$classInfo = $classes[$user["classId"]];
+		$classInfo = isset($classes[$user["classId"]]) ?
+				$classes[$user["classId"]] : null;
 		if (!$classInfo) continue;
 
 		$user["year"] = $classInfo["start_year"];
