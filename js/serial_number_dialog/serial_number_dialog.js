@@ -53,7 +53,8 @@ define('serial_number_dialog/serial_number_dialog',
 
               function updateUserRequest(user) {
                 return function() {
-                  return rpc.update_user(user).then(function(response) {
+                  var data = {id: user.id, internal_id: user.internal_id};
+                  return rpc.update_user(data).then(function(response) {
                     if (scope.errors[user.id] = response.data.error) return false;
                     backup[user.id] = user.internal_id;
                     return user;
