@@ -66,20 +66,6 @@ define('book_list_details/book_list_details',
           }
         };
 
-        /// Updates or creates a book, adds it to [items] if it's new.
-        scope.updateBook = function() {
-          rpc.update_item(scope.classInfo.editingBook).then(function(response) {
-            var id = response.data.updated;
-            if (id) {
-              scope.classInfo.editingBook.id = id;
-              scope.items[id] = scope.classInfo.editingBook;
-              scope.classInfo.editingBook = null;
-            } else {
-              alert('新建法本失败，请检查是不是同名法本已经存在！');
-            }
-          });
-        };
-
         function getDepartments() {
           return rpc.get_departments().then(function(response) {
             return scope.departments = response.data;

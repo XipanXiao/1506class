@@ -15,7 +15,8 @@
           name: namePrefix,
           stock: stockFilter
         } | orderBy: 'stock'"
-        class="css-table-row deletable selectable">
+        class="css-table-row deletable selectable"
+        ng-click="selected.editingBook = item">
       <div class="css-table-cell item-name">{{item.name}}</div>
       <div class="css-table-cell">${{item.price}}</div>
       <div class="css-table-cell">${{item.shipping}}</div>
@@ -31,6 +32,10 @@
     </div>
   </div>
   <shopping-cart cart="cart" user="user" refill="true"></shopping-cart>
+  <book-editor ng-if="selected.editingBook && !cart.size"
+      book="selected.editingBook" items="items" categories="categories"
+      on-cancel="selected.editingBook = null">
+  </book-editor>
 </div>
 <hr>
 <orders user="user" admin="true" status="8" year="year">

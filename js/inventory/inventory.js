@@ -1,9 +1,11 @@
 define('inventory/inventory', [
     'model/cart',
+    'book_editor/book_editor',
     'orders/orders',
     'shopping_cart/shopping_cart',
     'services', 'utils'], function(Cart) {
   return angular.module('InventoryModule', [
+        'BookEditorModule',
         'OrdersModule',
         'ShoppingCartModule',
         'ServicesModule',
@@ -18,17 +20,34 @@ define('inventory/inventory', [
           scope.cart = new Cart({rpc: rpc, utils: utils});
           scope.selected = {};
 
+          function convertNumbers() {
+            utils.forEach(scope.items, function(book) {
+              book.category = parseInt(book.category);
+              book.price = parseFloat(book.price);
+              book.shipping = parseFloat(book.shipping);
+              book.int_shipping = parseFloat(book.int_shipping);
+            });
+            return scope.items;
+          }  
+
           function getItems() {
             return rpc.get_items(null, 99).then(function(response) {
-              var items = utils.toList(utils.where(response.data, (item) => {
+              scope.items = utils.toList(utils.where(response.data, (item) => {
             	    if (parseInt(item.deleted)) return false;
             	    item.stock = parseInt(item.stock);
             	    return true;
-            	  }));
-              return scope.items = items;
+                }));
+              
+              return convertNumbers();
             });
           }
 
+          function getCategories() {
+            return rpc.get_item_categories(99).then(function(response) {
+              return scope.categories = response.data;
+            });
+          }
+  
           scope.addToCart = (item) => scope.cart.add(item);
           
           scope.remove = (item) => {
@@ -48,7 +67,7 @@ define('inventory/inventory', [
           
           $rootScope.$on('reload-orders', getItems);
           $rootScope.$on('order-deleted', getItems);
-          getItems();
+          utils.requestOneByOne([getCategories, getItems]);
         },
         templateUrl : 'js/inventory/inventory.html?tag=201809232246'
       };

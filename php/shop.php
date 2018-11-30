@@ -254,7 +254,9 @@ function get_item_categories($level) {
 function update_item($item) {
   global $medoo;
 
-  return insertOrUpdate($medoo, "items", $item);
+  $data = build_update_data(["id", "category", "deleted", "image",
+      "int_shipping", "name", "price", "shipping"], $item);
+  return insertOrUpdate($medoo, "items", $data);
 }
 
 function get_order_stats($year) {

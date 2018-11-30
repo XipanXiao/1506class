@@ -31912,8 +31912,7 @@ define('book_editor/book_editor',
         book: '=',
         categories: '=',
         items: '=',
-        onCancel: '&',
-        onSave: '&'
+        onCancel: '&'
       },
       link: function(scope) {
         scope.$watch('categories', function(categories) {
@@ -31921,6 +31920,22 @@ define('book_editor/book_editor',
             scope.categoryIds = utils.keys(categories);
           }
         });
+
+        /// Updates or creates a book, adds it to [items] if it's new.
+        scope.updateBook = function() {
+          rpc.update_item(scope.book).then(function(response) {
+            var id = response.data.updated;
+            if (id) {
+              if (!scope.book.id) {
+                scope.book.id = id;
+                scope.items[id] = scope.book;
+              }
+              scope.book = null;
+            } else {
+              alert('新建法本失败，请检查是不是同名法本已经存在！');
+            }
+          });
+        };
       },
       templateUrl : 'js/book_editor/book_editor.html?tag=201807091052'
     };
@@ -31992,20 +32007,6 @@ define('book_list_details/book_list_details',
              scope.dirty = true;
             }
           }
-        };
-
-        /// Updates or creates a book, adds it to [items] if it's new.
-        scope.updateBook = function() {
-          rpc.update_item(scope.classInfo.editingBook).then(function(response) {
-            var id = response.data.updated;
-            if (id) {
-              scope.classInfo.editingBook.id = id;
-              scope.items[id] = scope.classInfo.editingBook;
-              scope.classInfo.editingBook = null;
-            } else {
-              alert('新建法本失败，请检查是不是同名法本已经存在！');
-            }
-          });
         };
 
         function getDepartments() {
@@ -32106,10 +32107,12 @@ define('book_lists/book_lists',
 });
 define('inventory/inventory', [
     'model/cart',
+    'book_editor/book_editor',
     'orders/orders',
     'shopping_cart/shopping_cart',
     'services', 'utils'], function(Cart) {
   return angular.module('InventoryModule', [
+        'BookEditorModule',
         'OrdersModule',
         'ShoppingCartModule',
         'ServicesModule',
@@ -32124,17 +32127,34 @@ define('inventory/inventory', [
           scope.cart = new Cart({rpc: rpc, utils: utils});
           scope.selected = {};
 
+          function convertNumbers() {
+            utils.forEach(scope.items, function(book) {
+              book.category = parseInt(book.category);
+              book.price = parseFloat(book.price);
+              book.shipping = parseFloat(book.shipping);
+              book.int_shipping = parseFloat(book.int_shipping);
+            });
+            return scope.items;
+          }  
+
           function getItems() {
             return rpc.get_items(null, 99).then(function(response) {
-              var items = utils.toList(utils.where(response.data, (item) => {
+              scope.items = utils.toList(utils.where(response.data, (item) => {
             	    if (parseInt(item.deleted)) return false;
             	    item.stock = parseInt(item.stock);
             	    return true;
-            	  }));
-              return scope.items = items;
+                }));
+              
+              return convertNumbers();
             });
           }
 
+          function getCategories() {
+            return rpc.get_item_categories(99).then(function(response) {
+              return scope.categories = response.data;
+            });
+          }
+  
           scope.addToCart = (item) => scope.cart.add(item);
           
           scope.remove = (item) => {
@@ -32154,7 +32174,7 @@ define('inventory/inventory', [
           
           $rootScope.$on('reload-orders', getItems);
           $rootScope.$on('order-deleted', getItems);
-          getItems();
+          utils.requestOneByOne([getCategories, getItems]);
         },
         templateUrl : 'js/inventory/inventory.html?tag=201809232246'
       };
