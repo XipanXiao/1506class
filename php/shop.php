@@ -428,7 +428,9 @@ function get_class_book_lists($year) {
   return keyed_by_id($medoo->select("classes", ["id", "name",
     "department_id", "term"], ["AND" => [
       "start_year" => $year,
-      "classId[!]" => get_excluded_classes($medoo)
+      "deleted[!]" => 1,
+      "graduated[!]" => 1,
+      "department_id[!]" => 9
     ]]));
 }
 
