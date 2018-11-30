@@ -426,10 +426,10 @@ function get_class_book_lists($year) {
   global $medoo;
 
   return keyed_by_id($medoo->select("classes", ["id", "name",
-    "department_id", "term"], "AND" => [
+    "department_id", "term"], ["AND" => [
       "start_year" => $year,
       "classId[!]" => get_excluded_classes($medoo)
-    ]));
+    ]]));
 }
 
 function update_class_term($classInfo) {
