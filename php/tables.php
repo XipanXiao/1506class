@@ -166,7 +166,6 @@ function get_classes($filters = []) {
   $int_fields = ["id", "department_id", "teacher_id", "start_year",
       "perm_level", "weekday", "zb_id", "teacher2_id", "graduated"];
   $filters = array_merge($filters, ["deleted" => 0]);
-  ensure_graduated_column($medoo);
   $classes = keyed_by_id($medoo->select("classes", "*", ["AND" => $filters]));
 
   foreach ($classes as $id => $classInfo) {
@@ -759,7 +758,6 @@ function get_state_stats($countryCode) {
 function get_state_users($countryCode, $stateIndex) {
   global $medoo;
   
-  ensure_graduated_column($medoo);
   return $medoo->select("users", "*",
       ["AND" => [
           "country" => $countryCode, 

@@ -30,7 +30,6 @@ function get_district_users($district) {
 
 	$results = [];
 
-	ensure_graduated_column($medoo);
 	$users = $medoo->select("users", "*", ["district" => $district]);
 	$classes = keyed_by_id($medoo->select("classes",
 			["id", "start_year", "department_id"],

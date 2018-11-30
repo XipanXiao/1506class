@@ -33,7 +33,7 @@ define('user_stats_app', [
             $scope.filterUsers = () => {
               $scope.users = utils.where($scope.allUsers, function(user) {
                 var years = $scope.years;
-                var district = $scope.districts[parseInt(user.district)];
+                var district = $scope.districts[parseInt(user.district) || 0];
                 return district.checked &&
                     (!years || years[user.year].checked) &&
                     $scope.departments[user.dep].checked;
@@ -92,6 +92,11 @@ define('user_stats_app', [
               var requests =  utils.map($scope.districts, (district) => () => {
                 if (!district.id) return utils.truePromise();
                 return rpc.get_district_users(district.id).then((response) => {
+                  // Ignore errors for district inspectors.
+                  if (response.data.error) {
+                    district.checked = false;
+                    return true;
+                  }
                   $scope.allUsers = $scope.allUsers.concat(response.data);
                   return $scope.filterUsers();
                 });
