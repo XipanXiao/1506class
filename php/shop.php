@@ -401,7 +401,7 @@ function get_book_list($dep_id, $term, $classId) {
 
 function update_book_list($bookList) {
   global $medoo;
-  
+
   $where = build_update_data(["department_id", "term"], $bookList);
 
   $updated = $medoo->delete("book_lists", ["AND" => $where]);
@@ -417,16 +417,19 @@ function update_book_list($bookList) {
 
 function remove_book_list($depId, $term) {
   global $medoo;
-  
-  return $medoo->delete("book_lists", 
+
+  return $medoo->delete("book_lists",
       ["AND" => ["department_id" => $depId, "term" => $term]]);
 }
 
 function get_class_book_lists($year) {
   global $medoo;
-  
+
   return keyed_by_id($medoo->select("classes", ["id", "name",
-      "department_id", "term"], ["start_year" => $year]));
+    "department_id", "term"], "AND" => [
+      "start_year" => $year,
+      "classId[!]" => get_excluded_classes($medoo)
+    ]));
 }
 
 function update_class_term($classInfo) {

@@ -101,7 +101,7 @@ function send_post_request($url, $data) {
 // Check whether the user input a correct captcha.
 function checkCaptcha($captcha) {
   $url = "https://www.google.com/recaptcha/api/siteverify";
-  $captchaResponse = send_post_request($url, 
+  $captchaResponse = send_post_request($url,
       ["secret" => "6Lf7GyYUAAAAAD3Ccinx7AU-MWBW8gEagp1hOo-L",
       "response" => $captcha]);
 
@@ -142,7 +142,7 @@ function get_user_label($medoo, $id) {
   $user = current($users);
   $name = $user["name"];
   $nickname = $user["nickname"];
-  return $nickname ? sprintf("%s(%s)", $name, $nickname) : $name; 
+  return $nickname ? sprintf("%s(%s)", $name, $nickname) : $name;
 }
 
 /// Returns an array of excluded (deleted, graduated or quit) classes.
