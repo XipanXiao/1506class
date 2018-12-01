@@ -64,18 +64,21 @@ define('learning_records/learning_records', [
                 $scope.reload(term);
               };
 
-              $scope.exportCourse = function(group, course_ids) {
+              $scope.exportCourse = function(group, course_ids, addSuffix) {
                 var data = '';
-                utils.forEach(course_ids, function(course_id) {
+                course_ids.forEach(function(course_id) {
                   data += '\t' + group.courses[course_id].name + '\t';
                 });
                 data += '\n';
                 utils.forEach($scope.users, function(user) {
                   data += user.name;
+                  var index = 0;
                   utils.forEach(course_ids, function(course_id) {
+                    var suffix = addSuffix && (index++ >= course_ids.length/2+3) ?
+                        'Z' : '';
                     var record = user.records[course_id];
-                    var video = (record && record.video) ? '' : '未听';
-                    var text = (record && record.text) ? '' : '未看';
+                    var video = (record && record.video) ? '' : ('未听' + suffix);
+                    var text = (record && record.text) ? '' : ('未看' + suffix);
                     data += '\t' + video + '\t' + text;
                   });
                   data += '\n';
@@ -118,7 +121,7 @@ define('learning_records/learning_records', [
                       $scope.exportedRecords2);
                   var alt = getCoursesAlt(group);
                   $scope.exportedRecordsAlt = utils.createDataUrl(
-                      $scope.exportCourse(group, alt),
+                      $scope.exportCourse(group, alt, $scope.term == 1),
                       $scope.exportedRecordsAlt);
                 });
               };
