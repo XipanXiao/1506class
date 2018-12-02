@@ -9,6 +9,7 @@ define('model/cart', [], function() {
     add: function(item) {
       var existing = this.items[item.id];
       if (existing) {
+        if (!parseFloat(item.price)) return;
         existing.count++;
       } else {
         item.count = 1;

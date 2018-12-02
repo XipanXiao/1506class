@@ -78,8 +78,9 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
   $userFilter = $user_id ? sprintf("user_id=%d", $user_id) : "TRUE";
   $classFilter = "TRUE";
   if (!$user_id && !empty($filters["class_id"])) {
+    $classIds = explode(",", $filters["class_id"]);
     $userIds = $medoo->select("users", "id", 
-        ["classId" => $filters["class_id"]]);
+        ["classId" => $classIds]);
     $classFilter = sprintf("user_id in (%s)", join(", ", $userIds));
   }
   
@@ -98,7 +99,7 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
   		$userFilter,
   		$statusFilter,
   		$timeFilter,
-  		$classFilter);
+      $classFilter);
 
   $orders = $medoo->query($sql)->fetchAll();
   if (!$withItems) return $orders;
@@ -426,7 +427,7 @@ function get_class_book_lists($year) {
   global $medoo;
 
   return keyed_by_id($medoo->select("classes", ["id", "name",
-    "department_id", "term"], ["AND" => [
+    "department_id", "term", "start_year"], ["AND" => [
       "start_year" => $year,
       "deleted[!]" => 1,
       "graduated[!]" => 1,

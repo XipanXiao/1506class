@@ -29760,6 +29760,10 @@ $provide.value("$locale", {
           var diff = utils.isDst() ? 4 : 5;
           return new Date(utc - (3600000 * diff));
       },
+      fromMysqlTime: function(time_string) {
+        var t = time_string.split(/[- :]/);
+        return new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));        
+      },
       nextTerm: function(date, direction) {
         var next = new Date(date.getTime());
         next.setUTCMonth(date.getUTCMonth() + direction * 6);
@@ -30763,6 +30767,7 @@ define('model/cart', [], function() {
     add: function(item) {
       var existing = this.items[item.id];
       if (existing) {
+        if (!parseFloat(item.price)) return;
         existing.count++;
       } else {
         item.count = 1;

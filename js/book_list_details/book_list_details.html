@@ -5,6 +5,13 @@
       <iron-icon icon="delete" class="clickable inline" ng-click="clear()"
           title="清空书单列表，以便重新选取（适用于建立短书单）">
       </iron-icon>
+      <iron-icon class="clickable" icon="cloud-download" title="导出三个月内订单汇总"
+          ng-click="export()">
+      </iron-icon>
+      <a ng-if="classInfo.stats" href="{{classInfo.stats}}"
+          download="{{classInfo.name}}.txt">
+        {{classInfo.name}}.txt
+      </a>
     </div>
     <div class="css-table odd-even class-book-list">
       <div class="css-table-row header">

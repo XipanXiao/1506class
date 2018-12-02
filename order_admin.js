@@ -29760,6 +29760,10 @@ $provide.value("$locale", {
           var diff = utils.isDst() ? 4 : 5;
           return new Date(utc - (3600000 * diff));
       },
+      fromMysqlTime: function(time_string) {
+        var t = time_string.split(/[- :]/);
+        return new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));        
+      },
       nextTerm: function(date, direction) {
         var next = new Date(date.getTime());
         next.setUTCMonth(date.getUTCMonth() + direction * 6);
@@ -30763,6 +30767,7 @@ define('model/cart', [], function() {
     add: function(item) {
       var existing = this.items[item.id];
       if (existing) {
+        if (!parseFloat(item.price)) return;
         existing.count++;
       } else {
         item.count = 1;
@@ -32009,6 +32014,99 @@ define('book_list_details/book_list_details',
           }
         };
 
+        scope.export = function() {
+          var classInfo = scope.classInfo;
+          if (!classInfo.books) return;
+
+          var classes;
+          function getClasses() {
+            var term = classInfo.term;
+            var dep = classInfo.department_id;
+            var year = parseInt(classInfo.start_year);
+            return rpc.get_class_book_lists(year).then(function(response) {
+                return classes = utils.where(response.data, 
+                  function(classInfo) {
+                return classInfo.term == term;
+              });
+            });
+          }
+          
+          var orders;
+          function getOrders() {
+            var date = new Date();
+            date.setMonth(date.getMonth() - 3);
+            var timeOf3MonthAgo = date.getTime();
+
+            var filters = {
+              items: true,
+              class_id: utils.keys(classes)
+            };
+            return rpc.get_orders(null, filters).then(function(response){
+              return orders = response.data.filter(function(order) {
+                var created_time = utils.fromMysqlTime(order.created_time);
+                return created_time.getTime() >= timeOf3MonthAgo;
+              });
+            });
+          }
+
+          function doExport() {
+            var data = '序号\t组长姓名';
+            var bookIds = utils.keys(classInfo.books);
+            bookIds.forEach(function(id) {
+              var book = classInfo.books[id];
+              data += '\t' + book.name;
+              if (parseFloat(book.price)) {
+                data += '\t';
+              }
+            });
+            data += '\t\n\t';
+            bookIds.forEach(function(id) {
+              var book = classInfo.books[id];
+              if (parseFloat(book.price)) {
+                data += '\t法本订购数\t自费金额';
+              } else {
+                data += '\t数量';
+              }
+            });
+            data += '\t总金额\n';
+
+            var stats = {};
+            orders.forEach(function(order) {
+              var classStat = stats[order.class_name] ||
+                  (stats[order.class_name] = {});
+              order.items.forEach(function(item) {
+                  var itemStat = classStat[item.item_id] ||
+                      (classStat[item.item_id] = {price: 0.0, count: 0});
+                  itemStat.count += parseInt(item.count);
+                  itemStat.price += parseFloat(item.price) *
+                      parseInt(item.count);
+              });
+            });
+
+            var index = 1;
+            for (var className in stats) {
+              var classStat = stats[className];
+              data += '{0}\t{1}'.format(index++, className);
+              bookIds.forEach(function(item_id) {
+                var free = !parseFloat(classInfo.books[item_id].price);
+                var itemStat = classStat[item_id];
+                if (itemStat) {
+                  data += '\t{0}'.format(itemStat.count);
+                  if (!free) {
+                    data += '\t{0}'.format(itemStat.price);
+                  }
+                } else {
+                  data += '\t{0}'.format(free ? '' : '\t');
+                }
+              });
+            }
+            classInfo.stats = utils.createDataUrl(data, classInfo.stats);
+            return utils.truePromise();
+          }
+
+          utils.requestOneByOne([getClasses, getOrders, doExport]);
+        };
+
         function getDepartments() {
           return rpc.get_departments().then(function(response) {
             return scope.departments = response.data;
@@ -32057,7 +32155,7 @@ define('book_list_details/book_list_details',
           scope.dirty = false;
         }
       },
-      templateUrl : 'js/book_list_details/book_list_details.html?tag=201809202012'
+      templateUrl : 'js/book_list_details/book_list_details.html?tag=201812022012'
     };
   });
 });
