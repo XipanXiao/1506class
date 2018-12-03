@@ -69,6 +69,9 @@ define('users/users', ['bit_editor/bit_editor',
           $scope.isAdmin = function(user) {
             return user.permission > perm.ROLES.STUDENT;
           };
+          $scope.isDistrictInspector = function(user) {
+            return perm.isDistrictInspector();
+          };
           $scope.showInfo = function(user, index) {
             $scope.editingUser = user;
             $scope.selectedTop = index * 32;
@@ -104,7 +107,7 @@ define('users/users', ['bit_editor/bit_editor',
             document.querySelector('#serial-number-dlg').open();
           };
         },
-        templateUrl : 'js/users/users.html?tag=201811272307'
+        templateUrl : 'js/users/users.html?tag=201812032307'
       };
     });
 });

@@ -31192,7 +31192,8 @@ define('importers', ['permission', 'services', 'utils'], function() {
           });
           var classPromises = utils.map(classMap, function(classInfo) {
             return rpc.get_classes(classInfo.id).then(function(response) {
-              classInfo.name = response.data[classInfo.id].name;
+              var data = response.data[classInfo.id];
+              classInfo.name = data && data.name || '';
               return classInfo;
             });
           });
@@ -34431,6 +34432,9 @@ define('users/users', ['bit_editor/bit_editor',
           $scope.isAdmin = function(user) {
             return user.permission > perm.ROLES.STUDENT;
           };
+          $scope.isDistrictInspector = function(user) {
+            return perm.isDistrictInspector();
+          };
           $scope.showInfo = function(user, index) {
             $scope.editingUser = user;
             $scope.selectedTop = index * 32;
@@ -34466,7 +34470,7 @@ define('users/users', ['bit_editor/bit_editor',
             document.querySelector('#serial-number-dlg').open();
           };
         },
-        templateUrl : 'js/users/users.html?tag=201811272307'
+        templateUrl : 'js/users/users.html?tag=201812032307'
       };
     });
 });

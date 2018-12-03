@@ -406,7 +406,8 @@ define('importers', ['permission', 'services', 'utils'], function() {
           });
           var classPromises = utils.map(classMap, function(classInfo) {
             return rpc.get_classes(classInfo.id).then(function(response) {
-              classInfo.name = response.data[classInfo.id].name;
+              var data = response.data[classInfo.id];
+              classInfo.name = data && data.name || '';
               return classInfo;
             });
           });

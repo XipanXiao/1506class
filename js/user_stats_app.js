@@ -100,7 +100,7 @@ define('user_stats_app', [
                 return rpc.get_district_users(district.id).then((response) => {
                   // Ignore errors for district inspectors.
                   if (response.data.error) {
-                    district.checked = false;
+                    delete $scope.districts[district.id];
                     return true;
                   }
                   $scope.allUsers = $scope.allUsers.concat(response.data);
