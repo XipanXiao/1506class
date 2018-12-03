@@ -2,6 +2,7 @@ define('user_stats_app', [
     'app_bar/app_bar',
     'checkbox_filter/checkbox_filter',
     'departments/departments',
+    'email_dialog/email_dialog',
     'users/users',
     'services',
     'permission',
@@ -12,6 +13,7 @@ define('user_stats_app', [
       'AppBarModule',
       'CheckboxFilterModule',
       'DepartmentsModule',
+      'EmailDialogModule',
       'UsersModule',
       'PermissionModule',
       'ServicesModule',
@@ -82,7 +84,11 @@ define('user_stats_app', [
                   $scope.districts[id] = district;
                 });
                 if (perm.isCountryInspector()) {
-                  $scope.districts[0] = {label: '未指定地区', checked: true};
+                  $scope.districts[0] = {
+                    label: '未指定地区',
+                    name: '未指定地区',
+                    checked: true
+                  };
                 }
                 return $scope.districts;
               });
@@ -110,7 +116,26 @@ define('user_stats_app', [
               utils.requestOneByOne([getDepartments, getDistricts,
                 collectDistrictUsers, aggregateUserYears, $scope.filterUsers]);
             };
-            
+
+            $scope.showEmailDialog = function() {
+              var groups = [];
+              utils.forEach($scope.districts, function(district) {
+                if (!district.checked) return;
+                var users = {};
+                utils.forEach($scope.users, function(user) {
+                  if (user.district == district.id) {
+                    users[user.id] = user;
+                  }
+                });
+                groups.push({
+                  name: district.name,
+                  users: users,
+                  user_count: utils.keys(users).length
+                });
+              });
+              utils.showEmailDialog(groups);
+            }
+              
             $scope.fixCityNames = function() {
               var requests = [];
               utils.forEach($scope.users, function(user) {
@@ -143,6 +168,7 @@ define('user_stats_app', [
             };
 
             loadAllUsers();
+            emailjs.init("user_ZAqyLkjaj5MHdbn3alvEx");
           }
         };
       }).config( ['$compileProvider', function( $compileProvider ) {

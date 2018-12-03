@@ -8,6 +8,8 @@
 </script>
 <link rel="import" href="bower_components/iron-icon/iron-icon.html"/>
 <link rel="import" href="bower_components/iron-icons/iron-icons.html"/>
+<link rel="import" href="bower_components/iron-icons/communication-icons.html"/>
+<link rel="import" href="bower_components/paper-button/paper-button.html">
 </head>
 
 <body class="center local">
@@ -19,12 +21,19 @@
 </checkbox-filter>
 <checkbox-filter options="districts" selection-changed="filterUsers()">
 </checkbox-filter>
+<iron-icon icon="communication:email" ng-click="showEmailDialog()"
+    class="clickable inline" title="发送群体邮件...">
+</iron-icon>
+
 <input type="button" value="把所有城市名翻译成英文..." ng-click="fixCityNames()"
     ng-show="false">
 <users users="users"></users>
 
-<script type="text/javascript" src="user_stats.js?tag=201811291748"></script>
+<email-dialog></email-dialog>
 
+<script type="text/javascript" src="user_stats.js?tag=201811291748"></script>
+<script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js">
+</script>
 </body>
 
 </html>

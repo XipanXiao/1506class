@@ -42,7 +42,8 @@ define('class_info/class_info', ['bit_editor/bit_editor',
           $scope.showEmailDialog = function() {
         	    rpc.get_classes($scope.classId).then(function(response) {
         	    	  var classInfo = response.data[$scope.classId];
-        	    	  classInfo.users = angular.copy($scope.users);
+                  classInfo.users = angular.copy($scope.users);
+                  classInfo.user_count = utils.keys(classInfo.users).length;
         	    	  utils.showEmailDialog([classInfo]);
         	    });
           }

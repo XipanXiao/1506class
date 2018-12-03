@@ -31950,7 +31950,8 @@ define('email_group_chip/email_group_chip', ['services', 'utils'], function() {
           scope.expanded = !scope.expanded;
         };
         scope.removeUser = function(user) {
-        	  delete scope.classInfo.users[user.id];
+            delete scope.classInfo.users[user.id];
+            classInfo.user_count = utils.keys(classInfo.users).length;
         };
         scope.$watch('classInfo', function(classInfo) {
           if (!classInfo) return;
@@ -31958,6 +31959,7 @@ define('email_group_chip/email_group_chip', ['services', 'utils'], function() {
           if (classInfo.users) return;
           rpc.get_users(null, classInfo.id).then(function(response) {
             classInfo.users = response.data;
+            classInfo.user_count = utils.keys(classInfo.users).length;
           });
         });
       },
@@ -34621,7 +34623,8 @@ define('class_info/class_info', ['bit_editor/bit_editor',
           $scope.showEmailDialog = function() {
         	    rpc.get_classes($scope.classId).then(function(response) {
         	    	  var classInfo = response.data[$scope.classId];
-        	    	  classInfo.users = angular.copy($scope.users);
+                  classInfo.users = angular.copy($scope.users);
+                  classInfo.user_count = utils.keys(classInfo.users).length;
         	    	  utils.showEmailDialog([classInfo]);
         	    });
           }

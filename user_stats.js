@@ -31183,6 +31183,89 @@ define('importers', ['permission', 'services', 'utils'], function() {
     };
   });
 });
+define('email_group_chip/email_group_chip', ['services', 'utils'], function() {
+  return angular.module('EmailGroupChipModule', ['ServicesModule', 'UtilsModule'])
+      .directive('emailGroupChip', function(rpc, utils) {
+    return {
+      scope: {
+        classInfo: '=',
+        group: '=',
+        remove: '&'
+      },
+      link: function(scope, element) {
+        scope.toggleExpand = function() {
+          scope.expanded = !scope.expanded;
+        };
+        scope.removeUser = function(user) {
+            delete scope.classInfo.users[user.id];
+            classInfo.user_count = utils.keys(classInfo.users).length;
+        };
+        scope.$watch('classInfo', function(classInfo) {
+          if (!classInfo) return;
+          scope.group = classInfo;
+          if (classInfo.users) return;
+          rpc.get_users(null, classInfo.id).then(function(response) {
+            classInfo.users = response.data;
+            classInfo.user_count = utils.keys(classInfo.users).length;
+          });
+        });
+      },
+      templateUrl : 'js/email_group_chip/email_group_chip.html?tag=20180621'
+    };
+  });
+});
+define('email_dialog/email_dialog', 
+    ['email_group_chip/email_group_chip', 
+    	'permission', 'services', 'utils'], function() {
+  return angular.module('EmailDialogModule', [
+	  'EmailGroupChipModule', 'PermissionModule', 'ServicesModule', 'UtilsModule'])
+      .directive('emailDialog', function(perm, rpc, utils) {
+    return {
+      scope: {
+    	    classes: '='
+      },
+      link: function(scope, element) {
+    	    scope.remove = function(classInfo) {
+    	    	  scope.classes.splice(scope.classes.indexOf(classInfo), 1);
+    	    };
+    	    function getEmails() {
+    	    	  const collectEmails = (emails, classInfo) => {
+    	    		return emails.concat(utils.map(classInfo.users, function(user) {
+    	    		  return user.email;
+    	    		}));  
+    	    	  };
+    	    	  return scope.classes.reduce(collectEmails, []);
+    	    }
+    	    scope.send = function() {
+    	    	  var emails = getEmails();
+    	    	  if (emails.length == 0) return;
+    	    	  
+    	    	  if (emails.length >= 10 && 
+    	    	      !confirm('请确认您将群发邮件到{0}用户.'.format(emails.length))) return;
+
+          return emailjs.send("bicw_notification", "bicw_group",
+        {
+          to: emails.join(),
+          subject: scope.subject,
+          body: document.querySelector('.email-body').innerHTML,
+          sender: perm.user.email,
+          sender_name: perm.user.name
+        }).then(function(response) {
+          scope.sending = false;
+          var dialog = document.querySelector('#email-dialog');
+          dialog.close();
+        }, 
+        function(error) {
+          scope.sending = false;
+          alert('发送邮件失败(一般因为发的人太多，用完了名额，只好麻烦您自己动手了): ' + error);
+        }
+      );
+    	    };
+      },
+      templateUrl : 'js/email_dialog/email_dialog.html?tag=20180821'
+    };
+  });
+});
 define('checkbox_filter/checkbox_filter', [
     'utils'], function() {
   return angular.module('CheckboxFilterModule', [
@@ -31969,6 +32052,7 @@ define('user_stats_app', [
     'app_bar/app_bar',
     'checkbox_filter/checkbox_filter',
     'departments/departments',
+    'email_dialog/email_dialog',
     'users/users',
     'services',
     'permission',
@@ -31979,6 +32063,7 @@ define('user_stats_app', [
       'AppBarModule',
       'CheckboxFilterModule',
       'DepartmentsModule',
+      'EmailDialogModule',
       'UsersModule',
       'PermissionModule',
       'ServicesModule',
@@ -32049,7 +32134,11 @@ define('user_stats_app', [
                   $scope.districts[id] = district;
                 });
                 if (perm.isCountryInspector()) {
-                  $scope.districts[0] = {label: '未指定地区', checked: true};
+                  $scope.districts[0] = {
+                    label: '未指定地区',
+                    name: '未指定地区',
+                    checked: true
+                  };
                 }
                 return $scope.districts;
               });
@@ -32077,7 +32166,26 @@ define('user_stats_app', [
               utils.requestOneByOne([getDepartments, getDistricts,
                 collectDistrictUsers, aggregateUserYears, $scope.filterUsers]);
             };
-            
+
+            $scope.showEmailDialog = function() {
+              var groups = [];
+              utils.forEach($scope.districts, function(district) {
+                if (!district.checked) return;
+                var users = {};
+                utils.forEach($scope.users, function(user) {
+                  if (user.district == district.id) {
+                    users[user.id] = user;
+                  }
+                });
+                groups.push({
+                  name: district.name,
+                  users: users,
+                  user_count: utils.keys(users).length
+                });
+              });
+              utils.showEmailDialog(groups);
+            }
+              
             $scope.fixCityNames = function() {
               var requests = [];
               utils.forEach($scope.users, function(user) {
@@ -32110,6 +32218,7 @@ define('user_stats_app', [
             };
 
             loadAllUsers();
+            emailjs.init("user_ZAqyLkjaj5MHdbn3alvEx");
           }
         };
       }).config( ['$compileProvider', function( $compileProvider ) {
