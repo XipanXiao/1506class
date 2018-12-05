@@ -33003,8 +33003,9 @@ define('zb_sync_button/zb_sync_button',
   var MAIN_COURSE_GRID_NAME = 'main_course_grid';
   var ATT_LIMIT_GRID_NAME = 'att_limit_grid';
   return angular.module('ZBSyncButtonModule', ['ProgressBarModule',
+      'PermissionModule',
       'ServicesModule', 'UtilsModule', 'ZBServicesModule'])
-      .directive('zbSyncButton', function($q, $rootScope, rpc, utils, zbrpc) {
+      .directive('zbSyncButton', function($q, $rootScope, perm, rpc, utils, zbrpc) {
       return {
         scope: {
           classId: '=',
@@ -33014,6 +33015,8 @@ define('zb_sync_button/zb_sync_button',
           users: '=',
         },
         link: function(scope) {
+          scope.isSysAdmin = () => perm.isSysAdmin();
+
           scope.$watch('classId', function() {
             if (!scope.classId) return;
             rpc.get_classes(scope.classId).then(function(response) {
@@ -34156,6 +34159,19 @@ define('zb_sync_button/zb_sync_button',
             return utils.requestOneByOne(requests);
           };
 
+          scope.resetReportTime = function() {
+            var group = scope.scheduleGroup;
+            if (!confirm('您确定要清除第{0}学期的报数截止时间吗？'.format(group.term))) {
+              return;
+            }
+            rpc.update_schedule_group({id: group.id, 
+                end_time: 0}).then((response) => {
+              if (parseInt(response.data.updated)) {
+                scope.scheduleGroup.end_time = 0;
+              }
+            });
+          };
+
           var zbTasks, localTasks;
           function getZbTaskReportTerms() {
             var grid = scope.get_report_type(WORK_GRID);
@@ -34224,7 +34240,7 @@ define('zb_sync_button/zb_sync_button',
           scope.finished = 0;
           scope.results = {};
         },
-        templateUrl: 'js/zb_sync_button/zb_sync_button.html'
+        templateUrl: 'js/zb_sync_button/zb_sync_button.html?tag=201812042109'
       };
     });
 });

@@ -656,7 +656,7 @@ function update_schedule_group($group) {
   if (!empty($group["start_time"])) {
     $datas["start_time"] = formatTimestamp(intval($group["start_time"]));
   }
-  if (!empty($group["end_time"])) {
+  if (isset($group["end_time"])) {
     $datas["end_time"] = formatTimestamp(intval($group["end_time"]));
   }
 
