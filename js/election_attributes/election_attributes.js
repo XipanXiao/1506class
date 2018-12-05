@@ -45,9 +45,9 @@ angular.module('ElectionAttributesModule', [
             utils.toList(utils.where(votersById, inDistrict));
 
         allDistrcits = {};
-        for (let candidate of election.candidates) {
+        utils.forEach(election.candidates, function(candidate) {
           allDistrcits[candidate.district] = true;
-        }
+        });
 
         var voters;
 
@@ -60,10 +60,10 @@ angular.module('ElectionAttributesModule', [
           const getDistrictVoters = (district) => {
             return rpc.get_vote_users(scope.election.id, district)
                 .then((response) => {
-              for (let voter of response.data) {
+              utils.forEach(response.data, function(voter) {
                 votersById[voter.id] = voter;
                 voter.district = parseInt(voter.district);
-              }
+              });
             });
           };
           var promises = utils.keys(allDistrcits).map(getDistrictVoters);
@@ -86,21 +86,21 @@ angular.module('ElectionAttributesModule', [
             web: 0
           };
           var candidatesMap = {};
-          for (let candidate of election.candidates) {
+          utils.forEach(election.candidates, function(candidate) {
             if (inDistrict(candidate)) {
               candidatesMap[candidate.id] = candidate;
               stats.candidates++;
             }
-          }
+          });
 
           var votedVoters = {};
           var waivers = {};
           // First collect all voted voters.
-          for (let vote of election.allVotes) {
+          utils.forEach(election.allVotes, function(vote) {
             var candidate = candidatesMap[vote.candidate];
             if (!candidate) continue;
             var voter = votersById[vote.user];
-            if (!voter || 
+            if (!voter ||
               voter.district != candidate.district && !election.global) {
               continue;
             }
@@ -114,10 +114,10 @@ angular.module('ElectionAttributesModule', [
             if (!votedVoters[vote.user]) {
               votedVoters[vote.user] = true;
               stats.voter++;
-            }            
-          }
+            }
+          });
           // Then collect all waived voters.
-          for (let vote of election.allVotes) {
+          utils.forEach(election.allVotes, function(vote) {
             if (vote.candidate ||
                 votedVoters[vote.user] ||
                 waivers[vote.user]) {
@@ -128,7 +128,7 @@ angular.module('ElectionAttributesModule', [
 
             waivers[vote.user] = true;
             stats.waiver++;
-          }
+          });
 
           stats.unresponded = stats.total - (stats.voter + stats.waiver);
           stats.ratio = (stats.voter * 100.0 / stats.total).toFixed(2) + '%';

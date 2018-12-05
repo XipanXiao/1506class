@@ -268,9 +268,9 @@ define('utils', [], function() {
       toMap: function(list, key) {
         var m = {};
         key = key || 'id';
-        for (let item of list) {
+        list.forEach(function(item) {
           m[item[key]] = item;
-        }
+        });
         return m;
       },
       redirect: function(url) {
@@ -665,11 +665,11 @@ define('utils', [], function() {
       summarize_order: function(order) {
         order.sub_total = 0.0;
         order.shipping = 0.0;
-        for (let item of order.items) {
+        utils.forEach(order.items, function(item) {
           item.count = parseInt(item.count);
           order.sub_total += item.count * parseMoney(item.price);
           order.shipping += item.count * parseMoney(item.shipping);
-        }
+        });
       },
       calculate_order_values: function(order) {
         order.status = parseInt(order.status);

@@ -434,12 +434,12 @@ define('services', ['utils'], function() {
         	    var url = 'data/Uni2Pinyin.txt';
         	    return pinyinTablePromise = $http.get(url).then((response) => {
             	  var map = {};
-              for (let line of response.data.split('\n')) {
+              response.data.split('\n').forEach((line) {
       		    if (!line || line.startsWith('#')) continue;
       		    var parts = line.split('\t');
       		    var pinyin = (parts[1] || '').replace(/\d$/, '');
       		    map[parts[0]] = pinyin;
-              }
+              });
               return map;
             });
           },

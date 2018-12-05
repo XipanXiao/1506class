@@ -26,17 +26,17 @@ define('local_app', [
             ];
             const isRegular = (user) => {
               var depId = parseInt($scope.classes[user.classId].department_id);
-              for (let role of $scope.roleOptions) {
+              utils.forEach($scope.roleOptions, function(role) {
                 if (role.department_id == depId || !role.department_id) {
                   return role.checked;
                 }
-              }
+              });
             };
             const isInYears = (user) => {
               var classYear = $scope.classes[user.classId].start_year;
               return $scope.classYears[classYear].checked;
             };
-      
+
             rpc.get_user().then(function(user) {
               perm.user = user;
               if (!perm.isSysAdmin()) {

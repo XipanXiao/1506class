@@ -23,7 +23,7 @@ angular.module('ElectionListModule', [
         }
 
         selectLastElection(scope.elections);
-  
+
         scope.createElection = () => {
           if (!perm.isSysAdmin()) return;
 
@@ -71,18 +71,18 @@ angular.module('ElectionListModule', [
             if (!response.data.length && !scope.editable) {
               visited(election);
             }
-            for (let vote of response.data) {
+            utils.forEach(response.data, function(vote) {
               if (!vote.candidate) continue;
               votes[vote.candidate] = (votes[vote.candidate] || 0) + 1;
               if (vote.user == perm.user.id) {
                 myvotes[vote.candidate] = vote.id;
               }
-            }
-            for (let candidate of election.candidates) {
+            });
+            uitls.forEach(election.candidates, function(candidate) {
               candidate.voted = myvotes[candidate.id] || 0;
               candidate.votes = votes[candidate.id] || 0;
               if (candidate.voted) election.voted++;
-            }
+            });
             election.allVotes = response.data;
             return scope.currentElection = election;
           });

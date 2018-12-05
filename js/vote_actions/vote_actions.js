@@ -42,7 +42,7 @@ angular.module('VoteActionsModule', [
           var users = scope.election.votersById;
           var votedUser = {};
           var waived = {};
-          for (let vote of votes) {
+          utils.forEach(votes, function(vote) {
             if (!vote.candidate) continue;
             var user = users[vote.user];
             if (!user) continue;
@@ -51,8 +51,8 @@ angular.module('VoteActionsModule', [
             var district = districts[can.district].name;
             data += '{0}\t{1}\t{2}\t{3}\t{4}\n'.format(vote.ts, user.name,
               can.name, district, sources[vote.source]);
-          }
-          for (let vote of votes) {
+          });
+          utils.forEach(votes, function(vote) {
             if (vote.candidate) continue;
             var user = users[vote.user];
             if (!user || votedUser[user.id]) continue;
@@ -60,7 +60,7 @@ angular.module('VoteActionsModule', [
             var district = districts[user.district].name;
             data += '{0}\t{1}\t{2}\t{3}\t{4}\n'.format(vote.ts, user.name,
               '弃权', district, sources[vote.source]);
-          }
+          });
 
           scope.election.exportedDataUrl = utils.createDataUrl(data,
               scope.election.exportedDataUrl);

@@ -48,8 +48,8 @@ angular.module('AppModule', [
 
       scope.save = () => {
         var requests = [];
-        for (let election of scope.elections) {
-          for (let candidate of election.candidates) {
+        utils.forEach (scope.elections, function(election) {
+          utils.forEach(election.candidates, function(candidate) {
             if (!candidate.dirty && !candidate.deleted) continue;
             if (candidate.deleted) {
               if (candidate.id) {
@@ -60,7 +60,7 @@ angular.module('AppModule', [
               requests.push(() =>
                   rpc.update_candidate(candidate).then(checkResponse));
             }
-          }
+          });
 
           if (election.dirty) {
             var data = {
@@ -78,7 +78,7 @@ angular.module('AppModule', [
             requests.push(() =>
                 rpc.update_election(data).then(checkResponse));
           }
-        }
+        });
         requests.push(reload);
         utils.requestOneByOne(requests);
       };

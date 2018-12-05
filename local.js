@@ -29658,9 +29658,9 @@ $provide.value("$locale", {
       toMap: function(list, key) {
         var m = {};
         key = key || 'id';
-        for (let item of list) {
+        list.forEach(function(item) {
           m[item[key]] = item;
-        }
+        });
         return m;
       },
       redirect: function(url) {
@@ -30055,11 +30055,11 @@ $provide.value("$locale", {
       summarize_order: function(order) {
         order.sub_total = 0.0;
         order.shipping = 0.0;
-        for (let item of order.items) {
+        utils.forEach(order.items, function(item) {
           item.count = parseInt(item.count);
           order.sub_total += item.count * parseMoney(item.price);
           order.shipping += item.count * parseMoney(item.shipping);
-        }
+        });
       },
       calculate_order_values: function(order) {
         order.status = parseInt(order.status);
@@ -30551,12 +30551,12 @@ define('services', ['utils'], function() {
         	    var url = 'data/Uni2Pinyin.txt';
         	    return pinyinTablePromise = $http.get(url).then((response) => {
             	  var map = {};
-              for (let line of response.data.split('\n')) {
+              response.data.split('\n').forEach((line) {
       		    if (!line || line.startsWith('#')) continue;
       		    var parts = line.split('\t');
       		    var pinyin = (parts[1] || '').replace(/\d$/, '');
       		    map[parts[0]] = pinyin;
-              }
+              });
               return map;
             });
           },
@@ -32105,17 +32105,17 @@ define('local_app', [
             ];
             const isRegular = (user) => {
               var depId = parseInt($scope.classes[user.classId].department_id);
-              for (let role of $scope.roleOptions) {
+              utils.forEach($scope.roleOptions, function(role) {
                 if (role.department_id == depId || !role.department_id) {
                   return role.checked;
                 }
-              }
+              });
             };
             const isInYears = (user) => {
               var classYear = $scope.classes[user.classId].start_year;
               return $scope.classYears[classYear].checked;
             };
-      
+
             rpc.get_user().then(function(user) {
               perm.user = user;
               if (!perm.isSysAdmin()) {

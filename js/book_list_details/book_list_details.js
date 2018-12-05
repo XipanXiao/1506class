@@ -58,12 +58,12 @@ define('book_list_details/book_list_details',
         /// Adds all selected books to the class's book list.
         scope.addSelectedBooks = function() {
           var select = element[0].querySelector('.book-selection');
-          for (let option of select.options) {
+          utils.forEach(select.options, function(option) {
             if (option.selected) {
              scope.classInfo.books[option.value] = scope.items[option.value];
              scope.dirty = true;
             }
-          }
+          });
         };
 
         scope.export = function() {

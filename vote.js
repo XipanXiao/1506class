@@ -29622,9 +29622,9 @@ $provide.value("$locale", {
       toMap: function(list, key) {
         var m = {};
         key = key || 'id';
-        for (let item of list) {
+        list.forEach(function(item) {
           m[item[key]] = item;
-        }
+        });
         return m;
       },
       redirect: function(url) {
@@ -30019,11 +30019,11 @@ $provide.value("$locale", {
       summarize_order: function(order) {
         order.sub_total = 0.0;
         order.shipping = 0.0;
-        for (let item of order.items) {
+        utils.forEach(order.items, function(item) {
           item.count = parseInt(item.count);
           order.sub_total += item.count * parseMoney(item.price);
           order.shipping += item.count * parseMoney(item.shipping);
-        }
+        });
       },
       calculate_order_values: function(order) {
         order.status = parseInt(order.status);
@@ -30515,12 +30515,12 @@ define('services', ['utils'], function() {
         	    var url = 'data/Uni2Pinyin.txt';
         	    return pinyinTablePromise = $http.get(url).then((response) => {
             	  var map = {};
-              for (let line of response.data.split('\n')) {
+              response.data.split('\n').forEach((line) {
       		    if (!line || line.startsWith('#')) continue;
       		    var parts = line.split('\t');
       		    var pinyin = (parts[1] || '').replace(/\d$/, '');
       		    map[parts[0]] = pinyin;
-              }
+              });
               return map;
             });
           },
@@ -30990,9 +30990,9 @@ define('utils', [], function() {
       toMap: function(list, key) {
         var m = {};
         key = key || 'id';
-        for (let item of list) {
+        list.forEach(function(item) {
           m[item[key]] = item;
-        }
+        });
         return m;
       },
       redirect: function(url) {
@@ -31387,11 +31387,11 @@ define('utils', [], function() {
       summarize_order: function(order) {
         order.sub_total = 0.0;
         order.shipping = 0.0;
-        for (let item of order.items) {
+        utils.forEach(order.items, function(item) {
           item.count = parseInt(item.count);
           order.sub_total += item.count * parseMoney(item.price);
           order.shipping += item.count * parseMoney(item.shipping);
-        }
+        });
       },
       calculate_order_values: function(order) {
         order.status = parseInt(order.status);
@@ -31860,7 +31860,7 @@ angular.module('ElectionListModule', [
         }
 
         selectLastElection(scope.elections);
-  
+
         scope.createElection = () => {
           if (!perm.isSysAdmin()) return;
 
@@ -31908,18 +31908,18 @@ angular.module('ElectionListModule', [
             if (!response.data.length && !scope.editable) {
               visited(election);
             }
-            for (let vote of response.data) {
+            utils.forEach(response.data, function(vote) {
               if (!vote.candidate) continue;
               votes[vote.candidate] = (votes[vote.candidate] || 0) + 1;
               if (vote.user == perm.user.id) {
                 myvotes[vote.candidate] = vote.id;
               }
-            }
-            for (let candidate of election.candidates) {
+            });
+            uitls.forEach(election.candidates, function(candidate) {
               candidate.voted = myvotes[candidate.id] || 0;
               candidate.votes = votes[candidate.id] || 0;
               if (candidate.voted) election.voted++;
-            }
+            });
             election.allVotes = response.data;
             return scope.currentElection = election;
           });
@@ -31963,7 +31963,8 @@ angular.module('ElectionListModule', [
       templateUrl : 'js/election_list/election_list.html?tag=201810230852'
     };
   });
-  angular.module('CandidatesModule', [
+  
+angular.module('CandidatesModule', [
     'DistrictsModule',
     'FileInputModule',
     'PermissionModule',
@@ -32237,7 +32238,7 @@ angular.module('VoteActionsModule', [
           var users = scope.election.votersById;
           var votedUser = {};
           var waived = {};
-          for (let vote of votes) {
+          utils.forEach(votes, function(vote) {
             if (!vote.candidate) continue;
             var user = users[vote.user];
             if (!user) continue;
@@ -32246,8 +32247,8 @@ angular.module('VoteActionsModule', [
             var district = districts[can.district].name;
             data += '{0}\t{1}\t{2}\t{3}\t{4}\n'.format(vote.ts, user.name,
               can.name, district, sources[vote.source]);
-          }
-          for (let vote of votes) {
+          });
+          utils.forEach(votes, function(vote) {
             if (vote.candidate) continue;
             var user = users[vote.user];
             if (!user || votedUser[user.id]) continue;
@@ -32255,7 +32256,7 @@ angular.module('VoteActionsModule', [
             var district = districts[user.district].name;
             data += '{0}\t{1}\t{2}\t{3}\t{4}\n'.format(vote.ts, user.name,
               '弃权', district, sources[vote.source]);
-          }
+          });
 
           scope.election.exportedDataUrl = utils.createDataUrl(data,
               scope.election.exportedDataUrl);
@@ -32324,9 +32325,9 @@ angular.module('ElectionAttributesModule', [
             utils.toList(utils.where(votersById, inDistrict));
 
         allDistrcits = {};
-        for (let candidate of election.candidates) {
+        utils.forEach(election.candidates, function(candidate) {
           allDistrcits[candidate.district] = true;
-        }
+        });
 
         var voters;
 
@@ -32339,10 +32340,10 @@ angular.module('ElectionAttributesModule', [
           const getDistrictVoters = (district) => {
             return rpc.get_vote_users(scope.election.id, district)
                 .then((response) => {
-              for (let voter of response.data) {
+              utils.forEach(response.data, function(voter) {
                 votersById[voter.id] = voter;
                 voter.district = parseInt(voter.district);
-              }
+              });
             });
           };
           var promises = utils.keys(allDistrcits).map(getDistrictVoters);
@@ -32365,21 +32366,21 @@ angular.module('ElectionAttributesModule', [
             web: 0
           };
           var candidatesMap = {};
-          for (let candidate of election.candidates) {
+          utils.forEach(election.candidates, function(candidate) {
             if (inDistrict(candidate)) {
               candidatesMap[candidate.id] = candidate;
               stats.candidates++;
             }
-          }
+          });
 
           var votedVoters = {};
           var waivers = {};
           // First collect all voted voters.
-          for (let vote of election.allVotes) {
+          utils.forEach(election.allVotes, function(vote) {
             var candidate = candidatesMap[vote.candidate];
             if (!candidate) continue;
             var voter = votersById[vote.user];
-            if (!voter || 
+            if (!voter ||
               voter.district != candidate.district && !election.global) {
               continue;
             }
@@ -32393,10 +32394,10 @@ angular.module('ElectionAttributesModule', [
             if (!votedVoters[vote.user]) {
               votedVoters[vote.user] = true;
               stats.voter++;
-            }            
-          }
+            }
+          });
           // Then collect all waived voters.
-          for (let vote of election.allVotes) {
+          utils.forEach(election.allVotes, function(vote) {
             if (vote.candidate ||
                 votedVoters[vote.user] ||
                 waivers[vote.user]) {
@@ -32407,7 +32408,7 @@ angular.module('ElectionAttributesModule', [
 
             waivers[vote.user] = true;
             stats.waiver++;
-          }
+          });
 
           stats.unresponded = stats.total - (stats.voter + stats.waiver);
           stats.ratio = (stats.voter * 100.0 / stats.total).toFixed(2) + '%';
@@ -32506,8 +32507,8 @@ angular.module('AppModule', [
 
       scope.save = () => {
         var requests = [];
-        for (let election of scope.elections) {
-          for (let candidate of election.candidates) {
+        utils.forEach (scope.elections, function(election) {
+          utils.forEach(election.candidates, function(candidate) {
             if (!candidate.dirty && !candidate.deleted) continue;
             if (candidate.deleted) {
               if (candidate.id) {
@@ -32518,7 +32519,7 @@ angular.module('AppModule', [
               requests.push(() =>
                   rpc.update_candidate(candidate).then(checkResponse));
             }
-          }
+          });
 
           if (election.dirty) {
             var data = {
@@ -32536,7 +32537,7 @@ angular.module('AppModule', [
             requests.push(() =>
                 rpc.update_election(data).then(checkResponse));
           }
-        }
+        });
         requests.push(reload);
         utils.requestOneByOne(requests);
       };
