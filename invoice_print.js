@@ -29938,7 +29938,7 @@ define('services', ['utils'], function() {
         	    var url = 'data/Uni2Pinyin.txt';
         	    return pinyinTablePromise = $http.get(url).then((response) => {
             	  var map = {};
-              response.data.split('\n').forEach((line) {
+              response.data.split('\n').forEach(function(line) {
       		    if (!line || line.startsWith('#')) continue;
       		    var parts = line.split('\t');
       		    var pinyin = (parts[1] || '').replace(/\d$/, '');
