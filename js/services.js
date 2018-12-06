@@ -435,7 +435,7 @@ define('services', ['utils'], function() {
         	    return pinyinTablePromise = $http.get(url).then((response) => {
             	  var map = {};
               response.data.split('\n').forEach(function(line) {
-      		    if (!line || line.startsWith('#')) continue;
+      		    if (!line || line.startsWith('#')) return;
       		    var parts = line.split('\t');
       		    var pinyin = (parts[1] || '').replace(/\d$/, '');
       		    map[parts[0]] = pinyin;

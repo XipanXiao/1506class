@@ -30516,7 +30516,7 @@ define('services', ['utils'], function() {
         	    return pinyinTablePromise = $http.get(url).then((response) => {
             	  var map = {};
               response.data.split('\n').forEach(function(line) {
-      		    if (!line || line.startsWith('#')) continue;
+      		    if (!line || line.startsWith('#')) return;
       		    var parts = line.split('\t');
       		    var pinyin = (parts[1] || '').replace(/\d$/, '');
       		    map[parts[0]] = pinyin;
@@ -31909,13 +31909,13 @@ angular.module('ElectionListModule', [
               visited(election);
             }
             utils.forEach(response.data, function(vote) {
-              if (!vote.candidate) continue;
+              if (!vote.candidate) return;
               votes[vote.candidate] = (votes[vote.candidate] || 0) + 1;
               if (vote.user == perm.user.id) {
                 myvotes[vote.candidate] = vote.id;
               }
             });
-            uitls.forEach(election.candidates, function(candidate) {
+            utils.forEach(election.candidates, function(candidate) {
               candidate.voted = myvotes[candidate.id] || 0;
               candidate.votes = votes[candidate.id] || 0;
               if (candidate.voted) election.voted++;

@@ -72,13 +72,13 @@ angular.module('ElectionListModule', [
               visited(election);
             }
             utils.forEach(response.data, function(vote) {
-              if (!vote.candidate) continue;
+              if (!vote.candidate) return;
               votes[vote.candidate] = (votes[vote.candidate] || 0) + 1;
               if (vote.user == perm.user.id) {
                 myvotes[vote.candidate] = vote.id;
               }
             });
-            uitls.forEach(election.candidates, function(candidate) {
+            utils.forEach(election.candidates, function(candidate) {
               candidate.voted = myvotes[candidate.id] || 0;
               candidate.votes = votes[candidate.id] || 0;
               if (candidate.voted) election.voted++;
