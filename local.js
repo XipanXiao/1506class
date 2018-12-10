@@ -32105,8 +32105,8 @@ define('local_app', [
             ];
             const isRegular = (user) => {
               var depId = parseInt($scope.classes[user.classId].department_id);
-              if (depId == 8) return $scope.roleOptions['功德会'].checked;
-              return $scope.roleOptions['学会'].checked;
+              if (depId == 8) return $scope.roleOptions[0].checked;
+              return $scope.roleOptions[1].checked;
             };
             const isInYears = (user) => {
               var classYear = $scope.classes[user.classId].start_year;
