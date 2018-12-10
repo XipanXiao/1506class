@@ -26,7 +26,7 @@ define('local_app', [
             ];
             const isRegular = (user) => {
               var depId = parseInt($scope.classes[user.classId].department_id);
-              utils.forEach($scope.roleOptions, function(role) {
+              return utils.any($scope.roleOptions, function(role) {
                 if (role.department_id == depId || !role.department_id) {
                   return role.checked;
                 }
