@@ -33529,6 +33529,9 @@ define('zb_sync_button/zb_sync_button',
                   return scope.tasks = utils.where(tasks,
                       function(task) {
                         if (!task.zb_name) return false;
+                        if (task.duration) {
+                          return task.report_half_term <= scope.half_term;
+                        }
                         var parts = task.zb_name.split('_');
                         var countKey = parts[0] + '_count';
                         var zbstat = utils.firstElement(scope.zbTaskStats);
