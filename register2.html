@@ -39,7 +39,7 @@
   function validate(form) {
     var select = form.state;
     var state = select.options[select.selectedIndex].innerHTML;
-    form.district.value = initDistrict(state);
+    form.district.value = form.district.value || initDistrict(state);
     return checkPassword();
   }
   function checkPassword() {
@@ -85,6 +85,7 @@
       document.querySelector('#country').value = address.countryCode;
       document.querySelector('#country').onchange();
       document.querySelector('#state').value = address.stateIndex;
+      document.querySelector('#district').value = address.district;
     });
   }
 </script>
@@ -218,7 +219,7 @@
             </div>
             <div class="css-table-cell">
               <select id="state" name="state"></select>
-              <input type="hidden" name="district">
+              <input id="district" type="hidden" name="district">
             </div>
           </div>
           <div id="country-chooser" class="css-table-row">
@@ -433,7 +434,7 @@
     </form>
     <div class="center copy-right">Copyright &copy 2017-2018 BSA-U.S.</div>
   </div>
-  <script type="text/javascript" src="js/countries.js">
+  <script type="text/javascript" src="js/countries.js?tag=201812122322">
   </script>
   <script type="text/javascript">
   var usIndex;

@@ -319,13 +319,26 @@ s_a[252] = "Bulawayo|Harare|ManicalandMashonaland Central|Mashonaland East|Masho
       var country = this._findComponent(components, 'country');
       result.countryCode = country && country.short_name || result.city;
       
-      var countryIndex = this.getCountryIndex(result.countryCode);
       var stateComponent = 
           this._findComponent(components, 'administrative_area_level_1'); 
       var state = stateComponent && stateComponent.long_name || result.ciy;
       result.stateIndex = this.getStateIndex(result.countryCode, state);
+      result.district = this._getCaliforniaDistrict(state, components);
       
       return result;
+    },
+    /// Returns true if [address_components] identifies a southern
+    /// California address.
+    _getCaliforniaDistrict: function(state, address_components) {
+      if (state != 'California') return null;
+
+      var countyComponent = this._findComponent(address_components,
+          'administrative_area_level_2');
+      var county = countyComponent && countyComponent.long_name;
+      county = county.replace(' County', '');
+      return ['Imperial', 'Kern', 'Los Angeles', 'Orange', 'Riverside',
+          'San Bernardino', 'San Diego', 'San Luis Obispo', 'Santa Barbara',
+          'Ventura'].indexOf(county) != -1 ? 4 : 3;
     }
   };
   
