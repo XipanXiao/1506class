@@ -24,6 +24,7 @@
       <div class="css-table-cell"><strong>电子邮件</strong></div>
       <div class="css-table-cell"><strong>电话</strong></div>
       <div class="css-table-cell" ng-if="!isNewClass()"><strong>微信</strong></div>
+      <div class="css-table-cell" ng-if="!isNewClass()"><strong>州</strong></div>
       <div class="css-table-cell"><strong>入学年份</strong></div>
       <div class="css-table-cell" ng-if="isNewClass()"><strong>入口</strong></div>
       <div class="css-table-cell" ng-if="isNewClass()"><strong>已信,入微,YY,试麦</strong></div>
@@ -39,6 +40,7 @@
       <div class="css-table-cell email">{{user.email}}</div>
       <div class="css-table-cell">{{user.phone}}</div>
       <div class="css-table-cell" ng-if="!isNewClass()">{{user.im}}</div>
+      <div class="css-table-cell" ng-if="!isNewClass()">{{user.stateLabel}}</div>
       <div class="css-table-cell" >{{user.start_year}}</div>
       <div class="css-table-cell" ng-if="isNewClass()">{{entrances[user.entrance]}}</div>
       <div class="css-table-cell" ng-if="isNewClass()">
