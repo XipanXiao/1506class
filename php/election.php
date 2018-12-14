@@ -7,61 +7,8 @@ include_once "util.php";
 
 $medoo = get_medoo();
 
-function create_election_tables() {
-  return;
-  global $medoo;
-    
-  $sql = "CREATE TABLE elections (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      organizer INT,
-        FOREIGN KEY (organizer) REFERENCES users(id),
-      start_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      end_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      global TINYINT(1) NOT NULL DEFAULT 0,
-      deleted TINYINT(1) NOT NULL DEFAULT 0,
-      max_vote INT NOT NULL DEFAULT 3,
-      name VARCHAR(32) CHARACTER SET utf8,
-      description VARCHAR(256) CHARACTER SET utf8,
-      token INT NOT NULL
-    );";
-  $medoo->query($sql);
-
-  $sql = "CREATE TABLE candidates (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      election INT NOT NULL,
-        FOREIGN KEY (election) REFERENCES elections(id),
-      user INT NOT NULL,
-        FOREIGN KEY (user) REFERENCES users(id),
-      name VARCHAR(32) CHARACTER SET utf8 NOT NULL,
-      district MEDIUMINT NOT NULL,
-        FOREIGN KEY (district) REFERENCES districts(id),
-      profile VARCHAR(256) CHARACTER SET utf8,
-        UNIQUE KEY `unique_index` (`election`,`user`),
-      slogan VARCHAR(64) CHARACTER SET utf8,
-      description VARCHAR(4096) CHARACTER SET utf8
-    );";
-
-  $medoo->query($sql);
-
-  $sql = "CREATE TABLE votes (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      election INT NOT NULL,
-        FOREIGN KEY (election) REFERENCES elections(id),
-      user INT NOT NULL,
-        FOREIGN KEY (user) REFERENCES users(id),
-      candidate INT,
-        FOREIGN KEY (candidate) REFERENCES candidates(id),
-      source INT NOT NULL DEFAULT 0,
-      UNIQUE KEY `unique_index` (`election`,`user`, `candidate`),
-      ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-      );";
-
-  $medoo->query($sql);
-}
-
 function get_elections() {
   global $medoo;
-  create_election_tables();
   $elections = $medoo->select("elections", ["id", "organizer", "max_vote",
       "start_time", "end_time", "global", "name", "description"], [
         "deleted" => 0
@@ -79,7 +26,6 @@ function get_elections() {
 
 function update_election($election) {
   global $medoo;
-  create_election_tables();
   $election = build_update_data(["id", "name", "description", "deleted",
       "start_time", "end_time", "organizer", "global", "max_vote"], $election);
   if (!$election["id"]) {
