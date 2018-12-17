@@ -260,6 +260,37 @@
       </div>
     </div>
   </div>
+  <div class="user-info" ng-if="false">
+    <div class="css-table">
+      <div class="css-table-row padded-element">
+        <div class="css-table-cell">所在发心部门</div>
+        <div class="css-table-cell">{{orgLabels[user.staff.organization]}}</div>
+        <div class="css-table-cell">
+          <iron-icon class="selectable" icon="chevron-right"
+              ng-click="editing = 'organization'">
+          </iron-icon>
+        </div>          
+      </div>
+      <div class="css-table-row padded-element">
+        <div class="css-table-cell">发心组长</div>
+        <div class="css-table-cell bio">{{user.staff.managerName}}</div>
+        <div class="css-table-cell">
+          <iron-icon class="selectable" icon="chevron-right"
+              ng-click="editing = 'manager'">
+          </iron-icon>
+        </div>          
+      </div>
+      <div class="css-table-row padded-element">
+        <div class="css-table-cell">发心开始时间</div>
+        <div class="css-table-cell bio">{{user.staff.start_time}}</div>
+        <div class="css-table-cell">
+          <iron-icon class="selectable" icon="chevron-right"
+              ng-click="editing = 'start_time'">
+          </iron-icon>
+        </div>          
+      </div>
+    </div>
+  </div>
   <div ng-if="editing" class="css-table user-info-editor">
    <div class="css-table-row">
       <div ng-switch="editing" class="css-table-cell">

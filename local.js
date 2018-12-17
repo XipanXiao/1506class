@@ -30651,6 +30651,22 @@ define('services', ['utils'], function() {
           delete_vote: function(id) {
             var url = 'php/election.php?rid=votes&id={0}'.format(id);
             return $http.delete(url);
+          },
+
+          get_organizations: function() {
+            var url = 'php/organization.php?rid=organizations';
+            return $http.get(url);
+          },
+
+          get_staff: function(user) {
+            var url = 'php/organization.php?rid=staff&user={0}'.format(user || '');
+            return $http.get(url);
+          },
+
+          update_staff: function(user) {
+            user.rid = 'staff';
+            return http_form_post(
+                $http, $httpParamSerializerJQLike(user), 'php/organization.php');
           }
         };
       });
@@ -31869,10 +31885,16 @@ define('user_editor/user_editor',
           return perm.isYearLeader();
         };
 
-        $scope.$watch('user', function() {
+        $scope.$watch('user', function(user) {
           $scope.editing = null;
           if ($scope.user && !$scope.user.classInfo) {
             getClassInfo();
+          }
+          if (user && !user.staff) {
+            user.staff = {};
+            rpc.get_staff(user.id).then(function(response) {
+              user.staff = response.data;
+            });
           }
         });
 
@@ -31973,7 +31995,7 @@ define('user_editor/user_editor',
         };
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201810191350'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201812161350'
     };
   });
 });

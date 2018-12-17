@@ -38,10 +38,16 @@ define('user_editor/user_editor',
           return perm.isYearLeader();
         };
 
-        $scope.$watch('user', function() {
+        $scope.$watch('user', function(user) {
           $scope.editing = null;
           if ($scope.user && !$scope.user.classInfo) {
             getClassInfo();
+          }
+          if (user && !user.staff) {
+            user.staff = {};
+            rpc.get_staff(user.id).then(function(response) {
+              user.staff = response.data;
+            });
           }
         });
 
@@ -142,7 +148,7 @@ define('user_editor/user_editor',
         };
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201810191350'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201812161350'
     };
   });
 });
