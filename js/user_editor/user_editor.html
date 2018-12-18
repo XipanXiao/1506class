@@ -267,7 +267,7 @@
         <div class="css-table-cell">{{orgLabels[user.staff.organization]}}</div>
         <div class="css-table-cell">
           <iron-icon class="selectable" icon="chevron-right"
-              ng-click="editing = 'organization'">
+              ng-click="edit('staff.organization')">
           </iron-icon>
         </div>          
       </div>
@@ -276,7 +276,7 @@
         <div class="css-table-cell bio">{{user.staff.managerName}}</div>
         <div class="css-table-cell">
           <iron-icon class="selectable" icon="chevron-right"
-              ng-click="editing = 'manager'">
+              ng-click="edit('staff.manager')">
           </iron-icon>
         </div>          
       </div>
@@ -285,7 +285,7 @@
         <div class="css-table-cell bio">{{user.staff.start_time}}</div>
         <div class="css-table-cell">
           <iron-icon class="selectable" icon="chevron-right"
-              ng-click="editing = 'start_time'">
+              ng-click="edit('staff.start_time')">
           </iron-icon>
         </div>          
       </div>
@@ -338,6 +338,12 @@
             maxlength="255" autofocus>
         </textarea>
         <input ng-switch-when="zb_id" ng-model="user.zb_id" type="number" autofocus>
+        <select ng-switch-when="staff.organization" ng-model="user.staff.organization"
+            ng-options="orgLabels[value] for value in organizations">
+        </select>
+        <user-input ng-switch-when="staff.manager" user-id="user.staff.manager" editing="true">
+        </user-input>
+        <input ng-switch-when="staff.start_time" type="date" ng-model="user.staff.start_time">
         <div ng-if="error" class="error">{{error}}</div>
       </div>
       <input type="submit" value="Save" ng-click="save()" class="css-table-cell">

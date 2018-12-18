@@ -30691,10 +30691,10 @@ define('services', ['utils'], function() {
             return $http.get(url);
           },
 
-          update_staff: function(user) {
-            user.rid = 'staff';
+          update_staff: function(staff) {
+            staff.rid = 'staff';
             return http_form_post(
-                $http, $httpParamSerializerJQLike(user), 'php/organization.php');
+                $http, $httpParamSerializerJQLike(staff), 'php/organization.php');
           }
         };
       });
@@ -32877,13 +32877,17 @@ define('user_editor/user_editor',
      'bit_editor/bit_editor', 'classes/classes',
      'districts/districts',
      'permission_editor/permission_editor',
-     'permission'], function() {
+     'permission',
+     'user_input/user_input'
+    ], function() {
   return angular.module('UserEditorModule', ['ServicesModule',
       'AddressEditorModule',
       'BitEditorModule', 'ClassesModule',
       'DistrictsModule',
       'PermissionEditorModule',
-      'PermissionModule', 'UtilsModule']).directive('userEditor',
+      'PermissionModule', 
+      'UserInputModule',
+      'UtilsModule']).directive('userEditor',
           function($rootScope, perm, rpc, utils) {
     return {
       scope: {
@@ -32920,6 +32924,15 @@ define('user_editor/user_editor',
             user.staff = {};
             rpc.get_staff(user.id).then(function(response) {
               user.staff = response.data;
+            });
+          }
+          if (!$scope.orgLabels) {
+            rpc.get_organizations().then(function(response) {
+              $scope.organizations = utils.keys(response.data);
+              $scope.orgLabels = {};
+              for (var id in response.data) {
+                $scope.orgLabels[id] = response.data[id].name;
+              }
             });
           }
         });
@@ -32965,7 +32978,24 @@ define('user_editor/user_editor',
           $scope.error = null;
         });
 
+        $scope.edit = function(editing) {
+          $scope.editing = editing;
+        };
+
+        function saveStaffInfo() {
+          rpc.update_staff(user.staff).then(function(response) {
+            if (parseInt(response.updated)) {
+              $scope.editing = null;
+            } else {
+              $scope.error = response.data.error;
+            }
+          });
+        }
+
         $scope.save = function(editing) {
+          if (editing.startsWith('staff.')) {
+            return saveStaffInfo(editing);
+          }
           var user = $scope.user;
           var data = {id: user.id};
           editing = editing || $scope.editing;
@@ -33021,7 +33051,7 @@ define('user_editor/user_editor',
         };
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201812161350'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201812171350'
     };
   });
 });

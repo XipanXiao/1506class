@@ -30663,10 +30663,10 @@ define('services', ['utils'], function() {
             return $http.get(url);
           },
 
-          update_staff: function(user) {
-            user.rid = 'staff';
+          update_staff: function(staff) {
+            staff.rid = 'staff';
             return http_form_post(
-                $http, $httpParamSerializerJQLike(user), 'php/organization.php');
+                $http, $httpParamSerializerJQLike(staff), 'php/organization.php');
           }
         };
       });
