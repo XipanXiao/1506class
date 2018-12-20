@@ -1,4 +1,4 @@
-window.userInputCache = {};
+window.userInputCache = window.userInputCache || {};
 
 angular.module('PaperUserInputModule', [
   'ServicesModule'

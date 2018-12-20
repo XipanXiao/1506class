@@ -31872,7 +31872,10 @@ define('user_editor/user_editor',
           if (user && !user.staff) {
             user.staff = {};
             rpc.get_staff(user.id).then(function(response) {
-              user.staff = response.data;
+              user.staff = response.data[0] || {};
+              if (user.staff.start_time) {
+                $scope.refreshStaffLabels(user.staff);
+              }
             });
           }
           if (!$scope.orgLabels) {
@@ -31885,6 +31888,10 @@ define('user_editor/user_editor',
             });
           }
         });
+
+        $scope.refreshStaffLabels = function(staff) {
+          staff.managerName = window.userInputCache[staff.manager];
+        }
 
         function getClassInfo() {
           var classId = $scope.user.classId;
@@ -31931,8 +31938,8 @@ define('user_editor/user_editor',
           $scope.editing = editing;
         };
 
-        function saveStaffInfo() {
-          rpc.update_staff(user.staff).then(function(response) {
+        function saveStaffInfo(staff) {
+          rpc.update_staff(staff).then(function(response) {
             if (parseInt(response.updated)) {
               $scope.editing = null;
             } else {
@@ -31942,12 +31949,13 @@ define('user_editor/user_editor',
         }
 
         $scope.save = function(editing) {
-          if (editing.startsWith('staff.')) {
-            return saveStaffInfo(editing);
-          }
           var user = $scope.user;
+          editing = editing || $scope.editing || '';
+          if (editing.startsWith('staff.')) {
+            return saveStaffInfo(user.staff);
+          }
+
           var data = {id: user.id};
-          editing = editing || $scope.editing;
           switch (editing) {
           case 'address':
             data.street = user.street;

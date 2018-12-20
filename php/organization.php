@@ -26,10 +26,11 @@ function create_org_tables() {
     user INT NOT NULL,
         FOREIGN KEY (user) REFERENCES users(id),
     manager INT,
-        FOREIGN KEY (manager) REFERENCES staff(id),
+        FOREIGN KEY (manager) REFERENCES users(id),
     organization INT NOT NULL,
         FOREIGN KEY (organization) REFERENCES organizations(id),
-    start_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    start_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (user)
   );";
   $medoo->query($sql);
 }

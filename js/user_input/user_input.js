@@ -1,5 +1,7 @@
+window.userInputCache = window.userInputCache || {};
+
 define('user_input/user_input', ['services'], function() {
-  var users = {};
+  var users = window.userInputCache;
   
   return angular.module('UserInputModule', ['ServicesModule'])
 	.directive('userTypeAhead', function(rpc) {

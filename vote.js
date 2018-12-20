@@ -31653,7 +31653,7 @@ define('email_group_chip/email_group_chip', ['services', 'utils'], function() {
     };
   });
 });
-window.userInputCache = {};
+window.userInputCache = window.userInputCache || {};
 
 angular.module('PaperUserInputModule', [
   'ServicesModule'
