@@ -44,7 +44,7 @@ define('user_stats_app', [
                 return district.checked &&
                     (!years || years[user.year].checked) &&
                     $scope.departments[user.dep].checked &&
-                    !$scope.otherOptions[0].checked || inSeminar(user);
+                    (!$scope.otherOptions[0].checked || inSeminar(user));
               });
               return utils.truePromise();
             };
