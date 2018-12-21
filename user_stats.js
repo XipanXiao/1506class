@@ -32256,13 +32256,19 @@ define('user_stats_app', [
               $scope.user = user;
             });
 
+            $scope.otherOptions = [{label: '只显示研讨班学员', checked: false}];
+
+            /// 是否研讨班成员。
+            const inSeminar = (user) => utils.isBitSet(user.enroll_tasks, 5);
+
             $scope.filterUsers = () => {
               $scope.users = utils.where($scope.allUsers, function(user) {
                 var years = $scope.years;
                 var district = $scope.districts[parseInt(user.district) || 0];
                 return district.checked &&
                     (!years || years[user.year].checked) &&
-                    $scope.departments[user.dep].checked;
+                    $scope.departments[user.dep].checked &&
+                    !$scope.otherOptions[0].checked || inSeminar(user);
               });
               return utils.truePromise();
             };
