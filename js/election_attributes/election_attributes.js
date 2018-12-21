@@ -121,10 +121,10 @@ angular.module('ElectionAttributesModule', [
             if (vote.candidate ||
                 votedVoters[vote.user] ||
                 waivers[vote.user]) {
-              continue;
+              return;
             }
             var user = votersById[vote.user];
-            if (!user || !inDistrict(user)) continue;
+            if (!user || !inDistrict(user)) return;
 
             waivers[vote.user] = true;
             stats.waiver++;
@@ -174,6 +174,6 @@ angular.module('ElectionAttributesModule', [
         scope.collapsed = !scope.collapsed;
       };
     },
-    templateUrl: 'js/election_attributes/election_attributes.html?tag=201811041006'
+    templateUrl: 'js/election_attributes/election_attributes.html?tag=201812201006'
   };
 });

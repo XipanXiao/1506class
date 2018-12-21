@@ -50,7 +50,7 @@ angular.module('AppModule', [
         var requests = [];
         utils.forEach (scope.elections, function(election) {
           utils.forEach(election.candidates, function(candidate) {
-            if (!candidate.dirty && !candidate.deleted) continue;
+            if (!candidate.dirty && !candidate.deleted) return;
             if (candidate.deleted) {
               if (candidate.id) {
                 requests.push(() =>
