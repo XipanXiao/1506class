@@ -20,6 +20,7 @@ js/classes/classes.js
 js/address_editor/address_editor.js
 js/districts/districts.js
 js/user_input/user_input.js
+js/time/time.js
 js/user_editor/user_editor.js
 js/task_history/task_history.js
 js/student_app.js

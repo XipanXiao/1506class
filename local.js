@@ -31942,6 +31942,48 @@ define('user_input/user_input', ['services'], function() {
   	};
   });
 });
+define('time/time', [], function() {
+  return angular.module('TimeModule', [])
+    .directive('time', function() {
+      return {
+        require: 'ngModel',
+        restrict: 'A',
+        link: function(scope, elements, attrs, ngModel) {
+          ngModel.$formatters.push(function(timestring) {
+            if (!timestring) return null;
+            var parts = timestring.split(':');
+            return new Date(0, 0, 0, parseInt(parts[0]), parseInt(parts[1]));
+          });
+
+          ngModel.$parsers.push(function(date) {
+            var min = date.getMinutes();
+            if (min < 10) min = '' + min + '0';
+            return '' + date.getHours() + ':' + min + ':00';
+          });
+        }
+      };
+    }).directive('date', function() {
+      return {
+        require: 'ngModel',
+        restrict: 'A',
+        link: function(scope, elements, attrs, ngModel) {
+          ngModel.$formatters.push(function(timestring) {
+            return timestring && new Date(Date.parse(timestring));
+          });
+
+          ngModel.$parsers.push(function(date) {
+            var min = date.getMinutes();
+            if (min < 10) min = '0' + min;
+            var sec = date.getSeconds();
+            if (sec < 10) sec = '0' + sec;
+            var timestring = '' + date.getHours() + ':' + min + ':' + sec;
+            return '{0}-{1}-{2} {3}'.format(date.getFullYear(),
+                date.getMonth() + 1, date.getDate(), timestring);
+          });
+        }
+      };
+    });
+});
 define('user_editor/user_editor',
     ['services', 'utils',
      'address_editor/address_editor',
@@ -31949,6 +31991,7 @@ define('user_editor/user_editor',
      'districts/districts',
      'permission_editor/permission_editor',
      'permission',
+     'time/time',
      'user_input/user_input'
     ], function() {
   return angular.module('UserEditorModule', ['ServicesModule',
@@ -31957,6 +32000,7 @@ define('user_editor/user_editor',
       'DistrictsModule',
       'PermissionEditorModule',
       'PermissionModule', 
+      'TimeModule',
       'UserInputModule',
       'UtilsModule']).directive('userEditor',
           function($rootScope, perm, rpc, utils) {
@@ -31992,9 +32036,9 @@ define('user_editor/user_editor',
             getClassInfo();
           }
           if (user && !user.staff) {
-            user.staff = {};
+            user.staff = {user: user.id};
             rpc.get_staff(user.id).then(function(response) {
-              user.staff = response.data[0] || {};
+              user.staff = response.data[0] || user.staff;
               if (user.staff.start_time) {
                 $scope.refreshStaffLabels(user.staff);
               }
@@ -32012,7 +32056,15 @@ define('user_editor/user_editor',
         });
 
         $scope.refreshStaffLabels = function(staff) {
+          if (!staff.manager) return;
+
           staff.managerName = window.userInputCache[staff.manager];
+          if (!staff.managerName) {
+            rpc.getUserLabel(staff.manager).then(function(response) {
+              staff.managerName = window.userInputCache[staff.manager]
+                  = response.data.label;
+            });
+          }
         }
 
         function getClassInfo() {
@@ -32062,7 +32114,8 @@ define('user_editor/user_editor',
 
         function saveStaffInfo(staff) {
           rpc.update_staff(staff).then(function(response) {
-            if (parseInt(response.updated)) {
+            if (parseInt(response.data.updated)) {
+              $scope.refreshStaffLabels(staff);
               $scope.editing = null;
             } else {
               $scope.error = response.data.error;
@@ -32130,7 +32183,7 @@ define('user_editor/user_editor',
         };
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201812171350'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201812241350'
     };
   });
 });

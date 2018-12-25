@@ -5,6 +5,7 @@ define('user_editor/user_editor',
      'districts/districts',
      'permission_editor/permission_editor',
      'permission',
+     'time/time',
      'user_input/user_input'
     ], function() {
   return angular.module('UserEditorModule', ['ServicesModule',
@@ -13,6 +14,7 @@ define('user_editor/user_editor',
       'DistrictsModule',
       'PermissionEditorModule',
       'PermissionModule', 
+      'TimeModule',
       'UserInputModule',
       'UtilsModule']).directive('userEditor',
           function($rootScope, perm, rpc, utils) {
@@ -48,9 +50,9 @@ define('user_editor/user_editor',
             getClassInfo();
           }
           if (user && !user.staff) {
-            user.staff = {};
+            user.staff = {user: user.id};
             rpc.get_staff(user.id).then(function(response) {
-              user.staff = response.data[0] || {};
+              user.staff = response.data[0] || user.staff;
               if (user.staff.start_time) {
                 $scope.refreshStaffLabels(user.staff);
               }
@@ -68,7 +70,15 @@ define('user_editor/user_editor',
         });
 
         $scope.refreshStaffLabels = function(staff) {
+          if (!staff.manager) return;
+
           staff.managerName = window.userInputCache[staff.manager];
+          if (!staff.managerName) {
+            rpc.getUserLabel(staff.manager).then(function(response) {
+              staff.managerName = window.userInputCache[staff.manager]
+                  = response.data.label;
+            });
+          }
         }
 
         function getClassInfo() {
@@ -118,7 +128,8 @@ define('user_editor/user_editor',
 
         function saveStaffInfo(staff) {
           rpc.update_staff(staff).then(function(response) {
-            if (parseInt(response.updated)) {
+            if (parseInt(response.data.updated)) {
+              $scope.refreshStaffLabels(staff);
               $scope.editing = null;
             } else {
               $scope.error = response.data.error;
@@ -186,7 +197,7 @@ define('user_editor/user_editor',
         };
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201812171350'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201812241350'
     };
   });
 });

@@ -260,7 +260,7 @@
       </div>
     </div>
   </div>
-  <div class="user-info" ng-if="false && user.staff">
+  <div class="user-info" ng-if="user.staff">
     <div class="css-table">
       <div class="css-table-row padded-element">
         <div class="css-table-cell">所在发心部门</div>
@@ -345,7 +345,7 @@
             on-change="refreshStaffLabels(user.staff)">
         </user-input>
         <input ng-switch-when="staff.start_time" type="date" ng-model="user.staff.start_time"
-            ng-change="refreshStaffLabels(user.staff)">
+            ng-change="refreshStaffLabels(user.staff)" date>
         <div ng-if="error" class="error">{{error}}</div>
       </div>
       <input type="submit" value="Save" ng-click="save()" class="css-table-cell">
