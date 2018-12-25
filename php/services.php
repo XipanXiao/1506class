@@ -174,6 +174,14 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         : permission_denied_error();
   } elseif ($resource_id == "search_name") {
     $response = searchByName($_GET["name"]);
+    if (!isYearLeader($user)) {
+      $results = [];
+      foreach($response as $result) {
+        array_push($results,
+            build_update_data(["id", "name", "nickname"], $result));
+      }
+      $response = $results;
+    }
   } elseif ($resource_id == "task_stats") {
     $startTime =
         empty($_GET["start_time"]) ? null : intval($_GET["start_time"]);

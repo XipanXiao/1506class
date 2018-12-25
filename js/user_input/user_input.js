@@ -39,7 +39,7 @@ define('user_input/user_input', ['services'], function() {
               response.data.forEach(function(user) {
                 var label = user.nickname ? 
                     '{0}({1})'.format(user.name, user.nickname) : user.name;
-                label += '-' + user.email;
+                label += user.email ? ('-' + user.email) : '';
                 users[user.id] = label;
                 users[label] = user.id;
                 scope.hints.push(user);

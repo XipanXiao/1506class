@@ -32256,7 +32256,7 @@ define('user_input/user_input', ['services'], function() {
               response.data.forEach(function(user) {
                 var label = user.nickname ? 
                     '{0}({1})'.format(user.name, user.nickname) : user.name;
-                label += '-' + user.email;
+                label += user.email ? ('-' + user.email) : '';
                 users[user.id] = label;
                 users[label] = user.id;
                 scope.hints.push(user);
@@ -32968,12 +32968,14 @@ define('user_editor/user_editor',
           if (!staff.manager) return utils.truePromise();
 
           staff.manager_name = window.userInputCache[staff.manager];
+          staff.manager_name = staff.manager_name.split('-')[0];
           if (staff.manager_name) {
             return utils.truePromise();
           } else {
             rpc.getUserLabel(staff.manager).then(function(response) {
               staff.manager_name = window.userInputCache[staff.manager]
                   = response.data.label;
+              staff.manager_name = staff.manager_name.split('-')[0];
               return true;
             });
           }

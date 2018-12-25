@@ -72,12 +72,14 @@ define('user_editor/user_editor',
           if (!staff.manager) return utils.truePromise();
 
           staff.manager_name = window.userInputCache[staff.manager];
+          staff.manager_name = staff.manager_name.split('-')[0];
           if (staff.manager_name) {
             return utils.truePromise();
           } else {
             rpc.getUserLabel(staff.manager).then(function(response) {
               staff.manager_name = window.userInputCache[staff.manager]
                   = response.data.label;
+              staff.manager_name = staff.manager_name.split('-')[0];
               return true;
             });
           }
