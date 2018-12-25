@@ -293,7 +293,7 @@
         <div class="css-table-cell"></div>
         <div class="css-table-cell">
           <input type="button" value="暂时退出发心" ng-click="deleteStaff()"
-              ng-if="user.staff.user">
+              ng-if="user.staff.user && isAdmin()">
         </div>
         <div class="css-table-cell"></div>
       </div>

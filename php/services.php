@@ -173,9 +173,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         ? ["label" => getUserLabel($_GET["id"])] 
         : permission_denied_error();
   } elseif ($resource_id == "search_name") {
-    $response = isYearLeader($user) 
-        ? searchByName($_GET["name"])
-        : permission_denied_error();
+    $response = searchByName($_GET["name"]);
   } elseif ($resource_id == "task_stats") {
     $startTime =
         empty($_GET["start_time"]) ? null : intval($_GET["start_time"]);

@@ -32949,8 +32949,8 @@ define('user_editor/user_editor',
             user.staff = {};
             rpc.get_staff(user.id).then(function(response) {
               user.staff = response.data[0] || user.staff;
-              user.staff.organization = parseInt(user.staff.organization);
-              user.staff.manager = parseInt(user.staff.manager);
+              user.staff.organization = parseInt(user.staff.organization) || null;
+              user.staff.manager = parseInt(user.staff.manager) || null;
             });
           }
           if (!$scope.orgLabels) {
@@ -33116,7 +33116,7 @@ define('user_editor/user_editor',
         };
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201812251156'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201812251235'
     };
   });
 });
