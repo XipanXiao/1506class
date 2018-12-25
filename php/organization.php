@@ -33,6 +33,10 @@ function create_org_tables() {
     UNIQUE (user)
   );";
   $medoo->query($sql);
+
+  $sql = "ALTER TABLE staff ADD COLUMN manager_name".
+      " VARCHAR(32) CHARACTER SET utf8";
+  $medoo->query($sql);
 }
 
 $response = null;
@@ -62,7 +66,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "staff") {
     if ($user->id == $_POST["user"] || isAdmin($user)) {
       $data = build_update_data(["id", "user", "manager", "organization", 
-          "start_time"], $_POST);
+          "start_time", "manager_name"], $_POST);
       $response = ["updated" => insertOrUpdate($medoo, "staff", $data)];
     } else {
       $response = permission_denied_error();

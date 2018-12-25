@@ -53,9 +53,6 @@ define('user_editor/user_editor',
             user.staff = {user: user.id};
             rpc.get_staff(user.id).then(function(response) {
               user.staff = response.data[0] || user.staff;
-              if (user.staff.start_time) {
-                $scope.refreshStaffLabels(user.staff);
-              }
             });
           }
           if (!$scope.orgLabels) {
@@ -70,13 +67,16 @@ define('user_editor/user_editor',
         });
 
         $scope.refreshStaffLabels = function(staff) {
-          if (!staff.manager) return;
+          if (!staff.manager) return utils.truePromise();
 
-          staff.managerName = window.userInputCache[staff.manager];
-          if (!staff.managerName) {
+          staff.manager_name = window.userInputCache[staff.manager];
+          if (staff.manager_name) {
+            return utils.truePromise();
+          } else {
             rpc.getUserLabel(staff.manager).then(function(response) {
-              staff.managerName = window.userInputCache[staff.manager]
+              staff.manager_name = window.userInputCache[staff.manager]
                   = response.data.label;
+              return true;
             });
           }
         }
@@ -127,14 +127,20 @@ define('user_editor/user_editor',
         };
 
         function saveStaffInfo(staff) {
-          rpc.update_staff(staff).then(function(response) {
-            if (parseInt(response.data.updated)) {
-              $scope.refreshStaffLabels(staff);
-              $scope.editing = null;
-            } else {
-              $scope.error = response.data.error;
-            }
-          });
+          function fillManagerName() {
+            return $scope.refreshStaffLabels(staff);
+          }
+          function updateStaff() {
+            return rpc.update_staff(staff).then(function(response) {
+              if (parseInt(response.data.updated)) {
+                $scope.editing = null;
+              } else {
+                $scope.error = response.data.error;
+              }
+              return true;
+            });
+          }
+          utils.requestOneByOne([fillManagerName, updateStaff]);
         }
 
         $scope.save = function(editing) {
@@ -197,7 +203,7 @@ define('user_editor/user_editor',
         };
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201812241350'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201812251350'
     };
   });
 });

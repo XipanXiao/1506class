@@ -10,6 +10,7 @@ define('services', ['utils'], function() {
 
   var serviceUrl = 'php/services.php';
   var departmentsPromise;
+  var organizationPromise;
   var districtPromise;
 
   // Promise of http.get('/data/Uni2Pinyin.txt'); 
@@ -524,8 +525,9 @@ define('services', ['utils'], function() {
           },
 
           get_organizations: function() {
+            if (organizationPromise) return organizationPromise;
             var url = 'php/organization.php?rid=organizations';
-            return $http.get(url);
+            return organizationPromise = $http.get(url);
           },
 
           get_staff: function(user) {
