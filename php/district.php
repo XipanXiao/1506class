@@ -33,7 +33,9 @@ function get_district_users($district) {
 	$users = $medoo->select("users", "*", ["district" => $district]);
 	$classes = keyed_by_id($medoo->select("classes",
 			["id", "start_year", "department_id"],
-			["AND" => ["deleted" => 0, "graduated" => 0]]));
+			["id[!]" => get_excluded_classes($medoo)]));
+	
+	$staff = keyed_by_id($medoo->select("staff", "*"), "user");
 
 	foreach ($users as $user) {
 		$classInfo = isset($classes[$user["classId"]]) ?
@@ -42,6 +44,7 @@ function get_district_users($district) {
 
 		$user["year"] = $classInfo["start_year"];
 		$user["dep"] = $classInfo["department_id"];
+		$user["staff"] = $staff[$user["id"]];
 		array_push($results, $user);
 	}
 	return $results;
