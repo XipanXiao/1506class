@@ -273,7 +273,7 @@
       </div>
       <div class="css-table-row padded-element">
         <div class="css-table-cell">发心组长</div>
-        <div class="css-table-cell bio">{{user.staff.manager_name}}</div>
+        <div class="css-table-cell">{{user.staff.manager_name}}</div>
         <div class="css-table-cell">
           <iron-icon class="selectable" icon="chevron-right"
               ng-click="edit('staff.manager')">
@@ -282,12 +282,20 @@
       </div>
       <div class="css-table-row padded-element">
         <div class="css-table-cell">发心开始时间</div>
-        <div class="css-table-cell bio">{{user.staff.start_time}}</div>
+        <div class="css-table-cell">{{user.staff.start_time}}</div>
         <div class="css-table-cell">
           <iron-icon class="selectable" icon="chevron-right"
               ng-click="edit('staff.start_time')">
           </iron-icon>
         </div>          
+      </div>
+      <div class="css-table-row padded-element">
+        <div class="css-table-cell"></div>
+        <div class="css-table-cell">
+          <input type="button" value="暂时退出发心" ng-click="deleteStaff()"
+              ng-if="user.staff.user">
+        </div>
+        <div class="css-table-cell"></div>
       </div>
     </div>
   </div>

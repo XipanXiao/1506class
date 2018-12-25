@@ -30056,6 +30056,11 @@ define('services', ['utils'], function() {
             staff.rid = 'staff';
             return http_form_post(
                 $http, $httpParamSerializerJQLike(staff), 'php/organization.php');
+          },
+
+          delete_staff: function(id) {
+            var url = 'php/organization.php?rid=staff&id={0}'.format(id);
+            return $http.delete(url);
           }
         };
       });

@@ -50,9 +50,11 @@ define('user_editor/user_editor',
             getClassInfo();
           }
           if (user && !user.staff) {
-            user.staff = {user: user.id};
+            user.staff = {};
             rpc.get_staff(user.id).then(function(response) {
               user.staff = response.data[0] || user.staff;
+              user.staff.organization = parseInt(user.staff.organization);
+              user.staff.manager = parseInt(user.staff.manager);
             });
           }
           if (!$scope.orgLabels) {
@@ -127,13 +129,16 @@ define('user_editor/user_editor',
         };
 
         function saveStaffInfo(staff) {
+          staff.user = $scope.user.id;
           function fillManagerName() {
             return $scope.refreshStaffLabels(staff);
           }
           function updateStaff() {
             return rpc.update_staff(staff).then(function(response) {
-              if (parseInt(response.data.updated)) {
+              var id = parseInt(response.data.updated);
+              if (id) {
                 $scope.editing = null;
+                staff.id = staff.id || id;
               } else {
                 $scope.error = response.data.error;
               }
@@ -201,9 +206,21 @@ define('user_editor/user_editor',
             }
           }
         };
+
+        $scope.deleteStaff = function() {
+          if (!$scope.user.staff || !$scope.user.staff.id ||
+              !confirm('请确认“{0}”退出发心'.format($scope.user.name))) {
+            return;
+          }
+          rpc.delete_staff($scope.user.staff.id).then(function(response) {
+            if (parseInt(response.data.deleted)) {
+              $scope.user.staff = {};
+            }
+          });
+        };
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201812251350'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201812251156'
     };
   });
 });

@@ -84,7 +84,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   if ($resource_id == "staff") {
     if ($user->id == $_POST["user"] || isAdmin($user)) {
       $response = ["deleted" => $medoo->delete("staff",
-          ["id" => $_POST["id"]])];
+          ["id" => $id])];
     }
   }
 }
