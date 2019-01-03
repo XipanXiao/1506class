@@ -44,7 +44,7 @@ function get_district_users($district) {
 
 		$user["year"] = $classInfo["start_year"];
 		$user["dep"] = $classInfo["department_id"];
-		$user["staff"] = $staff[$user["id"]];
+		$user["staff"] = isset($staff[$user["id"]]) ? $staff[$user["id"]] : null;
 		array_push($results, $user);
 	}
 	return $results;
