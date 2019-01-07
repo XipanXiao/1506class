@@ -29,6 +29,38 @@ abstract class OrderStatus
   }
 }
 
+function migrate_inventory() {
+  global $medoo;
+
+  $sql = "INSERT INTO inventory (item_id, stock) ".
+    "SELECT items.id, items.stock FROM items";
+  $medoo->query($sql);
+}
+
+function create_inventory_tables() {
+  global $medoo;
+
+  if (table_exists($medoo, "inventory")) return;
+
+  $sql = "UPDATE orders SET district = 2 WHERE (district NOT IN (1, 2)) OR (district is NULL);";
+  $medoo->query($sql);
+  $sql = "ALTER TABLE orders MODIFY district MEDIUMINT NOT NULL DEFAULT 2;";
+  $medoo->query($sql);
+
+  $sql = "CREATE TABLE inventory (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      item_id INT NOT NULL,
+          FOREIGN KEY (item_id) REFERENCES items(id),
+      district MEDIUMINT NOT NULL DEFAULT 2,
+          FOREIGN KEY (district) REFERENCES districts(id),
+      stock INT NOT NULL DEFAULT 0,
+      UNIQUE(item_id, district)
+      );";
+  $medoo->query($sql);
+
+  migrate_inventory();
+}
+
 /// Checks whether we can close an order (shipped and paided).
 function _canClose($order) {
   return $order["status"] == OrderStatus::COMPLETED;
@@ -112,27 +144,37 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
   return $orders;
 }
 
-function increase_stock($item, $sign = 1) {
-  global $medoo;
+function increase_stock($medoo, $item, $district, $sign = 1) {
+  $change = intval($item["count"]) * $sign;
+  $medoo->update("items", ["stock[+]" => $change], ["id" => $item["item_id"]]);
 
-  $medoo->update("items", ["stock[+]" => (intval($item["count"]) * $sign)],
-      ["id" => $item["item_id"]]);
-}
+  $data = ["item_id" => $item["item_id"], "district" => $district];
+  $inventories = $medoo->select("inventory", "*", ["AND" => $data]);
 
-function increase_stocks($where) {
-  global $medoo;
-
-  $items = $medoo->select("order_details", ["item_id", "count"], $where);
-  foreach ($items as $item) {
-    increase_stock($item);
+  if (empty($inventories)) {
+    $data["stock"] = $change;
+    return $medoo->insert("inventory", $data);
+  } else {
+    return $medoo->update("inventory", ["stock[+]" => $change], ["AND" => $data]);
   }
 }
 
-function place_order($order) {
-  global $medoo;
+/// Increases (or optionally decreases if [$sign] is negative) 
+/// [$district] inventories for all items in the `order_details`
+/// table selected by the [$where] condition.
+function increase_stocks($medoo, $where, $district, $sign = 1) {
+  $items = $medoo->select("order_details", ["item_id", "count"], $where);
+  foreach ($items as $item) {
+    if (!increase_stock($medoo, $item, $district, $sign)) return false;
+  }
+  return true;
+}
 
-  $items = $order["items"];
-  unset($order["items"]);
+function place_order($medoo, $order) {
+  if (isset($order["items"])) {
+    $items = $order["items"];
+    unset($order["items"]);
+  }
 
   $order = array_merge($order, sanitize_address());
   $id = $medoo->insert("orders", $order);
@@ -142,7 +184,10 @@ function place_order($order) {
     unset($item["id"]);
     $item["order_id"] = $id;
     $medoo->insert("order_details", $item);
-    increase_stock($item, -1);
+  }
+  $order = get_single_record($medoo, "orders", $id);
+  if (!increase_stocks($medoo, ["order_id" => $id], $order["district"], -1)) {
+    return false;
   }
   return $id;
 }
@@ -168,7 +213,10 @@ function close_order($id) {
 function delete_order($id) {
   global $medoo;
 
-  increase_stocks(["order_id" => $id]);
+  $order = get_single_record($medoo, "orders", $id);
+  if (empty($order)) return 0;
+
+  increase_stocks($medoo, ["order_id" => $id], $order["district"]);
   $medoo->delete("order_details", ["order_id" => $id]);
   return $medoo->delete("orders", ["id" => $id]);
 }
@@ -189,14 +237,28 @@ function validate_order_post() {
   }
 }
 
-function update_order($order, $is_manager) {
-  global $medoo;
-
+function update_order($medoo, $order, $is_manager) {
   $data = build_update_data(
       ["paid", "paypal_trans_id", "paid_date", "comment"], $order);
   if ($is_manager) {
     $data = array_merge($data, build_update_data(["status", "shipping",
-        "int_shipping", "sub_total", "usps_track_id"], $order));
+        "int_shipping", "sub_total", "usps_track_id", "district"], $order));
+
+    if (!empty($order["district"])) {
+      $old = get_single_record($medoo, "orders", $order["id"]);
+      if (empty($old)) return 0;
+
+      if (intval($old["district"]) != intval($order["district"])) {
+        // Increase stock for the old district since the order is moved.
+        if (!increase_stocks($medoo, ["order_id" => $order["id"]], $old["district"])) {
+          return 0;
+        }
+        // Decrease stock for the new distrcit where the order is moving to.
+        if (!increase_stocks($medoo, ["order_id" => $order["id"]], $order["district"], -1)) {
+          return 0;
+        }
+      }
+    }  
   } else if (isset($data["paid"]) &&
       (intval($order["status"]) & OrderStatus::PAID)) {
     $data["status"] = $order["status"];
@@ -330,7 +392,9 @@ function move_order_items($fromOrder, $toOrder) {
 
   if (!$fromOrder["id"] || !$toOrder["id"]) return 0;
   
-  function selected($item) { return $item["selected"]; }
+  function selected($item) {
+    return isset($item["selected"]) && $item["selected"];
+  }
   $items = array_filter($fromOrder["items"], "selected");
   if (empty($items)) return 0;
   
@@ -367,21 +431,27 @@ function move_order_items($fromOrder, $toOrder) {
   $toOrder["shipping"] = floatval($toOrder["shipping"]) + $shipping;
 
   $grand = $sub_total + $int_shipping + $shipping;
-  if (floatval($fromOrder["paid"]) >= $grand) {
+  if (floatval($fromOrder["paid"]) > $grand) {
     $fromOrder["paid"] = floatval($fromOrder["paid"]) - $grand;
     $toOrder["paid"] = floatval($toOrder["paid"]) + $grand;
+  }
+  if (isset($fromOrder["paid_date"])) {
     $toOrder["paid_date"] = $fromOrder["paid_date"];
   }
 
-  $updated += update_order($fromOrder, TRUE);
-  $updated += update_order($toOrder, TRUE);
+  $updated += update_order($medoo, $fromOrder, TRUE);
+  $updated += update_order($medoo, $toOrder, TRUE);
   return $updated;
 }
 
 function delete_order_item($id) {
   global $medoo;
 
-  increase_stocks(["id" => $id]);
+  $item = get_single_record($medoo, "order_details", ["id" => $id]);
+  if (empty($item)) return 0;
+
+  $order = get_single_record($medoo, "orders", ["id" => $item["order_id"]]);
+  increase_stock($medoo, $item, $order["district"]);
   return $medoo->delete("order_details", ["id" => $id]);
 }
 
@@ -451,6 +521,15 @@ function get_requested_level($user, $request) {
       : min([_getDepartmentLevel($user), $requestedLevel]);
 }
 
+function get_inventory($district) {
+  global $medoo;
+
+  create_inventory_tables();
+  $where = $district ? ["district" => $district] : null;
+  return keyed_by_id($medoo->select("inventory", "*", $where),
+      "item_id");
+}
+
 $response = null;
 
 if (empty($_SESSION["user"])) {
@@ -503,6 +582,10 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = isOrderReader($user) 
         ? get_class_book_lists($_GET["year"]) 
         : permission_denied_error();
+  } elseif ($resource_id == "inventory") {
+    $response = isOrderManager($user)
+      ? get_inventory($_GET["district"])
+      : permission_denied_error();
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];
@@ -511,15 +594,26 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   if ($resource_id == "orders") {
     $order = $_POST;
     validate_order_post();
+
     if ($order["user_id"] != $user->id && !isOrderManager($user)) {
       $response = permission_denied_error();
     } elseif (empty($order["id"])) {
       if (empty($order["class_name"])) {
         $order["class_name"] = $user->classInfo["name"];
       }
-      $response = ["updated" => place_order($order)];
+      $medoo->action(function($medoo) {
+        global $order, $response;
+        $updated = place_order($medoo, $order);
+        $response = ["updated" => $updated];
+        return $updated;
+      });
     } else {
-      $response = ["updated" => update_order($order, isOrderManager($user))];
+      $medoo->action(function($medoo) {
+        global $order, $user, $response;
+        $updated = update_order($medoo, $order, isOrderManager($user));
+        $response = ["updated" => $updated];
+        return $updated;
+      });
     }
   } elseif ($resource_id == "move_items") {
     $response = isOrderManager($user)
@@ -546,11 +640,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 
   $record = get_single_record($medoo, $resource_id, $_REQUEST["id"]);
   error_log($user->email ." DELETE ". json_encode($record));
-  if ($record["status"] || 
-      !isOrderManager($user) && $record["user_id"] != $user->id) {
-    $response = permission_denied_error();
-  } elseif ($resource_id == "orders") {
-    if (floatval($record["paid"]) >= 0.01 || 
+  if ($resource_id == "orders") {
+    if ($record["status"] || 
+        !isOrderManager($user) && $record["user_id"] != $user->id) {
+      $response = permission_denied_error();
+    } elseif (floatval($record["paid"]) >= 0.01 || 
         !empty($record["paypal_trans_id"]) || 
         !empty($record["usps_track_id"])) {
       $response = ["error" => "order is paid or shipped"];

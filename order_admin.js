@@ -30343,6 +30343,12 @@ define('services', ['utils'], function() {
             return $http.get(url);
           },
 
+          get_inventory: function(district) {
+            var url = 'php/shop.php?rid=inventory&district={0}'.format(
+                district || '');
+            return $http.get(url);
+          },
+
           get_order_stats: function(year) {
             var url = 'php/shop.php?rid=order_stats&year={0}'.format(year);
             return $http.get(url);
@@ -31363,7 +31369,7 @@ define('order_details/order_details', [
             return parseFloat(scope.order.balance) <= 0.0;
           }
         },
-        templateUrl : 'js/order_details/order_details.html?tag=201809261213'
+        templateUrl : 'js/order_details/order_details.html?tag=201901011450'
       };
     });
 });
@@ -31574,6 +31580,7 @@ define('orders/orders', [
               } else {
                 order.editing = false;
                 utils.calculate_order_values(order);
+                $rootScope.$broadcast('order-updated');
               }
             });
           };
@@ -31685,6 +31692,7 @@ define('orders/orders', [
               city: order.city,
               state: order.state,
               country: order.country,
+              district: order.district,
               zip: order.zip,
               paypal_trans_id: order.paypal_trans_id,
               items: []
@@ -31738,7 +31746,11 @@ define('orders/orders', [
           function _removeOrderItem(order, item) {
             var removeItem = function() {
               return rpc.remove_order_item(item.id).then(function(response) {
-                return response.data.deleted;
+                if (parseInt(response.data.deleted)) {
+                  $rootScope.$broadcast('order-item-deleted');
+                  return true;
+                }
+                return false;
               });
             };
             var updateOrder = function() {
@@ -31846,6 +31858,7 @@ define('shopping_cart/shopping_cart', [
           scope.shipTo = scope.ME;
           
           var items = {};
+          var districts;
           
           function showPaymentWindow(orderId) {
             var toast = document.querySelector('#toast1');
@@ -31856,6 +31869,12 @@ define('shopping_cart/shopping_cart', [
                 item.name = items[item.item_id].name;
               });
               utils.calculate_order_values(scope.order);
+            });
+          }
+
+          function getDistricts() {
+            return rpc.get_districts().then(function(response) {
+              return districts = response.data;
             });
           }
 
@@ -31884,19 +31903,34 @@ define('shopping_cart/shopping_cart', [
               localPickup: scope.shipTo == scope.PICKUP
             };
             utils.mix_in(items, scope.cart.items);
-            scope.cart.checkOut(user, options).then(function(orderId) {
-              if (!orderId) return;
-              $rootScope.$broadcast('reload-orders');
-              if (payNow) {
-                showPaymentWindow(orderId);
-              } else if (scope.refill) {
-                clear();
-              } else {
-                var toast = document.querySelector('#toast0');
-                toast && toast.open();
-                scope.showOrders();
+
+            function checkOut() {
+              user.district = user.district || 2;
+              var district = districts[user.district];
+              if (!parseInt(district.stock)) {
+                user.district = 2;
               }
-            });
+              if (options.localPickup) {
+                user.street = user.city = user.state =
+                    user.country = user.zip = null;
+              }
+              return scope.cart.checkOut(user, options).then(function(orderId) {
+                if (!orderId) return false;
+                $rootScope.$broadcast('reload-orders');
+                if (payNow) {
+                  showPaymentWindow(orderId);
+                } else if (scope.refill) {
+                  clear();
+                } else {
+                  var toast = document.querySelector('#toast0');
+                  toast && toast.open();
+                  scope.showOrders();
+                }
+                return true;
+              });
+            }
+
+            utils.requestOneByOne([getDistricts, checkOut]);
           };
 
           scope.updateShipMethod = function(shipTo) {
@@ -31904,7 +31938,6 @@ define('shopping_cart/shopping_cart', [
             if (shipTo == scope.PICKUP) {
               scope.cart.shipping = 0.00;
             } else if (shipTo == scope.ME) {
-              scope.user.district = null;
               scope.cart.update();
             } else {
               scope.cart.update();
@@ -31925,7 +31958,7 @@ define('shopping_cart/shopping_cart', [
           };
 
           scope.updateOrder = function() {
-        	    scope.order.status = 2;
+        	  scope.order.status = 2;
             rpc.update_order(scope.order).then(function(response) {
               clear();
               if (response.data.updated) {
@@ -32242,11 +32275,13 @@ define('book_lists/book_lists',
 define('inventory/inventory', [
     'model/cart',
     'book_editor/book_editor',
+    'districts/districts',
     'orders/orders',
     'shopping_cart/shopping_cart',
     'services', 'utils'], function(Cart) {
   return angular.module('InventoryModule', [
         'BookEditorModule',
+        'DistrictsModule',
         'OrdersModule',
         'ShoppingCartModule',
         'ServicesModule',
@@ -32260,13 +32295,15 @@ define('inventory/inventory', [
           scope.year = new Date().getFullYear();
           scope.cart = new Cart({rpc: rpc, utils: utils});
           scope.selected = {};
+          // Load Seattle inventory by default.
+          scope.inventory = {district: scope.user.district};
 
           function convertNumbers() {
             utils.forEach(scope.items, function(book) {
               book.category = parseInt(book.category);
-              book.price = parseFloat(book.price);
-              book.shipping = parseFloat(book.shipping);
-              book.int_shipping = parseFloat(book.int_shipping);
+              book.price = parseFloat(book.price) || 0.00;
+              book.shipping = parseFloat(book.shipping) || 0.00;
+              book.int_shipping = parseFloat(book.int_shipping) || 0.00;
             });
             return scope.items;
           }  
@@ -32288,6 +32325,18 @@ define('inventory/inventory', [
               return scope.categories = response.data;
             });
           }
+
+          function getInventory() {
+            var district = scope.inventory.district;
+            return rpc.get_inventory(district).then(function(response) {
+              scope.inventory.items = response.data;
+              utils.forEach(scope.items, function(item) {
+                var inventory = response.data[item.id];
+                item.stock = parseInt(inventory && inventory.stock || 0);
+              });
+              return true;
+            });
+          }
   
           scope.addToCart = (item) => scope.cart.add(item);
           
@@ -32306,11 +32355,22 @@ define('inventory/inventory', [
         	    });
           };
           
-          $rootScope.$on('reload-orders', getItems);
-          $rootScope.$on('order-deleted', getItems);
-          utils.requestOneByOne([getCategories, getItems]);
+          function reload() {
+            return utils.requestOneByOne([getItems, getInventory]);  
+          };
+
+          scope.reloadInventory = function() {
+            reload();
+          };
+
+          $rootScope.$on('reload-orders', reload);
+          $rootScope.$on('order-deleted', reload);
+          $rootScope.$on('order-item-deleted', reload);
+          $rootScope.$on('order-updated', reload);
+
+          utils.requestOneByOne([getCategories, reload]);
         },
-        templateUrl : 'js/inventory/inventory.html?tag=201809232246'
+        templateUrl : 'js/inventory/inventory.html?tag=201901011450'
       };
     });
 });

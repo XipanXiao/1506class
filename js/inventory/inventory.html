@@ -1,4 +1,7 @@
 <div class="padded-element">
+  <districts editable="true" user="inventory" on-change="reloadInventory()"
+      stock="true">
+  </districts>
   <label>输入名字查找: <input type="text" ng-model="namePrefix"></label>
   <label>输入库存查找: <input type="text" ng-model="stockFilter"></label>
 </div>
@@ -18,8 +21,8 @@
         class="css-table-row deletable selectable"
         ng-click="selected.editingBook = item">
       <div class="css-table-cell item-name">{{item.name}}</div>
-      <div class="css-table-cell">${{item.price}}</div>
-      <div class="css-table-cell">${{item.shipping}}</div>
+      <div class="css-table-cell">${{item.price.toFixed(2)}}</div>
+      <div class="css-table-cell">${{item.shipping.toFixed(2)}}</div>
       <div class="css-table-cell">{{item.stock}}</div>
       <div class="css-table-cell">
         <iron-icon icon="add" class="delete-button"

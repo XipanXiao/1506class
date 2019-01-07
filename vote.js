@@ -30307,6 +30307,12 @@ define('services', ['utils'], function() {
             return $http.get(url);
           },
 
+          get_inventory: function(district) {
+            var url = 'php/shop.php?rid=inventory&district={0}'.format(
+                district || '');
+            return $http.get(url);
+          },
+
           get_order_stats: function(year) {
             var url = 'php/shop.php?rid=order_stats&year={0}'.format(year);
             return $http.get(url);

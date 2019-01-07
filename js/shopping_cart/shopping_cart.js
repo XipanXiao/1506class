@@ -24,6 +24,7 @@ define('shopping_cart/shopping_cart', [
           scope.shipTo = scope.ME;
           
           var items = {};
+          var districts;
           
           function showPaymentWindow(orderId) {
             var toast = document.querySelector('#toast1');
@@ -34,6 +35,12 @@ define('shopping_cart/shopping_cart', [
                 item.name = items[item.item_id].name;
               });
               utils.calculate_order_values(scope.order);
+            });
+          }
+
+          function getDistricts() {
+            return rpc.get_districts().then(function(response) {
+              return districts = response.data;
             });
           }
 
@@ -62,19 +69,34 @@ define('shopping_cart/shopping_cart', [
               localPickup: scope.shipTo == scope.PICKUP
             };
             utils.mix_in(items, scope.cart.items);
-            scope.cart.checkOut(user, options).then(function(orderId) {
-              if (!orderId) return;
-              $rootScope.$broadcast('reload-orders');
-              if (payNow) {
-                showPaymentWindow(orderId);
-              } else if (scope.refill) {
-                clear();
-              } else {
-                var toast = document.querySelector('#toast0');
-                toast && toast.open();
-                scope.showOrders();
+
+            function checkOut() {
+              user.district = user.district || 2;
+              var district = districts[user.district];
+              if (!parseInt(district.stock)) {
+                user.district = 2;
               }
-            });
+              if (options.localPickup) {
+                user.street = user.city = user.state =
+                    user.country = user.zip = null;
+              }
+              return scope.cart.checkOut(user, options).then(function(orderId) {
+                if (!orderId) return false;
+                $rootScope.$broadcast('reload-orders');
+                if (payNow) {
+                  showPaymentWindow(orderId);
+                } else if (scope.refill) {
+                  clear();
+                } else {
+                  var toast = document.querySelector('#toast0');
+                  toast && toast.open();
+                  scope.showOrders();
+                }
+                return true;
+              });
+            }
+
+            utils.requestOneByOne([getDistricts, checkOut]);
           };
 
           scope.updateShipMethod = function(shipTo) {
@@ -82,7 +104,6 @@ define('shopping_cart/shopping_cart', [
             if (shipTo == scope.PICKUP) {
               scope.cart.shipping = 0.00;
             } else if (shipTo == scope.ME) {
-              scope.user.district = null;
               scope.cart.update();
             } else {
               scope.cart.update();
@@ -103,7 +124,7 @@ define('shopping_cart/shopping_cart', [
           };
 
           scope.updateOrder = function() {
-        	    scope.order.status = 2;
+        	  scope.order.status = 2;
             rpc.update_order(scope.order).then(function(response) {
               clear();
               if (response.data.updated) {

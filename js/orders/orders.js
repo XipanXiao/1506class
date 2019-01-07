@@ -205,6 +205,7 @@ define('orders/orders', [
               } else {
                 order.editing = false;
                 utils.calculate_order_values(order);
+                $rootScope.$broadcast('order-updated');
               }
             });
           };
@@ -316,6 +317,7 @@ define('orders/orders', [
               city: order.city,
               state: order.state,
               country: order.country,
+              district: order.district,
               zip: order.zip,
               paypal_trans_id: order.paypal_trans_id,
               items: []
@@ -369,7 +371,11 @@ define('orders/orders', [
           function _removeOrderItem(order, item) {
             var removeItem = function() {
               return rpc.remove_order_item(item.id).then(function(response) {
-                return response.data.deleted;
+                if (parseInt(response.data.deleted)) {
+                  $rootScope.$broadcast('order-item-deleted');
+                  return true;
+                }
+                return false;
               });
             };
             var updateOrder = function() {

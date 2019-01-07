@@ -1,11 +1,13 @@
 define('inventory/inventory', [
     'model/cart',
     'book_editor/book_editor',
+    'districts/districts',
     'orders/orders',
     'shopping_cart/shopping_cart',
     'services', 'utils'], function(Cart) {
   return angular.module('InventoryModule', [
         'BookEditorModule',
+        'DistrictsModule',
         'OrdersModule',
         'ShoppingCartModule',
         'ServicesModule',
@@ -19,13 +21,15 @@ define('inventory/inventory', [
           scope.year = new Date().getFullYear();
           scope.cart = new Cart({rpc: rpc, utils: utils});
           scope.selected = {};
+          // Load Seattle inventory by default.
+          scope.inventory = {district: scope.user.district};
 
           function convertNumbers() {
             utils.forEach(scope.items, function(book) {
               book.category = parseInt(book.category);
-              book.price = parseFloat(book.price);
-              book.shipping = parseFloat(book.shipping);
-              book.int_shipping = parseFloat(book.int_shipping);
+              book.price = parseFloat(book.price) || 0.00;
+              book.shipping = parseFloat(book.shipping) || 0.00;
+              book.int_shipping = parseFloat(book.int_shipping) || 0.00;
             });
             return scope.items;
           }  
@@ -47,6 +51,18 @@ define('inventory/inventory', [
               return scope.categories = response.data;
             });
           }
+
+          function getInventory() {
+            var district = scope.inventory.district;
+            return rpc.get_inventory(district).then(function(response) {
+              scope.inventory.items = response.data;
+              utils.forEach(scope.items, function(item) {
+                var inventory = response.data[item.id];
+                item.stock = parseInt(inventory && inventory.stock || 0);
+              });
+              return true;
+            });
+          }
   
           scope.addToCart = (item) => scope.cart.add(item);
           
@@ -65,11 +81,22 @@ define('inventory/inventory', [
         	    });
           };
           
-          $rootScope.$on('reload-orders', getItems);
-          $rootScope.$on('order-deleted', getItems);
-          utils.requestOneByOne([getCategories, getItems]);
+          function reload() {
+            return utils.requestOneByOne([getItems, getInventory]);  
+          };
+
+          scope.reloadInventory = function() {
+            reload();
+          };
+
+          $rootScope.$on('reload-orders', reload);
+          $rootScope.$on('order-deleted', reload);
+          $rootScope.$on('order-item-deleted', reload);
+          $rootScope.$on('order-updated', reload);
+
+          utils.requestOneByOne([getCategories, reload]);
         },
-        templateUrl : 'js/inventory/inventory.html?tag=201809232246'
+        templateUrl : 'js/inventory/inventory.html?tag=201901011450'
       };
     });
 });
