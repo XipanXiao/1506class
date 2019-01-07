@@ -31889,14 +31889,14 @@ define('shopping_cart/shopping_cart', [
                 alert('请选择地方组');
                 return;
               }
-            } else {
-              if (!user.name || !user.street || !user.city ||
-                  !user.zip) {
-                alert('请输入完整收货信息.');
-                scope.addrEditor.editing = true;
-                return;
-              }
+            } 
+            if (!user.name || !user.street || !user.city ||
+                !user.zip) {
+              alert('请输入完整地址信息（即使上门取货，也需要用作billing address）.');
+              scope.addrEditor.editing = true;
+              return;
             }
+            
             var options = {
               refill: scope.refill,
               payNow: payNow,
@@ -31909,10 +31909,6 @@ define('shopping_cart/shopping_cart', [
               var district = districts[user.district];
               if (!parseInt(district.stock)) {
                 user.district = 2;
-              }
-              if (options.localPickup) {
-                user.street = user.city = user.state =
-                    user.country = user.zip = null;
               }
               return scope.cart.checkOut(user, options).then(function(orderId) {
                 if (!orderId) return false;

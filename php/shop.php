@@ -110,7 +110,10 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
   $userFilter = $user_id ? sprintf("user_id=%d", $user_id) : "TRUE";
   $classFilter = "TRUE";
   if (!$user_id && !empty($filters["class_id"])) {
-    $classIds = explode(",", $filters["class_id"]);
+    $classIds = $filters["class_id"];
+    if (is_string($classIds)) {
+      $classIds = explode(",", $classIds);
+    }
     $userIds = $medoo->select("users", "id", 
         ["classId" => $classIds]);
     $classFilter = sprintf("user_id in (%s)", join(", ", $userIds));
