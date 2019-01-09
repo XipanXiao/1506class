@@ -12,6 +12,26 @@ define('payment/payment', [
           showCloseButton: '@'
         },
         link: function(scope) {
+					function fillAddress(order) {
+						var keys = ['street', 'city', 'state', 'country', 'zip'];
+						if (keys.every((key) => !!order[key])) {
+							scope.addressComplete = true;
+							return;
+						}
+						rpc.get_user().then(function(user) {
+							complete = true;
+							keys.forEach((key) => {
+								order[key] = order[key] || user[key];
+								complete = complete && !!order[key];
+							});
+							scope.addressComplete = complete;
+						});
+					}
+					if (scope.order) {
+						fillAddress(scope.order);
+					} else {
+						scope.$watch('order', fillAddress);
+					}
           function parseMoney(value) {
             return value && parseFloat(value) || 0.00;
           }
@@ -111,7 +131,7 @@ define('payment/payment', [
 	        	}
 	        	}, '#paypal-button-container');
         	},
-        templateUrl : 'js/payment/payment.html?tag=201809252258'
+        templateUrl : 'js/payment/payment.html?tag=201901062258'
       };
     });
 });

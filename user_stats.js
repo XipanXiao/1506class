@@ -31698,7 +31698,7 @@ define('address_editor/address_editor', ['services', 'utils'], function() {
       'UtilsModule']).directive('addressEditor', function(rpc, utils) {
     return {
       scope: {
-        editing: '@',
+        editing: '=',
         user: '=',
         withContact: '@',
       },

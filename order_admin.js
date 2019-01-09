@@ -30927,7 +30927,7 @@ define('address_editor/address_editor', ['services', 'utils'], function() {
       'UtilsModule']).directive('addressEditor', function(rpc, utils) {
     return {
       scope: {
-        editing: '@',
+        editing: '=',
         user: '=',
         withContact: '@',
       },
@@ -31176,6 +31176,26 @@ define('payment/payment', [
           showCloseButton: '@'
         },
         link: function(scope) {
+					function fillAddress(order) {
+						var keys = ['street', 'city', 'state', 'country', 'zip'];
+						if (keys.every((key) => !!order[key])) {
+							scope.addressComplete = true;
+							return;
+						}
+						rpc.get_user().then(function(user) {
+							complete = true;
+							keys.forEach((key) => {
+								order[key] = order[key] || user[key];
+								complete = complete && !!order[key];
+							});
+							scope.addressComplete = complete;
+						});
+					}
+					if (scope.order) {
+						fillAddress(scope.order);
+					} else {
+						scope.$watch('order', fillAddress);
+					}
           function parseMoney(value) {
             return value && parseFloat(value) || 0.00;
           }
@@ -31275,7 +31295,7 @@ define('payment/payment', [
 	        	}
 	        	}, '#paypal-button-container');
         	},
-        templateUrl : 'js/payment/payment.html?tag=201809252258'
+        templateUrl : 'js/payment/payment.html?tag=201901062258'
       };
     });
 });
@@ -31859,7 +31879,7 @@ define('shopping_cart/shopping_cart', [
           
           var items = {};
           var districts;
-          
+
           function showPaymentWindow(orderId) {
             var toast = document.querySelector('#toast1');
             toast && toast.open();
@@ -31889,13 +31909,14 @@ define('shopping_cart/shopping_cart', [
                 alert('请选择地方组');
                 return;
               }
+            } else {
+              if (!user.name || !user.street || !user.city ||
+                  !user.zip || !user.country) {
+                alert('请输入完整收货信息.');
+                scope.addrEditor.editing = true;
+                return;
+              }
             } 
-            if (!user.name || !user.street || !user.city ||
-                !user.zip) {
-              alert('请输入完整地址信息（即使上门取货，也需要用作billing address）.');
-              scope.addrEditor.editing = true;
-              return;
-            }
             
             var options = {
               refill: scope.refill,
@@ -31905,10 +31926,16 @@ define('shopping_cart/shopping_cart', [
             utils.mix_in(items, scope.cart.items);
 
             function checkOut() {
+              // Make a copy to avoid modifying existing data.
+              user = utils.mix_in({}, user);
               user.district = user.district || 2;
               var district = districts[user.district];
               if (!parseInt(district.stock)) {
                 user.district = 2;
+              }
+              if (options.localPickup) {
+                user.street = user.city = user.state =
+                    user.country = user.zip = null;
               }
               return scope.cart.checkOut(user, options).then(function(orderId) {
                 if (!orderId) return false;

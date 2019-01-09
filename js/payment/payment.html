@@ -1,6 +1,11 @@
 <iron-icon icon="close" ng-click="onCancel()" title="取消"
     class="right clickable" ng-show="showCloseButton">
 </iron-icon>
+<div class="padded-element">
+  <strong>{{order.name}}</strong>
+  <div class="error" ng-if="!addressComplete">请输入完整账单地址</div>
+  <address-editor user="order" editing="!addressComplete"></address-editor>
+</div>
 <div class="flex">
   <div class="padded-element">
     <div>Paypal</div>

@@ -275,7 +275,8 @@ function update_order($medoo, $order, $is_manager) {
 }
 
 function sanitize_address() {
-  if (!is_country_code($_POST["country"])) return null;
+  if (isset($_POST["country"]) &&
+      !is_country_code($_POST["country"])) return null;
 
   $data = [];
   foreach (["name", "phone", "street", "city", "zip"] as $key) {
