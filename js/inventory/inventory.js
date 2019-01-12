@@ -89,6 +89,13 @@ define('inventory/inventory', [
             reload();
           };
 
+          scope.showMoveInventoryDialog = function(event, item) {
+            event.stopPropagation();
+            item.count = item.count || 1;
+            utils.showMoveInventoryDialog(item,
+                scope.inventory.district).then(reload);
+          };
+
           $rootScope.$on('reload-orders', reload);
           $rootScope.$on('order-deleted', reload);
           $rootScope.$on('order-item-deleted', reload);
@@ -96,7 +103,7 @@ define('inventory/inventory', [
 
           utils.requestOneByOne([getCategories, reload]);
         },
-        templateUrl : 'js/inventory/inventory.html?tag=201901011450'
+        templateUrl : 'js/inventory/inventory.html?tag=201901101450'
       };
     });
 });

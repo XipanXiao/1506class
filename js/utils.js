@@ -637,6 +637,15 @@ define('utils', [], function() {
         var scope = angular.element(dialog).scope();
         scope.election = election;
       },
+      showMoveInventoryDialog: function(item, district) {
+        var dialog = document.getElementById('move-inventory-dialog');
+        dialog.open();
+        var scope = angular.element(dialog).scope();
+        scope.district = district;
+        scope.item = item;
+        scope.deferred = $q.defer();
+        return scope.deferred.promise;
+      },
       /// Given a Chinese name, return its pinyin.
       /// e.g. Input: 张三, output ['San', 'Zhang'].
       getPinyinName: function(name, pinyinTable) {

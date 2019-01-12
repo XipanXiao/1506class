@@ -534,6 +534,12 @@ function get_inventory($district) {
       "item_id");
 }
 
+function move_inventory($medoo, $item, $from, $to) {
+  $updated = increase_stock($medoo, $item, $from, -1);
+  if (!$updated) return 0;
+  return $updated + increase_stock($medoo, $item, $to, +1);
+}
+
 $response = null;
 
 if (empty($_SESSION["user"])) {
@@ -636,6 +642,14 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = isOrderManager($user)
         ? ["updated" => update_item($_POST)]
         : permission_denied_error();
+  } elseif ($resource_id == "move_inventory") {
+    $medoo->action(function($medoo) {
+      global $user, $response;
+      $response = isOrderManager($user)
+          ? ["updated" => move_inventory($medoo, $_POST["item"], 
+              $_POST["from_district"], $_POST["to_district"])]
+          : permission_denied_error();
+    });
   }
 } elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE" &&
     isset ( $_REQUEST["rid"] )) {

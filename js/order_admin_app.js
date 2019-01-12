@@ -12,6 +12,7 @@ define('order_admin_app', [
   angular.module('AppModule', [
       'AppBarModule',
       'BookListsModule',
+      'MoveInventoryDialogModule',
       'OrdersModule',
       'OrderStatsModule',
       'InventoryModule',

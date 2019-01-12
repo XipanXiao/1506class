@@ -30040,6 +30040,15 @@ $provide.value("$locale", {
         var scope = angular.element(dialog).scope();
         scope.election = election;
       },
+      showMoveInventoryDialog: function(item, district) {
+        var dialog = document.getElementById('move-inventory-dialog');
+        dialog.open();
+        var scope = angular.element(dialog).scope();
+        scope.district = district;
+        scope.item = item;
+        scope.deferred = $q.defer();
+        return scope.deferred.promise;
+      },
       /// Given a Chinese name, return its pinyin.
       /// e.g. Input: 张三, output ['San', 'Zhang'].
       getPinyinName: function(name, pinyinTable) {
@@ -30424,6 +30433,17 @@ define('services', ['utils'], function() {
               rid: 'move_items',
               from_order: fromOrder,
               to_order: toOrder
+            };
+            return http_form_post(
+                $http, $httpParamSerializerJQLike(request), 'php/shop.php');
+          },
+
+          move_inventory: function(item, fromDistrict, toDistrict) {
+            var request = {
+              rid: 'move_inventory',
+              item: item,
+              from_district: fromDistrict,
+              to_district: toDistrict
             };
             return http_form_post(
                 $http, $httpParamSerializerJQLike(request), 'php/shop.php');
@@ -32295,7 +32315,61 @@ define('book_lists/book_lists',
     };
   });
 });
-define('inventory/inventory', [
+angular.module('PaperBindingsModule', [
+  ]).directive('paperInput', function() {
+    return {
+      restrict: 'E',
+      require: 'ngModel',
+      link: function(scope, elements, attrs, ngModel) {
+        var element = elements[0];
+        element.value = ngModel.$modelValue;
+
+        ngModel.$formatters.push((modelValue) => {
+          var value = modelValue || '';
+          var input = element.querySelector('input');
+          if (input) {
+            input.value = value;
+          } else {
+            element.setAttribute('value', value);
+          }
+        });
+
+        element.addEventListener('input', (event) => {
+          ngModel.$setViewValue(event.target.value);
+        });
+      }
+    };
+});
+angular.module('MoveInventoryDialogModule', [
+    'DistrictsModule',
+    'PaperBindingsModule',
+    'ServicesModule',
+    'UtilsModule',
+  ]).directive('moveInventoryDialog', function (rpc, utils) {
+    return {
+      scope: {
+        district: '=',
+        deferred: '=',
+        item: '='
+      },
+      link: function (scope) {
+        scope.sourceDistrict = scope;
+        scope.targetDistrict = {district: null};
+        scope.move = function() {
+          var from = scope.district;
+          var to = scope.targetDistrict.district;
+          var item = {item_id: scope.item.id, count: scope.item.count};
+          rpc.move_inventory(item, from, to).then(function(response) {
+            if (parseInt(response.data.updated)) {
+              scope.deferred.resolve();
+            }
+          });
+        };
+      },
+      templateUrl: 'js/move_inventory_dialog/move_inventory_dialog.html?tag=20180621'
+    };
+  });
+  define('inventory/inventory', [
     'model/cart',
     'book_editor/book_editor',
     'districts/districts',
@@ -32386,6 +32460,13 @@ define('inventory/inventory', [
             reload();
           };
 
+          scope.showMoveInventoryDialog = function(event, item) {
+            event.stopPropagation();
+            item.count = item.count || 1;
+            utils.showMoveInventoryDialog(item,
+                scope.inventory.district).then(reload);
+          };
+
           $rootScope.$on('reload-orders', reload);
           $rootScope.$on('order-deleted', reload);
           $rootScope.$on('order-item-deleted', reload);
@@ -32393,7 +32474,7 @@ define('inventory/inventory', [
 
           utils.requestOneByOne([getCategories, reload]);
         },
-        templateUrl : 'js/inventory/inventory.html?tag=201901011450'
+        templateUrl : 'js/inventory/inventory.html?tag=201901101450'
       };
     });
 });
@@ -32411,6 +32492,7 @@ define('order_admin_app', [
   angular.module('AppModule', [
       'AppBarModule',
       'BookListsModule',
+      'MoveInventoryDialogModule',
       'OrdersModule',
       'OrderStatsModule',
       'InventoryModule',

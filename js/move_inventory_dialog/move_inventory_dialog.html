@@ -1,0 +1,23 @@
+<paper-dialog id="move-inventory-dialog" modal>
+  <h1>转移库存</h1>
+  <div class="padded-element">
+    {{item.name}}
+    <paper-input ng-model="item.count" type="number" placeholder="输入数量..."
+        always-float-label label="数量">
+    </paper-input>
+  </div>
+  <div class="padded-element">
+    源库存地区
+    <districts user="sourceDistrict" editable="true" stock="true">
+    </districts>
+  </div>
+  <div class="padded-element">
+    目标库存地区
+    <districts user="targetDistrict" editable="true" stock="true">
+    </districts>
+  </div>
+  <div class="buttons">
+    <paper-button dialog-dismiss raised>取消</paper-button>
+    <paper-button dialog-dismiss ng-click="move()" raised>转移</paper-button>
+  </div>
+</paper-dialog>

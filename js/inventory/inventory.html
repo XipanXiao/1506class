@@ -25,6 +25,9 @@
       <div class="css-table-cell">${{item.shipping.toFixed(2)}}</div>
       <div class="css-table-cell">{{item.stock}}</div>
       <div class="css-table-cell">
+        <iron-icon icon="compare-arrows" class="delete-button"
+            ng-click="showMoveInventoryDialog($event, item)" title="转移库存...">
+        </iron-icon>
         <iron-icon icon="add" class="delete-button"
             ng-click="addToCart(item)" title="添加库存...">
         </iron-icon>

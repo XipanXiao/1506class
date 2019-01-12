@@ -299,6 +299,17 @@ define('services', ['utils'], function() {
                 $http, $httpParamSerializerJQLike(request), 'php/shop.php');
           },
 
+          move_inventory: function(item, fromDistrict, toDistrict) {
+            var request = {
+              rid: 'move_inventory',
+              item: item,
+              from_district: fromDistrict,
+              to_district: toDistrict
+            };
+            return http_form_post(
+                $http, $httpParamSerializerJQLike(request), 'php/shop.php');
+          },
+
           update_book_list: function(bookList) {
             bookList.rid = 'book_lists';
             return http_form_post(
