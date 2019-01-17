@@ -29863,7 +29863,7 @@ $provide.value("$locale", {
           ['暂时先不', '小组管理', '资料收发', '统计报数', '其他工作', '英文翻译',
            '提供场所'],
       channelLabels: ['', '其他方式', '智悲佛网', '国际佛学网',
-          '美国智悲菩提讲修', '本地招生材料', '微信', '微博或论坛', '朋友介绍'],
+          '', '本地招生材料', '微信', '微博或论坛', '朋友介绍'],
       entranceLabels: ['本站', '微信', 'zbfw'], 
       weekDayLabels: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
       getDisplayLabel: function(user, key) {
@@ -32354,7 +32354,7 @@ define('users/users', ['bit_editor/bit_editor',
             document.querySelector('#serial-number-dlg').open();
           };
         },
-        templateUrl : 'js/users/users.html?tag=201812032307'
+        templateUrl : 'js/users/users.html?tag=201912032307'
       };
     });
 });

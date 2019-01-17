@@ -23,11 +23,11 @@
       <div class="css-table-cell" ng-if="!isNewClass()"><strong>法名</strong></div>
       <div class="css-table-cell"><strong>电子邮件</strong></div>
       <div class="css-table-cell"><strong>电话</strong></div>
-      <div class="css-table-cell" ng-if="!isNewClass()"><strong>微信</strong></div>
-      <div class="css-table-cell" ng-if="!isNewClass()"><strong>州</strong></div>
+      <div class="css-table-cell"><strong>微信</strong></div>
+      <div class="css-table-cell"><strong>州</strong></div>
       <div class="css-table-cell"><strong>入学年份</strong></div>
       <div class="css-table-cell" ng-if="isNewClass()"><strong>入口</strong></div>
-      <div class="css-table-cell" ng-if="isNewClass()"><strong>已信,入微,YY,试麦</strong></div>
+      <div class="css-table-cell" ng-if="isNewClass()"><strong>入微,zoom,试麦</strong></div>
       <div class="css-table-cell" ng-if="isNewClass()"><strong>功德会</strong></div>
       <div class="css-table-cell"><strong>备注</strong></div>
       <div class="css-table-cell"></div>
@@ -39,18 +39,16 @@
       <div class="css-table-cell compact-name-field" ng-if="!isNewClass()">{{user.nickname}}</div>
       <div class="css-table-cell email">{{user.email}}</div>
       <div class="css-table-cell">{{user.phone}}</div>
-      <div class="css-table-cell" ng-if="!isNewClass()">{{user.im}}</div>
-      <div class="css-table-cell" ng-if="!isNewClass()">{{user.stateLabel}}</div>
+      <div class="css-table-cell">{{user.im}}</div>
+      <div class="css-table-cell">{{user.stateLabel}}</div>
       <div class="css-table-cell" >{{user.start_year}}</div>
       <div class="css-table-cell" ng-if="isNewClass()">{{entrances[user.entrance]}}</div>
       <div class="css-table-cell" ng-if="isNewClass()">
-        <input type="checkbox" ng-model="user.enroll_tasks" title="欢迎信已发"
-            ng-click="updateEnroll(user)" bit-index="0">
         <input type="checkbox" ng-model="user.enroll_tasks" title="已加入微信群"
             ng-click="updateEnroll(user)" bit-index="1">
-        <input type="checkbox" ng-model="user.enroll_tasks" title="YY已经安装"
+        <input type="checkbox" ng-model="user.enroll_tasks" title="zoom已经安装"
             ng-click="updateEnroll(user)" bit-index="2">
-        <input type="checkbox" ng-model="user.enroll_tasks" title="YY试麦完成"
+        <input type="checkbox" ng-model="user.enroll_tasks" title="试麦完成"
             ng-click="updateEnroll(user)" bit-index="3">
       </div>
       <div class="css-table-cell" ng-if="isNewClass()">

@@ -107,7 +107,7 @@ define('users/users', ['bit_editor/bit_editor',
             document.querySelector('#serial-number-dlg').open();
           };
         },
-        templateUrl : 'js/users/users.html?tag=201812032307'
+        templateUrl : 'js/users/users.html?tag=201912032307'
       };
     });
 });
