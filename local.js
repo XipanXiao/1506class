@@ -31256,7 +31256,15 @@ define('checkbox_filter/checkbox_filter', [
           options: '=',
           selectionChanged: '&'
         },
-        templateUrl : 'js/checkbox_filter/checkbox_filter.html'
+        link: function(scope) {
+          scope.invert = function() {
+            utils.forEach(scope.options, function(option) {
+              option.checked = !option.checked;
+            });
+            scope.selectionChanged();
+          };
+        },
+        templateUrl : 'js/checkbox_filter/checkbox_filter.html?tag=2019'
       };
     });
 });
