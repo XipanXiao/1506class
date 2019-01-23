@@ -33,7 +33,7 @@ function get_district_users($district) {
 	$users = $medoo->select("users", "*", ["district" => $district]);
 	$classes = keyed_by_id($medoo->select("classes",
 			["id", "start_year", "department_id"],
-			["id[!]" => get_excluded_classes($medoo)]));
+			["id[!]" => get_deleted_classes($medoo)]));
 	
 	$staff = keyed_by_id($medoo->select("staff", "*"), "user");
 

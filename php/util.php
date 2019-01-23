@@ -150,4 +150,11 @@ function get_excluded_classes($medoo) {
   return $medoo->select("classes", "id",
       ["OR" => ["deleted" => 1, "graduated" => 1, "department_id" => 9]]);
 }
+
+function get_deleted_classes($medoo, $include_graduated = true) {
+  $where = $include_graduated
+      ? ["OR" => ["deleted" => 1, "graduated" => 1]]
+      : ["deleted" => 1];
+  return $medoo->select("classes", "id", $where);
+}
 ?>
