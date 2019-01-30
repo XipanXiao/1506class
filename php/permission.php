@@ -118,7 +118,7 @@ function getStartPage($user) {
 
 function canReadDistrict($user, $district_id) {
   return isSysAdmin($user) ||
-      isCountryAdmin($user) ||
+      isInspector($user) ||
       isDistrictInspector($user) && $user->district == $district_id;
 }
 
