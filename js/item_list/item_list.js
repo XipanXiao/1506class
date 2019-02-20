@@ -9,7 +9,7 @@ define('item_list/item_list', ['flying/flying', 'services', 'utils'], function()
         },
         link: function(scope) {
           scope.items = [];
-          
+
           var bookIds = {};
 
           var parent_id = parseInt(utils.getUrlParameter('parent_id')) || 1;
@@ -17,12 +17,12 @@ define('item_list/item_list', ['flying/flying', 'services', 'utils'], function()
           function validCategory(category) {
             return category && parseInt(category.parent_id) == parent_id;
           }
-          
+
           function validItem(item) {
-            return parent_id == 1 ? bookIds.has(item.id) : 
+            return parent_id == 1 ? bookIds.has(item.id) :
                 validCategory(scope.categories[item.category]);
           }
-          
+
           function getCategories() {
             return rpc.get_item_categories().then(function(response) {
               utils.forEach(response.data, function(category) {
@@ -32,14 +32,18 @@ define('item_list/item_list', ['flying/flying', 'services', 'utils'], function()
                   utils.where(response.data, validCategory);
             });
           }
-          
+
           function getItems() {
             return rpc.get_items().then(function(response) {
-              return scope.items =
+              scope.items =
                   utils.toList(utils.where(response.data, validItem));
+              scope.items.forEach(function(item) {
+                item.shipping = item.int_shipping = 0.00;
+              });
+              return scope.items;
             });
           }
-          
+
           function getBookList() {
             if (parent_id != 1) {
               return utils.truePromise();
@@ -52,7 +56,7 @@ define('item_list/item_list', ['flying/flying', 'services', 'utils'], function()
           scope.addToCart = function(item) {
             scope.cart.add(item);
           };
-          
+
           scope.$watch('user', function(user) {
             if (user) {
               utils.requestOneByOne([getBookList, getCategories, getItems]);
@@ -63,3 +67,4 @@ define('item_list/item_list', ['flying/flying', 'services', 'utils'], function()
       };
     });
 });
+
