@@ -29962,6 +29962,18 @@ define('services', ['utils'], function() {
                 country || 'US');
             return districtPromise || (districtPromise = $http.get(url));
           },
+
+          update_district: function(district) {
+            district.rid = 'districts';
+            return http_form_post(
+                $http, $httpParamSerializerJQLike(district), 'php/district.php')
+                .then(function(res) {
+                  if (parseInt(res.data.updated)) {
+                    districtPromise = null;
+                  }
+                  return res;
+                });
+          },
           
           get_pinyin_table: function() {
         	    if (pinyinTablePromise) return pinyinTablePromise;
@@ -30730,6 +30742,26 @@ define('utils', [], function() {
         scope.deferred = $q.defer();
         return scope.deferred.promise;
       },
+      showDistrictEditDialog: function(district) {
+        var dialog = document.getElementById('district-edit-dialog');
+        dialog.open();
+        var scope = angular.element(dialog).scope();
+        scope.district = district;
+      },
+      getDistrictAddress: function(rpc, district) {
+        var addr = {name: 'BICW - SEATTLE', zip: '98040', country: 'US',
+            street: '8055 West Mercer Way', city: 'Mercer Island', state: 47};
+        var addressFields = ['name', 'street', 'city', 'state',
+            'country', 'zip', 'phone', 'email'];
+        return rpc.get_districts().then(function(response) {
+          var districtInfo = response.data[district];
+          addressFields.forEach(function(field) {
+            addr[field] = districtInfo['cfo_' + field];
+          });
+          addr.paypal_client_id = districtInfo.paypal_client_id;
+          return addr;
+        });
+      },
       /// Given a Chinese name, return its pinyin.
       /// e.g. Input: 张三, output ['San', 'Zhang'].
       getPinyinName: function(name, pinyinTable) {
@@ -30898,16 +30930,29 @@ define('districts/districts',
   });
 });
 define('invoice/invoice',
-    ['address_editor/address_editor', 'districts/districts'], function() {
+    ['address_editor/address_editor', 'districts/districts',
+  'services', 'utils'], function() {
   return angular.module('InvoiceModule',[
       'AddressEditorModule',
-      'DistrictsModule'
-  ]).directive('invoice', function() {
+      'DistrictsModule',
+      'ServicesModule',
+      'UtilsModule'
+  ]).directive('invoice', function(rpc, utils) {
     return {
       scope: {
         order: '='
       },
-      templateUrl : 'js/invoice/invoice.html?tag=201809231104'
+      link: function(scope) {
+        function reloadDistrict(order) {
+          if (!order) return;
+          utils.getDistrictAddress(rpc, order.district).then(function(addr) {
+            scope.user = addr;
+          });
+      } 
+        scope.$watch('order', reloadDistrict);
+        reloadDistrict(scope.order);
+      },
+      templateUrl : 'js/invoice/invoice.html?tag=201909231104'
     };
   });
 });

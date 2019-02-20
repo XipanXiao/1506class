@@ -1,6 +1,7 @@
 define('order_admin_app', [
     'app_bar/app_bar',
     'book_lists/book_lists',
+    'district_edit_dialog/district_edit_dialog',
     'orders/orders',
     'order_stats/order_stats',
     'inventory/inventory',
@@ -12,6 +13,7 @@ define('order_admin_app', [
   angular.module('AppModule', [
       'AppBarModule',
       'BookListsModule',
+      'DistrictEditDialogModule',
       'MoveInventoryDialogModule',
       'OrdersModule',
       'OrderStatsModule',

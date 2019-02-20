@@ -12,7 +12,16 @@ define('payment/payment', [
           showCloseButton: '@'
         },
         link: function(scope) {
+					function reloadDistrict(order) {
+						if (!order) return;
+						utils.getDistrictAddress(rpc, order.district).then(function(addr) {
+							scope.user = addr;
+							renderButton();
+						});
+					}
+
 					function fillAddress(order) {
+						reloadDistrict(order);
 						var keys = ['street', 'city', 'state', 'country', 'zip'];
 						if (keys.every((key) => !!order[key])) {
 							scope.addressComplete = true;
@@ -47,7 +56,9 @@ define('payment/payment', [
                 price: addMoney(item.price, item.shipping)
               };
             });
-          }
+					}
+					
+					function renderButton() {
         	  // Render the PayPal button
         	  paypal.Button.render({
           // Set your environment
@@ -80,7 +91,8 @@ define('payment/payment', [
 	        	// Create a PayPal app: https://developer.paypal.com/developer/applications/create
 	        	client: {
 	        	  sandbox: 'AShDzR3WfiCQg5WzQOjqET8_4CWE1Txmg5TQvKdrv8WlTiAVTo-Ll4zOyrloEfVfllK8_bA6GqdIONAC',
-	        	  production: 'AfX_o2WZgNPs66lY4AKwp7DZhrl4MA5Hcs2o5wLndK3qROPRM7agDBLZGTYaGaFzaGWh6VSlnzOjjR-8'
+							// production: 'AfX_o2WZgNPs66lY4AKwp7DZhrl4MA5Hcs2o5wLndK3qROPRM7agDBLZGTYaGaFzaGWh6VSlnzOjjR-8'
+							production: scope.user.paypal_client_id
 	        	},
 	
 	        	payment: function (data, actions) {
@@ -129,9 +141,10 @@ define('payment/payment', [
 	        	      scope.onPaid();
 	        	    });
 	        	}
-	        	}, '#paypal-button-container');
+						}, '#paypal-button-container');
+						}
         	},
-        templateUrl : 'js/payment/payment.html?tag=201901062258'
+        templateUrl : 'js/payment/payment.html?tag=201902182258'
       };
     });
 });

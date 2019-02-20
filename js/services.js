@@ -445,6 +445,18 @@ define('services', ['utils'], function() {
                 country || 'US');
             return districtPromise || (districtPromise = $http.get(url));
           },
+
+          update_district: function(district) {
+            district.rid = 'districts';
+            return http_form_post(
+                $http, $httpParamSerializerJQLike(district), 'php/district.php')
+                .then(function(res) {
+                  if (parseInt(res.data.updated)) {
+                    districtPromise = null;
+                  }
+                  return res;
+                });
+          },
           
           get_pinyin_table: function() {
         	    if (pinyinTablePromise) return pinyinTablePromise;

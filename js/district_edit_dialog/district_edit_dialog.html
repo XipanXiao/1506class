@@ -1,0 +1,16 @@
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+
+<paper-dialog id="district-edit-dialog" no-cancel-on-esc-key modal>
+  <div header><h1 header>地区收款人信息</h1></div>
+  <div class="content padded-element">
+    <address-editor user="user" editing="true" with-contact="true">
+    </address-editor>
+  </div>
+  <label>PayPal client ID
+    <input type="text" ng-model="user.paypal_client_id" size="80">
+  </label>
+  <div class="buttons" footer>
+    <paper-button dialog-dismiss>取消</paper-button>
+    <paper-button ng-click="save()" affirmative>保存</paper-button>
+  </div>
+</paper-dialog>

@@ -646,6 +646,26 @@ define('utils', [], function() {
         scope.deferred = $q.defer();
         return scope.deferred.promise;
       },
+      showDistrictEditDialog: function(district) {
+        var dialog = document.getElementById('district-edit-dialog');
+        dialog.open();
+        var scope = angular.element(dialog).scope();
+        scope.district = district;
+      },
+      getDistrictAddress: function(rpc, district) {
+        var addr = {name: 'BICW - SEATTLE', zip: '98040', country: 'US',
+            street: '8055 West Mercer Way', city: 'Mercer Island', state: 47};
+        var addressFields = ['name', 'street', 'city', 'state',
+            'country', 'zip', 'phone', 'email'];
+        return rpc.get_districts().then(function(response) {
+          var districtInfo = response.data[district];
+          addressFields.forEach(function(field) {
+            addr[field] = districtInfo['cfo_' + field];
+          });
+          addr.paypal_client_id = districtInfo.paypal_client_id;
+          return addr;
+        });
+      },
       /// Given a Chinese name, return its pinyin.
       /// e.g. Input: 张三, output ['San', 'Zhang'].
       getPinyinName: function(name, pinyinTable) {

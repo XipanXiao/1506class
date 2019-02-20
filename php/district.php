@@ -19,6 +19,12 @@ function add_district($name, $country = "US") {
 	return $medoo->insert("districts", ["name" => $name, "country" => $country]);
 }
 
+function update_district($district) {
+	global $medoo;
+
+	return $medoo->update("districts", $district, ["id" => $district["id"]]);
+}
+
 function remove_district($id) {
 	global $medoo;
 
@@ -69,6 +75,15 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
 	      ? get_district_users($district_id)
 	      : permission_denied_error();
 	}
+} else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
+  $resource_id = $_POST["rid"];
+  unset($_POST["rid"]);
+  
+  if ($resource_id == "districts") {
+		$response = isOrderManager($user)
+				? ["updated" => update_district($_POST)]
+				: permission_denied_error();
+  }
 }
 
 if (is_array($response) && empty($response)) {

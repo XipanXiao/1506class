@@ -30049,6 +30049,26 @@ $provide.value("$locale", {
         scope.deferred = $q.defer();
         return scope.deferred.promise;
       },
+      showDistrictEditDialog: function(district) {
+        var dialog = document.getElementById('district-edit-dialog');
+        dialog.open();
+        var scope = angular.element(dialog).scope();
+        scope.district = district;
+      },
+      getDistrictAddress: function(rpc, district) {
+        var addr = {name: 'BICW - SEATTLE', zip: '98040', country: 'US',
+            street: '8055 West Mercer Way', city: 'Mercer Island', state: 47};
+        var addressFields = ['name', 'street', 'city', 'state',
+            'country', 'zip', 'phone', 'email'];
+        return rpc.get_districts().then(function(response) {
+          var districtInfo = response.data[district];
+          addressFields.forEach(function(field) {
+            addr[field] = districtInfo['cfo_' + field];
+          });
+          addr.paypal_client_id = districtInfo.paypal_client_id;
+          return addr;
+        });
+      },
       /// Given a Chinese name, return its pinyin.
       /// e.g. Input: 张三, output ['San', 'Zhang'].
       getPinyinName: function(name, pinyinTable) {
@@ -30583,6 +30603,18 @@ define('services', ['utils'], function() {
             var url = 'php/district.php?rid=districts&country={0}'.format(
                 country || 'US');
             return districtPromise || (districtPromise = $http.get(url));
+          },
+
+          update_district: function(district) {
+            district.rid = 'districts';
+            return http_form_post(
+                $http, $httpParamSerializerJQLike(district), 'php/district.php')
+                .then(function(res) {
+                  if (parseInt(res.data.updated)) {
+                    districtPromise = null;
+                  }
+                  return res;
+                });
           },
           
           get_pinyin_table: function() {
@@ -31182,6 +31214,55 @@ define('departments/departments', ['services', 'utils'], function() {
 			};
 		});
 });
+define('district_edit_dialog/district_edit_dialog', 
+    ['address_editor/address_editor',
+    'districts/districts', 
+    	'permission', 'services', 'utils'], function() {
+  return angular.module('DistrictEditDialogModule', [
+      'AddressEditorModule', 
+      'DistrictsModule',
+      'PermissionModule', 'ServicesModule', 'UtilsModule'])
+      .directive('districtEditDialog', function(perm, rpc, utils) {
+    return {
+      scope: {
+    	  district: '='
+      },
+      link: function(scope) {
+        var addr_fields = utils.addressFields;
+        scope.$watch('district', function(district) {
+          if (!district) return;
+
+          rpc.get_districts().then(function(response) {
+            var districtInfo = response.data[district];
+            scope.user = {
+              district: district,
+            };
+            addr_fields.forEach(function(field) {
+              scope.user[field] = districtInfo['cfo_' + field];
+            });
+            scope.user.paypal_client_id = districtInfo.paypal_client_id;
+          });
+        });
+        scope.save = function() {
+          var districtInfo = {
+            id: scope.district,
+            paypal_client_id: scope.user.paypal_client_id
+          };
+          addr_fields.forEach(function(field) {
+            districtInfo['cfo_' + field] = scope.user[field];
+          });
+        rpc.update_district(districtInfo).then(function(response) {
+          if (parseInt(response.data.updated)) {
+            var dialog = document.getElementById('district-edit-dialog');
+            dialog.close();    
+          }
+        });
+        };
+      },
+      templateUrl : 'js/district_edit_dialog/district_edit_dialog.html?tag=20180821'
+    };
+  });
+});
 define('payment/payment', [
     'address_editor/address_editor',
     'services', 'utils'], function() {
@@ -31196,7 +31277,16 @@ define('payment/payment', [
           showCloseButton: '@'
         },
         link: function(scope) {
+					function reloadDistrict(order) {
+						if (!order) return;
+						utils.getDistrictAddress(rpc, order.district).then(function(addr) {
+							scope.user = addr;
+							renderButton();
+						});
+					}
+
 					function fillAddress(order) {
+						reloadDistrict(order);
 						var keys = ['street', 'city', 'state', 'country', 'zip'];
 						if (keys.every((key) => !!order[key])) {
 							scope.addressComplete = true;
@@ -31231,7 +31321,9 @@ define('payment/payment', [
                 price: addMoney(item.price, item.shipping)
               };
             });
-          }
+					}
+					
+					function renderButton() {
         	  // Render the PayPal button
         	  paypal.Button.render({
           // Set your environment
@@ -31264,7 +31356,8 @@ define('payment/payment', [
 	        	// Create a PayPal app: https://developer.paypal.com/developer/applications/create
 	        	client: {
 	        	  sandbox: 'AShDzR3WfiCQg5WzQOjqET8_4CWE1Txmg5TQvKdrv8WlTiAVTo-Ll4zOyrloEfVfllK8_bA6GqdIONAC',
-	        	  production: 'AfX_o2WZgNPs66lY4AKwp7DZhrl4MA5Hcs2o5wLndK3qROPRM7agDBLZGTYaGaFzaGWh6VSlnzOjjR-8'
+							// production: 'AfX_o2WZgNPs66lY4AKwp7DZhrl4MA5Hcs2o5wLndK3qROPRM7agDBLZGTYaGaFzaGWh6VSlnzOjjR-8'
+							production: scope.user.paypal_client_id
 	        	},
 	
 	        	payment: function (data, actions) {
@@ -31313,9 +31406,10 @@ define('payment/payment', [
 	        	      scope.onPaid();
 	        	    });
 	        	}
-	        	}, '#paypal-button-container');
+						}, '#paypal-button-container');
+						}
         	},
-        templateUrl : 'js/payment/payment.html?tag=201901062258'
+        templateUrl : 'js/payment/payment.html?tag=201902182258'
       };
     });
 });
@@ -32467,6 +32561,10 @@ angular.module('MoveInventoryDialogModule', [
                 scope.inventory.district).then(reload);
           };
 
+          scope.showDistrictEditDialog = function() {
+            utils.showDistrictEditDialog(scope.inventory.district);
+          };
+
           $rootScope.$on('reload-orders', reload);
           $rootScope.$on('order-deleted', reload);
           $rootScope.$on('order-item-deleted', reload);
@@ -32474,13 +32572,14 @@ angular.module('MoveInventoryDialogModule', [
 
           utils.requestOneByOne([getCategories, reload]);
         },
-        templateUrl : 'js/inventory/inventory.html?tag=201901101450'
+        templateUrl : 'js/inventory/inventory.html?tag=201902181450'
       };
     });
 });
 define('order_admin_app', [
     'app_bar/app_bar',
     'book_lists/book_lists',
+    'district_edit_dialog/district_edit_dialog',
     'orders/orders',
     'order_stats/order_stats',
     'inventory/inventory',
@@ -32492,6 +32591,7 @@ define('order_admin_app', [
   angular.module('AppModule', [
       'AppBarModule',
       'BookListsModule',
+      'DistrictEditDialogModule',
       'MoveInventoryDialogModule',
       'OrdersModule',
       'OrderStatsModule',

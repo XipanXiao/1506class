@@ -96,6 +96,10 @@ define('inventory/inventory', [
                 scope.inventory.district).then(reload);
           };
 
+          scope.showDistrictEditDialog = function() {
+            utils.showDistrictEditDialog(scope.inventory.district);
+          };
+
           $rootScope.$on('reload-orders', reload);
           $rootScope.$on('order-deleted', reload);
           $rootScope.$on('order-item-deleted', reload);
@@ -103,7 +107,7 @@ define('inventory/inventory', [
 
           utils.requestOneByOne([getCategories, reload]);
         },
-        templateUrl : 'js/inventory/inventory.html?tag=201901101450'
+        templateUrl : 'js/inventory/inventory.html?tag=201902181450'
       };
     });
 });

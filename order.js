@@ -30049,6 +30049,26 @@ $provide.value("$locale", {
         scope.deferred = $q.defer();
         return scope.deferred.promise;
       },
+      showDistrictEditDialog: function(district) {
+        var dialog = document.getElementById('district-edit-dialog');
+        dialog.open();
+        var scope = angular.element(dialog).scope();
+        scope.district = district;
+      },
+      getDistrictAddress: function(rpc, district) {
+        var addr = {name: 'BICW - SEATTLE', zip: '98040', country: 'US',
+            street: '8055 West Mercer Way', city: 'Mercer Island', state: 47};
+        var addressFields = ['name', 'street', 'city', 'state',
+            'country', 'zip', 'phone', 'email'];
+        return rpc.get_districts().then(function(response) {
+          var districtInfo = response.data[district];
+          addressFields.forEach(function(field) {
+            addr[field] = districtInfo['cfo_' + field];
+          });
+          addr.paypal_client_id = districtInfo.paypal_client_id;
+          return addr;
+        });
+      },
       /// Given a Chinese name, return its pinyin.
       /// e.g. Input: 张三, output ['San', 'Zhang'].
       getPinyinName: function(name, pinyinTable) {
@@ -30583,6 +30603,18 @@ define('services', ['utils'], function() {
             var url = 'php/district.php?rid=districts&country={0}'.format(
                 country || 'US');
             return districtPromise || (districtPromise = $http.get(url));
+          },
+
+          update_district: function(district) {
+            district.rid = 'districts';
+            return http_form_post(
+                $http, $httpParamSerializerJQLike(district), 'php/district.php')
+                .then(function(res) {
+                  if (parseInt(res.data.updated)) {
+                    districtPromise = null;
+                  }
+                  return res;
+                });
           },
           
           get_pinyin_table: function() {
@@ -31209,7 +31241,16 @@ define('payment/payment', [
           showCloseButton: '@'
         },
         link: function(scope) {
+					function reloadDistrict(order) {
+						if (!order) return;
+						utils.getDistrictAddress(rpc, order.district).then(function(addr) {
+							scope.user = addr;
+							renderButton();
+						});
+					}
+
 					function fillAddress(order) {
+						reloadDistrict(order);
 						var keys = ['street', 'city', 'state', 'country', 'zip'];
 						if (keys.every((key) => !!order[key])) {
 							scope.addressComplete = true;
@@ -31244,7 +31285,9 @@ define('payment/payment', [
                 price: addMoney(item.price, item.shipping)
               };
             });
-          }
+					}
+					
+					function renderButton() {
         	  // Render the PayPal button
         	  paypal.Button.render({
           // Set your environment
@@ -31277,7 +31320,8 @@ define('payment/payment', [
 	        	// Create a PayPal app: https://developer.paypal.com/developer/applications/create
 	        	client: {
 	        	  sandbox: 'AShDzR3WfiCQg5WzQOjqET8_4CWE1Txmg5TQvKdrv8WlTiAVTo-Ll4zOyrloEfVfllK8_bA6GqdIONAC',
-	        	  production: 'AfX_o2WZgNPs66lY4AKwp7DZhrl4MA5Hcs2o5wLndK3qROPRM7agDBLZGTYaGaFzaGWh6VSlnzOjjR-8'
+							// production: 'AfX_o2WZgNPs66lY4AKwp7DZhrl4MA5Hcs2o5wLndK3qROPRM7agDBLZGTYaGaFzaGWh6VSlnzOjjR-8'
+							production: scope.user.paypal_client_id
 	        	},
 	
 	        	payment: function (data, actions) {
@@ -31326,9 +31370,10 @@ define('payment/payment', [
 	        	      scope.onPaid();
 	        	    });
 	        	}
-	        	}, '#paypal-button-container');
+						}, '#paypal-button-container');
+						}
         	},
-        templateUrl : 'js/payment/payment.html?tag=201901062258'
+        templateUrl : 'js/payment/payment.html?tag=201902182258'
       };
     });
 });
