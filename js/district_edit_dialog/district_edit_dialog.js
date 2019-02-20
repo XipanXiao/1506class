@@ -24,7 +24,7 @@ define('district_edit_dialog/district_edit_dialog',
             id: scope.district,
             paypal_client_id: scope.user.paypal_client_id
           };
-          addr_fields.forEach(function(field) {
+          utils.addressFields.forEach(function(field) {
             districtInfo['cfo_' + field] = scope.user[field];
           });
         rpc.update_district(districtInfo).then(function(response) {

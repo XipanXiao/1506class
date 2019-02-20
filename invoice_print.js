@@ -30748,14 +30748,14 @@ define('utils', [], function() {
         var scope = angular.element(dialog).scope();
         scope.district = district;
       },
+      addressFields: ['name', 'street', 'city', 'state',
+          'country', 'zip', 'phone', 'email'],
       getDistrictAddress: function(rpc, district) {
         var addr = {name: 'BICW - SEATTLE', zip: '98040', country: 'US',
             street: '8055 West Mercer Way', city: 'Mercer Island', state: 47};
-        var addressFields = ['name', 'street', 'city', 'state',
-            'country', 'zip', 'phone', 'email'];
         return rpc.get_districts().then(function(response) {
           var districtInfo = response.data[district];
-          addressFields.forEach(function(field) {
+          utils.addressFields.forEach(function(field) {
             addr[field] = districtInfo['cfo_' + field];
           });
           addr.paypal_client_id = districtInfo.paypal_client_id;
