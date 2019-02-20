@@ -22,7 +22,7 @@ define('shopping_cart/shopping_cart', [
           scope.confirming = false;
           scope.addrEditor = {};
           scope.shipTo = scope.ME;
-          
+
           var items = {};
           var districts;
 
@@ -62,8 +62,8 @@ define('shopping_cart/shopping_cart', [
                 scope.addrEditor.editing = true;
                 return;
               }
-            } 
-            
+            }
+
             var options = {
               refill: scope.refill,
               payNow: payNow,
@@ -74,7 +74,7 @@ define('shopping_cart/shopping_cart', [
             function checkOut() {
               // Make a copy to avoid modifying existing data.
               user = utils.mix_in({}, user);
-              user.district = user.district || 2;
+              user.district = user.district || 4;
               var district = districts[user.district];
               if (!parseInt(district.stock)) {
                 user.district = 4;
@@ -127,7 +127,7 @@ define('shopping_cart/shopping_cart', [
           };
 
           scope.updateOrder = function() {
-        	  scope.order.status = 2;
+            scope.order.status = 2;
             rpc.update_order(scope.order).then(function(response) {
               clear();
               if (response.data.updated) {
