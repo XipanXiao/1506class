@@ -32022,7 +32022,7 @@ define('shopping_cart/shopping_cart', [
               user.district = user.district || 2;
               var district = districts[user.district];
               if (!parseInt(district.stock)) {
-                user.district = 2;
+                user.district = 4;
               }
               if (options.localPickup) {
                 user.street = user.city = user.state =
