@@ -31228,19 +31228,11 @@ define('district_edit_dialog/district_edit_dialog',
     	  district: '='
       },
       link: function(scope) {
-        var addr_fields = utils.addressFields;
         scope.$watch('district', function(district) {
           if (!district) return;
-
-          rpc.get_districts().then(function(response) {
-            var districtInfo = response.data[district];
-            scope.user = {
-              district: district,
-            };
-            addr_fields.forEach(function(field) {
-              scope.user[field] = districtInfo['cfo_' + field];
-            });
-            scope.user.paypal_client_id = districtInfo.paypal_client_id;
+          utils.getDistrictAddress(rpc, district).then(function(addr) {
+            scope.user = addr;
+            scope.user.district = district;
           });
         });
         scope.save = function() {
