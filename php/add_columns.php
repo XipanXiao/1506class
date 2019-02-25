@@ -16,10 +16,11 @@ if (empty($_SESSION["user"])) {
 $medoo = get_medoo();
 
 function add_district_cfo($medoo) {
-  $medoo->update("districts", ["stock" => 1],
-      ["AND" => ["name" => "南加州", "stock" => 0]]);
   $results = $medoo->select("districts", "paypal_client_id");
   if (!empty($results)) return;
+
+  $medoo->update("districts", ["stock" => 1],
+      ["AND" => ["name" => "南加州", "stock" => 0]]);
 
   $sql = "ALTER TABLE districts
       ADD COLUMN cfo_name VARCHAR(20) CHARACTER SET utf8,
@@ -37,6 +38,15 @@ function add_district_cfo($medoo) {
       ADD COLUMN paypal_client_id VARCHAR(256);";
   $medoo->query($sql);
   echo get_db_error2($medoo);
+}
+
+function add_teacher_for_schedules($medoo) {
+  $results = $medoo->select("schedules", "teacher");
+  if (!empty($results)) return;
+
+  $medoo->query("ALTER TABLE schedules
+      ADD COLUMN teacher INT,
+      ADD FOREIGN KEY fk_teacher(teacher) REFERENCES users(id);");
 }
 
 add_district_cfo($medoo);
