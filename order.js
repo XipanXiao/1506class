@@ -29862,8 +29862,10 @@ $provide.value("$locale", {
       volunteerLabels: 
           ['暂时先不', '小组管理', '资料收发', '统计报数', '其他工作', '英文翻译',
            '提供场所'],
-      channelLabels: ['', '其他方式', '智悲佛网', '国际佛学网',
-          '', '本地招生材料', '微信', '微博或论坛', '朋友介绍'],
+      channelLabels: ['其他方式', '智悲佛网', '国际佛学网',
+          '美国佛学会地方组活动', '报纸杂志传单招生广告', '微信公众号', '微博或论坛',
+          '朋友介绍', 'Google搜索', '微信群', '微信朋友圈', 
+          '知乎', '豆瓣', 'Facebook'],
       entranceLabels: ['本站', '微信', 'zbfw'], 
       weekDayLabels: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
       getDisplayLabel: function(user, key) {
@@ -31388,7 +31390,7 @@ define('item_list/item_list', ['flying/flying', 'services', 'utils'], function()
         },
         link: function(scope) {
           scope.items = [];
-          
+
           var bookIds = {};
 
           var parent_id = parseInt(utils.getUrlParameter('parent_id')) || 1;
@@ -31396,12 +31398,12 @@ define('item_list/item_list', ['flying/flying', 'services', 'utils'], function()
           function validCategory(category) {
             return category && parseInt(category.parent_id) == parent_id;
           }
-          
+
           function validItem(item) {
-            return parent_id == 1 ? bookIds.has(item.id) : 
+            return parent_id == 1 ? bookIds.has(item.id) :
                 validCategory(scope.categories[item.category]);
           }
-          
+
           function getCategories() {
             return rpc.get_item_categories().then(function(response) {
               utils.forEach(response.data, function(category) {
@@ -31411,14 +31413,18 @@ define('item_list/item_list', ['flying/flying', 'services', 'utils'], function()
                   utils.where(response.data, validCategory);
             });
           }
-          
+
           function getItems() {
             return rpc.get_items().then(function(response) {
-              return scope.items =
+              scope.items =
                   utils.toList(utils.where(response.data, validItem));
+              scope.items.forEach(function(item) {
+                item.shipping = item.int_shipping = 0.00;
+              });
+              return scope.items;
             });
           }
-          
+
           function getBookList() {
             if (parent_id != 1) {
               return utils.truePromise();
@@ -31431,7 +31437,7 @@ define('item_list/item_list', ['flying/flying', 'services', 'utils'], function()
           scope.addToCart = function(item) {
             scope.cart.add(item);
           };
-          
+
           scope.$watch('user', function(user) {
             if (user) {
               utils.requestOneByOne([getBookList, getCategories, getItems]);
@@ -31442,6 +31448,7 @@ define('item_list/item_list', ['flying/flying', 'services', 'utils'], function()
       };
     });
 });
+
 define('order_details/order_details', [
     'address_editor/address_editor', 
     'districts/districts',

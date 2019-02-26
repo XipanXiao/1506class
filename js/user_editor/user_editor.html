@@ -335,7 +335,7 @@
         <input ng-switch-when="conversion" ng-model="user.conversion" type="text" pattern="\d{4}"
                 placeholder="2015" autofocus>
         <select ng-switch-when="channel" ng-model="user.channel"
-            ng-options="channelLabels[value] for value in [1, 2, 3, 4, 5, 6, 7]"></select>
+            ng-options="channelLabels[value] for value in channels"></select>
         <select ng-switch-when="entrance" ng-model="user.entrance"
             ng-options="entranceLabels[value] for value in [0, 1, 2]"></select>
         <input ng-switch-when="comments" ng-model="user.comments" type="text" autofocus>

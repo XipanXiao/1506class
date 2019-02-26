@@ -29,6 +29,7 @@ define('user_editor/user_editor',
             $scope[key] = utils[key];
           }
         }
+        $scope.channels = utils.keys(utils.channelLabels);
         $scope.getDisplayLabel = function(key) {
           return $scope.user && utils.getDisplayLabel($scope.user, key);
         };
@@ -222,7 +223,7 @@ define('user_editor/user_editor',
         };
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201812251235'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201902251235'
     };
   });
 });
