@@ -50,4 +50,5 @@ function add_teacher_for_schedules($medoo) {
 }
 
 add_district_cfo($medoo);
+add_teacher_for_schedules($medoo);
 ?>

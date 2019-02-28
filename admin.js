@@ -35575,26 +35575,48 @@ define('schedule_editor/schedule_editor',
               $scope.$on('reload-schedules', function(event, term) {
                 $scope.loadSchedules(term);
               });
-              
-              $scope.loadSchedules = function(term) {
-                return rpc.get_schedules($scope.classId,
-                    term || $scope.term || 0).then(function(response) {
-                  $scope.schedule_groups = response.data.groups;
-                  
-                  var group = utils.first($scope.schedule_groups);
-                  if (group) {
-                    $scope.term = group.term;
-                    utils.calcMiddleWeek(group);
-                  } else {
-                    $scope.schedule_groups = {};
-                  }
-                  
-                  $scope.users = {};
-                  for (var id in response.data.users) {
-                    $scope.users[id] = response.data.users[id].name;
-                  }
 
-                  return $scope.schedule_groups;
+              function initTeacherName(key) {
+                return function() {
+                  var userId = $scope.classInfo[key];
+                  if (!userId) return utils.truePromise();
+                  return rpc.getUserLabel(userId).then(function(response) {
+                    return $scope.teachers[userId] = response.data.label;
+                  });
+                }
+              }
+
+              function getClassInfo() {
+                return rpc.get_classes($scope.classId)
+                    .then(function(response) {
+                  $scope.teachers = $scope.teachers || {};
+                  return $scope.classInfo = response.data[$scope.classId];
+                });
+              }
+            
+              $scope.loadSchedules = function(term) {
+                return utils.requestOneByOne([getClassInfo,
+                  initTeacherName('teacher_id'),
+                  initTeacherName('teacher2_id')
+                ]).then(function() {
+                  return rpc.get_schedules($scope.classId,
+                      term || $scope.term || 0).then(function(response) {
+                    $scope.schedule_groups = response.data.groups;
+                    
+                    var group = utils.first($scope.schedule_groups);
+                    if (group) {
+                      $scope.term = group.term;
+                      utils.calcMiddleWeek(group);
+                    } else {
+                      $scope.schedule_groups = {};
+                    }
+                    
+                    $scope.users = {};
+                    for (var id in response.data.users) {
+                      $scope.users[id] = response.data.users[id].name;
+                    }
+                    return $scope.schedule_groups;
+                  });                
                 });
               };
               
@@ -35750,12 +35772,6 @@ define('schedule_editor/schedule_editor',
                 if ($scope.sending) return;
 
                 $scope.sending = true;
-                function getClassInfo() {
-                  return rpc.get_classes($scope.classId)
-                      .then(function(response) {
-                    return $scope.classInfo = response.data[$scope.classId];
-                  });
-                }
                 function getUserEmail(user) { return user.email; }
                 function getEmail() {
                   if ($scope.classInfo.email) {
@@ -35816,7 +35832,7 @@ define('schedule_editor/schedule_editor',
                 });
               };
             },
-            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201712052203'
+            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201912052203'
           };
         });
 });

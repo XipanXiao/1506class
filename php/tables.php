@@ -610,7 +610,8 @@ function update_schedule($schedule) {
   global $medoo;
 
   $datas = ["course_id" => NULL, "course_id2" => NULL];
-  $int_fields = ["course_id", "course_id2", "group_id", "open", "review"];
+  $int_fields = ["course_id", "course_id2", "group_id", "open", "review",
+      "teacher"];
   foreach ($int_fields as $field) {
     if (isset($schedule[$field])) {
       $datas[$field] = intval($schedule[$field]);
