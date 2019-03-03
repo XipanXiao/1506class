@@ -611,7 +611,7 @@ function update_schedule($schedule) {
 
   $datas = ["course_id" => NULL, "course_id2" => NULL];
   $int_fields = ["course_id", "course_id2", "group_id", "open", "review",
-      "teacher"];
+      "teacher_planned", "teacher"];
   foreach ($int_fields as $field) {
     if (isset($schedule[$field])) {
       $datas[$field] = intval($schedule[$field]);

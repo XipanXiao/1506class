@@ -1,9 +1,9 @@
 window.userInputCache = window.userInputCache || {};
 
-define('user_input/user_input', ['services'], function() {
+define('user_input/user_input', ['services', 'utils'], function() {
   var users = window.userInputCache;
   
-  return angular.module('UserInputModule', ['ServicesModule'])
+  return angular.module('UserInputModule', ['ServicesModule', 'UtilsModule'])
 	.directive('userTypeAhead', function(rpc) {
     return {
       require: 'ngModel',
@@ -35,26 +35,28 @@ define('user_input/user_input', ['services'], function() {
             rpc.searchByName(userLabel).then(function(response) {
               if (!response.data) return;
 
-              scope.hints = [];
+              var hints = [];
               response.data.forEach(function(user) {
                 var label = user.nickname ? 
                     '{0}({1})'.format(user.name, user.nickname) : user.name;
                 label += user.email ? ('-' + user.email) : '';
                 users[user.id] = label;
                 users[label] = user.id;
-                scope.hints.push(user);
+                hints.push(user.id);
               });
+              scope.$parent.hints = hints;
             });
           }, 1000);
         });
       }
     };
-  }).directive('userInput', function(rpc) {
+  }).directive('userInput', function(rpc, utils) {
   	return {
   	  scope: {
         editing: '@',
         onChange: '&',
-        userId: '='
+        userId: '=',
+        hints: '='
   	  },
   	  link: function(scope, elements, attrs) {
   	    scope.editor = {editing: scope.editing};
@@ -72,7 +74,17 @@ define('user_input/user_input', ['services'], function() {
   	    if (scope.userId) {
   	      init(scope.userId);
   	    }
-  	    scope.$watch('userId', init);
+        scope.$watch('userId', init);
+        scope.$watch('hints', function(hints) {
+          if (!hints) return;
+          if (!(hints instanceof Array)) {
+            hints = utils.positiveKeys(hints);
+          }
+          var dataList = document.querySelector('#user-input-hints');
+          var dataListScope = angular.element(dataList).scope();
+          dataListScope.hints = hints;
+          dataListScope.users = users;
+        });
   
   	    scope.keyPressed = function(event) {
   	      if (event.keyCode == 13 || event.keyCode == 27) {

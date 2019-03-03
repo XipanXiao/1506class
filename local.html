@@ -25,6 +25,10 @@
   </div>
 </div>
 <paper-toast></paper-toast>
+<datalist id="user-input-hints">
+  <option ng-repeat="userId in hints" value="{{users[userId]}}">
+  </option>
+</datalist>
 
 <script type="text/javascript" src="local.js?tag=201812201232"></script>
 

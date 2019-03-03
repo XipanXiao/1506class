@@ -41,9 +41,13 @@ function add_district_cfo($medoo) {
 }
 
 function add_teacher_for_schedules($medoo) {
-  $results = $medoo->select("schedules", "teacher");
+  $results = $medoo->select("schedules", "teacher_planned");
   if (!empty($results)) return;
 
+  $medoo->query("ALTER TABLE schedules
+      ADD COLUMN teacher_planned INT,
+      ADD FOREIGN KEY fk_teacher_planned(teacher_planned)
+          REFERENCES users(id);");
   $medoo->query("ALTER TABLE schedules
       ADD COLUMN teacher INT,
       ADD FOREIGN KEY fk_teacher(teacher) REFERENCES users(id);");

@@ -67,8 +67,12 @@
   <zb-choose-root-dialog></zb-choose-root-dialog>
   <zb-login-dialog name="user.name"></zb-login-dialog>
 </div>
+<datalist id="user-input-hints">
+  <option ng-repeat="userId in hints" value="{{users[userId]}}">
+  </option>
+</datalist>
 
-<script type="text/javascript" src="admin.js?tag=201902261255"></script>
+<script type="text/javascript" src="admin.js?tag=201903021255"></script>
 <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js">
 </script>
 

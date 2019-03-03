@@ -32,7 +32,11 @@
 <users users="users"></users>
 
 <email-dialog></email-dialog>
-
+<datalist id="user-input-hints">
+  <option ng-repeat="userId in hints" value="{{users[userId]}}">
+  </option>
+</datalist>
+  
 <script type="text/javascript" src="user_stats.js?tag=201912252258"></script>
 <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js">
 </script>

@@ -6,7 +6,9 @@ define('schedule_editor/schedule_editor',
     'schedule_group_editor/schedule_group_editor',
     'task_arrangements/task_arrangements',
     'services',
-    'user_picker/user_picker', 'utils'], function() {
+    'user_input/user_input', 
+    'user_picker/user_picker', 
+    'utils'], function() {
 
   return angular.module('ScheduleEditorModule',
       ['CourseEditorDialogModule', 'EditableLabelModule',
@@ -51,6 +53,7 @@ define('schedule_editor/schedule_editor',
                   var userId = $scope.classInfo[key];
                   if (!userId) return utils.truePromise();
                   return rpc.getUserLabel(userId).then(function(response) {
+                    window.userInputCache[userId] = response.data.label;
                     return $scope.teachers[userId] = response.data.label;
                   });
                 }
@@ -59,7 +62,7 @@ define('schedule_editor/schedule_editor',
               function getClassInfo() {
                 return rpc.get_classes($scope.classId)
                     .then(function(response) {
-                  $scope.teachers = $scope.teachers || {};
+                  $scope.teachers = {};
                   return $scope.classInfo = response.data[$scope.classId];
                 });
               }
@@ -302,7 +305,7 @@ define('schedule_editor/schedule_editor',
                 });
               };
             },
-            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201912052203'
+            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201903022203'
           };
         });
 });
