@@ -31663,6 +31663,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
             '省/直辖市',
             '市/县/区',
             '街道',
+            'zip',
             '个人特长',
             '是否看过招生简章',
             '能否遵守管理规定',
@@ -31695,7 +31696,8 @@ define('importers', ['permission', 'services', 'utils'], function() {
               user.email + delimiter +
               (user.countryLabel || '') + '/' + (user.stateLabel) + delimiter +
               (user.city || '') + delimiter +
-              delimiter +
+              (user.street || '') + delimiter +
+              (user.zip || '') + delimiter +
               (user.skills || '') + delimiter +
               '是' + delimiter +
               '是' + delimiter +
