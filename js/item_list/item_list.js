@@ -63,7 +63,7 @@ define('item_list/item_list', ['flying/flying', 'services', 'utils'], function()
             }
           });
         },
-        templateUrl : 'js/item_list/item_list.html?tag=201809050736'
+        templateUrl : 'js/item_list/item_list.html?tag=201903080736'
       };
     });
 });
