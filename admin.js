@@ -31390,6 +31390,7 @@ define('zb_services', ['utils'], function() {
     return {
       serviceUrl: serviceUrl,
       get_secure_url: function(url) {
+        if (url.startsWith('https')) return url;
         return '{0}?url={1}'.format(redirectUrl, encodeURIComponent(url));
       },
       getClassUrl: function(pre_classID) {
@@ -32735,6 +32736,11 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
             rpc.get_class_task_stats(scope.classId, scope.selectedTask.id)
                 .then(function(response) {
                   scope.task_stats = response.data;
+                  if (!parseInt(scope.selectedTask.sub_tasks)) {
+                    utils.forEach(scope.task_stats, function(user) {
+                      user.stats[0] = user.stats[0] || user.stats[1];
+                    });
+                  }
                 });
           };
 

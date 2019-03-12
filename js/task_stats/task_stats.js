@@ -26,6 +26,11 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
             rpc.get_class_task_stats(scope.classId, scope.selectedTask.id)
                 .then(function(response) {
                   scope.task_stats = response.data;
+                  if (!parseInt(scope.selectedTask.sub_tasks)) {
+                    utils.forEach(scope.task_stats, function(user) {
+                      user.stats[0] = user.stats[0] || user.stats[1];
+                    });
+                  }
                 });
           };
 

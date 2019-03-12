@@ -471,7 +471,7 @@ function get_class_task_stats($classId, $task_id, $startTime, $endTime,
 function report_task($user_id, $task_id, $sub_index, $count, $duration) {
   global $medoo;
   
-  if (intval($sub_index) > 0) {
+  if (intval($sub_index) > 0 && intval($duration) > 0) {
     $updated = $medoo->update("task_records", [
         "count[+]" => intval($count),
         "duration[+]" => $duration
