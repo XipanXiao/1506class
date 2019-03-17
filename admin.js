@@ -33865,11 +33865,8 @@ define('zb_sync_button/zb_sync_button',
                 // missing. Since there're students relegated from previous
                 // years, we have to collect all.
                 var isFirstTime = task.report_half_term == scope.half_term;
-                var start_cut_time = isFirstTime
-                    ? 1//getStartTime(task.starting_half_term) 
-                    : (scope.lastReportTime || (startTerm + extraReportTime));
-                var start_time = isFirstTime ? 
-                    start_cut_time : (fistHalf ? start_cut_time : midTerm);
+                var start_cut_time =  scope.lastReportTime || (startTerm + extraReportTime);
+                var start_time = firstHalf ? (isFirstTime ? 1 : start_cut_time) : midTerm;
                 var end_time = fistHalf ? midTerm : end_cut_time;
                 return scope.getTaskStats(task, start_time, end_time);
               });
