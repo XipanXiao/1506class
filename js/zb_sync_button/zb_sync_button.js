@@ -655,10 +655,14 @@ define('zb_sync_button/zb_sync_button',
             utils.forEach(scope.tasks, function(task) {
               requests.push(function() {
                 // Is this the first time to report the [task]?
-                // For first time reporting, do not skip the first 15 days.
+                // For first time reporting, get all history records from the
+                // very beginning. Here the value of '1' is used to avoid
+                // the usage of value '0' since the backend treats '0' as
+                // missing. Since there're students relegated from previous
+                // years, we have to collect all.
                 var isFirstTime = task.report_half_term == scope.half_term;
                 var start_cut_time = isFirstTime
-                    ? getStartTime(task.starting_half_term) 
+                    ? 1//getStartTime(task.starting_half_term) 
                     : (scope.lastReportTime || (startTerm + extraReportTime));
                 var start_time = isFirstTime ? 
                     start_cut_time : (fistHalf ? start_cut_time : midTerm);
