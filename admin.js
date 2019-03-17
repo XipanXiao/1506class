@@ -33843,7 +33843,7 @@ define('zb_sync_button/zb_sync_button',
           /// dates like 06/16 00:00:00 and 12/16 00:00:00. Otherwise if a
           /// special time is previously cut (and saved), use that time.
           scope.getAllTaskStats = function() {
-            var fistHalf = scope.half_term % 2 == 0;
+            var firstHalf = scope.half_term % 2 == 0;
             // A lot of people were not able to report their tasks
             // in time. Add this extra 15 days to avoid a zero number.
             var extraReportTime = utils.extraReportTime;
@@ -33853,7 +33853,7 @@ define('zb_sync_button/zb_sync_button',
             var midTerm = utils.getMidTerm(scope.scheduleGroup) +
                 extraReportTime;
             var end_cut_time = scope.getTermEndCutTime(extraReportTime);
-            if (!fistHalf) scope.scheduleGroup.end_time = end_cut_time;
+            if (!firstHalf) scope.scheduleGroup.end_time = end_cut_time;
 
             var requests = [];
             utils.forEach(scope.tasks, function(task) {
@@ -33867,7 +33867,7 @@ define('zb_sync_button/zb_sync_button',
                 var isFirstTime = task.report_half_term == scope.half_term;
                 var start_cut_time =  scope.lastReportTime || (startTerm + extraReportTime);
                 var start_time = firstHalf ? (isFirstTime ? 1 : start_cut_time) : midTerm;
-                var end_time = fistHalf ? midTerm : end_cut_time;
+                var end_time = firstHalf ? midTerm : end_cut_time;
                 return scope.getTaskStats(task, start_time, end_time);
               });
             });
