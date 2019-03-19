@@ -27,6 +27,9 @@ define('app_bar/app_bar', ['permission', 'search_bar/search_bar', 'utils'],
           scope.isTeacher = function() {
             return perm.isTeacher();
           };
+          scope.canReadOrders = function() {
+            return perm.canReadOrders();
+          };
           scope.showAssignments = function() {
             return perm.isSysAdmin() || perm.isYearLeader();
           };

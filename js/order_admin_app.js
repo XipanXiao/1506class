@@ -28,7 +28,7 @@ define('order_admin_app', [
             rpc.get_user().then(function(user) {
               perm.user = user;
               scope.user = user;
-              if (!perm.isOrderAdmin() && !perm.isAdmin()) {
+              if (!perm.canReadOrders()) {
                 utils.redirect('./index.html');
               }
             });

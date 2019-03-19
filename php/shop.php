@@ -118,6 +118,9 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
         ["classId" => $classIds]);
     $classFilter = sprintf("user_id in (%s)", join(", ", $userIds));
   }
+  $districtFilter = empty($filters["district"])
+      ? "TRUE"
+      : sprintf("district=%d", $filters["district"]);
   
   $fields = ["id", "user_id", "status", "sub_total", "paid", "shipping",
       "int_shipping", "shipping_date", "paid_date", "created_time", "name",
@@ -129,12 +132,14 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
     $fields = array_merge($fields, $address_fields);
   }
   
-  $sql = sprintf("SELECT %s FROM orders WHERE (%s) AND (%s) AND (%s) AND (%s);",
+  $sql = sprintf("SELECT %s FROM orders WHERE (%s) AND (%s) AND (%s) AND (%s) AND (%s);",
   		join(", ", $fields),
   		$userFilter,
   		$statusFilter,
   		$timeFilter,
-      $classFilter);
+      $classFilter,
+      $districtFilter
+    );
 
   $orders = $medoo->query($sql)->fetchAll();
   if (!$withItems) return $orders;
@@ -565,6 +570,9 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       if (isOrderReader($user)) {
         $response = get_orders(null, $_GET, $_GET["items"], 
             canReadOrderAddress($user));
+      } elseif (isDistrictInspector($user)) {
+        $filters = array_merge($_GET, ["district" => $user->district]);
+        $response = get_orders(null, $filters, $_GET["items"],  TRUE);
       } else {
         $classIds = _getManagedClasses($user);
         $response = $classIds ? get_orders(null, 

@@ -105,6 +105,11 @@ define('permission', ['utils'], function() {
         return this.isSysAdmin() || this.isCountryInspector() ||
             this.isDistrictInspector() && this.user.district == district;
       },
+      canReadOrders: function() {
+        return this.isOrderAdmin() ||
+            this.isAdmin() ||
+            this.isDistrictInspector();
+      },
       isElectionOwner: function(election) {
         return this.isSysAdmin() ||
             election && election.organizer == this.user.id;
