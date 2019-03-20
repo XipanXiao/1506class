@@ -613,7 +613,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $order = $_POST;
     validate_order_post();
 
-    if ($order["user_id"] != $user->id && !isOrderManager($user)) {
+    if (!canWriteOrder($user, $order)) {
       $response = permission_denied_error();
     } elseif (empty($order["id"])) {
       if (empty($order["class_name"])) {
@@ -667,8 +667,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   $record = get_single_record($medoo, $resource_id, $_REQUEST["id"]);
   error_log($user->email ." DELETE ". json_encode($record));
   if ($resource_id == "orders") {
-    if ($record["status"] || 
-        !isOrderManager($user) && $record["user_id"] != $user->id) {
+    if ($record["status"] || !canWriteOrder($user, $record)) {
       $response = permission_denied_error();
     } elseif (floatval($record["paid"]) >= 0.01 || 
         !empty($record["paypal_trans_id"]) || 

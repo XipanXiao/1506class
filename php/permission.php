@@ -45,12 +45,18 @@ function isOrderManager($user) {
       Roles::ORDER_ADMIN;
 }
 
+function canWriteOrder($user, $order) {
+  return isOrderManager($user) ||
+    $user->id == $order["user_id"] ||
+    isDistrictInspector($user) && $user->district == $order["district"];
+}
+
 function canGrant($user, $perm) {
   return ($user->permission & $perm) == $perm;
 }
 
 function canReadOrderAddress($user) {
-  return ($user->permission & Roles::ORDER_ADMIN) == Roles::ORDER_ADMIN;
+  return isOrderManager($user) || isDistrictInspector($user);
 }
 
 function get_student_permission() {
