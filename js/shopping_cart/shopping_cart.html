@@ -2,7 +2,7 @@
   <h2>确认收货地址和联系方式</h2>
   <hr>
   <div class="css-table">
-    <div class="css-table-row">
+    <div class="css-table-row" hidden>
       <label class="css-table-cell address-column">
         <input type="radio" name="localGroup" ng-change="updateShipMethod(ME)"
             ng-model="shipTo" value="{{ME}}">
@@ -26,10 +26,10 @@
         <address-editor user="user" with-contact="true"></address-editor>
       </div>
       <div class="css-table-cell">
-        <districts user="user"></districts>
+        <districts user="user" hidden></districts>
       </div>
       <div class="css-table-cell">
-        <districts user="user" editable="shipTo == PICKUP" stock="true">
+        <districts user="user" editable="shipTo == PICKUP" stock="true" hidden>
         </districts>
       </div>
     </div>

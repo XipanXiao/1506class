@@ -141,7 +141,7 @@ define('shopping_cart/shopping_cart', [
             });
           };
         },
-        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201809252001'
+        templateUrl : 'js/shopping_cart/shopping_cart.html?tag=201903252001'
       };
     });
 });
