@@ -92,12 +92,8 @@
       <div class="h-padded-element">
         运费: ${{cart.shipping}}
       </div>
-      <div class="yellow-button check-out-button center-align"
-          ng-show="confirming" ng-click="checkOut(true)">
-        提交订单，在线付款
-      </div>
-      <div class="yellow-button check-out-button center-align" ng-click="checkOut()">
-        {{confirming ? '提交订单，以后再付款' : '结账'}}
+      <div class="yellow-button check-out-button center-align" ng-click="checkOut(true)">
+        {{confirming ? '提交订单，在线付款' : '结账'}}
       </div>
     </div>
   </div>
