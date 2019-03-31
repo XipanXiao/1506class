@@ -12,21 +12,29 @@ define('course_editor_dialog/course_editor_dialog',
 					    onSave: '&'
 					  },
 					  link: function($scope, element) {
-					    $scope.selected = {id: 0};
+              $scope.selected = {id: 0};
+              
+              function getDepartments() {
+					      return rpc.get_departments().then(function(response) {
+					        $scope.departmentIds = utils.keys(response.data);
+					        return $scope.departments = response.data;
+					      });
+              }
 
 					    function getCategories() {
 					      return rpc.get_item_categories(99).then(function(response) {
-					        $scope.categoryIds = [];
-					        for (var id in response.data) {
-					          $scope.categoryIds.push(id);
-					        }
+					        $scope.categoryIds = utils.keys(response.data);
 					        return $scope.categories = response.data;
 					      });
 					    }
 					    
 					    function getCourseGroups() {
 	              return rpc.get_course_groups().then(function(response) {
-	                $scope.course_groups = response.data;
+                  $scope.course_groups = response.data;
+                  utils.forEach($scope.course_groups, function(group) {
+                    group.category = parseInt(group.category);
+                    group.department_id = parseInt(group.department_id) || null;
+                  });
 	                $scope.groupIds = utils.positiveKeys($scope.course_groups);
 	                if ($scope.groupId) {
 	                  $scope.select($scope.groupId);
@@ -35,7 +43,7 @@ define('course_editor_dialog/course_editor_dialog',
 	              });
 					    }
 
-					    utils.requestOneByOne([getCategories, getCourseGroups]);
+					    utils.requestOneByOne([getCategories, getDepartments, getCourseGroups]);
 					    
 					    $scope.createGroup = function(category) {
 					      var dialog = document.querySelector('#create-course-dialog');
@@ -185,7 +193,7 @@ define('course_editor_dialog/course_editor_dialog',
                 }
               };
 					  },
-						templateUrl : 'js/course_editor_dialog/course_editor_dialog.html?tag=20180621'
+						templateUrl : 'js/course_editor_dialog/course_editor_dialog.html?tag=20190621'
 					};
 				});
 });

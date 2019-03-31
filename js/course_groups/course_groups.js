@@ -9,7 +9,8 @@ define('course_groups/course_groups',
           restrict: 'A',
           link: function(scope, element, attrs, ngModel) {
             ngModel.$formatters.push(function(groupId) {
-              return scope.course_groups[groupId].name;
+              var group = scope.course_groups;
+              return group && group[groupId] && group[groupId].name;
             });
             ngModel.$parsers.push(function(groupName) {
               var groups = scope.course_groups;

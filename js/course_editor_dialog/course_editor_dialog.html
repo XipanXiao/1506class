@@ -52,6 +52,12 @@
               ng-model="group.category" ng-change="updateGroup(group)">
           </select>
         </label>
+        <label>
+          子类别
+          <select ng-options="departments[id].name for id in departmentIds"
+              ng-model="group.department_id" ng-change="updateGroup(group)">
+          </select>
+        </label>
       </div>
       <div class="css-table odd-even course-list" ng-show="group.id">
         <div class="append-course-icon" title="添加" ng-click="appendCourse(group)">
