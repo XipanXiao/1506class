@@ -2,31 +2,12 @@ define('course_groups/course_groups',
     ['services', 'permission', 'utils'], function() {
 	return angular.module('CourseGroupsModule', ['ServicesModule',
       'PermissionModule',
-      'UtilsModule'])
-    	.directive('courseGroupInput', function() {
-        return {
-          require: 'ngModel',
-          restrict: 'A',
-          link: function(scope, element, attrs, ngModel) {
-            ngModel.$formatters.push(function(groupId) {
-              var group = scope.course_groups;
-              return group && group[groupId] && group[groupId].name;
-            });
-            ngModel.$parsers.push(function(groupName) {
-              var groups = scope.course_groups;
-              for (var id in groups) {
-                if (groups[id].name == groupName) {
-                  scope.select(id);
-                  return id;
-                }
-              }
-            });            
-          }
-        };
-      }).directive('courseGroups',
+      'UtilsModule']).directive('courseGroups',
 				function(rpc, perm, utils) {
 					return {
 					  scope: {
+              limit: '@',
+              dep: '=',
 					    groupId: '=',
 					    onChange: '&'
 					  },
@@ -37,8 +18,13 @@ define('course_groups/course_groups',
 					      return perm.isSysAdmin();
 					    };
 
-              rpc.get_course_groups().then(function(response) {
+              rpc.get_course_groups(false, $scope.dep).then(function(response) {
                 $scope.course_groups = response.data;
+                $scope.course_groups = utils.where($scope.course_groups,
+                    function(group) {
+                      var category = parseInt(group.category);
+                      return $scope.limit ? category == 2 : category != 2;
+                });
                 var groupIds = utils.positiveKeys($scope.course_groups);
                 groupIds.sort(function(id1, id2) {
                   return response.data[id1].name

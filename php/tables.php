@@ -39,10 +39,13 @@ function remove_department($id) {
   return $medoo->delete("departments", ["id" => $id]);
 }
 
-function get_course_groups($detailed) {
+function get_course_groups($detailed, $department_id = null) {
   global $medoo;
-  
-  $groups = $medoo->select("course_groups", "*");
+
+  $where = empty($department_id) 
+      ? ""
+      : sprintf(" WHERE department_id is NULL OR department_id=%d", $department_id);
+  $groups = $medoo->query("SELECT * FROM course_groups". $where)->fetchAll();
   
   $result = [];
   foreach ($groups as $group) {

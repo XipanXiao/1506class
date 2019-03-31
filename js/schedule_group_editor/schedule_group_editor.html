@@ -1,12 +1,12 @@
 <div class="section group-editing padded-element">
   <div>课程：
     <course-groups group-id="group.course_group" class="inline"
-        on-change="courseGroupChanged(courses)">
+        dep="dep" on-change="courseGroupChanged(courses)">
     </course-groups>
   </div>
   <div>课程2(可选)：
     <course-groups group-id="group.course_group2" class="inline"
-        on-change="courseGroupChanged(courses, true)">
+        dep="dep" on-change="courseGroupChanged(courses, true)">
     </course-groups>
     <label>顺序安排
       <input type="checkbox" ng-model="sequential"
@@ -21,7 +21,7 @@
   </div>
   <div>限制性课程：
     <course-groups group-id="group.limited_course_group" class="inline"
-        on-change="limitedGroupChange(courses)">
+        dep="dep" on-change="limitedGroupChange(courses)" limit="true">
     </course-groups>
   </div>
   <input type="button" value="Cancel" ng-click="reloadGroup()">

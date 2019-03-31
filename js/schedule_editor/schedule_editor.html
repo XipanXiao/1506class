@@ -23,7 +23,8 @@
       <span ng-switch-default>已上报于{{toDateTime(group.end_time)}}</span>
     </div>
   </div>
-  <schedule-group-editor ng-if="group.editing" group="group"></schedule-group-editor>
+  <schedule-group-editor ng-if="group.editing" group="group" dep="classInfo.department_id">
+  </schedule-group-editor>
   <div class="css-table odd-even schedule-tasks" ng-class="{'busy': sending}">
     <div class="css-table-row header">
       <div class="css-table-cell"><strong>周数</strong></div>

@@ -266,9 +266,9 @@ define('services', ['utils'], function() {
                 '{0}?rid=user_label&id={1}'.format(serviceUrl, id));
           },
 
-          get_course_groups: function(detailed) {
-            var url = '{0}?rid=course_groups&detailed={1}'.format(
-                serviceUrl, detailed || false);
+          get_course_groups: function(detailed, depId) {
+            var url = '{0}?rid=course_groups&detailed={1}&department_id={2}'.format(
+                serviceUrl, detailed || false, depId || '');
             return $http.get(url, {cache: true});
           },
 

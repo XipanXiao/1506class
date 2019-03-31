@@ -8,6 +8,7 @@ define('schedule_group_editor/schedule_group_editor',
         function($rootScope, rpc, utils) {
           return {
             scope: {
+              dep: '=',
               group: '='
             },
             link: function(scope) {
@@ -189,7 +190,7 @@ define('schedule_group_editor/schedule_group_editor',
                 return terms;
               })();
             },
-            templateUrl : 'js/schedule_group_editor/schedule_group_editor.html?tag=201712202243'
+            templateUrl : 'js/schedule_group_editor/schedule_group_editor.html?tag=201903302243'
           };
         });
 });
