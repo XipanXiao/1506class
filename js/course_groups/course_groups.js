@@ -3,7 +3,26 @@ define('course_groups/course_groups',
 	return angular.module('CourseGroupsModule', ['ServicesModule',
       'PermissionModule',
       'UtilsModule'])
-		.directive('courseGroups',
+    	.directive('courseGroupInput', function() {
+        return {
+          require: 'ngModel',
+          restrict: 'A',
+          link: function(scope, element, attrs, ngModel) {
+            ngModel.$formatters.push(function(groupId) {
+              return scope.course_groups[groupId].name;
+            });
+            ngModel.$parsers.push(function(groupName) {
+              var groups = scope.course_groups;
+              for (var id in groups) {
+                if (groups[id].name == groupName) {
+                  scope.select(id);
+                  return id;
+                }
+              }
+            });            
+          }
+        };
+      }).directive('courseGroups',
 				function(rpc, perm, utils) {
 					return {
 					  scope: {
@@ -11,8 +30,8 @@ define('course_groups/course_groups',
 					    onChange: '&'
 					  },
 					  link: function($scope) {
-					    $scope.selected = {id: 0};
-					    
+              $scope.selected = {id: 0};
+              
 					    $scope.isSysAdmin = function() {
 					      return perm.isSysAdmin();
 					    };
@@ -74,7 +93,7 @@ define('course_groups/course_groups',
                 }
               };
 					  },
-						templateUrl : 'js/course_groups/course_groups.html?tag=201705252126'
+						templateUrl : 'js/course_groups/course_groups.html?tag=201903252126'
 					};
 				});
 });

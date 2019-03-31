@@ -36,7 +36,7 @@ function canReadClass($classInfo) {
 
 function canWriteClass($user, $classId) {
   $classInfo = get_classes(["id" => $classId])[$classId];
-  if (!classInfo) return false;
+  if (!$classInfo) return false;
 
   return canWrite($user, $classInfo);
 }
