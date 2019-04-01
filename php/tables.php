@@ -71,7 +71,7 @@ function update_course_group($group) {
     }
   }
 
-  $id = intval($group["id"]);
+  $id = empty($group["id"]) ? 0 : intval($group["id"]);
   if ($id == 0) {
     $id = $medoo->insert("course_groups", $datas);
     if ($id) {

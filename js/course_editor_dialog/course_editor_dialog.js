@@ -13,17 +13,24 @@ define('course_editor_dialog/course_editor_dialog',
 					  },
 					  link: function($scope, element) {
               $scope.selected = {id: 0};
+              function keys(map) {
+                var a = [];
+                for (var key in map) {
+                  a.push(key);
+                }
+                return a;
+              }
               
               function getDepartments() {
 					      return rpc.get_departments().then(function(response) {
-					        $scope.departmentIds = utils.keys(response.data);
+					        $scope.departmentIds = keys(response.data);
 					        return $scope.departments = response.data;
 					      });
               }
 
 					    function getCategories() {
 					      return rpc.get_item_categories(99).then(function(response) {
-					        $scope.categoryIds = utils.keys(response.data);
+					        $scope.categoryIds = keys(response.data);
 					        return $scope.categories = response.data;
 					      });
 					    }
@@ -31,10 +38,6 @@ define('course_editor_dialog/course_editor_dialog',
 					    function getCourseGroups() {
 	              return rpc.get_course_groups().then(function(response) {
                   $scope.course_groups = response.data;
-                  utils.forEach($scope.course_groups, function(group) {
-                    group.category = parseInt(group.category);
-                    group.department_id = parseInt(group.department_id) || null;
-                  });
 	                $scope.groupIds = utils.positiveKeys($scope.course_groups);
 	                if ($scope.groupId) {
 	                  $scope.select($scope.groupId);
