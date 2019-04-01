@@ -652,8 +652,9 @@ function update_schedule_group($group) {
   $fields = ["classId", "course_group", "course_group2", "term",
       "limited_course_group", "mid_week"];
   foreach ($fields as $field) {
-    if (!empty($group[$field])) {
-      $datas[$field] = $group[$field];
+    if (isset($group[$field])) {
+      $value = intval($group[$field]);
+      $datas[$field] = $value ? $value : null;
     }
   }
   

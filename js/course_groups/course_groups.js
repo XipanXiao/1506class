@@ -61,13 +61,12 @@ define('course_groups/course_groups',
 
                 $scope.selected.id = id;
                 $scope.group = $scope.course_groups[id];
+                $scope.groupId = id;
 
                 if (!id) {
                   $scope.onChange({courses: {}});
                   return;
-                }
-                
-                $scope.groupId = id;
+                }                
 
                 var course_group = $scope.course_groups[id];
                 if (course_group.courses) {
