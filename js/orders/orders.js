@@ -33,7 +33,7 @@ define('orders/orders', [
             var filters = {items: true, status: scope.status,
                 year: scope.filters.year};
             var user_id = !scope.admin && scope.user.id;
-            if (!perm.isOrderAdmin()) {
+            if (!perm.isOrderAdmin() && !perm.isDistrictInspector()) {
               filters.class_id = scope.user.classId;
             }
             return rpc.get_orders(user_id, filters).then(function(response) {
