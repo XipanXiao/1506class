@@ -126,7 +126,7 @@ define('schedule_editor/schedule_editor',
                 });
               };
               $scope.vacation = function(schedule) {
-                return !schedule.course_id || !parseInt(schedule.course_id);
+                return !parseInt(schedule.course_id) && !parseInt(schedule.course_id2);
               };
               window.dragSchedule = function(event) {
                 event.dataTransfer.setData("text", event.target.id);

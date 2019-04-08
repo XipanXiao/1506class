@@ -35,14 +35,14 @@ define('schedule_group_editor/schedule_group_editor',
                 });
               };
               scope.merge_courses = function(course_ids1, course_ids2) {
-                var group = scope.group;
                 if (scope.sequential) {
                   return course_ids1.concat(course_ids2);
                 } else {
                   var alternate = [];
-                  for (var index = 0;index < course_ids1.length; index++) {
-                    alternate.push(course_ids1[index]);
-                    alternate.push(course_ids2[index]);
+                  var length = Math.max(course_ids1.length, course_ids2.length);
+                  for (var index = 0;index < length; index++) {
+                    alternate.push(course_ids1[index] || null);
+                    alternate.push(course_ids2[index] || null);
                   }
                   return alternate;
                 }
@@ -80,12 +80,7 @@ define('schedule_group_editor/schedule_group_editor',
                   }
 
                   if (!clearing && course_ids2.length != course_ids1.length) {
-                    if (course_ids2.length > course_ids1.length) {
-                      alert('Secondary course should have same lessons as the' +
-                          ' primary one.');
-                      return;
-		    }
-                    var len = course_ids1.length - course_ids2.length;
+                    var len = Math.abs(course_ids1.length - course_ids2.length);
                     course_ids2 = course_ids2.concat(new Array(len).fill(null));
                   }
 
@@ -103,13 +98,12 @@ define('schedule_group_editor/schedule_group_editor',
                 var group = scope.group;
                 var weeks = course_ids.length > 10 ? 
                     utils.weeksOfTerm : course_ids.length;
-                
+
                 if (group.schedules && utils.keys(group.schedules).length) {
                   // Modifying existing schedules.
                   for (var id in group.schedules) {
                     week++;
                     var schedule = group.schedules[id];
-                    if (!parseInt(schedule.course_id)) continue;
                     schedule.course_id = course_ids[courseIndex++];
                     if (hasSecondCourse) {
                       schedule.course_id2 = course_ids[courseIndex++];
@@ -121,11 +115,10 @@ define('schedule_group_editor/schedule_group_editor',
                 } else {
                   group.schedules = {};
                 }
-
+                   
                 // Appending new schedules.
                 for (; week < weeks || courseIndex < course_ids.length; week++) {
-                  var courseId = 0;
-                  courseId = course_ids[courseIndex++] || null;
+                  var courseId = course_ids[courseIndex++] || null;
 
                   var schedule = {
                     id: 0,
@@ -170,12 +163,6 @@ define('schedule_group_editor/schedule_group_editor',
                   var course_ids1 = scope.courseIds[0];
                   var course_ids2 = scope.courseIds[1];
                 
-                  if (course_ids2.length != course_ids1.length) {
-                    alert('Secondary course should have same lessons as the' +
-                        ' primary one.');
-                    return;
-                  }
-
                   var courseIds = scope.merge_courses(course_ids1, course_ids2);
                   scope.arrange_schedules(courseIds, true);
                 });
