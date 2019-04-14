@@ -41,11 +41,10 @@
 <create-election-dialog></create-election-dialog>
 <vote-mail-dialog></vote-mail-dialog>
 <paper-toast></paper-toast>
-<datalist id="user-input-list">
-  <option ng-repeat="label in hints" value="{{label}}">
-  </option>
+<datalist id="paper-auto-suggest-list">
+  <option ng-repeat="hint in hints" value="{{hint}}"></option>
 </datalist>
-
+  
 <script type="text/javascript">
   const define = (module, deps, f) => f();
   const require = define;

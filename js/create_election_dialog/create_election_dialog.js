@@ -1,6 +1,6 @@
 angular.module('CreateElectionDialogModule', [
   'ServicesModule',
-  'PaperUserInputModule',
+  'PaperAutoSuggestInputModule',
   'UtilsModule',
 ]).directive('createElectionDialog', function (rpc, utils) {
   return {
@@ -9,6 +9,7 @@ angular.module('CreateElectionDialogModule', [
     },
     link: function (scope) {
       scope.user = {};
+      scope.searchUser = rpc.searchUser;
       scope.create = function () {
         scope.onCreate({
           organizer: scope.user.id,

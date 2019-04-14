@@ -117,7 +117,7 @@ function checkCaptcha($captcha) {
 /// updated. Otherwise a new record is inserted into the [$table] and a new id
 /// is returned.
 function insertOrUpdate($medoo, $table, $record) {
-  $id = intval($record["id"]);
+  $id = empty($record["id"]) ? 0 : intval($record["id"]);
   if ($id) {
     if (!$medoo->update($table, $record, ["id" => $id])) return 0;
     return $id;

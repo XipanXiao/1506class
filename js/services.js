@@ -29,7 +29,8 @@ define('services', ['utils'], function() {
 
   return angular.module('ServicesModule', ['UtilsModule'])
       .factory('rpc', function($http, $httpParamSerializerJQLike, utils) {
-        return {
+        var rpc;
+        return rpc = {
           get_departments: function() {
             return departmentsPromise ||
                 (departmentsPromise =
@@ -264,6 +265,24 @@ define('services', ['utils'], function() {
           getUserLabel: function(id) {
             return $http.get(
                 '{0}?rid=user_label&id={1}'.format(serviceUrl, id));
+          },
+
+          searchUser: function(query) {
+            var id = parseInt(query);
+            if (id) {
+              return rpc.getUserLabel(id).then(function(response) {
+                return response.data.label;
+              });
+            } else {
+              return rpc.searchByName(query).then(function(response) {
+                return (response.data || []).map(function(user) {
+                  user.label = user.nickname ? 
+                  '{0}({1})'.format(user.name, user.nickname) : user.name;
+                  user.label += '-' + user.email;
+                  return user;
+                });
+              });
+            }
           },
 
           get_course_groups: function(detailed, depId) {

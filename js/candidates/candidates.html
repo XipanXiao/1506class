@@ -42,10 +42,12 @@
       district: district} | orderBy: '-votes'" class="deletable">
     <td ng-switch="editable" style="min-width:100px">
       <div ng-switch-when="true">
-        <paper-user-input user-id="candidate.user"
+        <paper-auto-suggest-input key="candidate.user"
+            label="userInput"
             on-change="markDirty(candidate)"
+            search="searchUser"
             editable="isVoteOwner() && editable">
-        </paper-user-input>
+        </paper-auto-suggest-input>
         <div ng-if="!candidate.user" class="error">姓名不能为空</div>
         <paper-input ng-model="candidate.slogan"
             ng-change="markDirty(candidate)"

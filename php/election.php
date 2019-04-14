@@ -32,7 +32,7 @@ function update_election($election) {
     $election["token"] = rand(100, 100000000);
   }
   $id = insertOrUpdate($medoo, "elections", $election);
-  if (!$id || intval($election["deleted"])) return 0;
+  if (!$id || !empty($election["deleted"])) return 0;
   $election = get_single_record($medoo, "elections", $id);
   unset($election["token"]);
   return $election;
@@ -59,7 +59,7 @@ function update_candidate($candidate) {
   global $medoo;
   $candidate = build_update_data(["id", "election", "user",
       "profile", "slogan", "description"], $candidate);
-  if (empty($candidate["id"])) {
+  if (!empty($candidate["user"])) {
     $user = get_single_record($medoo, "users", $candidate["user"]);
     $candidate["district"] = $user["district"];
     $candidate["name"] = $user["name"].

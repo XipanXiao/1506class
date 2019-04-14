@@ -53,6 +53,7 @@ angular.module('ElectionListModule', [
             election.candidates.forEach((candidate) => {
               candidate.deleted = false;
               candidate.district = parseInt(candidate.district);
+              window.userInputCache = window.userInputCache || {};
               window.userInputCache[candidate.user] = candidate.name;
             });
             return true;

@@ -7,8 +7,9 @@
   </div>
   <div class="padded-element">
     负责人
-    <paper-user-input user-id="user.id" editable="true">
-    </paper-user-input>
+    <paper-auto-suggest-input key="user.id" editable="true"
+        search="searchUser" label="userInput">
+    </paper-auto-suggest-input>
   </div>
   <div class="buttons">
     <paper-button dialog-dismiss raised>取消</paper-button>

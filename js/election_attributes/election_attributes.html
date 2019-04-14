@@ -54,9 +54,12 @@
   <div class="css-table-row">
     <div class="css-table-cell attribute-label">负责人</div>
     <div class="css-table-cell attribute-value">
-      <paper-user-input user-id="election.organizer" on-change="markDirty()"
+      <paper-auto-suggest-input key="election.organizer"
+          on-change="markDirty()"
+          search="searchUser"
+          label="userInput"
           editable="isVoteOwner() && editable && election">
-      </paper-user-input>
+      </paper-auto-suggest-input>
     </div>
   </div>
 </div>

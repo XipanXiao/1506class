@@ -3,7 +3,7 @@ angular.module('CandidatesModule', [
     'FileInputModule',
     'PermissionModule',
     'ServicesModule',
-    'PaperUserInputModule',
+    'PaperAutoSuggestInputModule',
     'UtilsModule',
     'VoteActionsModule',
   ]).directive('candidates', function(perm, rpc, utils) {
@@ -20,6 +20,7 @@ angular.module('CandidatesModule', [
         scope.isVoteOwner = () => perm.isElectionOwner(scope.election);
         scope.filtered = scope.election &&
             scope.election.candidates.length || 0;
+        scope.searchUser = rpc.searchUser;
 
         scope.$watch('election', (election) => {
           if (!election) return;

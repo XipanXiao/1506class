@@ -3,7 +3,7 @@ angular.module('ElectionAttributesModule', [
   'ServicesModule',
   'TimeModule',
   'PaperBindingsModule',
-  'PaperUserInputModule',
+  'PaperAutoSuggestInputModule',
   'UtilsModule'
 ]).directive('electionAttributes', function (perm, rpc, utils) {
   return {
@@ -18,6 +18,7 @@ angular.module('ElectionAttributesModule', [
     },
     link: function (scope) {
       scope.isVoteOwner = () => perm.isElectionOwner(scope.election);
+      scope.searchUser = rpc.searchUser;
 
       var votersById;
       var allDistrcits;
@@ -98,11 +99,11 @@ angular.module('ElectionAttributesModule', [
           // First collect all voted voters.
           utils.forEach(election.allVotes, function(vote) {
             var candidate = candidatesMap[vote.candidate];
-            if (!candidate) continue;
+            if (!candidate) return;
             var voter = votersById[vote.user];
             if (!voter ||
               voter.district != candidate.district && !election.global) {
-              continue;
+              return;
             }
 
             stats.votes++;
