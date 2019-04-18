@@ -291,6 +291,15 @@ define('services', ['utils'], function() {
             return $http.get(url, {cache: true});
           },
 
+          searchCourse: function(query) {
+            if (parseInt(query)) {
+              query = [parseInt(query)];
+            }
+            var url = '{0}?rid=course&' +
+                ((query instanceof Array) ? 'id={1}' : 'name={1}');
+            return $http.get(url.format(serviceUrl, query), {cache: true});
+          },
+
           update_course_group: function(group) {
             group.rid = 'course_group';
             return http_form_post($http, $httpParamSerializerJQLike(group));
