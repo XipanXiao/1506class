@@ -1,6 +1,7 @@
 angular.module('PaperAutoSuggestInputModule', [
-  'ServicesModule'
-]).directive('paperAutoSuggestInput', function(rpc) {
+  'PaperBindingsModule',
+  'UtilsModule'
+]).directive('paperAutoSuggestInput', function(utils) {
   return {
     scope: {
       editable: '=',
@@ -55,13 +56,13 @@ angular.module('PaperAutoSuggestInputModule', [
             if (!results) return;
 
             var hints = [];
-            results.forEach(function(result) {
+            utils.forEach(results, function(result) {
               cache[result.id] = result.label;
               cache[result.label] = result.id;
               hints.push(result.label);
             });
             var dataList = document.querySelector('#paper-auto-suggest-list');
-            angular.element(dataList).scope().hints = hints;
+            angular.element(dataList).scope().hints = Array.from(new Set(hints));
           });
         }, 250);
       };

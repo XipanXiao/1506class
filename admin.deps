@@ -20,6 +20,8 @@ js/department_editor_dialog/department_editor_dialog.js
 js/permission_editor/permission_editor.js
 js/user_picker/user_picker.js
 js/user_input/user_input.js
+js/paper_bindings/paper_bindings.js
+js/paper_auto_suggest_input/paper_auto_suggest_input.js
 js/class_editor/class_editor.js
 js/progress_bar/progress_bar.js
 js/task_editor_dialog/task_editor_dialog.js

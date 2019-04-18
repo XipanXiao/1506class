@@ -14,7 +14,7 @@ define('create_course_dialog/create_course_dialog',
           scope.create = function() {
             scope.onCreate({
               category: scope.category,
-              name: document.querySelector('#course-name-input').value
+              name: scope.courseName,
             });
           };
         },

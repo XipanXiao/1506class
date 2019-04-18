@@ -53,8 +53,6 @@ define('utils', [], function() {
     return value && parseFloat(value) || 0.00;
   }
 
-  var enroll_tasks = ['welcomed', 'wechated', 'yyed', 'tested', 'bookordered'];
-
   return angular.module('UtilsModule', []).factory('utils', function($q) {
     var utils = {
       countryLabels: window.countryData.getCountryMap(),

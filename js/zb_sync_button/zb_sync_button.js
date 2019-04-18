@@ -299,7 +299,6 @@ define('zb_sync_button/zb_sync_button',
             });
           };
           scope.showLoginDialog = function() {
-            scope.username = 'zhibeihw1';
             document.querySelector('#zb-login').open();
             scope.deferredLogin = $q.defer();
             return scope.deferredLogin.promise;
