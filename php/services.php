@@ -206,6 +206,10 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     }
   } elseif ($resource_id == "schedule_groups") {
     $response = get_schedule_groups($_GET["classId"]);
+  } elseif ($resource_id == "course") {
+    $response = empty($_GET["id"]) 
+        ? lookup_course($_GET["name"])
+        : get_course_by_id($_GET["id"]);
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];

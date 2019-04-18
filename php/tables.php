@@ -244,6 +244,18 @@ function get_courses($course_group_id) {
       ["group_id" => $course_group_id]));
 }
 
+function get_course_by_id($course_ids) {
+  global $medoo;
+
+  return keyed_by_id($medoo->select("courses", "*", ["id" => $course_ids]));
+}
+
+function lookup_course($name) {
+  global $medoo;
+
+  return keyed_by_id($medoo->select("courses", "*", ["name[~]" => $name]));
+}
+
 function get_user_by_id($id) {
   global $medoo;
 
@@ -566,6 +578,18 @@ function get_schedules($classId, $term, $records, $user_id) {
       keyed_by_id($medoo->select("schedule_groups", "*",
           ["AND" => ["classId" => $classId, "term" => $term]]));
 
+  function getCourseIds($schedule) {
+    return [intval($schedule["course_id"]), intval($schedule["course_id2"])];
+  }
+
+  function flatten($arrays) {
+    $result = [];
+    foreach ($arrays as $array) {
+      $result = array_merge($result, $array);
+    }
+    return $result;
+  }
+
   foreach ($schedule_groups as $group_id => $group) {
     $group["start_time"] = (new DateTime($group["start_time"]))->getTimestamp();
     if (!empty($group["end_time"])) {
@@ -574,13 +598,21 @@ function get_schedules($classId, $term, $records, $user_id) {
     $group["schedules"] = keyed_by_id($medoo->select("schedules", "*",
         ["group_id" => $group_id]));
     
-    $group["courses"] =
-        keyed_by_id($medoo->select("courses", ["id", "name"],
-            ["group_id" => $group["course_group"]]));
-    if (!empty($group["course_group2"])) {
-      $group["courses"] = keyed_by_id(array_merge($group["courses"],
+    if (empty($group["course_group"]) && empty($group["course_group2"])) {
+      $courseIds = flatten(array_map("getCourseIds", $group["schedules"]));
+
+      $group["courses"] = keyed_by_id(
+        $medoo->select("courses", ["id", "name"], ["id" => $courseIds])
+      );
+    } else {
+      $group["courses"] =
           keyed_by_id($medoo->select("courses", ["id", "name"],
-              ["group_id" => $group["course_group2"]]))));
+              ["group_id" => $group["course_group"]]));
+      if (!empty($group["course_group2"])) {
+        $group["courses"] = keyed_by_id(array_merge($group["courses"],
+            keyed_by_id($medoo->select("courses", ["id", "name"],
+                ["group_id" => $group["course_group2"]]))));
+      }
     }
 
     $group["limited_courses"] =
@@ -629,15 +661,16 @@ function update_schedule($schedule) {
   if (intval($datas["course_id2"]) == 0) {
     $datas["course_id2"] = NULL;
   }
-  $id = $schedule["id"];
-  if ($id == 0) {
+
+  if (empty($schedule["id"])) {
     return $medoo->insert("schedules", $datas);
   }
 
   if (!empty($schedule["notified"])) {
     $datas["#notified"] = "NOW()";
   }
-  return $medoo->update("schedules", $datas, ["id" => $id]);
+  return $medoo->update("schedules", $datas,
+      ["id" => $schedule["id"]]);
 }
 
 function formatTimestamp($tm) {
@@ -675,12 +708,9 @@ function update_schedule_group($group) {
     $id = $medoo->insert("schedule_groups", $datas);
     if (!$id) return false;
 
-    if (!empty($schedules)) {
-      for ($index = 0; $index < count($schedules); $index++) {
-        $schedule = $schedules[$index];
-        $schedule["group_id"] = $id;
-        update_schedule($schedule);
-      }
+    foreach($schedules as $schedule) {
+      $schedule["group_id"] = $id;
+      update_schedule($schedule);
     }
   } else {
     $medoo->update("schedule_groups", $datas, ["id" => $id]);
