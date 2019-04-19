@@ -210,6 +210,15 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = empty($_GET["id"]) 
         ? lookup_course($_GET["name"])
         : get_course_by_id($_GET["id"]);
+  } elseif ($resource_id == "attendance") {
+    if (empty($_GET["user_id"])) {
+      $response = attendanceStats($user);
+    } else {
+      $another = get_user_by_id($_GET["user_id"]);
+      $response = canReadUser($another) 
+          ? attendanceStats($another)
+          : permission_denied_error();
+    }
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
   $resource_id = $_POST["rid"];

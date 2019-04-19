@@ -601,6 +601,12 @@ define('services', ['utils'], function() {
           delete_staff: function(id) {
             var url = 'php/organization.php?rid=staff&id={0}'.format(id);
             return $http.delete(url);
+          },
+
+          attendanceStats: function(user_id) {
+            var url = '{0}?rid=attendance&user_id={1}'.format(
+              serviceUrl, user_id || '');
+            return $http.get(url);
           }
         };
       });
