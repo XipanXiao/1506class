@@ -8,6 +8,7 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
               user: '='
             },
             link: function($scope) {
+              $scope.stats = {};
               $scope.attendOptions = ['缺席', '出席', '请假'];
               $scope.vacation = function(schedule) {
                 return !parseInt(schedule.course_id); 
@@ -22,16 +23,34 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                 $scope.reload();
               });
 
-              $scope.reload = function(term) {
-                rpc.get_schedules($scope.user.classId, term || 0, 'mine')
-                    .then(function(response) {
-                  if (!$scope.setHalfTerm(response.data.groups)) return;
+              function getAttendanceStats() {
+                return rpc.attendanceStats().then(function(response) {
+                  var stat = $scope.stats = response.data || {};
+                  var total = parseInt(stat.total);
+                  if (total) {
+                    stat.ratio = (parseInt(stat.attended) * 100.0 / total).toFixed(2);
+                  }
+                  return true;
+                });    
+              }
 
-                  $scope.schedule_groups = response.data.groups;
-                  $scope.users = response.data.users;
-                  $scope.records = $scope.users[$scope.user.id].records;
-                  utils.forEach($scope.schedule_groups, utils.calcMiddleWeek);
-                });
+              function getSchedules(term) {
+                return function() {
+                  return rpc.get_schedules($scope.user.classId, term || 0, 'mine')
+                      .then(function(response) {
+                    if (!$scope.setHalfTerm(response.data.groups)) return true;
+
+                    $scope.schedule_groups = response.data.groups;
+                    $scope.users = response.data.users;
+                    $scope.records = $scope.users[$scope.user.id].records;
+                    utils.forEach($scope.schedule_groups, utils.calcMiddleWeek);
+                    return true;
+                  });
+                }
+              }
+
+              $scope.reload = function(term) {
+                utils.requestOneByOne([getSchedules(term), getAttendanceStats]);
               };
               
               $scope.setHalfTerm = function(groups) {

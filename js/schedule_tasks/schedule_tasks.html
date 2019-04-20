@@ -1,10 +1,13 @@
 <navigate-bar class="right padded-element" navigate="navigate(direction)"></navigate-bar>
 <div ng-repeat="group in schedule_groups">
-  <div class="center"><h2>第{{group.term}}学期</h2></div>
+  <div class="center">
+    <h2>第{{group.term}}学期</h2>
+    <span>总出勤{{stats.attended}}/{{stats.total}}({{stats.ratio}}%)</span>
+  </div>
   <div class="center">{{endTimeLabel(group)}}</div>
   <div class="css-table odd-even schedule-tasks"
       ng-class="{'wide-schedule-table': group.course_group2}">
-    <div class="css-table-row header">
+      <div class="css-table-row header">
       <div class="css-table-cell"><strong>周数</strong></div>
       <div class="css-table-cell"><strong>时间</strong></div>
       <div class="css-table-cell"><strong>课程</strong></div>
