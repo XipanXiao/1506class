@@ -83,10 +83,11 @@ define('shopping_cart/shopping_cart', [
                 user.street = user.city = user.state =
                     user.country = user.zip = null;
               }
+              var paymentNeeded = scope.cart.grand_total > 0.0;
               return scope.cart.checkOut(user, options).then(function(orderId) {
                 if (!orderId) return false;
                 $rootScope.$broadcast('reload-orders');
-                if (payNow) {
+                if (payNow && paymentNeeded) {
                   showPaymentWindow(orderId);
                 } else if (scope.refill) {
                   clear();

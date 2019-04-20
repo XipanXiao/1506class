@@ -52,7 +52,7 @@ define('model/cart', [], function() {
     checkOut: function(user, options) {
       var order = {
         user_id: user.id,
-        status: options.refill ? 8 : 0,
+        status: options.refill ? 8 : (this.grand_total > 0.0 ? 0 : 2),
         sub_total: this.subTotal,
         int_shipping: this.int_shipping,
         shipping: this.shipping,
