@@ -12,9 +12,14 @@ function get_scores($classId) {
   global $medoo;
 
   $userIds = $medoo->select("users", "id", ["classId" => $classId]);
-  return keyed_by_id($medoo->select("scores", 
+  $scores = keyed_by_id($medoo->select("scores", 
       ["user_id", "type1", "score1", "type2", "score2"], 
-      ["user_id" => $userIds]), "user_id");  
+      ["user_id" => $userIds]), "user_id");
+  foreach ($scores as $user_id => $score) {
+    $score["stats"] = attendanceStats($user_id, $classId);
+    $scores[$user_id] = $score;
+  }
+  return $scores;
 }
 
 function get_score($userId) {

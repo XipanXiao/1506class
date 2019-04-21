@@ -813,15 +813,15 @@ function is_teacher($id) {
   ]]) > 0;
 }
 
-function attendanceStats($user) {
+function attendanceStats($user_id, $classId) {
   global $medoo;
 
   $groupIds = $medoo->select("schedule_groups", "id",
-      ["AND" => ["classId" => $user->classId, "term[!]" => null]]); 
+      ["AND" => ["classId" => $classId, "term[!]" => null]]); 
   $courseIds = $medoo->select("schedules", "course_id",
       ["AND" => ["group_id" => $groupIds, "course_id[!]" => null]]);
   $attended = $medoo->select("schedule_records", "course_id",
-      ["AND" => ["student_id" => $user->id, "attended" => 1]]);
+      ["AND" => ["student_id" => $user_id, "attended" => 1]]);
   return ["total" => count($courseIds), 
       "attended" => count(array_intersect($courseIds, $attended))];
 }

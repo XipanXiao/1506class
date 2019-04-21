@@ -20,7 +20,8 @@
       <div class="css-table-cell">{{types[user.type2]}}</div>
       <div class="css-table-cell">{{user.score2}}</div>
       <div class="css-table-cell">
-        <user-attend-stats user-id="user.user_id"></user-attend-stats>
+        {{user.stats.attended}}/{{user.stats.total}}
+        ({{(user.stats.attended * 100.0/user.stats.total).toFixed(2)}}%)
       </div>
     </div>
   </div>

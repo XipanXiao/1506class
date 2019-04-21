@@ -212,10 +212,10 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         : get_course_by_id($_GET["id"]);
   } elseif ($resource_id == "attendance") {
     if (empty($_GET["user_id"])) {
-      $response = attendanceStats($user);
+      $response = attendanceStats($user->id, $user->classId);
     } else {
       $another = new User(get_user_by_id($_GET["user_id"]));
-      $response = attendanceStats($another);
+      $response = attendanceStats($another->id, $another->classId);
     }
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
