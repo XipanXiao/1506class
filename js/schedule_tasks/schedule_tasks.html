@@ -2,7 +2,7 @@
 <div ng-repeat="group in schedule_groups">
   <div class="center">
     <h2>第{{group.term}}学期</h2>
-    <span>总出勤{{stats.attended}}/{{stats.total}}({{stats.ratio}}%)</span>
+    总出勤<user-attend-stats></user-attend-stats>
   </div>
   <div class="center">{{endTimeLabel(group)}}</div>
   <div class="css-table odd-even schedule-tasks"

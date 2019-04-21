@@ -3,6 +3,7 @@ define('scores/scores', ['services',
     'zb_sync_button/zb_sync_button'], function() {
 
   return angular.module('ScoresModule', ['ServicesModule',
+      'UserAttendStatsModule',
       'UtilsModule', 'ZBSyncButtonModule'])
         .directive('scores', function(rpc, utils) {
       return {
@@ -56,7 +57,7 @@ define('scores/scores', ['services',
           };
           scope.selectedTop = 0;
         },
-        templateUrl : 'js/scores/scores.html?tag=201705122003'
+        templateUrl : 'js/scores/scores.html?tag=201905122003'
       };
     });
 });

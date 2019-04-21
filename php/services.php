@@ -214,10 +214,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     if (empty($_GET["user_id"])) {
       $response = attendanceStats($user);
     } else {
-      $another = get_user_by_id($_GET["user_id"]);
-      $response = canReadUser($another) 
-          ? attendanceStats($another)
-          : permission_denied_error();
+      $another = new User(get_user_by_id($_GET["user_id"]));
+      $response = attendanceStats($another);
     }
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {

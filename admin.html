@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" type="text/css" href="style.css?tag=201909112243">
+<link rel="stylesheet" type="text/css" href="style.css?tag=201904112243">
 <title>学修管理</title>
 <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js">
 </script>
@@ -65,11 +65,14 @@
   <email-dialog></email-dialog>
   <task-editor-dialog></task-editor-dialog>
   <zb-choose-root-dialog></zb-choose-root-dialog>
-  <zb-login-dialog name="user.name"></zb-login-dialog>
+  <zb-login-dialog></zb-login-dialog>
 </div>
 <datalist id="user-input-hints">
   <option ng-repeat="userId in hints" value="{{users[userId]}}">
   </option>
+</datalist>
+<datalist id="paper-auto-suggest-list">
+  <option ng-repeat="hint in hints" value="{{hint}}"></option>
 </datalist>
 
 <script type="text/javascript" src="admin.js?tag=201904041854"></script>

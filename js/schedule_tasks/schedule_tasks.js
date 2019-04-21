@@ -1,14 +1,13 @@
 define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
     'services', 'utils'], function() {
   return angular.module('ScheduleTasksModule', ['NavigateBarModule',
-    'ServicesModule', 'UtilsModule'])
+    'ServicesModule', 'UserAttendStatsModule', 'UtilsModule'])
     .directive('scheduleTasks', function($rootScope, rpc, utils) {
           return {
             scope: {
               user: '='
             },
             link: function($scope) {
-              $scope.stats = {};
               $scope.attendOptions = ['缺席', '出席', '请假'];
               $scope.vacation = function(schedule) {
                 return !parseInt(schedule.course_id); 
@@ -23,34 +22,16 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                 $scope.reload();
               });
 
-              function getAttendanceStats() {
-                return rpc.attendanceStats().then(function(response) {
-                  var stat = $scope.stats = response.data || {};
-                  var total = parseInt(stat.total);
-                  if (total) {
-                    stat.ratio = (parseInt(stat.attended) * 100.0 / total).toFixed(2);
-                  }
-                  return true;
-                });    
-              }
-
-              function getSchedules(term) {
-                return function() {
-                  return rpc.get_schedules($scope.user.classId, term || 0, 'mine')
-                      .then(function(response) {
-                    if (!$scope.setHalfTerm(response.data.groups)) return true;
-
-                    $scope.schedule_groups = response.data.groups;
-                    $scope.users = response.data.users;
-                    $scope.records = $scope.users[$scope.user.id].records;
-                    utils.forEach($scope.schedule_groups, utils.calcMiddleWeek);
-                    return true;
-                  });
-                }
-              }
-
               $scope.reload = function(term) {
-                utils.requestOneByOne([getSchedules(term), getAttendanceStats]);
+                return rpc.get_schedules($scope.user.classId, term || 0, 'mine')
+                    .then(function(response) {
+                  if (!$scope.setHalfTerm(response.data.groups)) return;
+
+                  $scope.schedule_groups = response.data.groups;
+                  $scope.users = response.data.users;
+                  $scope.records = $scope.users[$scope.user.id].records;
+                  utils.forEach($scope.schedule_groups, utils.calcMiddleWeek);
+                });
               };
               
               $scope.setHalfTerm = function(groups) {
@@ -103,7 +84,7 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                     '报数已截止于' + utils.toDateTime(tm).toLocaleString() : '';
               };
             },
-            templateUrl : 'js/schedule_tasks/schedule_tasks.html?tag=201806062203'
+            templateUrl : 'js/schedule_tasks/schedule_tasks.html?tag=201906062203'
           };
         });
 });
