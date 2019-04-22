@@ -56,7 +56,7 @@ define('course_groups/course_groups',
                 };
               };
               
-              $scope.select = function(id) {
+              $scope.select = function(id, userInitiated) {
                 if (!$scope.course_groups) return;
 
                 $scope.selected.id = id;
@@ -64,22 +64,24 @@ define('course_groups/course_groups',
                 $scope.groupId = id;
 
                 if (!id) {
-                  $scope.onChange({courses: {}});
+                  $scope.onChange({courses: {}, userInitiated: userInitiated});
                   return;
                 }                
 
                 var course_group = $scope.course_groups[id];
                 if (course_group.courses) {
-                  $scope.onChange({courses: course_group.courses});
+                  $scope.onChange({courses: course_group.courses,
+                    userInitiated: userInitiated});
                 } else {
                   rpc.get_courses(id).then(function(courses) {
                     $scope.course_groups[id].courses = courses;
-                    $scope.onChange({courses: courses});
+                    $scope.onChange({courses: courses,
+                        userInitiated: userInitiated});
                   });
                 }
               };
 					  },
-						templateUrl : 'js/course_groups/course_groups.html?tag=201903252126'
+						templateUrl : 'js/course_groups/course_groups.html?tag=201904252126'
 					};
 				});
 });

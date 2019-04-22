@@ -5,27 +5,30 @@ angular.module('PaperAutoSuggestInputModule', [
   return {
     scope: {
       editable: '=',
+      hints: '=',
       key: '=',
+      label: '@',
       onChange: '&',
       search: '=',
       value: '=',
     },
     restrict: 'E',
-    link: function(scope, element, attrs) {
+    link: function(scope) {
       var searchTimer;
-      var cacheName = attrs.label + 'Cache';
+      var cacheName = scope.label + 'Cache';
       var cache = window[cacheName] || (window[cacheName] = {});
 
       function update(key) {
+        if (scope.key == key) return;
         scope.key = key;
         scope.onChange();
       };
 
       function init(key) {
-        if (!key) return;
+        if (!parseInt(key)) return;
         if (scope.value = cache[key]) return;
 
-        scope.search(key).then(function(value) {
+        scope.search(key, true).then(function(value) {
           scope.value = cache[key] = value;
         });
       }
@@ -34,6 +37,30 @@ angular.module('PaperAutoSuggestInputModule', [
         init(scope.key);
       }
       scope.$watch('key', init);
+      scope.$watch('hints', setSuggestions);
+
+      function setSuggestions(suggestions) {
+        if (!suggestions) return;
+        var id = '{0}-suggestions'.format(scope.label);
+        var dataList = document.querySelector('#' + id) ||
+            document.createElement('datalist');
+        dataList.id = dataList.id || id;
+
+        var parent = dataList.parentElement;
+        parent && parent.removeChild(dataList);
+
+        while(dataList.options.length < suggestions.length) {
+          dataList.appendChild(document.createElement('option'));
+        }
+        var options = dataList.options;
+        while(options.length > suggestions.length) {
+          dataList.removeChild(options[options.length - 1]);
+        }
+        for (var index = 0; index < suggestions.length; index++) {
+          options[index].value = suggestions[index];
+        }
+        (parent || document.body).appendChild(dataList);
+      }
 
       scope.updateKeyByValue = function() {
         var value = scope.value;
@@ -61,12 +88,11 @@ angular.module('PaperAutoSuggestInputModule', [
               cache[result.label] = result.id;
               hints.push(result.label);
             });
-            var dataList = document.querySelector('#paper-auto-suggest-list');
-            angular.element(dataList).scope().hints = Array.from(new Set(hints));
+            setSuggestions(Array.from(new Set(hints)));
           });
         }, 250);
       };
     },
-    templateUrl: 'js/paper_auto_suggest_input/paper_auto_suggest_input.html?tag=20180621'
+    templateUrl: 'js/paper_auto_suggest_input/paper_auto_suggest_input.html?tag=20190621'
   };
 });

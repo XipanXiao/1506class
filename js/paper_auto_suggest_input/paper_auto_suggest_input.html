@@ -1,4 +1,8 @@
-<paper-input ng-model="value" ng-change="updateKeyByValue()"
-    list="paper-auto-suggest-list"
-    placeholder="输入名字查找..." no-label-float ng-disabled="!editable">
+<paper-input ng-model="value"
+    ng-change="updateKeyByValue()"
+    list="{{label}}-suggestions"
+    placeholder="{{editable ? '输入名字查找...' : ''}}"
+    title="{{value}}"
+    ng-disabled="!editable"
+    no-label-float>
 </paper-input>

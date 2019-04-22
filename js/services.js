@@ -291,8 +291,8 @@ define('services', ['utils'], function() {
             return $http.get(url, {cache: true});
           },
 
-          searchCourse: function(query) {
-            if (parseInt(query)) {
+          searchCourse: function(query, searchingKey) {
+            if (searchingKey && !(query instanceof Array)) {
               query = [parseInt(query)];
             }
             var url = '{0}?rid=course&' +

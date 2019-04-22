@@ -199,10 +199,10 @@ function update_class($classInfo) {
     }
   }
   
-  if (intval($datas['teacher_id']) == 0) {
+  if (empty($datas['teacher_id'])) {
     $datas['teacher_id'] = null;
   }
-  if (intval($datas['teacher2_id']) == 0) {
+  if (empty($datas['teacher2_id'])) {
     $datas['teacher2_id'] = null;
   }
   
@@ -714,10 +714,12 @@ function update_schedule_group($group) {
     }
   } else {
     $medoo->update("schedule_groups", $datas, ["id" => $id]);
+    $medoo->delete("schedules", ["group_id" => $id]);
 
     if (!empty($schedules)) {
       foreach ($schedules as $schedule) {
         $schedule["group_id"] = $id;
+        unset($schedule["id"]);
         update_schedule($schedule);
       }
     }

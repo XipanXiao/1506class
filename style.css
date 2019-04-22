@@ -156,7 +156,8 @@ schedule-tasks {
 
 .vacation {
   background-color: #860200 !important;
-  color: white;  
+  color: white;
+  cursor: pointer;
 }
 
 .clickable,
@@ -177,7 +178,7 @@ schedule-tasks {
   background: white;
   border: 1px solid rgba(0,0,0,0.25);
   border-radius: 4px;
-  width: 800px;
+  min-width: 800px;
 }
 
 hr {
@@ -735,11 +736,21 @@ tr.deletable:hover .delete-button,
   visibility: visible;
 }
 
-.hover-icon {
+.hover-icon-container {
+  position: relative;
+}
+
+.hover-icons {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  position: absolute;
+  right: 32px;
+  top: 0;
   visibility: hidden;
 }
 
-.css-table-row:hover .hover-icon {
+.css-table-row:hover .hover-icons {
   cursor: pointer;
   visibility: visible;
 }
@@ -1084,4 +1095,10 @@ election-list .collapse-button {
 
 .remaining {
   font-size: 200%;
+}
+
+.schedule-notes,
+.user-label {
+  display: block;
+  width: 90px;
 }

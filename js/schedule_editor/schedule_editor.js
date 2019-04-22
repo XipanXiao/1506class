@@ -13,6 +13,7 @@ define('schedule_editor/schedule_editor',
   return angular.module('ScheduleEditorModule',
       ['CourseEditorDialogModule', 'EditableLabelModule',
        'NavigateBarModule',
+       'PaperAutoSuggestInputModule',
        'PermissionModule',
        'ScheduleGroupEditorModule',
        'TaskArrangementsModule',
@@ -39,14 +40,19 @@ define('schedule_editor/schedule_editor',
               };
               
               $scope.$watch('classId', function() {
-                if (!$scope.classId) return;
+                if (!$scope.classId || !confirmReload()) return;
+
                 $scope.term = 0;
                 $scope.loadSchedules();
               });
               
-              $scope.$on('reload-schedules', function(event, term) {
-                $scope.loadSchedules(term);
-              });
+              $scope.saveGroup = function(group) {
+                rpc.update_schedule_group(group).then(function(response) {
+                  if (parseInt(response.data.updated)) {
+                    $scope.loadSchedules(group.term);
+                  }
+                });
+              };
 
               function initTeacherName(key) {
                 return function() {
@@ -66,6 +72,12 @@ define('schedule_editor/schedule_editor',
                   return $scope.classInfo = response.data[$scope.classId];
                 });
               }
+
+              function confirmReload() {
+                var group = utils.first($scope.schedule_groups);
+                return !group || !group.dirty ||
+                    confirm('当前学修安排尚未保存，您确定要继续吗？');
+              }
             
               $scope.loadSchedules = function(term) {
                 return utils.requestOneByOne([getClassInfo,
@@ -75,7 +87,9 @@ define('schedule_editor/schedule_editor',
                   return rpc.get_schedules($scope.classId,
                       term || $scope.term || 0).then(function(response) {
                     $scope.schedule_groups = response.data.groups;
-                    
+                    utils.forEach($scope.schedule_groups || [], function(group) {
+                      group.dirty = false;
+                    });
                     var group = utils.first($scope.schedule_groups);
                     if (group) {
                       $scope.term = group.term;
@@ -216,6 +230,8 @@ define('schedule_editor/schedule_editor',
                 return utils.keys(group.limited_courses).length > 0;
               };
               $scope.navigate = function(direction) {
+                if (!confirmReload()) return;
+
                 var term = $scope.term;
                 switch (direction) {
                 case 0:
@@ -291,18 +307,64 @@ define('schedule_editor/schedule_editor',
                 utils.requestOneByOne([getClassInfo, getEmail,
                     sendMail, update_notified_timestamp]);
               };
-              $scope.addVacation = function(group, scheduleId) {
+              $scope.add = function(group, scheduleId) {
                 group.editing = true;
                 var key = utils.maxKey(group.schedules) + 1;
-                var schedule = group.schedules[key] = {id: key, notes: '新的假期'};
+                var schedule = group.schedules[key] = {id: key};
                 $scope.insertSchedule(key, parseInt(scheduleId));
                 schedule.id = null;
+                $scope.markDirty(group);
               };
-              $scope.removeVacation = function(group, scheduleId) {
-                rpc.remove_schedule(scheduleId).then(function(response) {
-                  if (!response.data.deleted) return;
-                  delete group.schedules[scheduleId];
+              $scope.remove = function(group, scheduleId) {
+                group.editing = true;
+                delete group.schedules[scheduleId];
+                $scope.markDirty(group);
+              };
+              $scope.searchCourse = function(query, searchingKey) {
+                return rpc.searchCourse(query, searchingKey).then(function(response) {
+                  if (parseInt(query)) {
+                    var course = response.data[parseInt(query)];
+                    return course && course.name;
+                  }
+                  return utils.map(response.data || [], function(course) {
+                    course.label = course.name;
+                    return course;
+                  });
                 });
+              };
+              $scope.append = function(group) {
+                group.schedules = group.schedules || {};
+                var key = utils.maxKey(group.schedules);
+                var schedule = group.schedules[key + 1] = {};
+
+                var last = group.schedules[key];
+                if (!last) return;
+
+                var last1 = parseInt(last.course_id);
+                var last2 = parseInt(last.course_id2);
+                if (last1 && last2 == last1 + 1) {
+                  schedule.course_id = last1 + 2;
+                  schedule.course_id2 = last1 + 3;
+                } else {
+                  last1 && (schedule.course_id = last1 + 1);
+                  last2 && (schedule.course_id2 = last2 + 1);
+                }
+              };
+              $scope.markDirty = function(group) {
+                group.dirty = true;
+              };
+              $scope.limitedCourseChanged = function(group, courses, userInitiated) {
+                group.limited_courses = courses;
+                if (userInitiated) {
+                  $scope.markDirty(group);
+                }
+              };
+              $scope.searchUser = rpc.searchUser;
+
+              window.onbeforeunload = function() {
+                var group = utils.first($scope.schedule_groups);
+                return group && group.dirty ?
+                    '请保存或取消学修安排的修改' : null;
               };
             },
             templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201903302203'
