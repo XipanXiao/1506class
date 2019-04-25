@@ -21,7 +21,7 @@ angular.module('PaperAutoSuggestInputModule', [
       function update(key) {
         if (scope.key == key) return;
         scope.key = key;
-        scope.onChange();
+        scope.onChange({'key': key, 'value': scope.value});
       };
 
       function init(key) {

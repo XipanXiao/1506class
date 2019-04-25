@@ -286,11 +286,6 @@ iron-icon.small-icon {
   width: 200px;
 }
 
-.search-box {
-  margin-left: 100px;
-  width: 300px;
-}
-
 .import-analysis {
   max-height: 300px;
   overflow: scroll;
@@ -759,6 +754,8 @@ tr.deletable:hover .delete-button,
   border: 2px solid;
 }
 
+search-bar,
+.app-bar-left,
 .split-cell,
 .invoice-address {
   flex-grow: 1;

@@ -5,6 +5,8 @@ js/utils.js
 js/services.js
 js/permission.js
 js/importers.js
+js/paper_bindings/paper_bindings.js
+js/paper_auto_suggest_input/paper_auto_suggest_input.js
 js/search_bar/search_bar.js
 js/app_bar/app_bar.js
 js/assignment_preview/assignment_preview.js

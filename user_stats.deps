@@ -8,6 +8,8 @@ js/importers.js
 js/email_group_chip/email_group_chip.js
 js/email_dialog/email_dialog.js
 js/checkbox_filter/checkbox_filter.js
+js/paper_bindings/paper_bindings.js
+js/paper_auto_suggest_input/paper_auto_suggest_input.js
 js/search_bar/search_bar.js
 js/app_bar/app_bar.js
 js/import_dialog/import_dialog.js

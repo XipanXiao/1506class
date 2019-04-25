@@ -1,45 +1,18 @@
 define('search_bar/search_bar', ['services'], function() {
 
   var extractEmail = function(value) {
-    var match = /.+ <(.+)>/.exec(value);
-    var email = match && match[1];
-    if (!email) {
-      match = /(.+) \(.+\)/.exec(value);
-      return match && match[1];
-    }
-    
-    return email;
+    return value.split('-')[1];
   };
-
-  return angular.module('SearchBarModule', ['ServicesModule'])
+  return angular.module('SearchBarModule', 
+      ['PaperAutoSuggestInputModule', 'ServicesModule'])
     .directive('searchBar',
         function($rootScope, rpc) {
           return {
-            scope: {
-              admining: '@',
-            },
-            link: function($scope) {
-              $scope.inputChanged = function() {
-                if (!$scope.value || $scope.lastInput == $scope.value ||
-                    extractEmail($scope.value)) return;
-                
-                var lastInput = $scope.value;
-                
-                setTimeout(function() {
-                  if (lastInput != $scope.value) return;
-                  rpc.search($scope.value).then(function(response) {
-                    if ($scope.value == lastInput) {
-                      $scope.hints = response.data;
-                      
-                      $scope.lastInput = lastInput;
-                    }
-                  });
-                }, 1000);
-                
-              };
-              
-              $scope.search = function() {
-                var email = extractEmail($scope.value);
+            link: function(scope) {
+              scope.searchUser = rpc.searchUser;
+
+              scope.search = function(id, label) {
+                var email = extractEmail(label);
                 if (email) {
                   rpc.get_user(email).then(function(user) {
                     $rootScope.$broadcast('editing-user-changed', user);
@@ -47,7 +20,7 @@ define('search_bar/search_bar', ['services'], function() {
                 }
               };
             },
-            templateUrl : 'js/search_bar/search_bar.html?tag=2018'
+            templateUrl : 'js/search_bar/search_bar.html?tag=2019'
           };
         });
 });

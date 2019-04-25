@@ -8,6 +8,8 @@ js/model/cart.js
 js/districts/districts.js
 js/address_editor/address_editor.js
 js/editable_label/editable_label.js
+js/paper_bindings/paper_bindings.js
+js/paper_auto_suggest_input/paper_auto_suggest_input.js
 js/search_bar/search_bar.js
 js/app_bar/app_bar.js
 js/departments/departments.js
@@ -20,7 +22,6 @@ js/shopping_cart/shopping_cart.js
 js/book_editor/book_editor.js
 js/book_list_details/book_list_details.js
 js/book_lists/book_lists.js
-js/paper_bindings/paper_bindings.js
 js/move_inventory_dialog/move_inventory_dialog.js
 js/inventory/inventory.js
 js/order_admin_app.js

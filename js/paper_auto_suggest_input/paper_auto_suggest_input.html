@@ -1,8 +1,17 @@
+<style is="custom-style">
+.auto-suggest-input {
+  --paper-input-container-input: {
+    font-size: 14px;
+  }
+}
+</style>
+
 <paper-input ng-model="value"
-    ng-change="updateKeyByValue()"
-    list="{{label}}-suggestions"
-    placeholder="{{editable ? '输入名字查找...' : ''}}"
-    title="{{value}}"
-    ng-disabled="!editable"
-    no-label-float>
+  class="auto-suggest-input"
+  ng-change="updateKeyByValue()"
+  list="{{label}}-suggestions"
+  placeholder="{{editable ? '输入名字查找...' : ''}}"
+  title="{{value}}"
+  ng-disabled="!editable"
+  no-label-float>
 </paper-input>

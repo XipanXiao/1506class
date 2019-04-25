@@ -6,6 +6,8 @@ js/services.js
 js/permission.js
 js/user_attend_stats/user_attend_stats.js
 js/score/score.js
+js/paper_bindings/paper_bindings.js
+js/paper_auto_suggest_input/paper_auto_suggest_input.js
 js/search_bar/search_bar.js
 js/app_bar/app_bar.js
 js/bit_editor/bit_editor.js

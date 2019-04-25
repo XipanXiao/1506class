@@ -1,18 +1,17 @@
-<div class="app-bar">
-  <div class="left">
-    <span>{{user.classInfo.name}}: 
-      <a target="_blank" class="app-bar-link"
-          href="http://www.yy.com/{{user.classInfo.class_room}}">
-        {{user.classInfo.class_room}}
-      </a>
-      <span ng-if="!admining">
-        固定上课时间：{{weekDayLabels[user.classInfo.weekday]}}
-        {{formatTime(user.classInfo.time)}}
-      </span> 
-    </span>
+<div class="app-bar flex">
+  <div class="app-bar-left" ng-class="{'padded-element': admining}">
+    {{user.classInfo.name}}: 
+    <a target="_blank" class="app-bar-link"
+        href="http://www.zoom.us/j/{{user.classInfo.class_room}}">
+      {{user.classInfo.class_room}}
+    </a>
+    <span ng-if="!admining">
+      固定上课时间：{{weekDayLabels[user.classInfo.weekday]}}
+      {{formatTime(user.classInfo.time)}}
+    </span> 
   </div>
-  <search-bar class="left" ng-if="admining && isYearLeader()"></search-bar>
-  <div class="right">
+  <search-bar ng-if="admining && isYearLeader()"></search-bar>
+  <div ng-class="{'padded-element': admining}">
     <a ng-if="!isIn('/index.html') && !isIn('/')" class="app-bar-link"
         href="index.html">
       考勤登记
@@ -32,7 +31,7 @@
         class="app-bar-link" href="user_stats.html">
       用户统计
     </a>
-    <a ng-if="!isIn('/assignment.html') && showAssignments()"
+    <a ng-if="false && !isIn('/assignment.html') && showAssignments()"
         class="app-bar-link" href="assignment.html">
       分班意向
     </a>
