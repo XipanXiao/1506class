@@ -10,7 +10,8 @@
       {{formatTime(user.classInfo.time)}}
     </span> 
   </div>
-  <search-bar ng-if="admining && isYearLeader()"></search-bar>
+  <search-bar ng-if="isIn('/admin.html') && isYearLeader()">
+  </search-bar>
   <div ng-class="{'padded-element': admining}">
     <a ng-if="!isIn('/index.html') && !isIn('/')" class="app-bar-link"
         href="index.html">
