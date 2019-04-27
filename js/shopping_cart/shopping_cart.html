@@ -82,6 +82,17 @@
   <div class="right padded-element">
     <div class="center-align flex">
       <div class="h-padded-element">
+        <label>
+          <input type="checkbox" ng-model="showDonation">
+          我想随喜运费基金
+        </label>
+        <label ng-show="showDonation">
+          随喜金额: <input type="number" min="0.00" step="0.01"
+              ng-model="cart.shipping_donation"
+              ng-change="cart.update()">
+        </label>
+      </div>
+      <div class="h-padded-element">
         总价 ({{cart.size}} items): ${{cart.subTotal}}
       </div>
       <!--

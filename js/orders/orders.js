@@ -88,6 +88,7 @@ define('orders/orders', [
               sub_total: 0.00,
               grand_total: 0.00,
               shipping: 0.00,
+              shipping_donation: 0.00,
               items: {},
             };
             orders.forEach(function(order) {
@@ -106,6 +107,7 @@ define('orders/orders', [
                 stat.shipping = (stat.shipping || 0.00) + 
                     parseMoney(item.shipping || 0.0) * item.count;
               });
+              stats.shipping_donation += parseMoney(order.shipping_donation);
             });
             utils.forEach(stats.items, function(item) {
               stats.count += item.count;
@@ -115,10 +117,11 @@ define('orders/orders', [
               item.sub_total = item.sub_total.toFixed(2);
               item.shipping = item.shipping.toFixed(2);
             });
-            stats.grand_total = stats.sub_total + stats.shipping; 
+            stats.grand_total = stats.sub_total + stats.shipping;
             stats.sub_total = stats.sub_total.toFixed(2);
             stats.shipping = stats.shipping.toFixed(2);
             stats.grand_total = stats.grand_total.toFixed(2);
+            stats.shipping_donation = stats.shipping_donation.toFixed(2);
           }
           
           scope.reload = function() {

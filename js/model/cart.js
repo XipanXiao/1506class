@@ -3,8 +3,9 @@ define('model/cart', [], function() {
 
   var cart = {
     size: 0,
-    subTotal: '0.00',
-    shipping: '0.00',
+    subTotal: 0.00,
+    shipping: 0.00,
+    shipping_donation: 0.00,
     items: {},
     add: function(item) {
       var existing = this.items[item.id];
@@ -40,7 +41,7 @@ define('model/cart', [], function() {
         this.shipping += item.count * item.shipping;
       }
       this.grand_total = this.subTotal + this.shipping +
-          this.int_shipping;
+          this.int_shipping + this.shipping_donation;
       this.subTotal = this.subTotal.toFixed(2);
       this.int_shipping = this.int_shipping.toFixed(2);
       this.shipping = this.shipping.toFixed(2);
@@ -55,6 +56,7 @@ define('model/cart', [], function() {
         status: options.refill ? 8 : (this.grand_total > 0.0 ? 0 : 2),
         sub_total: this.subTotal,
         int_shipping: this.int_shipping,
+        shipping_donation: this.shipping_donation,
         shipping: this.shipping,
         name: user.name,
         phone: user.phone,

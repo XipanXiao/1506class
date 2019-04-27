@@ -29,38 +29,6 @@ abstract class OrderStatus
   }
 }
 
-function migrate_inventory() {
-  global $medoo;
-
-  $sql = "INSERT INTO inventory (item_id, stock) ".
-    "SELECT items.id, items.stock FROM items";
-  $medoo->query($sql);
-}
-
-function create_inventory_tables() {
-  global $medoo;
-
-  if (table_exists($medoo, "inventory")) return;
-
-  $sql = "UPDATE orders SET district = 2 WHERE (district NOT IN (1, 2)) OR (district is NULL);";
-  $medoo->query($sql);
-  $sql = "ALTER TABLE orders MODIFY district MEDIUMINT NOT NULL DEFAULT 2;";
-  $medoo->query($sql);
-
-  $sql = "CREATE TABLE inventory (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      item_id INT NOT NULL,
-          FOREIGN KEY (item_id) REFERENCES items(id),
-      district MEDIUMINT NOT NULL DEFAULT 2,
-          FOREIGN KEY (district) REFERENCES districts(id),
-      stock INT NOT NULL DEFAULT 0,
-      UNIQUE(item_id, district)
-      );";
-  $medoo->query($sql);
-
-  migrate_inventory();
-}
-
 /// Checks whether we can close an order (shipped and paided).
 function _canClose($order) {
   return $order["status"] == OrderStatus::COMPLETED;
@@ -124,7 +92,8 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
   
   $fields = ["id", "user_id", "status", "sub_total", "paid", "shipping",
       "int_shipping", "shipping_date", "paid_date", "created_time", "name",
-      "paypal_trans_id", "usps_track_id", "class_name", "district", "comment"];
+      "paypal_trans_id", "usps_track_id", "class_name", "district", "comment",
+      "shipping_donation"];
   $address_fields = 
       ["phone", "email", "street", "city", "state", "country", "zip"];
   
@@ -250,7 +219,8 @@ function update_order($medoo, $order, $is_manager) {
       ["paid", "paypal_trans_id", "paid_date", "comment"], $order);
   if ($is_manager) {
     $data = array_merge($data, build_update_data(["status", "shipping",
-        "int_shipping", "sub_total", "usps_track_id", "district"], $order));
+        "int_shipping", "sub_total", "usps_track_id", "district",
+        "shipping_donation"], $order));
 
     if (!empty($order["district"])) {
       $old = get_single_record($medoo, "orders", $order["id"]);
@@ -377,6 +347,7 @@ function merge_orders($order_ids) {
     $first_order["paid"] += $order["paid"];
     $first_order["shipping"] += $order["shipping"];
     $first_order["int_shipping"] += $order["int_shipping"];
+    $first_order["shipping_donation"] += $order["shipping_donation"];
     
     if ($medoo->update("order_details", ["order_id" => $id], 
         ["order_id" => $order["id"]])) {
@@ -387,7 +358,8 @@ function merge_orders($order_ids) {
   $data = ["sub_total" => $first_order["sub_total"], 
       "paid" => $first_order["paid"], 
       "shipping" => $first_order["shipping"],
-      "int_shipping" => $first_order["int_shipping"]
+      "int_shipping" => $first_order["int_shipping"],
+      "shipping_donation" => $first_order["shipping_donation"]
   ];
   return ["updated" => $medoo->update("orders", $data, ["id" => $id])];
 }
@@ -533,7 +505,6 @@ function get_requested_level($user, $request) {
 function get_inventory($district) {
   global $medoo;
 
-  create_inventory_tables();
   $where = $district ? ["district" => $district] : null;
   return keyed_by_id($medoo->select("inventory", "*", $where),
       "item_id");

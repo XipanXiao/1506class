@@ -707,10 +707,13 @@ define('utils', [], function() {
         order.sub_total = parseMoney(order.sub_total).toFixed(2);
         order.shipping = parseMoney(order.shipping).toFixed(2);
         order.int_shipping = parseMoney(order.int_shipping).toFixed(2);
+        order.shipping_donation = parseMoney(
+            order.shipping_donation).toFixed(2);
         order.paid = parseMoney(order.paid).toFixed(2);
 
         order.grand_total = parseMoney(order.sub_total) + 
-            parseMoney(order.shipping);
+            parseMoney(order.shipping) +
+            parseMoney(order.shipping_donation);
         order.grand_total = order.grand_total.toFixed(2);
         order.balance = 
             parseMoney(order.grand_total) - parseMoney(order.paid);
