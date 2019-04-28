@@ -55,7 +55,7 @@ define('utils', [], function() {
 
   return angular.module('UtilsModule', []).factory('utils', function($q) {
     var utils = {
-      countryLabels: window.countryData.getCountryMap(),
+      countryLabels: window.countryData && window.countryData.getCountryMap(),
       us_states: {
         "AL": "Alabama",
         "AK": "Alaska",
