@@ -1,6 +1,14 @@
 import 'package:angular/angular.dart';
-import 'package:staff/components/staff_editor/staff_editor.template.dart';
+import 'package:staff/app.template.dart' as ng;
+import 'package:staff/services/user_service.dart';
+
+import 'staff.template.dart' as self;
 
 void main() {
-  runApp(StaffEditorComponentNgFactory);
+  runApp(ng.AppComponentNgFactory, createInjector: staticInjector);
 }
+
+@GenerateInjector([
+  UserService,
+])
+final staticInjector = self.staticInjector$Injector;

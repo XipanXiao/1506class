@@ -1,0 +1,17 @@
+:host {
+  background-color: #860200;
+  color: white;
+  display: flex;
+  height: 40px;
+  width: 100%;
+  font-size: 80%;
+}
+
+a.app-bar-link {
+  color: white;
+  padding-right: 4px;
+}
+
+.class-info {
+  flex-grow: 1;
+}
