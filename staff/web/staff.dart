@@ -4,11 +4,14 @@ import 'package:staff/services/user_service.dart';
 
 import 'staff.template.dart' as self;
 
-void main() {
+final _userService = UserService();
+UserService getUserService() => _userService;
+
+Future<void> main() async {
+  await _userService.initUser();
   runApp(ng.AppComponentNgFactory, createInjector: staticInjector);
 }
 
 @GenerateInjector([
-  UserService,
-])
+  FactoryProvider(UserService, getUserService),])
 final staticInjector = self.staticInjector$Injector;
