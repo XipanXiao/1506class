@@ -15,9 +15,19 @@ if (empty($_SESSION["user"])) {
 
 $medoo = get_medoo();
 
+function column_exists($medoo, $table, $column) {
+  $results = $medoo->select($table, $column, ["LIMIT" => 1]);
+  if (!empty($results)) {
+    echo $table. ".". $column. " exists, doing nothing<br>";
+    return True;
+  }
+  return False;
+}
+
 function add_district_cfo($medoo) {
-  $results = $medoo->select("districts", "paypal_client_id");
-  if (!empty($results)) return;
+  if (column_exists($medoo, "districts", "paypal_client_id")) {
+    return;
+  }
 
   $medoo->update("districts", ["stock" => 1],
       ["AND" => ["name" => "南加州", "stock" => 0]]);
@@ -41,8 +51,9 @@ function add_district_cfo($medoo) {
 }
 
 function add_teacher_for_schedules($medoo) {
-  $results = $medoo->select("schedules", "teacher_planned");
-  if (!empty($results)) return;
+  if (column_exists($medoo, "schedules", "teacher_planned")) {
+    return;
+  }
 
   $medoo->query("ALTER TABLE schedules
       ADD COLUMN teacher_planned INT,
@@ -54,6 +65,10 @@ function add_teacher_for_schedules($medoo) {
 }
 
 function add_shipping_donation_for_orders($medoo) {
+  if (column_exists($medoo, "orders", "shipping_donation")) {
+    return;
+  }
+
   $sql = "ALTER TABLE orders
       ADD COLUMN shipping_donation decimal(10, 2);";
   $medoo->query($sql);  
@@ -70,7 +85,10 @@ function migrate_inventory() {
 function create_inventory_tables() {
   global $medoo;
 
-  if (table_exists($medoo, "inventory")) return;
+  if (table_exists($medoo, "inventory")) {
+    echo "inventory table exists, doing nothing<br>";
+    return;
+  };
 
   $sql = "UPDATE orders SET district = 2 WHERE (district NOT IN (1, 2)) OR (district is NULL);";
   $medoo->query($sql);
@@ -91,8 +109,58 @@ function create_inventory_tables() {
   migrate_inventory();
 }
 
+function create_org_tables($medoo) {    
+  if (table_exists($medoo, "organizations")) {
+    echo "organizations table exists, doing nothing<br>";
+    return;
+  };
+
+  $sql = "CREATE TABLE organizations (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      parent INT,
+          FOREIGN KEY (parent) REFERENCES organizations(id),
+      name VARCHAR(32) CHARACTER SET utf8
+    );";
+  $medoo->query($sql);
+  $medoo->insert("organizations", ["id" => 1, "name" => "教学部"]);
+  $medoo->insert("organizations", ["id" => 2, "name" => "弘法部"]);
+  $medoo->insert("organizations", ["id" => 3, "name" => "综合部"]);
+
+  $sql = "CREATE TABLE staff (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user INT NOT NULL,
+        FOREIGN KEY (user) REFERENCES users(id),
+    manager INT,
+        FOREIGN KEY (manager) REFERENCES users(id),
+    organization INT NOT NULL,
+        FOREIGN KEY (organization) REFERENCES organizations(id),
+    start_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (user)
+  );";
+  $medoo->query($sql);
+
+  $sql = "ALTER TABLE staff ADD COLUMN manager_name".
+      " VARCHAR(32) CHARACTER SET utf8";
+  $medoo->query($sql);
+}
+
+function add_staff_columns($medoo) {
+  if (column_exists($medoo, "staff", "title")) {
+    return;
+  }
+
+  $sql = "ALTER TABLE staff
+      ADD COLUMN title TINYINT,
+      ADD COLUMN position TINYINT,
+      ADD COLUMN free_time TINYINT;
+      ";
+  $medoo->query($sql);
+}
+
 add_district_cfo($medoo);
 add_teacher_for_schedules($medoo);
 add_shipping_donation_for_orders($medoo);
 create_inventory_tables($medoo);
+create_org_tables($medoo);
+add_staff_columns($medoo);
 ?>

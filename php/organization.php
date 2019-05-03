@@ -7,38 +7,6 @@ include_once "util.php";
 
 $medoo = get_medoo();
 
-function create_org_tables() {
-  global $medoo;
-    
-  $sql = "CREATE TABLE organizations (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      parent INT,
-          FOREIGN KEY (parent) REFERENCES organizations(id),
-      name VARCHAR(32) CHARACTER SET utf8
-    );";
-  $medoo->query($sql);
-  $medoo->insert("organizations", ["id" => 1, "name" => "教学部"]);
-  $medoo->insert("organizations", ["id" => 2, "name" => "弘法部"]);
-  $medoo->insert("organizations", ["id" => 3, "name" => "综合部"]);
-
-  $sql = "CREATE TABLE staff (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user INT NOT NULL,
-        FOREIGN KEY (user) REFERENCES users(id),
-    manager INT,
-        FOREIGN KEY (manager) REFERENCES users(id),
-    organization INT NOT NULL,
-        FOREIGN KEY (organization) REFERENCES organizations(id),
-    start_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (user)
-  );";
-  $medoo->query($sql);
-
-  $sql = "ALTER TABLE staff ADD COLUMN manager_name".
-      " VARCHAR(32) CHARACTER SET utf8";
-  $medoo->query($sql);
-}
-
 $response = null;
 
 if (empty($_SESSION["user"])) {
@@ -49,7 +17,6 @@ if (empty($_SESSION["user"])) {
 }
 
 if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
-  create_org_tables();
   $resource_id = $_GET["rid"];
   if ($resource_id == "organizations") {
     $response = keyed_by_id($medoo->select("organizations", "*"));
@@ -58,7 +25,6 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = $medoo->select("staff", "*", $filter);
   }
 } else if ($_SERVER ["REQUEST_METHOD"] == "POST" && isset ( $_POST ["rid"] )) {
-  create_org_tables();
   $resource_id = $_POST["rid"];
   unset($_POST["rid"]);
 
