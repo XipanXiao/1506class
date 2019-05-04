@@ -1,3 +1,17 @@
 <h1>美国佛学会发心人员登记</h1>
 <h5>感恩您的填写，喇嘛钦！</h5>
-<material-input label="Test"></material-input>
+<div class="required">* 必填项</div>
+<div class="form-field">
+  <div class="label">姓名</div>
+  <material-input [ngModel]="user.name" disabled>
+  </material-input>
+</div>
+<div class="form-field">
+  <div class="label">所属部门</div>
+  <material-radio-group [(ngModel)]="user.staff.organization">
+    <material-radio [value]="1">教学部</material-radio>
+    <material-radio [value]="2">弘法部</material-radio>
+    <material-radio [value]="3">综合部</material-radio>
+  </material-radio-group>
+</div>
+      

@@ -8,7 +8,8 @@ import 'package:staff/services/user_service.dart';
 @Component(
   selector: 'app',
   directives: [AppBarComponent, StaffEditorComponent,],
-  template: '<app-bar [user]="user"></app-bar><staff-editor></staff-editor>',
+  template: '''<app-bar [user]="user"></app-bar>
+      <staff-editor [user]="user"></staff-editor>''',
 )
 class AppComponent {
   final UserService _userService;

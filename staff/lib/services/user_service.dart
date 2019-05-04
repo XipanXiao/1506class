@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:html';
 
 import 'package:angular/angular.dart';
 import 'package:staff/model/user.dart';
@@ -13,23 +11,21 @@ class UserService {
 
   UserService();
 
-  Future<User> getUserByEmail([String email = '']) async {
+  Future<User> getUserByEmail(
+      {String email = '', bool includeStaffInfo = true}) async {
     var url = 'php/services.php?rid=users&email=$email';
-    var response =
-        await HttpRequest.getString(utils.checkUrl(url), withCredentials: true);
-    var map = jsonDecode(response);
+    var map = await utils.httpGetObject(url);
     if (map['error'] == 'login needed') {
-      login();
+      utils.login();
       return null;
     }
-    return User.fromJson(map);
-  }
-
-  void login() {
-    var index = window.location.pathname.lastIndexOf("/") + 1;
-    var filename = window.location.pathname.substring(index);
-    var url = 'login.html?redirect=$filename${window.location.search}&tag=2019';
-    window.open(Uri.encodeFull(utils.checkUrl(url)), '_self');
+    var user = User.fromJson(map);
+    if (includeStaffInfo) {
+      var url = 'php/organization.php?rid=staff&user=${map["id"]}';
+      var staffs = (await utils.httpGetObject(url));
+      user.staff = StaffInfo.fromJson(staffs[0]);
+    }
+    return user;
   }
 
   Future<void> initUser() async {
