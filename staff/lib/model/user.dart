@@ -19,6 +19,14 @@ class User {
 
 class StaffInfo {
   int organization;
+  int title;
+  int free_time;
+
+  String position;
+
   StaffInfo.fromJson(dynamic map)
-      : organization = int.parse(map['organization']);
+      : position = map['position'],
+      title = int.tryParse(map['title'] ?? ''),
+      free_time = int.tryParse(map['free_time'] ?? ''),
+      organization = int.tryParse(map['organization'] ?? '');
 }

@@ -14,4 +14,22 @@
     <material-radio [value]="3">综合部</material-radio>
   </material-radio-group>
 </div>
-      
+<div class="form-field">
+  <div class="label">部门职位</div>
+  <material-radio-group [(ngModel)]="user.staff.title">
+    <material-radio [value]="1">一级部门负责人</material-radio>
+    <material-radio [value]="2">二级部门负责人</material-radio>
+    <material-radio [value]="3">二级部门干事</material-radio>
+  </material-radio-group>
+</div>
+<div class="form-field">
+  <div class="label">发心岗位（多个，请按发心投入比例由多到少依次填写）</div>
+  <material-input [(ngModel)]="user.staff.position">
+  </material-input>
+  </div>
+<div class="form-field">
+  <div class="label">每日可以发心的时间(单位：分钟)</div>
+  <material-input [(ngModel)]="user.staff.free_time"
+      type="number" [lowerBound]="1" [upperBound]="1440">
+  </material-input>
+</div>
