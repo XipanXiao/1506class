@@ -7,7 +7,10 @@ import 'package:staff/services/user_service.dart';
 
 @Component(
   selector: 'app',
-  directives: [AppBarComponent, StaffEditorComponent,],
+  directives: [
+    AppBarComponent,
+    StaffEditorComponent,
+  ],
   template: '''<app-bar [user]="user"></app-bar>
       <staff-editor [user]="user"></staff-editor>''',
 )

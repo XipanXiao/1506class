@@ -4,3 +4,8 @@ html, body {
   margin: 0;
   padding: 0;
 }
+
+material-button[affirmative] {
+  background-color: #1a73e8;
+  color: #FFF;
+}

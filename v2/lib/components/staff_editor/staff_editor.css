@@ -28,3 +28,7 @@ material-input {
 material-radio {
   margin-left: 0;
 }
+
+.actions-panel {
+  padding-top: 16px;
+}

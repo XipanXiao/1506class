@@ -1,35 +1,81 @@
 <h1>美国佛学会发心人员登记</h1>
 <h5>感恩您的填写，喇嘛钦！</h5>
 <div class="required">* 必填项</div>
-<div class="form-field">
-  <div class="label">姓名</div>
-  <material-input [ngModel]="user.name" disabled>
-  </material-input>
-</div>
-<div class="form-field">
-  <div class="label">所属部门</div>
-  <material-radio-group [(ngModel)]="user.staff.organization">
-    <material-radio [value]="1">教学部</material-radio>
-    <material-radio [value]="2">弘法部</material-radio>
-    <material-radio [value]="3">综合部</material-radio>
-  </material-radio-group>
-</div>
-<div class="form-field">
-  <div class="label">部门职位</div>
-  <material-radio-group [(ngModel)]="user.staff.title">
-    <material-radio [value]="1">一级部门负责人</material-radio>
-    <material-radio [value]="2">二级部门负责人</material-radio>
-    <material-radio [value]="3">二级部门干事</material-radio>
-  </material-radio-group>
-</div>
-<div class="form-field">
-  <div class="label">发心岗位（多个，请按发心投入比例由多到少依次填写）</div>
-  <material-input [(ngModel)]="user.staff.position">
-  </material-input>
+<div [hidden]="pageIndex != 0">
+  <div class="form-field">
+    <div class="label">姓名</div>
+    <material-input [ngModel]="user.name" disabled>
+    </material-input>
   </div>
-<div class="form-field">
-  <div class="label">每日可以发心的时间(单位：分钟)</div>
-  <material-input [(ngModel)]="user.staff.free_time"
-      type="number" [lowerBound]="1" [upperBound]="1440">
-  </material-input>
+  <div class="form-field">
+    <div class="label">所属部门</div>
+    <material-radio-group [(ngModel)]="user.staff.organization">
+      <material-radio [value]="1">教学部</material-radio>
+      <material-radio [value]="2">弘法部</material-radio>
+      <material-radio [value]="3">综合部</material-radio>
+    </material-radio-group>
+  </div>
+  <div class="form-field">
+    <div class="label">部门职位</div>
+    <material-radio-group [(ngModel)]="user.staff.title">
+      <material-radio [value]="1">一级部门负责人</material-radio><br>
+      <material-radio [value]="2">二级部门负责人</material-radio><br>
+      <material-radio [value]="3">二级部门干事</material-radio><br>
+    </material-radio-group>
+  </div>
+
+  <div class="form-field">
+    <div class="label">每日可以发心的时间(单位：分钟)</div>
+    <material-input [(ngModel)]="user.staff.freeTime"
+        type="number" [lowerBound]="1" [upperBound]="1440">
+    </material-input>
+  </div>
+
+  <div class="form-field">
+    <div class="label">上级</div>
+  </div>  
+  <div class="actions-panel">
+    <material-button (trigger)="next()">Next</material-button>
+  </div>
+</div>
+<div [hidden]="pageIndex != 1">
+  <div class="form-field">
+    <div class="label">学历</div>
+    <material-radio-group [(ngModel)]="user.education">
+      <material-radio [value]="1">高中及以下</material-radio>
+      <material-radio [value]="2">大专</material-radio>
+      <material-radio [value]="3">本科</material-radio>
+      <material-radio [value]="4">硕士</material-radio>
+      <material-radio [value]="5">博士</material-radio>
+    </material-radio-group>
+  </div>  
+
+  <div class="form-field">
+      <div class="label">职业</div>
+      <material-input [(ngModel)]="user.occupation"></material-input>
+  </div>
+      
+  <div class="form-field">
+    <div class="label">技能和特长</div>
+    <material-input [(ngModel)]="user.skills"></material-input>
+  </div>
+
+  <div class="form-field">
+    <div class="label">发心岗位（多个，请按发心投入比例由多到少依次填写）</div>
+    <material-input [(ngModel)]="user.staff.position">
+    </material-input>
+  </div>
+
+  <div class="form-field">
+    <div class="label">开始发心时间</div>
+    <material-datepicker [(date)]="user.staff.startTime">
+    </material-datepicker>
+  </div>
+  
+  <div class="actions-panel">
+    <material-button (trigger)="back()">Back</material-button>
+    <material-button (trigger)="save()" affirmative raised>
+      Submit
+    </material-button>
+  </div>
 </div>
