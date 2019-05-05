@@ -151,7 +151,6 @@ function add_staff_columns($medoo) {
 
   $sql = "ALTER TABLE staff
       ADD COLUMN title TINYINT,
-      ADD COLUMN position VARCHAR(64) CHARACTER SET utf8,
       ADD COLUMN free_time TINYINT;
       ";
   $medoo->query($sql);

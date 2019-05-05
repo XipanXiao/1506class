@@ -7,13 +7,16 @@ import 'package:staff/utils.dart' as utils;
 
 @Injectable()
 class UserService {
+  static const _serviceUrl = 'php/services.php';
+
+  /// The current logged on user.
   User user;
 
   UserService();
 
   Future<User> getUserByEmail(
       {String email = '', bool includeStaffInfo = true}) async {
-    var url = 'php/services.php?rid=users&email=$email';
+    var url = '$_serviceUrl?rid=users&email=$email';
     var map = await utils.httpGetObject(url);
     if (map['error'] == 'login needed') {
       utils.login();
@@ -28,22 +31,28 @@ class UserService {
     return user;
   }
 
+  /// Initialize the current logged on [user].
   Future<void> initUser() async {
     user = await getUserByEmail();
   }
 
   Future<List<User>> searchByName(String name) async {
-    var url = 'php/services.php?rid=search_name&name=$name';
+    var url = '$_serviceUrl?rid=search_name&name=$name';
     List list = await utils.httpGetObject(url);
     return list.map((map) => User.fromJson(map)).toList();
   }
 
   Future<String> getUserLabel(int id) async {
-    var url = 'php/services.php?rid=user_label&id=$id';
+    var url = '$_serviceUrl?rid=user_label&id=$id';
     var obj = await utils.httpGetObject(url);
     return obj['label'];
   }
 
-  Future<dynamic> searchUser(dynamic query) =>
-      (query is int) ? getUserLabel(query) : searchByName(query);
+  Future<void> updateUser(User user) async {
+    await utils.httpPostObject('$_serviceUrl?rid=user', user);
+    if (user.staff != null) {
+      await utils.httpPostObject('php/organization.php?rid=staff',
+          user.staff);
+    }
+  }
 }

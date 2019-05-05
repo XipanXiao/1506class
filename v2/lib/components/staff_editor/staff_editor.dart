@@ -4,17 +4,20 @@ import 'package:angular_components/material_datepicker/material_datepicker.dart'
 import 'package:angular_components/material_datepicker/module.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:angular_components/material_input/material_input.dart';
+import 'package:angular_components/material_input/material_number_accessor.dart';
 import 'package:angular_components/material_radio/material_radio_group.dart';
 import 'package:angular_components/material_radio/material_radio.dart';
 import 'package:angular_forms/angular_forms.dart';
 import 'package:staff/components/user_input/user_input.dart';
 import 'package:staff/model/user.dart';
+import 'package:staff/services/user_service.dart';
 
 @Component(
   selector: 'staff-editor',
   directives: [
     formDirectives,
     materialInputDirectives,
+    materialNumberInputDirectives,
     MaterialButtonComponent,
     MaterialDatepickerComponent,
     MaterialIconComponent,
@@ -29,8 +32,12 @@ import 'package:staff/model/user.dart';
 class StaffEditorComponent {
   static const pages = 2;
 
+  final UserService _userService;
+
   @Input()
   User user;
+
+  StaffEditorComponent(this._userService);
 
   int pageIndex = 0;
 
@@ -47,5 +54,6 @@ class StaffEditorComponent {
   }
 
   void save() {
+    _userService.updateUser(user);
   }
 }

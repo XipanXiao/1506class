@@ -1,8 +1,9 @@
 import 'package:angular_components/model/date/date.dart';
+import 'package:staff/model/base_entity.dart';
 
 import 'class_info.dart';
 
-class User {
+class User implements BaseEntity {
   String name;
   String email;
 
@@ -28,31 +29,53 @@ class User {
         skills = map['skills'],
         classInfo = ClassInfo.fromJson(map['classInfo'] ?? {});
 
-  String get displayLabel =>
-      nickName?.isNotEmpty == true ? '$name($nickName) - $email' : '$name-$email';
+  String get displayLabel => nickName?.isNotEmpty == true
+      ? '$name($nickName) - $email'
+      : '$name-$email';
 
-  void assign(User user) {
-    id = user.id;
-    name = user.name;
-    email = user.email;
+  Map<String, String> toMap() {
+    return <String, String>{
+      'rid': 'user',
+      'id': '$id',
+      'name': name,
+      'email': email,
+      'nickname': nickName,
+      'education': education?.toString(),
+      'occupation': occupation,
+      'skills': skills,
+    };
   }
 }
 
-class StaffInfo {
+class StaffInfo implements BaseEntity {
+  int id;
   int organization;
   int title;
   int manager;
+  int user;
 
   int freeTime;
   Date startTime;
 
-  String position;
-
   StaffInfo.fromJson(dynamic map)
-      : position = map['position'],
+      : id = int.tryParse(map['id'] ?? ''),
         title = int.tryParse(map['title'] ?? ''),
         manager = int.tryParse(map['manager'] ?? ''),
+        user = int.tryParse(map['user'] ?? ''),
         freeTime = int.tryParse(map['free_time'] ?? ''),
         startTime = Date.fromTime(DateTime.tryParse(map['start_time'] ?? '')),
         organization = int.tryParse(map['organization'] ?? '');
+
+  Map<String, String> toMap() {
+    return <String, String>{
+      'rid': 'staff',
+      'id': id?.toString(),
+      'organization': organization?.toString(),
+      'title': title?.toString(),
+      'manager': manager?.toString(),
+      'user': '$user',
+      'free_time': freeTime?.toString(),
+      'start_time': startTime?.toString(),
+    };
+  }
 }

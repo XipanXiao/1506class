@@ -18,9 +18,9 @@
   <div class="form-field">
     <div class="label">部门职位</div>
     <material-radio-group [(ngModel)]="user.staff.title">
-      <material-radio [value]="1">一级部门负责人</material-radio><br>
-      <material-radio [value]="2">二级部门负责人</material-radio><br>
-      <material-radio [value]="3">二级部门干事</material-radio><br>
+      <material-radio [value]="1">常务理事</material-radio><br>
+      <material-radio [value]="2">部门理事</material-radio><br>
+      <material-radio [value]="3">部门干事</material-radio><br>
     </material-radio-group>
   </div>
 
@@ -59,12 +59,6 @@
   <div class="form-field">
     <div class="label">技能和特长</div>
     <material-input [(ngModel)]="user.skills"></material-input>
-  </div>
-
-  <div class="form-field">
-    <div class="label">发心岗位（多个，请按发心投入比例由多到少依次填写）</div>
-    <material-input [(ngModel)]="user.staff.position">
-    </material-input>
   </div>
 
   <div class="form-field">
