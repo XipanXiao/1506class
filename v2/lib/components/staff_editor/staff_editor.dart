@@ -7,6 +7,7 @@ import 'package:angular_components/material_input/material_input.dart';
 import 'package:angular_components/material_radio/material_radio_group.dart';
 import 'package:angular_components/material_radio/material_radio.dart';
 import 'package:angular_forms/angular_forms.dart';
+import 'package:staff/components/user_input/user_input.dart';
 import 'package:staff/model/user.dart';
 
 @Component(
@@ -19,6 +20,7 @@ import 'package:staff/model/user.dart';
     MaterialIconComponent,
     MaterialRadioComponent,
     MaterialRadioGroupComponent,
+    UserInputComponent,
   ],
   providers: [datepickerBindings],
   templateUrl: 'staff_editor.html',

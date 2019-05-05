@@ -31,4 +31,19 @@ class UserService {
   Future<void> initUser() async {
     user = await getUserByEmail();
   }
+
+  Future<List<User>> searchByName(String name) async {
+    var url = 'php/services.php?rid=search_name&name=$name';
+    List list = await utils.httpGetObject(url);
+    return list.map((map) => User.fromJson(map)).toList();
+  }
+
+  Future<String> getUserLabel(int id) async {
+    var url = 'php/services.php?rid=user_label&id=$id';
+    var obj = await utils.httpGetObject(url);
+    return obj['label'];
+  }
+
+  Future<dynamic> searchUser(dynamic query) =>
+      (query is int) ? getUserLabel(query) : searchByName(query);
 }
