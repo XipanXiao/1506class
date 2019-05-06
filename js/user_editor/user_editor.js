@@ -223,7 +223,7 @@ define('user_editor/user_editor',
         };
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201902251235'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201905251235'
     };
   });
 });

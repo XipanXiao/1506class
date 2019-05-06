@@ -21423,7 +21423,7 @@ this.m(b9)
 c0=S.Y(t,b9)
 c0.className="label"
 this.m(c0)
-c0.appendChild(t.createTextNode("\u4e0a\u7ea7"))
+c0.appendChild(t.createTextNode("\u53d1\u5fc3\u7ec4\u957f"))
 a3=P.c
 b7=new Y.tp(P.I(a3,null),this)
 b7.st(S.L(b7,3,C.i,41,N.ff))
