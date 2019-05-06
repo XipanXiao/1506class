@@ -260,7 +260,65 @@
       </div>
     </div>
   </div>
-
+  <div class="user-info" ng-if="user.staff">
+    <div class="css-table">
+      <div class="css-table-row padded-element">
+        <div class="css-table-cell">所在发心部门</div>
+        <div class="css-table-cell">{{orgLabels[user.staff.organization]}}</div>
+        <div class="css-table-cell">
+          <iron-icon class="selectable" icon="chevron-right"
+              ng-click="edit('staff.organization')">
+          </iron-icon>
+        </div>          
+      </div>
+      <div class="css-table-row padded-element">
+        <div class="css-table-cell">发心组长</div>
+        <div class="css-table-cell">{{user.staff.manager_name}}</div>
+        <div class="css-table-cell">
+          <iron-icon class="selectable" icon="chevron-right"
+              ng-click="edit('staff.manager')">
+          </iron-icon>
+        </div>          
+      </div>
+      <div class="css-table-row padded-element">
+        <div class="css-table-cell">发心开始时间</div>
+        <div class="css-table-cell">{{user.staff.start_time}}</div>
+        <div class="css-table-cell">
+          <iron-icon class="selectable" icon="chevron-right"
+              ng-click="edit('staff.start_time')">
+          </iron-icon>
+        </div>          
+      </div>
+      <div class="css-table-row padded-element">
+        <div class="css-table-cell">部门职位</div>
+        <div class="css-table-cell">
+          {{staffTitleLabels[user.staff.title]}}
+        </div>
+        <div class="css-table-cell">
+          <iron-icon class="selectable" icon="chevron-right"
+            ng-click="edit('staff.title')">
+          </iron-icon>
+        </div>
+      </div>
+      <div class="css-table-row padded-element">
+        <div class="css-table-cell">每天发心时间(分钟)</div>
+        <div class="css-table-cell">{{user.staff.free_time}}</div>
+        <div class="css-table-cell">
+          <iron-icon class="selectable" icon="chevron-right"
+              ng-click="edit('staff.free_time')">
+          </iron-icon>
+        </div>          
+      </div>
+      <div class="css-table-row padded-element">
+        <div class="css-table-cell"></div>
+        <div class="css-table-cell">
+          <input type="button" value="暂时退出发心" ng-click="deleteStaff()"
+              ng-if="user.staff.user && isAdmin()">
+        </div>
+        <div class="css-table-cell"></div>
+      </div>
+    </div>
+  </div>
   <div ng-if="editing" class="css-table user-info-editor">
    <div class="css-table-row">
       <div ng-switch="editing" class="css-table-cell">
@@ -316,6 +374,9 @@
         </user-input>
         <input ng-switch-when="staff.start_time" type="date" ng-model="user.staff.start_time"
             ng-change="refreshStaffLabels(user.staff)" date>
+        <input ng-switch-when="staff.free_time" type="number" ng-model="user.staff.free_time">
+        <select ng-switch-when="staff.title" ng-model="user.staff.title"
+            ng-options="staffTitleLabels[value] for value in staffTitleKeys">
         <div ng-if="error" class="error">{{error}}</div>
       </div>
       <input type="submit" value="Save" ng-click="save()" class="css-table-cell">

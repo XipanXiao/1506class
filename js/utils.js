@@ -463,6 +463,7 @@ define('utils', [], function() {
           '知乎', '豆瓣', 'Facebook'],
       entranceLabels: ['本站', '微信', 'zbfw'], 
       weekDayLabels: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+      staffTitleLabels: ['', '常务理事', '部门理事', '部门干事'],
       getDisplayLabel: function(user, key) {
         return this[key+'Labels'][user[key]] || '';
       },

@@ -30,6 +30,7 @@ define('user_editor/user_editor',
           }
         }
         $scope.channels = utils.keys(utils.channelLabels);
+        $scope.staffTitleKeys = utils.keys(utils.staffTitleLabels);
         $scope.getDisplayLabel = function(key) {
           return $scope.user && utils.getDisplayLabel($scope.user, key);
         };
@@ -56,6 +57,8 @@ define('user_editor/user_editor',
               user.staff = response.data[0] || user.staff;
               user.staff.organization = parseInt(user.staff.organization) || null;
               user.staff.manager = parseInt(user.staff.manager) || null;
+              user.staff.title = parseInt(user.staff.title) || null;
+              user.staff.free_time = parseInt(user.staff.free_time) || null;
             });
           }
           if (!$scope.orgLabels) {
@@ -72,12 +75,12 @@ define('user_editor/user_editor',
         $scope.refreshStaffLabels = function(staff) {
           if (!staff.manager) return utils.truePromise();
 
-          staff.manager_name = window.userInputCache[staff.manager];
+          staff.manager_name = window.userInputCache[staff.manager] || '';
           staff.manager_name = staff.manager_name.split('-')[0];
           if (staff.manager_name) {
             return utils.truePromise();
           } else {
-            rpc.getUserLabel(staff.manager).then(function(response) {
+            return rpc.getUserLabel(staff.manager).then(function(response) {
               staff.manager_name = window.userInputCache[staff.manager]
                   = response.data.label;
               staff.manager_name = staff.manager_name.split('-')[0];
@@ -223,7 +226,7 @@ define('user_editor/user_editor',
         };
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201905251235'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201905041235'
     };
   });
 });
