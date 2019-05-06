@@ -53,7 +53,8 @@ class StaffEditorComponent {
     }
   }
 
-  void save() {
-    _userService.updateUser(user);
+  Future<void> save() async {
+    await _userService.updateUser(user);
+    pageIndex = 2;
   }
 }
