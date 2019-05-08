@@ -6,7 +6,7 @@ import 'package:staff/model/user.dart';
 
 @Component(
   selector: 'app-bar',
-  directives: [MaterialInputComponent],
+  directives: [MaterialInputComponent, NgIf],
   templateUrl: 'app_bar.html',
   styleUrls: ["app_bar.css"],
 )
@@ -24,4 +24,6 @@ class AppBarComponent {
   bool isTeacher() => false;
   bool canReadOrders() => false;
   bool showAssignments() => false;
+
+  bool get admining => false;
 }
