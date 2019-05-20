@@ -256,11 +256,10 @@
             <div class="css-table-cell"></div>
             <div class="css-table-cell"></div>
             <label class="css-table-cell" for="birthyear">出生年份:
-              <span class="required-asterisk">*</span>
             </label>
             <div class="css-table-cell">
               <input type="number" name="birthyear" pattern="\d{4}" min="1900" placeholder="1970"
-                  required oninvalid="setCustomValidity('请按照类似1970这样的格式填写')"
+                  oninvalid="setCustomValidity('请按照类似1970这样的格式填写')"
                   onchange="try{setCustomValidity('')}catch(e){}">
             </div>
           </div>
