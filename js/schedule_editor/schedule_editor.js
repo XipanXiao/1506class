@@ -18,7 +18,7 @@ define('schedule_editor/schedule_editor',
        'ScheduleGroupEditorModule',
        'TaskArrangementsModule',
        'ServicesModule', 'UserPickerModule',
-       'UtilsModule']).directive('scheduleEditor', function(perm, rpc, utils) {
+       'UtilsModule']).directive('scheduleEditor', function($timeout, perm, rpc, utils) {
           return {
             scope: {
               classId: '=',
@@ -107,9 +107,11 @@ define('schedule_editor/schedule_editor',
                 });
               };
               
-              $scope.addTerm = function() {
-                var term = utils.isEmpty($scope.schedule_groups) ? 
-                    1 : utils.last($scope.schedule_groups).term + 1;
+              function _addTerm(sameTerm) {
+                var term = sameTerm ? 
+                    $scope.term : 
+                        (utils.isEmpty($scope.schedule_groups) ? 
+                            1 : utils.last($scope.schedule_groups).term + 1);
                 $scope.schedule_groups[0] = {
                   id: 0,
                   term: term,
@@ -120,6 +122,20 @@ define('schedule_editor/schedule_editor',
                   start_time: utils.unixTimestamp(utils.getDefaultStartTime())
                 };
                 $scope.term = term;
+              }
+
+              var isSingleClick;
+              $scope.addTerm = function(dblclick) {
+                if (dblclick) {
+                  isSingleClick = false;
+                  _addTerm(true);
+                } else {
+                  isSingleClick = true;
+                  $timeout(function() {
+                    if (!isSingleClick) return;
+                    _addTerm();
+                  }, 250);
+                }
               };
               
               $scope.update = function(schedule, key, value) {
@@ -367,7 +383,7 @@ define('schedule_editor/schedule_editor',
                     '请保存或取消学修安排的修改' : null;
               };
             },
-            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201903302203'
+            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201905212203'
           };
         });
 });

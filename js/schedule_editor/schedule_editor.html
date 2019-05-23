@@ -2,8 +2,9 @@
 
 <navigate-bar class="right padded-element" navigate="navigate(direction)">
 </navigate-bar>
-<iron-icon icon="add-circle" class="add-icon clickable" ng-click="addTerm()"
-    title="新建学修安排">
+<iron-icon icon="add-circle" class="add-icon clickable"
+    ng-click="addTerm()"
+    ng-dblclick="addTerm(true)" title="新建学修安排">
 </iron-icon>
 <div ng-repeat="group in schedule_groups" class="padded-element">
   <div class="center">
