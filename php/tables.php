@@ -708,9 +708,12 @@ function update_schedule_group($group) {
     $id = $medoo->insert("schedule_groups", $datas);
     if (!$id) return false;
 
-    foreach($schedules as $schedule) {
-      $schedule["group_id"] = $id;
-      update_schedule($schedule);
+    if (!empty($schedules)) {
+      ksort($schedules);
+      foreach($schedules as $schedule) {
+        $schedule["group_id"] = $id;
+        update_schedule($schedule);
+      }
     }
   } else {
     $medoo->update("schedule_groups", $datas, ["id" => $id]);
