@@ -157,4 +157,13 @@ function get_deleted_classes($medoo, $include_graduated = true) {
       : ["deleted" => 1];
   return $medoo->select("classes", "id", $where);
 }
+
+/// Returns a filtered list of [$users] without deleted/graduated users.
+function filter_deleted_users($medoo, $users) {
+  $deletedClass = get_deleted_classes($medoo);
+  return array_values(array_filter($users,
+      function($user) use (&$deletedClass) {
+          return !in_array($user["classId"], $deletedClass);
+      }));
+}
 ?>

@@ -758,18 +758,20 @@ function remove_task_record($task_id) {
 function search($prefix) {
   global $medoo;
   
-  return $medoo->select("users", ["classId", "name", "email", "country"],
+  $users = $medoo->select("users", ["classId", "name", "email", "country"],
       ["OR" => ["name[~]" => $prefix, "email[~]" => $prefix]]);
+  return filter_deleted_users($medoo, $users);
 }
 
 /// A search returns only id, name and nick name.
 function searchByName($name) {
   global $medoo;
   
-  return $medoo->select("users",
-      ["id", "name", "nickname", "country", "email"],
+  $users = $medoo->select("users",
+      ["id", "name", "nickname", "country", "email", "classId"],
       ["OR" => ["name[~]" => $name, "nickname[~]" => $name,
           "email[~]" => $name], "LIMIT" => 30]);
+  return filter_deleted_users($medoo, $users);
 }
 
 /// Returns "name(nickname)" for a user identified by [$id].
