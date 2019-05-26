@@ -123,7 +123,7 @@ define('user_stats_app', [
             function loadAllUsers() {
               $scope.allUsers = [];
 
-              utils.requestOneByOne([getDepartments, getDistricts,
+              utils.requestOneByOne([getDepartments, getDistricts, rpc.get_classes,
                 collectDistrictUsers, aggregateUserYears, $scope.filterUsers]);
             };
 

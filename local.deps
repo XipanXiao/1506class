@@ -20,5 +20,6 @@ js/permission_editor/permission_editor.js
 js/user_input/user_input.js
 js/time/time.js
 js/user_editor/user_editor.js
+js/class_label/class_label.js
 js/users/users.js
 js/local_app.js

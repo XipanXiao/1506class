@@ -34,6 +34,7 @@ js/user_editor/user_editor.js
 js/zb_sync_button/zb_sync_button.js
 js/task_arrangements/task_arrangements.js
 js/scores/scores.js
+js/class_label/class_label.js
 js/users/users.js
 js/serial_number_dialog/serial_number_dialog.js
 js/class_info/class_info.js

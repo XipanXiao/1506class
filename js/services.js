@@ -27,6 +27,8 @@ define('services', ['utils'], function() {
     });
   }
 
+  window.classInfos = {};
+
   return angular.module('ServicesModule', ['UtilsModule'])
       .factory('rpc', function($http, $httpParamSerializerJQLike, utils) {
         var rpc;
@@ -40,7 +42,12 @@ define('services', ['utils'], function() {
           get_classes: function(classId, department_id) {
             var url = '{0}?rid=classes&classId={1}&department_id={2}'.format(
                 serviceUrl, classId || '', department_id || '');
-            return $http.get(url);
+            return $http.get(url).then(function(response) {
+              utils.forEach(response.data || [], function(classInfo) {
+                window.classInfos[classInfo.id] = classInfo;
+              });
+              return response;
+            });
           },
 
           get_class_candidates: function() {

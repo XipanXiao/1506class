@@ -25,7 +25,10 @@
       <div class="css-table-cell"><strong>电话</strong></div>
       <div class="css-table-cell"><strong>微信</strong></div>
       <div class="css-table-cell"><strong>州</strong></div>
-      <div class="css-table-cell"><strong>入学年份</strong></div>
+      <div class="css-table-cell" ng-switch="!!classId">
+        <strong ng-switch-when="false">所在班级</strong>
+        <strong ng-switch-default>入学年份</strong>
+      </div>
       <div class="css-table-cell" ng-if="isNewClass()"><strong>入口</strong></div>
       <div class="css-table-cell" ng-if="isNewClass()"><strong>入微,zoom,试麦</strong></div>
       <div class="css-table-cell" ng-if="isNewClass()"><strong>功德会</strong></div>
@@ -41,7 +44,10 @@
       <div class="css-table-cell">{{user.phone}}</div>
       <div class="css-table-cell">{{user.im}}</div>
       <div class="css-table-cell">{{user.stateLabel}}</div>
-      <div class="css-table-cell" >{{user.start_year}}</div>
+      <div class="css-table-cell" ng-switch="!!classId">
+        <input ng-switch-when="false" ng-model="user.classId" class-label disabled>
+        <span ng-switch-default>{{user.start_year}}</span>
+      </div>
       <div class="css-table-cell" ng-if="isNewClass()">{{entrances[user.entrance]}}</div>
       <div class="css-table-cell" ng-if="isNewClass()">
         <input type="checkbox" ng-model="user.enroll_tasks" title="已加入微信群"

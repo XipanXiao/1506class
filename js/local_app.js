@@ -34,6 +34,8 @@ define('local_app', [
               return $scope.classYears[classYear].checked;
             };
 
+            rpc.get_classes();
+
             rpc.get_user().then(function(user) {
               perm.user = user;
               if (!perm.isSysAdmin()) {

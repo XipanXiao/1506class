@@ -1099,3 +1099,8 @@ election-list .collapse-button {
   display: block;
   width: 90px;
 }
+
+[class-label] {
+  background-color: inherit;
+  border-style: none;
+}
