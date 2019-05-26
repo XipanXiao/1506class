@@ -369,9 +369,13 @@
         <select ng-switch-when="staff.organization" ng-model="user.staff.organization"
             ng-options="orgLabels[value] for value in organizations">
         </select>
-        <user-input ng-switch-when="staff.manager" user-id="user.staff.manager" editing="true"
+        <paper-auto-suggest-input ng-switch-when="staff.manager"
+            key="user.staff.manager"
+            editable="true"
+            label="userInput"
+            search="searchUser"
             on-change="refreshStaffLabels(user.staff)">
-        </user-input>
+        </paper-auto-suggest-input>
         <input ng-switch-when="staff.start_time" type="date" ng-model="user.staff.start_time"
             ng-change="refreshStaffLabels(user.staff)" date>
         <input ng-switch-when="staff.free_time" type="number" ng-model="user.staff.free_time">

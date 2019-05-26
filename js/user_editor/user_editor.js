@@ -6,16 +6,15 @@ define('user_editor/user_editor',
      'permission_editor/permission_editor',
      'permission',
      'time/time',
-     'user_input/user_input'
     ], function() {
   return angular.module('UserEditorModule', ['ServicesModule',
       'AddressEditorModule',
       'BitEditorModule', 'ClassesModule',
       'DistrictsModule',
+      'PaperAutoSuggestInputModule',
       'PermissionEditorModule',
       'PermissionModule', 
       'TimeModule',
-      'UserInputModule',
       'UtilsModule']).directive('userEditor',
           function($rootScope, perm, rpc, utils) {
     return {
@@ -224,9 +223,11 @@ define('user_editor/user_editor',
             }
           });
         };
+
+        $scope.searchUser = rpc.searchUser;
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201905041235'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201905251235'
     };
   });
 });
