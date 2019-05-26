@@ -6,7 +6,6 @@ define('schedule_editor/schedule_editor',
     'schedule_group_editor/schedule_group_editor',
     'task_arrangements/task_arrangements',
     'services',
-    'user_input/user_input', 
     'user_picker/user_picker', 
     'utils'], function() {
 

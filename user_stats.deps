@@ -19,7 +19,6 @@ js/bit_editor/bit_editor.js
 js/address_editor/address_editor.js
 js/districts/districts.js
 js/permission_editor/permission_editor.js
-js/user_input/user_input.js
 js/time/time.js
 js/user_editor/user_editor.js
 js/class_label/class_label.js
