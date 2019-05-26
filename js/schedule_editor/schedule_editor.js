@@ -364,6 +364,7 @@ define('schedule_editor/schedule_editor',
                   last1 && (schedule.course_id = last1 + 1);
                   last2 && (schedule.course_id2 = last2 + 1);
                 }
+                $scope.markDirty(group);
               };
               $scope.markDirty = function(group) {
                 group.dirty = true;
