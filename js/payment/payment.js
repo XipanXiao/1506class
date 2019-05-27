@@ -48,14 +48,24 @@ define('payment/payment', [
             return parseMoney((parseMoney(a) + parseMoney(b)).toFixed(2));
           }
           function getItems(order) {
-            return order.items.map(function (item) {
+            var items = order.items.map(function (item) {
               return {
                 name: item.name,
                 quantity: item.count,
                 currency: 'USD',
                 price: addMoney(item.price, item.shipping)
               };
-            });
+						});
+						var donation = parseFloat(order.shipping_donation);
+						if (donation) {
+							items.push({
+								name: 'donation',
+								quantity: 1,
+								currency: 'USD',
+								price: donation
+							});
+						}
+						return items;
 					}
 					
 					function renderButton() {
@@ -140,7 +150,11 @@ define('payment/payment', [
 	        	      scope.order.paid_date = trans.related_resources[0].sale.create_time;
 	        	      scope.onPaid();
 	        	    });
-	        	}
+						},
+						
+						onError: function(err) {
+							alert(err);
+						}
 						}, '#paypal-button-container');
 						}
         	},
