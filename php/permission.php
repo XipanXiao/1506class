@@ -79,6 +79,10 @@ function is_teacher_of($user, $classInfo) {
       intval($classInfo["teacher2_id"]) == $user->id;
 }
 
+function is_master_teacher($user, $classInfo) {
+  return intval($classInfo["teacher_id"]) == $user->id;
+}
+
 function canRead($user, $classInfo) {
   $level = $classInfo["perm_level"];
   if (!$level || is_teacher_of($user, $classInfo)) {
@@ -94,7 +98,7 @@ function canRead($user, $classInfo) {
 
 function canWrite($user, $classInfo) {
   $level = $classInfo["perm_level"];
-  if (!$level) return true;
+  if (!$level || is_master_teacher($user, $classInfo)) return true;
 
   $perm = ($user->permission >> (($level - 1) * 2)) & 2;
   if (!$perm) return false;

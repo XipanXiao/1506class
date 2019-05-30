@@ -27,6 +27,7 @@ define('serial_number_dialog/serial_number_dialog',
                 back(users);
                 rpc.get_classes(scope.classId).then(function(response) {
                   var classInfo = response.data[scope.classId];
+                  if (!classInfo) return;
                   var dep = getDepLetter(classInfo.department_id);
                   var year = (new Date()).getFullYear() % 100;
                   var weekday = classInfo.weekday || 7;
