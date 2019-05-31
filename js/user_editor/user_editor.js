@@ -223,11 +223,21 @@ define('user_editor/user_editor',
             }
           });
         };
+        $scope.isMe = function() {
+          return perm.user && $scope.user &&
+              $scope.user.id == perm.user.id;
+        };
+        $scope.loginAs = function() {
+          var msg = '您确定退出当前账户，以{0}的身份登录吗？'.format($scope.user.name) +
+              '切换身份后记得换回来，请小心避免无意修改她的数据。';
+          if (!confirm(msg)) return;
 
+          utils.redirect('php/su.php?user={0}'.format($scope.user.id));
+        };
         $scope.searchUser = rpc.searchUser;
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201905251235'
+      templateUrl : 'js/user_editor/user_editor.html?tag=201905301235'
     };
   });
 });

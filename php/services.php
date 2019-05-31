@@ -41,17 +41,6 @@ function canWriteClass($user, $classId) {
   return canWrite($user, $classInfo);
 }
 
-/// Whether [$user] can report task for [$task_user_id].
-function canWriteUser($user, $targetUser) {
-  if ($user == $targetUser || $user->id == $targetUser) return true;
-
-  if (!($targetUser instanceof User)) {
-    $targetUser = get_users(null, null, $targetUser)[$targetUser];
-    if (!$targetUser) return false;
-  }
-  return canWrite($user, $targetUser->classInfo);
-}
-
 /// Whether the current [$user] has permission to read [$another] or not.
 function canReadUser($another) {
   global $user;

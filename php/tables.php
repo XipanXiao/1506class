@@ -832,4 +832,16 @@ function attendanceStats($user_id, $classId) {
   return ["total" => count($courseIds), 
       "attended" => count(array_intersect($courseIds, $attended))];
 }
+
+/// Whether [$user] can report task for [$task_user_id].
+function canWriteUser($user, $targetUser) {
+  if ($user == $targetUser || $user->id == $targetUser) return true;
+
+  if (!($targetUser instanceof User)) {
+    $targetUser = get_users(null, null, $targetUser)[$targetUser];
+    if (!$targetUser) return false;
+  }
+  return $user->id == $targetUser->id ||
+      canWrite($user, $targetUser->classInfo);
+}
 ?>

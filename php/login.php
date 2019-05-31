@@ -49,7 +49,6 @@ if(!empty($_POST["email"])) {
     	$page = $file_name. "?". $url_parts[1];
     }
     header("Location: ../" . $page);
-    try_backup();
   } else {
     echo "<h1>Error</h1>";
     echo "<p>Sorry, your account could not be found.".

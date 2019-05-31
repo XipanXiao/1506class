@@ -3,7 +3,12 @@
     <div class="css-table">
       <div class="css-table-row padded-element">
         <div class="css-table-cell">姓名</div>
-        <div class="css-table-cell">{{user.name}}</div>
+        <div class="css-table-cell">
+          {{user.name}}
+          <iron-icon class="clickable" ng-if="admining && isYearLeader() && !isMe()"
+              icon="android" ng-click="loginAs()" title="以{{user.name}}的身份登录">
+          </iron-icon>
+        </div>
         <div class="css-table-cell">
           <iron-icon class="selectable" ng-show="isAdmin()" icon="chevron-right"
               ng-click="editing = 'name'">
