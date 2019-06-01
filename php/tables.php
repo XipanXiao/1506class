@@ -702,30 +702,23 @@ function update_schedule_group($group) {
   }
 
   $id = $group["id"];
-  $schedules = empty($group["schedules"]) ? null : $group["schedules"];
 
   if ($id == 0) {
     $id = $medoo->insert("schedule_groups", $datas);
     if (!$id) return false;
-
-    if ($schedules) {
-      ksort($schedules);
-      foreach($schedules as $schedule) {
-        $schedule["group_id"] = $id;
-        update_schedule($schedule);
-      }
-    }
   } else {
     $medoo->update("schedule_groups", $datas, ["id" => $id]);
+  }
 
-    if ($schedules) {
-      $medoo->delete("schedules", ["group_id" => $id]);
-      foreach ($schedules as $schedule) {
-        $schedule["group_id"] = $id;
-        unset($schedule["id"]);
-        update_schedule($schedule);
-      }
-    }
+  if (empty($group["schedules"])) return $id;
+  $schedules = $group["schedules"];
+
+  ksort($schedules);
+  $medoo->delete("schedules", ["group_id" => $id]);
+  foreach ($schedules as $schedule) {
+    $schedule["group_id"] = $id;
+    unset($schedule["id"]);
+    update_schedule($schedule);
   }
 
   return $id;
