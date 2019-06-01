@@ -609,6 +609,16 @@ define('zb_sync_button/zb_sync_button',
             });
           };
 
+          var nextScheduleGroup;
+
+          function getNextTerm() {
+            return rpc.get_schedules(scope.classId,
+              scope.scheduleGroup.term + 1).then(function(response) {
+                nextScheduleGroup = utils.first(response.data.groups);
+                return true;
+              });
+          }
+
           /// Returns the end cut time for reporting tasks like dingli, for the
           /// current term (specified by scope.scheduleGroup), as a timestamp.
           scope.getTermEndCutTime = function(extraReportTime) {
@@ -616,21 +626,17 @@ define('zb_sync_button/zb_sync_button',
             if (scope.scheduleGroup.end_time) {
               return scope.scheduleGroup.end_time;
             }
+            // For graduating term, some times we want to remove the cut.
+            // Like if a class stays for one more year at the graduating term,
+            // we will still need to report even after one year.
+            var now = utils.unixTimestamp(new Date());
+            if (!nextScheduleGroup) return now;
+
             // The cut date could not be later than 15 days after the term end. 
             var cut = utils.roundToDefaultStartTime(scope.getEndTerm()) +
                 extraReportTime;
-            var now = utils.unixTimestamp(new Date());
             return Math.min(now, cut);
           };
-
-          /// Gets the start time corresponding to [halfTerm].
-          function getStartTime(halfTerm) {
-            var date = utils.toDateTime(scope.scheduleGroup.start_time);
-            var halfTerms = halfTerm - scope.scheduleGroup.term * 2;
-            var months = halfTerms * 3;
-            date.setMonth(date.getMonth() + months);
-            return utils.unixTimestamp(date); 
-          }
 
           /// Collects all task reports since last report.
           ///
@@ -733,6 +739,7 @@ define('zb_sync_button/zb_sync_button',
                 scope.getTasks,
                 scope.get_preclass_lessons,
                 scope.getLastReportTime,
+                getNextTerm,
                 scope.getAllTaskStats,
                 scope.saveReportTime
             ];
