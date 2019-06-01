@@ -64,45 +64,84 @@ define('task_history/task_history', ['utils',
           });
         };
 
+        /// Given n terms each having an end_time stamp,
+        /// returns n+1 time ranges paritioned by them.
+        function splitRanges(terms) {
+          var maxvalue = '9999-12-31 23:59:59';
+          var start = 0;
+          var count = 0;
+          var ranges = terms.map(function(term) {
+            count++;
+            var range = {
+              sum: 0,
+              start: start, 
+              end: term.end_time || maxvalue, 
+              ts: '第{0}学期'.format(term.term)
+            };
+            start = range.end;
+            return range;
+          });
+          if (start == maxvalue) return ranges;
+
+          ranges.push({
+            sum: 0,
+            start: start, 
+            end: 9007199254740991,
+            ts: '第{0}学期'.format(count+1)
+          });
+          return ranges;
+        }
+
+        /// Converts time [range] to index range, searching from [pos].
+        function sumRange(records, range, pos) {
+          while(pos < records.length && records[pos].ts < range.start) pos++;
+          if (pos == records.length) {
+            range.start = range.end = pos;
+            return range;
+          }
+
+          range.start = pos;
+          while(pos < records.length && records[pos].ts < range.end) {
+            range.sum += records[pos++].count;
+          }
+          range.end = pos;
+          return range;
+        }
+
+        /// Partitions the [records] list into aggregated segements,
+        /// based on [terms].
+        ///
+        /// Each term has an ending time stamp. These
+        /// n time stamp values, together with -infty
+        /// and +infty, partitions the whole time line
+        /// into n+1 ranges. Each range has an aggregated
+        /// record, whose value is the summation of records
+        /// falling in the range.
+        function aggregateRecords(records, terms) {
+          var pos = 0;
+          var ranges = splitRanges(terms);
+          ranges = ranges.map(function(range) {
+            range = sumRange(records, range, pos);
+            pos = range.end;
+            return range;
+          });
+          ranges.reverse().forEach(function(range) {
+            records.splice(range.end, 0, range);
+          });
+          records.push({
+            ts: '总计',
+            sum: ranges.reduce(function(total, range) {
+              return total + range.sum;
+            }, 0)
+          });
+        }
+
         function addTermSummaries() {
           if (scope.selectedTask.duration || !scheduleGroups.length) {
             scope.expanded = true;
             return;
           }
-
-          var termIndex = 0;
-          var scheduleGroup = scheduleGroups[termIndex++];
-          scheduleGroup.sum = 0;
-
-          var history = [];
-          for (var index = 0; index < scope.task_history.length; index++) {
-            var record = scope.task_history[index];
-            while (!scheduleGroup.end_time ||
-                scheduleGroup.end_time < record.ts) {
-              if (scheduleGroup.sum) {
-                scheduleGroup.id = 0;
-                scheduleGroup.ts = '第{0}学期'.format(scheduleGroup.term);
-                history.push(scheduleGroup);
-              }
-              scheduleGroup = scheduleGroups[termIndex++];
-              if (!scheduleGroup) {
-                for (; index < scope.task_history.length; index++) {
-                  history.push(scope.task_history[index]);
-                }
-                scope.task_history = history;
-                return;
-              }
-              scheduleGroup.sum = 0;
-            }
-            scheduleGroup.sum += record.count;
-            history.push(record);
-          }
-          if (scheduleGroup && scheduleGroup.sum) {
-            scheduleGroup.id = 0;
-            scheduleGroup.ts = '第{0}学期'.format(scheduleGroup.term);
-            history.push(scheduleGroup);
-          }
-          scope.task_history = history;
+          aggregateRecords(scope.task_history, scheduleGroups);
         }
 
         function reloadTaskHistory() {

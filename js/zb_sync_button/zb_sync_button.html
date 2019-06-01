@@ -8,7 +8,8 @@
 <span ng-if="inprogress">{{statusText}}</span>
 <span ng-if="!inprogress">{{endTimeLabel()}}</span>
 <iron-icon class="clickable small-icon" icon="history" title="重置报数时间"
-    ng-click="resetReportTime()" ng-show="isSysAdmin() && endTimeLabel()">
+    ng-click="resetReportTime()"
+    ng-show="false && isSysAdmin() && endTimeLabel()">
 </iron-icon>
 <iron-icon class="clickable small-icon" icon="cancel" title="取消"
     ng-click="cancel()" ng-show="inprogress">
