@@ -1083,8 +1083,11 @@ define('zb_sync_button/zb_sync_button',
           scope.saveReportTime = function() {
             var group = scope.scheduleGroup;
             if (!group.end_time) return utils.truePromise();
-            return rpc.update_schedule_group({id: group.id,
-              end_time: group.end_time});
+            return rpc.update_schedule_group({
+              id: group.id,
+              classId: group.classId,
+              end_time: group.end_time
+            });
           };
           scope.endTimeLabel = function() {
             var tm = scope.scheduleGroup && scope.scheduleGroup.end_time;
