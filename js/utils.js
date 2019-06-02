@@ -397,6 +397,12 @@ define('utils', [], function() {
           perm_level: 0
         };
       },
+      isEmptyObject: function(map) {
+        for (var key in map) {
+          if (key) return false;
+        }
+        return true;
+      },
       isEmpty: function(map) {
         if (!map || map instanceof String || typeof(map) == 'string') {
           return true;

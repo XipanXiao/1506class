@@ -339,7 +339,7 @@ define('zb_sync_button/zb_sync_button',
             var taskKey = '加行';
 
             if (scope.checkUserTask(user, taskKey) ||
-                utils.isEmpty(user.taskStats)) {
+                utils.isEmptyObject(user.taskStats)) {
               return utils.truePromise();
             }
 
@@ -548,7 +548,8 @@ define('zb_sync_button/zb_sync_button',
           };
 
           scope.options = {};
-          scope.getTaskStats = function(task, start_time, end_time) {
+
+          function getTaskStats(task, start_time, end_time) {
             var overwrite = scope.options.overwriteWithZero;
             return rpc.get_class_task_stats(scope.classId, task.id,
                 start_time, end_time).then(function(response) {
@@ -596,7 +597,7 @@ define('zb_sync_button/zb_sync_button',
                   });
                   return true; 
                 });
-          };
+          }
 
           /// Retrieves the last reporting time that was stored at the
           /// 'end_time' field for a schedule group.
@@ -671,7 +672,7 @@ define('zb_sync_button/zb_sync_button',
                 var start_cut_time =  scope.lastReportTime || (startTerm + extraReportTime);
                 var start_time = firstHalf ? (isFirstTime ? 1 : start_cut_time) : midTerm;
                 var end_time = firstHalf ? midTerm : end_cut_time;
-                return scope.getTaskStats(task, start_time, end_time);
+                return getTaskStats(task, start_time, end_time);
               });
             });
             return utils.requestOneByOne(requests);
