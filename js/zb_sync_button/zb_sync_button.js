@@ -546,8 +546,10 @@ define('zb_sync_button/zb_sync_button',
                       });
                 });
           };
-          
+
+          scope.options = {};
           scope.getTaskStats = function(task, start_time, end_time) {
+            var overwrite = scope.options.overwriteWithZero;
             return rpc.get_class_task_stats(scope.classId, task.id,
                 start_time, end_time).then(function(response) {
                   var users = response.data || [];
@@ -559,7 +561,7 @@ define('zb_sync_button/zb_sync_button',
                     if (parts.length == 2) {
                       var countKey = parts[0] + '_count';
                       // Do not erase data of transferred students.
-                      var existingValue = parseInt(zbStat[countKey]) || 0;
+                      var existingValue = overwrite ? 0 : (parseInt(zbStat[countKey]) || 0);
 
                       if (!taskStats[countKey]) {
                         // !!!! This is important do not change !!!!
@@ -577,7 +579,7 @@ define('zb_sync_button/zb_sync_button',
                     } else {
                       var countKey = task.zb_name + '_count'; 
                       // Do not erase data of transferred students.
-                      var existingValue = parseInt(zbStat[countKey]) || 0;
+                      var existingValue = overwrite ? 0 : (parseInt(zbStat[countKey]) || 0);
                       taskStats[countKey] = stat.sum || existingValue;
                       if (task.name.indexOf('/') >= 0) {
                         taskStats[task.zb_name + '_type'] = stat.sub_index || 0;
@@ -587,7 +589,7 @@ define('zb_sync_button/zb_sync_button',
                       var timeKey = task.zb_name + '_time'; 
                       var hour = utils.toGuanxiuHour(stat.duration);
                       // Do not erase data of transferred students.
-                      var existingValue = zbStat[timeKey] || 0;
+                      var existingValue = overwrite ? 0 : (zbStat[timeKey] || 0);
                       taskStats[timeKey] = 
                           parseInt(10 * hour) ? hour : existingValue;
                     }
