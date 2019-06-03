@@ -61,7 +61,7 @@ define('zb_services', ['utils'], function() {
       };
     }
     
-    return {
+    var zbrpc = {
       serviceUrl: serviceUrl,
       get_secure_url: function(url) {
         return '{0}?url={1}'.format(redirectUrl, encodeURIComponent(url));
@@ -288,8 +288,9 @@ define('zb_services', ['utils'], function() {
         return http_form_post($http, $httpParamSerializerJQLike(data));
       },
       ensure_authenticated: function(progress) {
+        progress = progress || function() {};
         progress(1, '正在检查是否登录并具有编辑权限...');
-        return this.is_authenticated().then(function(authenticated) {
+        return zbrpc.is_authenticated().then(function(authenticated) {
           progress(1);
           return authenticated || utils.showZBLoginDialog(progress);
         });
@@ -314,5 +315,6 @@ define('zb_services', ['utils'], function() {
         };
       }
     };
+    return zbrpc;
   });
 });

@@ -1,11 +1,13 @@
 define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
     'task_editor_dialog/task_editor_dialog',
     'task_history/task_history',
-    'utils'], function() {
+    'utils',
+    'zb_services'
+  ], function() {
   return angular.module('TaskStatsModule', ['ProgressBarModule',
       'ServicesModule', 'TaskEditorDialogModule',
       'TaskHistoryModule', 'UtilsModule'])
-      .directive('taskStats', function(rpc, utils) {
+      .directive('taskStats', function(rpc, utils, zbrpc) {
 
       return {
         scope: {
@@ -13,7 +15,56 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
           classId: '@'
         },
         link: function(scope) {
+          scope.options = {};
           scope.pageSize = 8;
+
+          var WORK_GRID = 1;
+          var ATT_LIMIT_GRID = 2;
+
+          var classInfo;
+
+          scope.isJiaXing = function() {
+            return classInfo && classInfo.department_id == 3;
+          };
+
+          function getZBTaskStats(halfTerm) {
+            return function() {
+              var grid = zbrpc.get_report_type(classInfo.department_id, WORK_GRID);
+              grid = grid ||
+                  zbrpc.get_report_type(classInfo.department_id, ATT_LIMIT_GRID);
+              var pre_classID = classInfo.zb_id;
+              return zbrpc.get_task_records(grid, pre_classID, halfTerm + 1)
+                  .then(function(response) {
+                var stats = response.data.data;
+                var users = utils.toMap(scope.task_stats, 'zb_id');
+                (stats || []).forEach(function(stat) {
+                  var user = users[stat.userID];
+                  if (!user) return;
+
+                  user.zbTerms = user.zbTerms || {};
+                  user.zbTerms[halfTerm + 1] = stat;
+                  user.zbLastTerm = stat;
+                });
+                return true;
+              });
+            };
+          };
+
+          function done() {
+            classInfo.zbTaskLoaded = true;
+            return utils.truePromise();
+          }
+
+          scope.getZbData = function() {
+            if (!scope.options.showZBdata || classInfo.zbTaskLoaded) return;
+
+            var halfTerms = Array.apply(null, {length: 17}).map(Number.call, Number);
+            var requests = [zbrpc.ensure_authenticated];
+            requests = requests.concat(halfTerms.map(getZBTaskStats));
+            requests.push(done);
+            utils.requestOneByOne(requests);
+          };
+
           scope.refreshStats = function() {
             if (!scope.selectedTask) return;
 
@@ -46,7 +97,7 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
             }
 
             rpc.get_classes(scope.classId).then(function(response) {
-              var classInfo = response.data[scope.classId];
+              classInfo = response.data[scope.classId];
               if (!classInfo) return;
 
               rpc.get_tasks(classInfo.department_id).then(function(response) {
@@ -104,7 +155,7 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
           };
           scope.currentPage = 0;
         },
-        templateUrl: 'js/task_stats/task_stats.html?tag=201705162201'
+        templateUrl: 'js/task_stats/task_stats.html?tag=201905162201'
       };
     });
 });

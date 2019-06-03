@@ -7,7 +7,6 @@ define('zb_sync_button/zb_sync_button',
   var MAIN_GRID = 0;
   var WORK_GRID = 1;
   var ATT_LIMIT_GRID = 2;
-  var GUANXIU_GRID = 3;
   var MAIN_COURSE_GRID_NAME = 'main_course_grid';
   var ATT_LIMIT_GRID_NAME = 'att_limit_grid';
   return angular.module('ZBSyncButtonModule', ['ProgressBarModule',

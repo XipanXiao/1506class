@@ -372,7 +372,7 @@ div.task-stats {
 
 .task-stats > .progress-bar-container {
   background: transparent;
-  width: 600px;
+  width: 500px;
 }
 
 .progress-bar-container {

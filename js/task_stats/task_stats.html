@@ -4,6 +4,10 @@
     <select ng-options="value.name for value in tasks" ng-model="selectedTask">
     </select>
   </label>
+  <label ng-if="isJiaXing()">
+		同时显示zhibei.info数据(需要登录)
+		<input type="checkbox" ng-model="options.showZBdata" ng-change="getZbData()">
+	</label>
   <iron-icon icon="editor:border-color" class="small-icon selectable" ng-click="expand()"
       ng-show="false">
   </iron-icon>
@@ -14,6 +18,7 @@
       <div class="css-table-cell">姓名</div>
       <div class="css-table-cell">进度</div>
       <div class="css-table-cell">数目</div>
+      <div class="css-table-cell" ng-if="options.showZBdata">zhibei.info</div>
       <div class="css-table-cell">添加报数</div>
     </div>
     <div ng-repeat="user in task_stats" class="css-table-row selectable"
@@ -26,6 +31,12 @@
       <div class="css-table-cell">
         {{user.stats[0].sum}}
         <span ng-if="user.stats[0].duration">({{user.stats[0].duration}}分钟)</span>
+      </div>
+      <div class="css-table-cell" ng-if="options.showZBdata">
+        {{user.zbLastTerm ? user.zbLastTerm[selectedTask.zb_name + '_total'] : 'loading...'}}
+        <span class="error"
+            title="数据不一致，请检查。考虑重新上报不一致的那些学期。"
+            ng-if="user.stats[0].sum != (user.zbLastTerm && user.zbLastTerm[selectedTask.zb_name + '_total'])">..</span>
       </div>
       <div class="css-table-cell">
         <input type="number" ng-model="user.count" class="count-input" placeholder="数量">
@@ -82,5 +93,5 @@
   </div>
 </div>
 <task-history ng-if="selectedUser" user="selectedUser" selected-task="selectedTask"
-    hide-task-list="true" class="padded-element">
+    hide-task-list="true" class="padded-element" show-zb-data="options.showZBdata">
 </task-history>

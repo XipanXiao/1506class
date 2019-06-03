@@ -7,6 +7,7 @@ define('task_history/task_history', ['utils',
       scope: {
         hideTaskList: '@',
         selectedTask: '=',
+        showZbData: '=',
         user: '='
       },
       restrict: 'E',
@@ -64,6 +65,24 @@ define('task_history/task_history', ['utils',
           });
         };
 
+        /// Returns the sum of the first half and second half counts of
+        /// the [term].
+        function calcZBTermSum(term) {
+          if (!scope.user.zbTerms) return 0;
+
+          var taskKey = scope.selectedTask.zb_name + '_count';
+          var firstHalf = scope.user.zbTerms[term * 2];
+          var secondHalf = scope.user.zbTerms[term * 2 + 1];
+          return (firstHalf && firstHalf[taskKey] || 0) +
+              (secondHalf && secondHalf[taskKey] || 0);
+        }
+
+        function getZbTotal() {
+          if (!scope.user.zbLastTerm) return 0;
+          var taskKey = scope.selectedTask.zb_name + '_total';
+          return scope.user.zbLastTerm[taskKey];
+        }
+
         /// Given n terms each having an end_time stamp,
         /// returns n+1 time ranges paritioned by them.
         function splitRanges(terms) {
@@ -74,6 +93,7 @@ define('task_history/task_history', ['utils',
             count++;
             var range = {
               sum: 0,
+              zbSum: calcZBTermSum(term.term),
               start: start, 
               end: term.end_time || maxvalue, 
               ts: '第{0}学期'.format(term.term)
@@ -132,7 +152,8 @@ define('task_history/task_history', ['utils',
             ts: '总计',
             sum: ranges.reduce(function(total, range) {
               return total + range.sum;
-            }, 0)
+            }, 0),
+            zbSum: getZbTotal()
           });
         }
 
@@ -196,7 +217,7 @@ define('task_history/task_history', ['utils',
               format(cutOff);
         };
       },
-      templateUrl : 'js/task_history/task_history.html?tag=20180911'
+      templateUrl : 'js/task_history/task_history.html?tag=20190911'
     };
   });
 });
