@@ -78,7 +78,6 @@ define('zb_services', ['utils'], function() {
         return (html || '').indexOf('<input type="password"') > 0;
       },
       is_authenticated: function() {
-        var that = this;
         var url = '{0}/pre/check_edit_password_ajax?type=get_edit_permission'.
             format(serviceUrl);
         return $http.get(get_proxied_url(url)).then(function(response) {
@@ -287,6 +286,13 @@ define('zb_services', ['utils'], function() {
           userIDs: [userID]    	    		
   	    };
         return http_form_post($http, $httpParamSerializerJQLike(data));
+      },
+      ensure_authenticated: function(progress) {
+        progress(1, '正在检查是否登录并具有编辑权限...');
+        return this.is_authenticated().then(function(authenticated) {
+          progress(1);
+          return authenticated || utils.showZBLoginDialog(progress);
+        });
       }
     };
   });

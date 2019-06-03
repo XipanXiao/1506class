@@ -253,7 +253,7 @@ define('zb_sync_button/zb_sync_button',
                 scope.statusText = '正在为"{0}"提交{1}半学期听传承和读法本记录...'.
                     format(user.name, ['上', '下'][scope.half_term % 2]);
                 return zbrpc.report_schedule_task(
-                    scope.get_report_type(MAIN_GRID),
+                    get_report_type(MAIN_GRID),
                     scope.classInfo.zb_id, parseInt(user.zb_id),
                     scope.half_term, records.book,
                     records.audio).then(function(response) {
@@ -290,50 +290,13 @@ define('zb_sync_button/zb_sync_button',
           };
           scope.ensure_authenticated = function() {
             scope.finished = 0;
-            scope.totalTasks = 1;
+            scope.totalTasks = 2;
 
-            scope.statusText = '正在检查是否登录并具有编辑权限...';
-            return zbrpc.is_authenticated().then(function(authenticated) {
-              scope.finished++;
-              return authenticated || scope.showLoginDialog();
+            return zbrpc.ensure_authenticated(function(step, msg) {
+              scope.finished += step;
+              scope.statusText = msg || scope.statusText;
             });
           };
-          scope.showLoginDialog = function() {
-            document.querySelector('#zb-login').open();
-            scope.deferredLogin = $q.defer();
-            return scope.deferredLogin.promise;
-          };
-          scope.$on('zb-login-confirmed', function(event, credential) {
-            if (!scope.deferredLogin) return;
-
-            if (credential) {
-              var username = credential.username;
-              var password = credential.password;
-              var editPassword = credential.editPassword;
-              var captcha = credential.captcha;
-  
-              scope.finished = 0;
-              scope.totalTasks = 1;
-  
-              scope.statusText = '正在登录...';
-              zbrpc.login(username, password, captcha).then(function(response) {
-                var success = response.data &&
-                    (response.data.returnValue == 'true');
-                if (!success) {
-                  scope.finished++;
-                  alert('登录失败');
-                  scope.deferredLogin.resolve(false);
-                } else {
-                  zbrpc.edit(editPassword).then(function(approved) {
-                    scope.finished++;
-                    scope.deferredLogin.resolve(approved);
-                  });
-                }
-              });
-            } else {
-              scope.deferredLogin.resolve(false);
-            }
-          });
 
           scope.report_jx_task_for_user = function(user) {
             var taskKey = '加行';
@@ -511,7 +474,7 @@ define('zb_sync_button/zb_sync_button',
             var otherTasks = scope.classInfo.department_id == JIA_XING ?
               {} : (scope.users[user.id].taskStats || {});
 
-            var gridName = scope.get_report_type(ATT_LIMIT_GRID);
+            var gridName = get_report_type(ATT_LIMIT_GRID);
             // 净土第一学期只报出勤
             if (scope.scheduleGroup.term == 1 &&
                 scope.classInfo.department_id == JINGTU_DEPARTMENT) {
@@ -680,7 +643,7 @@ define('zb_sync_button/zb_sync_button',
           
           scope.getZBTaskStats = function(gridIndex) {
             return function() {
-              var grid = scope.get_report_type(gridIndex);
+              var grid = get_report_type(gridIndex);
               var pre_classID = scope.classInfo.zb_id;
               var halfTerm = scope.half_term;
               return zbrpc.get_task_records(grid, pre_classID, halfTerm)
@@ -789,7 +752,7 @@ define('zb_sync_button/zb_sync_button',
           /// grid 1: the task/work grid
           /// grid 2: the limited class and attendance gird
           /// grid 4: the guanxiu grid
-          scope.get_report_type = function(grid) {
+          function get_report_type(grid) {
             switch (scope.classInfo.department_id) {
             case 2:
               return ['rxl_grid', '', 'rxl_work_grid'][grid];
@@ -1198,7 +1161,7 @@ define('zb_sync_button/zb_sync_button',
 
           var zbTasks, localTasks;
           function getZbTaskReportTerms() {
-            var grid = scope.get_report_type(WORK_GRID);
+            var grid = get_report_type(WORK_GRID);
             var pre_classID = scope.classInfo.zb_id;
             var allTerms = [];
             for (var halfTerm = 4; halfTerm <= 17; halfTerm++) {

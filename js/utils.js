@@ -659,6 +659,14 @@ define('utils', [], function() {
         var scope = angular.element(dialog).scope();
         scope.district = district;
       },
+      showZBLoginDialog: function(progress) {
+        var dialog = document.querySelector('#zb-login');
+        dialog.open();
+        var scope = angular.element(dialog).scope();
+        scope.deferredLogin = $q.defer();
+        scope.progress = progress;
+        return scope.deferredLogin.promise;
+      },
       addressFields: ['name', 'street', 'city', 'state',
           'country', 'zip', 'phone', 'email'],
       getDistrictAddress: function(rpc, district) {
