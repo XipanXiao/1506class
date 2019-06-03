@@ -22,6 +22,15 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                 $scope.reload();
               });
 
+              /// Sets course_group2 to true if any schedule in
+              /// [group] has a secondary course.
+              function checkSecondCourse(group) {
+                group.course_group2 = group.course_group2 ||
+                    utils.any(group.schedules, function(schedule) {
+                  return !!schedule.course_id2;
+                });
+              }
+
               $scope.reload = function(term) {
                 return rpc.get_schedules($scope.user.classId, term || 0, 'mine')
                     .then(function(response) {
@@ -31,6 +40,7 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                   $scope.users = response.data.users;
                   $scope.records = $scope.users[$scope.user.id].records;
                   utils.forEach($scope.schedule_groups, utils.calcMiddleWeek);
+                  utils.forEach($scope.schedule_groups, checkSecondCourse);
                 });
               };
               
