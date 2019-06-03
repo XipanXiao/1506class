@@ -293,6 +293,25 @@ define('zb_services', ['utils'], function() {
           progress(1);
           return authenticated || utils.showZBLoginDialog(progress);
         });
+      },
+      /// Returns the 'type' field when reporting.
+      ///
+      /// grid 0: the main audio/book grid
+      /// grid 1: the task/work grid
+      /// grid 2: the limited class and attendance gird
+      /// grid 4: the guanxiu grid
+      get_report_type: function(depId, grid) {
+        switch (depId) {
+        case 2:
+          return ['rxl_grid', '', 'rxl_work_grid'][grid];
+        case 3:
+          return ['jx_grid', 'jxWork_grid', 'att_limit_grid',
+              'guanxiu_grid'][grid];
+        case 4:
+          return ['jt_grid', '', 'fohao_att_limit_grid'][grid];
+        default:
+          return null;
+        };
       }
     };
   });

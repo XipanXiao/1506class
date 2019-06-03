@@ -253,7 +253,7 @@ define('zb_sync_button/zb_sync_button',
                 scope.statusText = '正在为"{0}"提交{1}半学期听传承和读法本记录...'.
                     format(user.name, ['上', '下'][scope.half_term % 2]);
                 return zbrpc.report_schedule_task(
-                    get_report_type(MAIN_GRID),
+                    zbrpc.get_report_type(scope.classInfo.department_id, MAIN_GRID),
                     scope.classInfo.zb_id, parseInt(user.zb_id),
                     scope.half_term, records.book,
                     records.audio).then(function(response) {
@@ -474,7 +474,8 @@ define('zb_sync_button/zb_sync_button',
             var otherTasks = scope.classInfo.department_id == JIA_XING ?
               {} : (scope.users[user.id].taskStats || {});
 
-            var gridName = get_report_type(ATT_LIMIT_GRID);
+            var gridName = zbrpc.get_report_type(scope.classInfo.department_id, 
+                ATT_LIMIT_GRID);
             // 净土第一学期只报出勤
             if (scope.scheduleGroup.term == 1 &&
                 scope.classInfo.department_id == JINGTU_DEPARTMENT) {
@@ -643,7 +644,8 @@ define('zb_sync_button/zb_sync_button',
           
           scope.getZBTaskStats = function(gridIndex) {
             return function() {
-              var grid = get_report_type(gridIndex);
+              var grid = zbrpc.get_report_type(scope.classInfo.department_id,
+                  gridIndex);
               var pre_classID = scope.classInfo.zb_id;
               var halfTerm = scope.half_term;
               return zbrpc.get_task_records(grid, pre_classID, halfTerm)
@@ -746,26 +748,6 @@ define('zb_sync_button/zb_sync_button',
             }[scope.classInfo.department_id];
           };
           
-          /// Returns the 'type' field when reporting.
-          ///
-          /// grid 0: the main audio/book grid
-          /// grid 1: the task/work grid
-          /// grid 2: the limited class and attendance gird
-          /// grid 4: the guanxiu grid
-          function get_report_type(grid) {
-            switch (scope.classInfo.department_id) {
-            case 2:
-              return ['rxl_grid', '', 'rxl_work_grid'][grid];
-            case 3:
-              return ['jx_grid', 'jxWork_grid', 'att_limit_grid',
-                  'guanxiu_grid'][grid];
-            case JINGTU_DEPARTMENT:
-              return ['jt_grid', '', 'fohao_att_limit_grid'][grid];
-            default:
-              return null;
-            };
-          };
-
           scope.sync_users = function() {
             var taskKey = '用户信息';
             var users = scope.users;
@@ -1161,7 +1143,8 @@ define('zb_sync_button/zb_sync_button',
 
           var zbTasks, localTasks;
           function getZbTaskReportTerms() {
-            var grid = get_report_type(WORK_GRID);
+            var grid = zbrpc.get_report_type(scope.classInfo.department_id,
+                WORK_GRID);
             var pre_classID = scope.classInfo.zb_id;
             var allTerms = [];
             for (var halfTerm = 4; halfTerm <= 17; halfTerm++) {
