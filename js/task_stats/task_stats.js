@@ -44,24 +44,20 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
                   user.zbTerms = user.zbTerms || {};
                   user.zbTerms[halfTerm + 1] = stat;
                   user.zbLastTerm = stat;
+                  classInfo.task_stats[stat.userID] = user;
                 });
                 return true;
               });
             };
           };
 
-          function done() {
-            classInfo.zbTaskLoaded = true;
-            return utils.truePromise();
-          }
-
           scope.getZbData = function() {
-            if (!scope.options.showZBdata || classInfo.zbTaskLoaded) return;
+            if (!scope.options.showZBdata || classInfo.task_stats) return;
 
+            classInfo.task_stats = classInfo.task_stats || {};
             var halfTerms = Array.apply(null, {length: 17}).map(Number.call, Number);
             var requests = [zbrpc.ensure_authenticated];
             requests = requests.concat(halfTerms.map(getZBTaskStats));
-            requests.push(done);
             utils.requestOneByOne(requests);
           };
 
@@ -76,12 +72,11 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
 
             rpc.get_class_task_stats(scope.classId, scope.selectedTask.id)
                 .then(function(response) {
-                  var users = utils.toMap(scope.task_stats || [], 'zb_id');
                   scope.task_stats = response.data;
                   if (!parseInt(scope.selectedTask.sub_tasks)) {
                     utils.forEach(scope.task_stats, function(user) {
                       user.stats[0] = user.stats[0] || user.stats[1];
-                      var zbStat = users[user.zb_id];
+                      var zbStat = classInfo.task_stats && classInfo.task_stats[user.zb_id];
                       if (zbStat) {
                         user.zbTerms = zbStat.zbTerms;
                         user.zbLastTerm = zbStat.zbLastTerm;
@@ -96,20 +91,19 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
           });
 
           scope.reload = function() {
+            scope.options = {};
             if (!parseInt(scope.classId)) {
               scope.tasks = {};
               scope.task_stats = {};
               return;
             }
 
-            rpc.get_classes(scope.classId).then(function(response) {
-              classInfo = response.data[scope.classId];
-              if (!classInfo) return;
+            classInfo = window.classInfos[scope.classId];
+            if (!classInfo) return;
 
-              rpc.get_tasks(classInfo.department_id).then(function(response) {
-                scope.tasks = response.data;
-                scope.selectedTask = utils.first(scope.tasks);
-              });
+            rpc.get_tasks(classInfo.department_id).then(function(response) {
+              scope.tasks = response.data;
+              scope.selectedTask = utils.first(scope.tasks);
             });
           };
           
