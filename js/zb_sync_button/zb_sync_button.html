@@ -11,8 +11,9 @@
     ng-click="resetReportTime()"
     ng-show="false && isSysAdmin() && endTimeLabel()">
 </iron-icon>
-<label ng-show="false">
-  覆盖全部数据 <input type="checkbox" ng-model="options.overwriteWithZero">
+<label>
+  覆盖全部数据 <input type="checkbox" ng-model="options.overwriteWithZero"
+      ng-click="showOverwriteMessage()">
 </label>
 <iron-icon class="clickable small-icon" icon="cancel" title="取消"
     ng-click="cancel()" ng-show="inprogress">

@@ -78,6 +78,7 @@ define('zb_sync_button/zb_sync_button',
                   case JIA_XING: 
                     return utils.requestOneByOne([
                       initTaskStats,
+                      sync_task_arranges,
                       scope.getZBTaskStats(WORK_GRID),
                       scope.getZBScheduleTaskStats(MAIN_COURSE_GRID_NAME),
                       scope.getZBScheduleTaskStats(ATT_LIMIT_GRID_NAME),
@@ -90,6 +91,7 @@ define('zb_sync_button/zb_sync_button',
                   default:
                     return utils.requestOneByOne([
                       initTaskStats,
+                      sync_task_arranges,
                       scope.getZBTaskStats(ATT_LIMIT_GRID),
                       scope.getZBScheduleTaskStats(MAIN_COURSE_GRID_NAME),
                       scope.getZBScheduleTaskStats(ATT_LIMIT_GRID_NAME),
@@ -121,13 +123,18 @@ define('zb_sync_button/zb_sync_button',
             case 'tasks':
                 utils.requestOneByOne([
                     scope.ensure_authenticated,
-                    getLocalTasks,
-                    getZbTaskReportTerms,
-                    updateTaskArranges,
+                    sync_task_arranges,
                 ]).then(done);
                 break;
             }
           };
+          function sync_task_arranges() {
+            return utils.requestOneByOne([
+              getLocalTasks,
+              getZbTaskReportTerms,
+              updateTaskArranges,
+            ]);
+          }
           scope.getCourseRecord = function(user, course_id, audio, book) {
             if (!parseInt(course_id)) return;
 
@@ -511,8 +518,36 @@ define('zb_sync_button/zb_sync_button',
 
           scope.options = {};
 
+          function formatTerm() {
+            return '第{0}学期{1}半学期'.format(scope.half_term / 2,
+                ['上', '下'][scope.half_term % 2]);
+          }
+
+          /// Returns the value that will be reported to zhibei.info.
+          ///
+          /// [localValue] is the value at this site.
+          /// [remoteValue] is the existing value at zhibei.info.
+          /// [task] and [user] is for logging purpose, they're the
+          /// current user and task to be reported.
+          /// If [options.overwriteWithZero] is set, a zero value
+          /// might be reported, even the existing [remoteValue] is
+          /// non-zero.
+          /// Otherwise we only report a non-zero [localValue].
+          function newValue(localValue, remoteValue, task, user) {
+            remoteValue = parseInt(remoteValue) || 0;
+
+            if (scope.options.overwriteWithZero && remoteValue &&
+                !parseInt(10 * localValue) &&
+                scope.selectedUsers[user.id]) {
+              var message = '您确认将zhibei.info上面{0}{1}同学的{2}数据{3}清零吗？'.
+                  format(formatTerm(), user.name, task.name, remoteValue);
+              return confirm(message) ? 0 : remoteValue;
+            } else {
+              return localValue || remoteValue;
+            }
+          }
+
           function getTaskStats(task, start_time, end_time) {
-            var overwrite = scope.options.overwriteWithZero;
             return rpc.get_class_task_stats(scope.classId, task.id,
                 start_time, end_time).then(function(response) {
                   var users = response.data || [];
@@ -523,8 +558,6 @@ define('zb_sync_button/zb_sync_button',
                     var stat = user.stats[0] || {sum: 0, duration: 0};
                     if (parts.length == 2) {
                       var countKey = parts[0] + '_count';
-                      // Do not erase data of transferred students.
-                      var existingValue = overwrite ? 0 : (parseInt(zbStat[countKey]) || 0);
 
                       if (!taskStats[countKey]) {
                         // !!!! This is important do not change !!!!
@@ -536,14 +569,15 @@ define('zb_sync_button/zb_sync_button',
                         // Do not overwrite the existing value written with
                         // a different type (e.g. if fohao_count has value with
                         // fohao_type 0, do not reset it with fohao_type 1.
-                        taskStats[countKey] = stat.sum || existingValue;
+                        taskStats[countKey] = newValue(stat.sum, zbStat[countKey],
+                            task, user);
                         taskStats[parts[0] + '_type'] = parts[1];
                       }
                     } else {
                       var countKey = task.zb_name + '_count'; 
                       // Do not erase data of transferred students.
-                      var existingValue = overwrite ? 0 : (parseInt(zbStat[countKey]) || 0);
-                      taskStats[countKey] = stat.sum || existingValue;
+                      taskStats[countKey] = newValue(stat.sum, zbStat[countKey],
+                          task, user);
                       if (task.name.indexOf('/') >= 0) {
                         taskStats[task.zb_name + '_type'] = stat.sub_index || 0;
                       }
@@ -552,9 +586,8 @@ define('zb_sync_button/zb_sync_button',
                       var timeKey = task.zb_name + '_time'; 
                       var hour = utils.toGuanxiuHour(stat.duration);
                       // Do not erase data of transferred students.
-                      var existingValue = overwrite ? 0 : (zbStat[timeKey] || 0);
-                      taskStats[timeKey] = 
-                          parseInt(10 * hour) ? hour : existingValue;
+                      taskStats[timeKey] = newValue(hour, zbStat[timeKey],
+                          task, user);
                     }
                   });
                   return true; 
@@ -1200,8 +1233,20 @@ define('zb_sync_button/zb_sync_button',
             return utils.requestOneByOne(utils.map(localTasks, updateArrange))
                 .then(function() {
                $rootScope.$broadcast('reload-task-arrange');
+               return true;
             });
           }
+
+          scope.showOverwriteMessage = function() {
+            if (!scope.options.overwriteWithZero) return;
+            var message = '如果zhibei.info有数据，而本系统没数据，' +
+                '勾上这个选项将会把zhibei.info的数字清零。\n' +
+                '如果没有转学学生，这样做是相对安全的。' +
+                '因为本系统没有转学之前的报数。\n您可以点击列表中学员的名字，' +
+                '来选择想给哪些学生报数。如果您一个都不选，则默认是为所有学员报数。\n' +
+                '报数过程如果有数据被清零，还会请您再确认一次。到时候您还可以选择不清零';
+            alert(message);
+          };
 
           scope.totalTasks = 0;
           scope.finished = 0;
