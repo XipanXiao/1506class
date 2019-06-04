@@ -665,7 +665,7 @@ define('zb_sync_button/zb_sync_button',
                 // years, we have to collect all.
                 var isFirstTime = task.report_half_term == scope.half_term;
                 var start_cut_time =  scope.lastReportTime || (startTerm + extraReportTime);
-                var start_time = firstHalf ? (isFirstTime ? 1 : start_cut_time) : midTerm;
+                var start_time = isFirstTime ? 1 : (firstHalf ? start_cut_time : midTerm);
                 var end_time = firstHalf ? midTerm : end_cut_time;
                 return getTaskStats(task, start_time, end_time);
               });
