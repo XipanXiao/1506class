@@ -26,19 +26,17 @@ define('zb_sync_button/zb_sync_button',
 
           scope.$watch('classId', function() {
             if (!scope.classId) return;
-            rpc.get_classes(scope.classId).then(function(response) {
-              scope.classInfo = response.data[scope.classId];
-              if (!scope.classInfo) return;
+            scope.classInfo = window.classInfos[scope.classId];
+            if (!scope.classInfo) return;
 
-              if (scope.type == 'schedule_task') {
-                var halfTerm = scope.getHalfTerms().length - 1;
-                scope.zbUrl = zbrpc.get_report_result_url(scope.classInfo.zb_id,
-                    scope.scheduleGroup ? 
-                        scope.scheduleGroup.term * 2 + halfTerm : '');
-              } else {
-                scope.zbUrl = zbrpc.get_class_info_url(scope.classInfo.zb_id);
-              }
-            });
+            if (scope.type == 'schedule_task') {
+              var halfTerm = scope.getHalfTerms().length - 1;
+              scope.zbUrl = zbrpc.get_report_result_url(scope.classInfo.zb_id,
+                  scope.scheduleGroup ? 
+                      scope.scheduleGroup.term * 2 + halfTerm : '');
+            } else {
+              scope.zbUrl = zbrpc.get_class_info_url(scope.classInfo.zb_id);
+            }
           });
           /// Initializes an empty map to store stats for various tasks, for
           /// each user in scope.users.
@@ -54,6 +52,7 @@ define('zb_sync_button/zb_sync_button',
 
             var done = function() {
               scope.inprogress = false;
+              scope.classInfo.task_stats = null;
               if (scope.errors.length) {
                 alert(scope.errors.join('\n'));
               }
@@ -720,20 +719,19 @@ define('zb_sync_button/zb_sync_button',
             return utils.requestOneByOne(requests);
           };
 
-          scope.getLocalId = function() {
-            return rpc.get_classes().then(function(response) {
-              scope.classInfo = response.data[scope.classId];
-              var classes = utils.where(response.data, function(classInfo) {
-                return classInfo.start_year == scope.classInfo.start_year &&
-                    classInfo.department_id == scope.classInfo.department_id;
-              });
-              var localId = 0;
-              for (var id in classes) {
-                localId++;
-                if (id == scope.classId) return localId;
-              }
+          function getLocalId() {
+            scope.classInfo = window.classInfos[scope.classId];
+            var classes = utils.where(window.classInfos, function(classInfo) {
+              return classInfo.start_year == scope.classInfo.start_year &&
+                  classInfo.department_id == scope.classInfo.department_id;
             });
-          };
+            var localId = 0;
+            for (var id in classes) {
+              localId++;
+              if (id == scope.classId) break;
+            }
+            return utils.futureValue(localId);
+          }
           // deparment 1: 基础班
           // deparment 2: 入行论班
           // deparment 3: 加行班
@@ -868,7 +866,7 @@ define('zb_sync_button/zb_sync_button',
             // courseId, startdate, district1, localID
             var courseId = scope.get_zb_courseId();
             var startdate = '' + classInfo.start_year + '-06-01';
-            return scope.getLocalId().then(function(localID) {
+            return getLocalId().then(function(localID) {
               scope.finished++;
               
               scope.localID = localID;

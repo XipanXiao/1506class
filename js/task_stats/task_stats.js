@@ -44,6 +44,7 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
                   user.zbTerms = user.zbTerms || {};
                   user.zbTerms[halfTerm + 1] = stat;
                   user.zbLastTerm = stat;
+                  classInfo.task_stats = classInfo.task_stats || {};
                   classInfo.task_stats[stat.userID] = user;
                 });
                 return true;
@@ -54,7 +55,6 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
           scope.getZbData = function() {
             if (!scope.options.showZBdata || classInfo.task_stats) return;
 
-            classInfo.task_stats = classInfo.task_stats || {};
             var halfTerms = Array.apply(null, {length: 17}).map(Number.call, Number);
             var requests = [zbrpc.ensure_authenticated];
             requests = requests.concat(halfTerms.map(getZBTaskStats));
