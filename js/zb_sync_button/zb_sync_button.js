@@ -321,18 +321,30 @@ define('zb_sync_button/zb_sync_button',
                 });
           };
 
-          scope.getTaskSubIndexes = function() {
+          /// Returns the guanxiu indexes.
+          ///
+          /// URL example: /zb/pre/report_ajax?courseID=4&half_term=12&type=pre_class_lessons&pre_classID=7685
+          /// Response example:
+          /// {'data': [
+          ///   {lesson_id: "59", name: "修法59"}, 
+          ///   {lesson_id: "66", name: "修法73"}
+          ///]}
+          /// Note 'lesson_id' is not necessarily the proper index, and
+          /// the correct index should be extracted from the `name` field.
+          /// This is because they adjust the order of all meditation
+          /// practices.
+          function getTaskSubIndexes() {
             return zbrpc.get_preclass_lessons(scope.classInfo.zb_id,
                 scope.guanxiuTask.zb_course_id, scope.half_term)
                 .then(function(response) {
                   var data = response.data.data;
                   var indexes = (data || []).map(function(lesson) {
-                    return parseInt(lesson.lesson_id);
+                    return parseInt(lesson.name.replace(/[^0-9\.]+/g,''));
                   });
                   scope.guanxiuIndexes = indexes;
                   return true;
                 });
-          };
+          }
 
           /// Converts Guanxiu records to the format that accepted by the zhibei
           /// system.
@@ -358,15 +370,15 @@ define('zb_sync_button/zb_sync_button',
             }
           };
 
-          scope.get_guanxiu_task = function() {
+          function get_guanxiu_task() {
             for (var id in scope.tasks) {
               var task = scope.tasks[id];
               if (task.duration) return task;
             }
-          };
+          }
 
           scope.report_guanxiu_task = function() {
-            scope.guanxiuTask = scope.get_guanxiu_task();
+            scope.guanxiuTask = get_guanxiu_task();
             
             if (!scope.guanxiuTask) {
               return utils.truePromise();
@@ -376,7 +388,7 @@ define('zb_sync_button/zb_sync_button',
             scope.finished = 0;
 
             var requests = [
-                scope.getTaskSubIndexes,
+                getTaskSubIndexes,
                 scope.get_guanxiu_stats,
                 scope.report_guanxiu_stats
             ];
@@ -387,11 +399,8 @@ define('zb_sync_button/zb_sync_button',
             var indexes = scope.guanxiuIndexes;
             if (indexes.length == 0) utils.truePromise();
 
-            var start_time = indexes[0];
-            var end_time = indexes[indexes.length - 1];
-            
             return rpc.get_class_task_stats(scope.classId, scope.guanxiuTask.id,
-                start_time, end_time, 1).then(function(response) {
+                null, null, null, indexes).then(function(response) {
                   response.data.forEach(function(user) {
                     scope.users[user.id].guanxiuStats = user.stats;
                   });
@@ -476,7 +485,7 @@ define('zb_sync_button/zb_sync_button',
               }
             }
             var records = scope.getBookAudioRecords(scope.lessons, user, true);
-            var otherTasks = scope.classInfo.department_id == JIA_XING ?
+            var otherTasks = isJiaXing() ?
               {} : (scope.users[user.id].taskStats || {});
 
             var gridName = zbrpc.get_report_type(scope.classInfo.department_id, 
@@ -636,6 +645,10 @@ define('zb_sync_button/zb_sync_button',
             return Math.min(now, cut);
           };
 
+          function isJiaXing() {
+            return scope.classInfo.department_id == JIA_XING;
+          }
+
           /// Collects all task reports since last report.
           ///
           /// By default if there is no special reason the time is cut between
@@ -656,6 +669,10 @@ define('zb_sync_button/zb_sync_button',
 
             var requests = [];
             utils.forEach(scope.tasks, function(task) {
+              /// Guan xiu tasks for Jia xing class are reported separately
+              /// by [scope.report_guanxiu_task].
+              if (task.duration && isJiaXing()) return;
+
               requests.push(function() {
                 // Is this the first time to report the [task]?
                 // For first time reporting, get all history records from the

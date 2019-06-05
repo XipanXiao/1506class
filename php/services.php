@@ -162,13 +162,23 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "search_name") {
     $response = searchByName($_GET["name"]);
   } elseif ($resource_id == "task_stats") {
-    $startTime =
-        empty($_GET["start_time"]) ? null : intval($_GET["start_time"]);
-    $endTime = empty($_GET["end_time"]) ? null : intval($_GET["end_time"]);
-    $isIndex = empty($_GET["is_index"]) ? null : intval($_GET["is_index"]);
+    $classInfo = get_classes(["id" => $classId])[$classId];
+    if (canReadClass($classInfo)) {
+      if (empty($_GET["task_indexes"])) {
+        $startTime =
+            empty($_GET["start_time"]) ? null : intval($_GET["start_time"]);
+        $endTime = empty($_GET["end_time"]) ? null : intval($_GET["end_time"]);
+        $isIndex = empty($_GET["is_index"]) ? null : intval($_GET["is_index"]);
 
-    $response = get_class_task_stats($classId, $_GET["task_id"], $startTime,
-        $endTime, $isIndex);
+        $response = get_class_task_stats($classId, $_GET["task_id"], $startTime,
+            $endTime, $isIndex);  
+      } else {
+        $response = get_guanxiu_task_stats($classId, $_GET["task_id"],
+            json_decode($_GET["task_indexes"], true));
+      }
+    } else {
+      $response = permission_denied_error();
+    }
   } elseif ($resource_id == "state_stats") {
     if (!isCountryAdmin($user) || $_GET["country"] != $user->country) return;
     $response = get_state_stats($_GET["country"]);

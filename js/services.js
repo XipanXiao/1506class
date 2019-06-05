@@ -117,12 +117,14 @@ define('services', ['utils'], function() {
           },
 
           get_class_task_stats: function(
-              classId, task_id, start_time, end_time, is_index) {
+              classId, task_id, start_time, end_time, is_index, indexes) {
             var url = ('{0}?rid=task_stats&classId={1}&task_id={2}' +
-                       '&start_time={3}&end_time={4}&is_index={5}')
+                       '&start_time={3}&end_time={4}&is_index={5}' +
+                       '&task_indexes={6}')
                           .format(
                               serviceUrl, classId, task_id, start_time || '',
-                              end_time || '', is_index || '');
+                              end_time || '', is_index || '',
+                              indexes && JSON.stringify(indexes) || '');
             return $http.get(url);
           },
 

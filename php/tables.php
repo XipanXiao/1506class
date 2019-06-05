@@ -483,6 +483,28 @@ function get_class_task_stats($classId, $task_id, $startTime, $endTime,
   return $users;
 }
 
+function get_guanxiu_task_stats($classId, $task_id, $indexes) {
+  global $medoo;
+
+  $users = $medoo->select("users", ["id", "name", "zb_id"],
+      ["classId" => $classId]);
+
+  foreach ($users as $key => $user) {
+    $result = $medoo->select("task_records",
+        ["sub_index", "count(sum)", "duration"],
+        ["AND" => [
+          "task_id" => $task_id,
+          "student_id" => $user["id"],
+          "sub_index" => $indexes
+        ]]);
+    $user["stats"] =
+        keyed_by_id(array_map("convert_stat_result", $result), "sub_index");
+    $users[$key] = $user;
+  }
+  
+  return $users;
+}
+
 function report_task($user_id, $task_id, $sub_index, $count, $duration) {
   global $medoo;
   
