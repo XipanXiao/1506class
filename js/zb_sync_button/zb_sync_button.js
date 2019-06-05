@@ -339,7 +339,7 @@ define('zb_sync_button/zb_sync_button',
                 .then(function(response) {
                   var data = response.data.data;
                   var indexes = (data || []).map(function(lesson) {
-                    return parseInt(lesson.name.replace(/[^0-9\.]+/g,''));
+                    return parseInt(lesson.name.replace(/[^0-9\.]+/g,'')) - 1;
                   });
                   scope.guanxiuIndexes = indexes;
                   return true;
