@@ -32,11 +32,9 @@
         {{user.stats[0].sum}}
         <span ng-if="user.stats[0].duration">({{user.stats[0].duration}}分钟)</span>
       </div>
-      <div class="css-table-cell" ng-if="options.showZBdata">
+      <div class="css-table-cell" ng-if="options.showZBdata"
+          ng-class="{'error': taskHasProblem(user)}">
         {{user.zbLastTerm ? user.zbLastTerm[selectedTask.zb_name + '_total'] : 'loading...'}}
-        <span class="error"
-            title="数据不一致，请检查。考虑重新上报不一致的那些学期。"
-            ng-if="user.stats[0].sum != (user.zbLastTerm && user.zbLastTerm[selectedTask.zb_name + '_total'])">..</span>
       </div>
       <div class="css-table-cell">
         <input type="number" ng-model="user.count" class="count-input" placeholder="数量">
@@ -74,7 +72,8 @@
         <div class="css-table-cell task-bar-container"
             ng-repeat="sub_index in range()">
           <div class="task-bar" style="height:{{user.stats[sub_index].sum * 10}}%"
-              title="第{{sub_index+1}}修法">
+              title="第{{sub_index+1}}修法"
+              ng-class="{'error': hasProblem(user, sub_index)}">
             <span ng-if="user.stats[sub_index]" class="task-bar-title">
               {{user.stats[sub_index].sum}} ({{user.stats[sub_index].duration}})
             </span>

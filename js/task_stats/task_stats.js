@@ -22,10 +22,72 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
           var ATT_LIMIT_GRID = 2;
 
           var classInfo;
+          var guanxiuTask;
+
+          /// A map from zb lession id to bicw guanxiu index.
+          /// e.g. for the following data from zhibei.info
+          ///   {lesson_id: "59", name: "修法59"}, 
+          ///   {lesson_id: "66", name: "修法73"}
+          /// The map will have entries like:
+          ///     guanxiuIndexes[59] = 59;
+          ///     guanxiuIndexes[66] = 73;
+          var guanxiuIndexes = {};
 
           scope.isJiaXing = function() {
             return classInfo && classInfo.department_id == 3;
           };
+
+          function getTaskSubIndexes(half_term) {
+            return function() {
+              return zbrpc.get_preclass_lessons(classInfo.zb_id,
+                  guanxiuTask.zb_course_id, half_term + 1)
+                  .then(function(response) {
+                    var data = response.data.data;
+                    (data || []).map(function(lesson) {
+                      var index = parseInt(lesson.name.replace(/[^0-9\.]+/g,'')) - 1;
+                      guanxiuIndexes[lesson.lesson_id] = index;
+                    });
+                    return true;
+                  });
+            }
+          }
+
+          function parseZBGuanxiuStat(user) {
+            var results = {};
+            for (var key in user) {
+              if (key.startsWith('count')) {
+                var lession_id = parseInt(key.substring(5));
+                if (!lession_id) continue;
+                var index = guanxiuIndexes[lession_id];
+                var result = (results[index] = (results[index] || {}));
+                result.sum = user[key];
+              } else if (key.startsWith('time')) {
+                var lession_id = parseInt(key.substring(4));
+                if (!lession_id) continue;
+                var index = guanxiuIndexes[lession_id];
+                var result = (results[index] = (results[index] || {}));
+                result.time = (60 * user[key]);
+              }
+            }
+            return results;
+          }
+
+          function getZBGuanxiuStats(halfTerm) {
+            return function() {
+              if (!scope.isJiaXing()) return utils.truePromise();
+              return zbrpc.get_guanxiu_tasks(classInfo.zb_id, halfTerm + 1)
+                  .then(function(response) {
+                    classInfo.task_stats = classInfo.task_stats || {};
+                    var stats = response.data.data;
+                    (stats || []).forEach(function(stat) {
+                      var localStat = classInfo.task_stats[stat.userID] = (classInfo.task_stats[stat.userID] || {});
+                      localStat.guanxiuStats = utils.mix_in(localStat.guanxiuStats || {},
+                          parseZBGuanxiuStat(stat));
+                    });
+                    return true;
+                  });
+            }
+          }
 
           function getZBTaskStats(halfTerm) {
             return function() {
@@ -36,6 +98,7 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
               return zbrpc.get_task_records(grid, pre_classID, halfTerm + 1)
                   .then(function(response) {
                 var stats = response.data.data;
+                classInfo.task_stats = classInfo.task_stats || {};
                 var users = utils.toMap(scope.task_stats, 'zb_id');
                 (stats || []).forEach(function(stat) {
                   var user = users[stat.userID];
@@ -44,7 +107,9 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
                   user.zbTerms = user.zbTerms || {};
                   user.zbTerms[halfTerm + 1] = stat;
                   user.zbLastTerm = stat;
-                  classInfo.task_stats = classInfo.task_stats || {};
+
+                  var guanxiu = classInfo.task_stats[stat.userID];
+                  user.guanxiuStats = guanxiu && guanxiu.guanxiuStats;
                   classInfo.task_stats[stat.userID] = user;
                 });
                 return true;
@@ -57,8 +122,29 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
 
             var halfTerms = Array.apply(null, {length: 17}).map(Number.call, Number);
             var requests = [zbrpc.ensure_authenticated];
+            requests = requests.concat(halfTerms.map(getTaskSubIndexes));
+            requests = requests.concat(halfTerms.map(getZBGuanxiuStats));
             requests = requests.concat(halfTerms.map(getZBTaskStats));
             utils.requestOneByOne(requests);
+          };
+
+          /// Returns wehther the guanxiu task has inconistent number between
+          /// the local and the remote (zhibei.info) data.
+          scope.hasProblem = function(user, subIndex) {
+            if (!scope.options.showZBdata || !user.stats || !user.guanxiuStats) {
+              return false;
+            }
+            var stat = user.stats[subIndex];
+            var zbStat = user.guanxiuStats[subIndex];
+            return (stat && stat.sum || 0) != (zbStat && zbStat.sum || 0) ||
+                (stat && stat.duration || 0) != (zbStat && zbStat.time || 0);
+          };
+
+          /// Returns whether the selected task has inconsistent number between
+          /// the local and the remove (zhibei.info) data.
+          scope.taskHasProblem = function(user) {
+            return user.stats[0].sum !=
+                (user.zbLastTerm && user.zbLastTerm[scope.selectedTask.zb_name + '_total']);
           };
 
           scope.refreshStats = function() {
@@ -73,16 +159,21 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
             rpc.get_class_task_stats(scope.classId, scope.selectedTask.id)
                 .then(function(response) {
                   scope.task_stats = response.data;
-                  if (!parseInt(scope.selectedTask.sub_tasks)) {
-                    utils.forEach(scope.task_stats, function(user) {
+                  utils.forEach(scope.task_stats, function(user) {
+                    if (parseInt(scope.selectedTask.sub_tasks)) {
+                      var zbStat = classInfo.task_stats && classInfo.task_stats[user.zb_id];
+                      if (zbStat) {
+                        user.guanxiuStats = zbStat.guanxiuStats;
+                      }
+                    } else {
                       user.stats[0] = user.stats[0] || user.stats[1];
                       var zbStat = classInfo.task_stats && classInfo.task_stats[user.zb_id];
                       if (zbStat) {
                         user.zbTerms = zbStat.zbTerms;
                         user.zbLastTerm = zbStat.zbLastTerm;
                       }
-                    });
-                  }
+                    }
+                  });
                 });
           };
 
@@ -103,6 +194,9 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
 
             rpc.get_tasks(classInfo.department_id).then(function(response) {
               scope.tasks = response.data;
+              utils.any(scope.tasks, function(task) {
+                return task.duration && (guanxiuTask = task);
+              });
               scope.selectedTask = utils.first(scope.tasks);
             });
           };

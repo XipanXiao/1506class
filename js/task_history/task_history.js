@@ -216,8 +216,17 @@ define('task_history/task_history', ['utils',
           scope.chartOptions = '{"vAxis": {"minValue": 0, "maxValue": {0}}}'.
               format(cutOff);
         };
+        scope.hasProblem = function(user, subIndex) {
+          if (!scope.showZbData || !user.stats || !user.guanxiuStats) {
+            return false;
+          }
+          var stat = user.stats[subIndex];
+          var zbStat = user.guanxiuStats[subIndex];
+          return (stat && stat.sum || 0) != (zbStat && zbStat.sum || 0) ||
+              (stat && stat.duration || 0) != (zbStat && zbStat.time || 0);
+        };
       },
-      templateUrl : 'js/task_history/task_history.html?tag=20190911'
+      templateUrl : 'js/task_history/task_history.html?tag=20190611'
     };
   });
 });

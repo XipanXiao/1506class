@@ -129,6 +129,10 @@ define('zb_sync_button/zb_sync_button',
             }
           };
           function sync_task_arranges() {
+            if (scope.classInfo.task_arrange_synced) {
+              return utils.truePromise();
+            }
+            scope.classInfo.task_arrange_synced = true;
             return utils.requestOneByOne([
               getLocalTasks,
               getZbTaskReportTerms,
@@ -397,7 +401,7 @@ define('zb_sync_button/zb_sync_button',
 
           scope.get_guanxiu_stats = function() {
             var indexes = scope.guanxiuIndexes;
-            if (indexes.length == 0) utils.truePromise();
+            if (indexes.length == 0) return utils.truePromise();
 
             return rpc.get_class_task_stats(scope.classId, scope.guanxiuTask.id,
                 null, null, null, indexes).then(function(response) {

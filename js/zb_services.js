@@ -204,6 +204,12 @@ define('zb_services', ['utils'], function() {
                 courseID, half_term, pre_classID);
         return $http.get(get_proxied_url(url));
       },
+      get_guanxiu_tasks: function(pre_classID, half_term) {
+        // http://www.zhibei.info/zb/pre/report_ajax?type=guanxiu_grid&pre_classID=7685&half_term=12
+        var url = ('{0}/pre/report_ajax?type=guanxiu_grid&pre_classID={1}' +
+            '&half_term={2}').format(serviceUrl, pre_classID, half_term);
+        return $http.get(get_proxied_url(url));
+      },
       report_guanxiu_task: function(pre_classID, userID, half_term,
           count, time) {
         var data = {
