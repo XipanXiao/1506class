@@ -363,7 +363,7 @@ define('zb_sync_button/zb_sync_button',
           scope.getTimedTaskRecords = function(stats, indexes) {
             var count = [], time = [];
             indexes.forEach(function(index) {
-              var record = stats[index - 1];
+              var record = stats[index];
               count.push(record && record.sum || 0);
               time.push(utils.toGuanxiuHour(record && record.duration || 0));
             });
