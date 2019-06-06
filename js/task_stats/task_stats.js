@@ -136,8 +136,9 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
             }
             var stat = user.stats[subIndex];
             var zbStat = user.guanxiuStats[subIndex];
-            return (stat && stat.sum || 0) != (zbStat && zbStat.sum || 0) ||
-                (stat && stat.duration || 0) != (zbStat && zbStat.time || 0);
+            return ((stat && stat.sum || 0) != (zbStat && zbStat.sum || 0)) ||
+                (Math.floor((stat && stat.duration || 0) / 10) != 
+                    Math.floor((zbStat && zbStat.time || 0) / 10));
           };
 
           /// Returns whether the selected task has inconsistent number between

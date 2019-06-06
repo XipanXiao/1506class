@@ -1,6 +1,13 @@
 <iron-icon class="clickable small-icon" icon="notification:sync"
     ng-click="sync()" ng-class="{'in-progress': inprogress}">
 </iron-icon>
+<iron-icon class="clickable small-icon"
+    icon="event-seat"
+    ng-click="sync_guanxiu()"
+    ng-show="isSysAdmin()"
+    title="只报观修数据..."
+    ng-class="{'in-progress': inprogress}">
+</iron-icon>
 <a href="{{zbUrl}}" target="_blank" title="打开智悲系统页面">
   <iron-icon class="clickable small-icon" icon="open-in-new">
 	</iron-icon>

@@ -128,6 +128,47 @@ define('zb_sync_button/zb_sync_button',
                 break;
             }
           };
+
+          scope.sync_guanxiu = function() {
+            if (!isJiaXing()) return;
+
+            if (scope.inprogress) return;
+            scope.inprogress = true;
+
+            var done = function() {
+              scope.inprogress = false;
+              scope.classInfo.task_stats = null;
+              if (scope.errors.length) {
+                alert(scope.errors.join('\n'));
+              }
+            };
+            scope.errors = [];
+            scope.selectedUsers = utils.where(scope.users,
+                (user) => user.selected);
+            if (utils.isEmpty(scope.selectedUsers)) {
+              scope.selectedUsers = scope.users;
+            }
+
+            var half_terms = scope.getHalfTerms();
+            if (!half_terms.length) {
+              alert("还没到报数时间，请检查学修安排");
+            }
+            function get_tasks() {
+              var dep = scope.classInfo.department_id;
+              return rpc.get_tasks(dep).then(function(response) {
+                return scope.tasks = response.data;
+              });
+            }
+            var requests = [scope.ensure_authenticated, get_tasks];
+            requests = requests.concat(half_terms.map(function(half_term) {
+              return function() {
+                scope.half_term = half_term;
+                return scope.report_guanxiu_task();
+              };
+            }));
+            utils.requestOneByOne(requests).then(done);
+          };
+
           function sync_task_arranges() {
             if (scope.classInfo.task_arrange_synced) {
               return utils.truePromise();
@@ -510,7 +551,7 @@ define('zb_sync_button/zb_sync_button',
                 });
           };
           
-          scope.getTasks = function() {
+          function getTasks() {
             var classId = scope.classInfo.id;
             var depId = scope.classInfo.department_id;
             return utils.getTasks(rpc, depId, classId)
@@ -527,7 +568,7 @@ define('zb_sync_button/zb_sync_button',
                         return zbstat && (zbstat[countKey] || zbstat[countKey] == 0);
                       });
                 });
-          };
+          }
 
           scope.options = {};
 
@@ -756,7 +797,7 @@ define('zb_sync_button/zb_sync_button',
             scope.finished = 0;
 
             var requests = [
-                scope.getTasks,
+                getTasks,
                 scope.get_preclass_lessons,
                 scope.getLastReportTime,
                 getNextTerm,
@@ -1273,7 +1314,7 @@ define('zb_sync_button/zb_sync_button',
           scope.finished = 0;
           scope.results = {};
         },
-        templateUrl: 'js/zb_sync_button/zb_sync_button.html?tag=201912042109'
+        templateUrl: 'js/zb_sync_button/zb_sync_button.html?tag=201906062109'
       };
     });
 });
