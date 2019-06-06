@@ -223,9 +223,9 @@ define('task_history/task_history', ['utils',
           var stat = user.stats[subIndex];
           var zbStat = user.guanxiuStats[subIndex];
           return ((stat && stat.sum || 0) != (zbStat && zbStat.sum || 0)) ||
-              (Math.floor((stat && stat.duration || 0) / 10) != 
-                  Math.floor((zbStat && zbStat.time || 0) / 10));
-  };
+              (utils.toGuanxiuHour(stat && stat.duration || 0) != 
+                  utils.toGuanxiuHour(zbStat && zbStat.time || 0));
+};
       },
       templateUrl : 'js/task_history/task_history.html?tag=20190611'
     };
