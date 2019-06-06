@@ -507,8 +507,13 @@ function get_guanxiu_task_stats($classId, $task_id, $indexes) {
 
 function report_task($user_id, $task_id, $sub_index, $count, $duration) {
   global $medoo;
+
+  if (empty($count)) return 0;
+
+  $task = get_single_record($medoo, "tasks", $task_id);
+  if (!$task || empty($task["duration"]) != empty($duration)) return 0;
   
-  if (intval($sub_index) > 0 && intval($duration) > 0) {
+  if (intval($task["sub_tasks"])) {
     $updated = $medoo->update("task_records", [
         "count[+]" => intval($count),
         "duration[+]" => $duration
