@@ -44,8 +44,8 @@ function verify($medoo) {
 $action = empty($_GET["action"]) ? null : $_GET["action"];
 
 if ($action == "backup") {
-    $result = $medoo->query("CREATE TABLE task_records_backup 
-            SELECT * FROM task_records where task_id=4;");
+    $result = $medoo->query("CREATE TABLE task_records_backup LIKE task_records");
+    $result = $medoo->query("INSERT INTO task_records_backup SELECT * FROM task_records where task_id=4;");
     if (empty($result)) {
         echo "back up failed". get_db_error2($medoo);
     } else {
@@ -66,8 +66,8 @@ if ($action == "backup") {
     echo "restored.<br>";
 } else if($action == "do_it") {
     if (!table_exists($medoo, "task_records_backup")) {
-        $result = $medoo->query("CREATE TABLE task_records_backup 
-            SELECT * FROM task_records where task_id=4;");
+        $result = $medoo->query("CREATE TABLE task_records_backup LIKE task_records");
+        $result = $medoo->query("INSERT INTO task_records_backup SELECT * FROM task_records where task_id=4;");
         if (empty($result)) {
             echo "back up failed". get_db_error2($medoo);
         } else {
@@ -86,8 +86,8 @@ if ($action == "backup") {
 
     echo "aggregating...";
     $result = $medoo->query("DROP TABLE temp;");
-    $result = $medoo->query("CREATE TABLE temp
-        SELECT MIN(id) as id, student_id, task_id, SUM(count)
+    $result = $medoo->query("CREATE TABLE temp LIKE task_records");
+    $result = $medoo->query("INSERT INTO temp SELECT MIN(id) as id, student_id, task_id, SUM(count)
         as count, SUM(duration) as duration, sub_index, MIN(ts) as ts FROM
         task_records WHERE task_id=4 GROUP BY task_id, student_id, sub_index;");
     if (empty($result)) {
