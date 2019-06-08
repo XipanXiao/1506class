@@ -44,6 +44,10 @@
         <zb-sync-button type="schedule_task" users="users" class-id="classId"
             schedule-group="group" title="学修记录上报学院">
         </zb-sync-button>
+        <label ng-if="false">
+          同时显示zhibei.info数据(需要登录)
+          <input type="checkbox" ng-model="options.showZBdata" ng-change="getZbData()">
+        </label>        
         <div class="css-table odd-even">
           <div class="css-table-row header">
             <div ng-if="group.schedules" class="css-table-cell name-field"></div>

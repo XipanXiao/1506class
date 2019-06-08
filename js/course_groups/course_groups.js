@@ -81,7 +81,7 @@ define('course_groups/course_groups',
                 }
               };
 					  },
-						templateUrl : 'js/course_groups/course_groups.html?tag=201904252126'
+						templateUrl : 'js/course_groups/course_groups.html?tag=201906252126'
 					};
 				});
 });

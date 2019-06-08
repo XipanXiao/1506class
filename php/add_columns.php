@@ -1,3 +1,7 @@
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
 <?php
 include_once 'config.php';
 include_once "connection.php";
@@ -156,10 +160,55 @@ function add_staff_columns($medoo) {
   $medoo->query($sql);
 }
 
+function rename_course($name) {
+  $maps = [
+    "/前行广释[^\d]*([\d]+).*/" => "前行$1",
+    "/莲师金刚七句略讲第([\d]+)课/" => "金刚七句$1",
+    "/二十一度母赞释第([\d]+)课/" => "度母$1",
+    "/入行论[^\d]*([\d]+).*/" => "入行论$1",
+    "上师瑜伽•祈祷莲师" => "祈祷莲师",
+    "前行之重要性" => "前行重要性",
+    "《上师瑜伽速赐加持》讲记" => "上师瑜伽",
+    "/第(\d)+课/" => "$1",
+  ];
+  foreach ($maps as $from => $to) {
+    $newName = preg_replace($from, $to, $name);
+    if ($newName != $name) {
+      echo "renamed ". $name. " to ". $newName. "<br>";
+      return $newName;
+    }
+  }
+  return $name;
+}
+
+function rename_courses($medoo) {
+  $courses = $medoo->select("courses", ["id", "zb_name"]);
+  $updated = 0;
+  foreach($courses as $course) {
+    $updated += $medoo->update("courses",
+        ["zb_name" => rename_course($course["zb_name"])],
+        ["id" => $course["id"]]);
+  }
+  echo "updated zb_name for ". $updated. " courses.<br>";
+}
+
+function add_zb_name_for_courses($medoo) {
+  if (column_exists($medoo, "courses", "zb_name")) {
+    // return;
+  }
+  $sql = "ALTER TABLE courses
+      ADD COLUMN zb_name VARCHAR(64) CHARACTER SET utf8;";
+  $medoo->query($sql);
+  $medoo->query("UPDATE courses set zb_name=name;");
+  rename_courses($medoo);
+}
+
 add_district_cfo($medoo);
 add_teacher_for_schedules($medoo);
 add_shipping_donation_for_orders($medoo);
 create_inventory_tables($medoo);
 create_org_tables($medoo);
 add_staff_columns($medoo);
+add_zb_name_for_courses($medoo);
 ?>
+</html>

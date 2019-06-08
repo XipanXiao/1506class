@@ -13,6 +13,7 @@ define('learning_records/learning_records', [
               classId: '='
             },
             link: function($scope) {
+              $scope.options = {};
               $scope.attendOptions = ['缺席', '出席', '请假'];
               $scope.vacation = function(schedule) {
                 return !parseInt(schedule.course_id); 
@@ -148,8 +149,10 @@ define('learning_records/learning_records', [
                     exportLimitedCourse(group),
                     $scope.exportedLimitedRecords);
               };
+
+              $scope.showZBData = function() {};
             },
-            templateUrl : 'js/learning_records/learning_records.html?tag=201811132208'
+            templateUrl : 'js/learning_records/learning_records.html?tag=201911132208'
           };
         });
 });

@@ -130,7 +130,7 @@ define('zb_sync_button/zb_sync_button',
           };
 
           scope.sync_guanxiu = function() {
-            if (!isJiaXing()) return;
+            if (!scope.isJiaXing()) return;
 
             if (scope.inprogress) return;
             scope.inprogress = true;
@@ -530,7 +530,7 @@ define('zb_sync_button/zb_sync_button',
               }
             }
             var records = scope.getBookAudioRecords(scope.lessons, user, true);
-            var otherTasks = isJiaXing() ?
+            var otherTasks = scope.isJiaXing() ?
               {} : (scope.users[user.id].taskStats || {});
 
             var gridName = zbrpc.get_report_type(scope.classInfo.department_id, 
@@ -690,9 +690,9 @@ define('zb_sync_button/zb_sync_button',
             return Math.min(now, cut);
           };
 
-          function isJiaXing() {
+          scope.isJiaXing = function() {
             return scope.classInfo.department_id == JIA_XING;
-          }
+          };
 
           /// Collects all task reports since last report.
           ///
@@ -716,7 +716,7 @@ define('zb_sync_button/zb_sync_button',
             utils.forEach(scope.tasks, function(task) {
               /// Guan xiu tasks for Jia xing class are reported separately
               /// by [scope.report_guanxiu_task].
-              if (task.duration && isJiaXing()) return;
+              if (task.duration && scope.isJiaXing()) return;
 
               requests.push(function() {
                 // Is this the first time to report the [task]?
@@ -1314,7 +1314,7 @@ define('zb_sync_button/zb_sync_button',
           scope.finished = 0;
           scope.results = {};
         },
-        templateUrl: 'js/zb_sync_button/zb_sync_button.html?tag=201906062109'
+        templateUrl: 'js/zb_sync_button/zb_sync_button.html?tag=201906072109'
       };
     });
 });
