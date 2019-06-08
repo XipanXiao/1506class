@@ -625,22 +625,11 @@ function get_schedules($classId, $term, $records, $user_id) {
     $group["schedules"] = keyed_by_id($medoo->select("schedules", "*",
         ["group_id" => $group_id]));
     
-    if (empty($group["course_group"]) && empty($group["course_group2"])) {
-      $courseIds = flatten(array_map("getCourseIds", $group["schedules"]));
+    $courseIds = flatten(array_map("getCourseIds", $group["schedules"]));
 
-      $group["courses"] = keyed_by_id(
-        $medoo->select("courses", ["id", "name"], ["id" => $courseIds])
-      );
-    } else {
-      $group["courses"] =
-          keyed_by_id($medoo->select("courses", ["id", "name"],
-              ["group_id" => $group["course_group"]]));
-      if (!empty($group["course_group2"])) {
-        $group["courses"] = keyed_by_id(array_merge($group["courses"],
-            keyed_by_id($medoo->select("courses", ["id", "name"],
-                ["group_id" => $group["course_group2"]]))));
-      }
-    }
+    $group["courses"] = keyed_by_id(
+      $medoo->select("courses", ["id", "name"], ["id" => $courseIds])
+    );
 
     $group["limited_courses"] =
         keyed_by_id($medoo->select("courses", ["id", "name"],
