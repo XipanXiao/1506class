@@ -161,33 +161,51 @@ function add_staff_columns($medoo) {
 }
 
 function rename_course($name) {
+  $name = preg_replace("/《|》|\s/", "", $name);
   $maps = [
     "/前行广释[^\d]*([\d]+).*/" => "前行$1",
     "/莲师金刚七句略讲第([\d]+)课/" => "金刚七句$1",
     "/二十一度母赞释第([\d]+)课/" => "度母$1",
     "/入行论[^\d]*([\d]+).*/" => "入行论$1",
-    "上师瑜伽•祈祷莲师" => "祈祷莲师",
-    "前行之重要性" => "前行重要性",
-    "《上师瑜伽速赐加持》讲记" => "上师瑜伽",
-    "/第(\d)+课/" => "$1",
+    "/二规教言论讲记第(\d+)课/" => "二规$1",
+    "/佛子行讲记第(\d+)课/" => "佛子行$1",
+    "/佛说阿弥陀经释第(\d+)课/" => "弥陀经$1",
+    "/普贤行愿品释第(\d+)课/" => "普贤行愿品$1",
+    "/亲友书讲记第(\d+)课/" => "亲友书$1",
+    "/藏传净土[^\d]*(\d+).*/" => "藏净$1",
+    "/修心利刃轮[^\d]*(\d+).*/" => "利刃轮$1",
+    "/第(\d+)课/" => "$1",
+    "/上师瑜伽•祈祷莲师/" => "祈祷莲师",
+    "/前行之重要性/" => "前行重要性",
+    "/《上师瑜伽速赐加持》讲记/" => "上师瑜伽",
+    "/六字真言转经轮之功德/" => "转经轮功德",
+    "/《修心八颂》要义/" => "修心八颂",
+    "/讲记/" => "",
   ];
   foreach ($maps as $from => $to) {
     $newName = preg_replace($from, $to, $name);
     if ($newName != $name) {
-      echo "renamed ". $name. " to ". $newName. "<br>";
+      echo "renaming zb_name from ". $name. " to ". $newName. "...";
       return $newName;
     }
   }
+  echo "setting zb_name to ". $name. "...";
   return $name;
 }
 
 function rename_courses($medoo) {
-  $courses = $medoo->select("courses", ["id", "zb_name"]);
+  $courses = $medoo->select("courses", ["id", "name"]);
   $updated = 0;
   foreach($courses as $course) {
-    $updated += $medoo->update("courses",
-        ["zb_name" => rename_course($course["zb_name"])],
+    $result = $medoo->update("courses",
+        ["zb_name" => rename_course($course["name"])],
         ["id" => $course["id"]]);
+    $updated += $result;
+    if ($result) {
+      echo "done<br>\n";
+    } else {
+      echo "Failed: ". get_db_error2($medoo). "<br>\n";
+    }
   }
   echo "updated zb_name for ". $updated. " courses.<br>";
 }
@@ -195,11 +213,11 @@ function rename_courses($medoo) {
 function add_zb_name_for_courses($medoo) {
   if (column_exists($medoo, "courses", "zb_name")) {
     // return;
+    $medoo->query("ALTER TABLE courses drop zb_name;");
   }
   $sql = "ALTER TABLE courses
       ADD COLUMN zb_name VARCHAR(64) CHARACTER SET utf8;";
   $medoo->query($sql);
-  $medoo->query("UPDATE courses set zb_name=name;");
   rename_courses($medoo);
 }
 

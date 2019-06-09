@@ -383,7 +383,7 @@ define('schedule_editor/schedule_editor',
                     '请保存或取消学修安排的修改' : null;
               };
             },
-            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201905212216'
+            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201906212216'
           };
         });
 });
