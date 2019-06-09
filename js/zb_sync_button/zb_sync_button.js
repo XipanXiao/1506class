@@ -691,7 +691,8 @@ define('zb_sync_button/zb_sync_button',
           };
 
           scope.isJiaXing = function() {
-            return scope.classInfo.department_id == JIA_XING;
+            return scope.classInfo &&
+                scope.classInfo.department_id == JIA_XING;
           };
 
           /// Collects all task reports since last report.
