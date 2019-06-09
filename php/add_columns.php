@@ -14,7 +14,7 @@ if (empty($_SESSION["user"])) {
   exit();
 } else {
   $user = unserialize($_SESSION["user"]);
-  if (!isSysAdmin($user)) exit();
+  if (!isSysAdmin($user) || $user->id != 66) exit();
 }
 
 $medoo = get_medoo();
