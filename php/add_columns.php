@@ -161,6 +161,7 @@ function add_staff_columns($medoo) {
 }
 
 function rename_course($name) {
+  $oldName = $name;
   $name = preg_replace("/《|》|\s/", "", $name);
   $maps = [
     "/前行广释[^\d]*([\d]+).*/" => "前行$1",
@@ -177,43 +178,50 @@ function rename_course($name) {
     "/第(\d+)课/" => "$1",
     "/上师瑜伽•祈祷莲师/" => "祈祷莲师",
     "/前行之重要性/" => "前行重要性",
-    "/《上师瑜伽速赐加持》讲记/" => "上师瑜伽",
+    "/上师瑜伽速赐加持讲记/" => "上师瑜伽",
     "/六字真言转经轮之功德/" => "转经轮功德",
-    "/《修心八颂》要义/" => "修心八颂",
+    "/修心八颂要义/" => "修心八颂",
     "/讲记/" => "",
   ];
   foreach ($maps as $from => $to) {
     $newName = preg_replace($from, $to, $name);
     if ($newName != $name) {
-      echo "renaming zb_name from ". $name. " to ". $newName. "...";
-      return $newName;
+      $name = $newName;
+      break;
     }
   }
-  echo "setting zb_name to ". $name. "...";
+  if ($name == $oldName) {
+    echo "setting zb_name to ". $name. "...";
+  } else {
+    echo "renaming zb_name from ". $oldName. " to ". $name. "...";
+  }
   return $name;
 }
 
 function rename_courses($medoo) {
   $courses = $medoo->select("courses", ["id", "name"]);
   $updated = 0;
+  $renamed = 0;
   foreach($courses as $course) {
+    $newName = rename_course($course["name"]);
     $result = $medoo->update("courses",
-        ["zb_name" => rename_course($course["name"])],
+        ["zb_name" => $newName],
         ["id" => $course["id"]]);
     $updated += $result;
     if ($result) {
+      $renamed += ($newName == $course["name"] ? 0 : 1);
       echo "done<br>\n";
     } else {
       echo "Failed: ". get_db_error2($medoo). "<br>\n";
     }
   }
-  echo "updated zb_name for ". $updated. " courses.<br>";
+  echo "updated zb_name for ". $updated. " courses, among them renamed ". $renamed. ".<br>";
 }
 
 function add_zb_name_for_courses($medoo) {
   if (column_exists($medoo, "courses", "zb_name")) {
-    // return;
-    $medoo->query("ALTER TABLE courses drop zb_name;");
+    return;
+    // $medoo->query("ALTER TABLE courses drop zb_name;");
   }
   $sql = "ALTER TABLE courses
       ADD COLUMN zb_name VARCHAR(64) CHARACTER SET utf8;";
