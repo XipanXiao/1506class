@@ -628,7 +628,7 @@ function get_schedules($classId, $term, $records, $user_id) {
     $courseIds = flatten(array_map("getCourseIds", $group["schedules"]));
 
     $group["courses"] = keyed_by_id(
-      $medoo->select("courses", ["id", "name"], ["id" => $courseIds])
+      $medoo->select("courses", ["id", "name", "zb_name"], ["id" => $courseIds])
     );
 
     $group["limited_courses"] =
@@ -648,7 +648,11 @@ function get_schedules($classId, $term, $records, $user_id) {
 
     $records =
         keyed_by_id($medoo->select("schedule_records", "*",
-            ["student_id" => $id]), "course_id");
+            ["AND" => [
+              "student_id" => $id,
+              "course_id" => array_keys($group["courses"])
+              ]
+            ]), "course_id");
       
     $user["records"] = array_map("convert_schedule_record", $records);
     $users[$id] = $user;

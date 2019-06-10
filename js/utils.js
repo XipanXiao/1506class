@@ -266,7 +266,7 @@ define('utils', [], function() {
       toMap: function(list, key) {
         var m = {};
         key = key || 'id';
-        list.forEach(function(item) {
+        utils.forEach(list, function(item) {
           m[item[key]] = item;
         });
         return m;

@@ -1,5 +1,5 @@
 <navigate-bar class="right padded-element" navigate="navigate(direction)"></navigate-bar>
-<div class="learning-groups">
+<div class="learning-groups" ng-class="{'in-progress': loading}">
   <div ng-repeat="group in schedule_groups">
     <div ng-switch="attendence" class="section">
       <div ng-switch-when="true">
@@ -44,10 +44,10 @@
         <zb-sync-button type="schedule_task" users="users" class-id="classId"
             schedule-group="group" title="学修记录上报学院">
         </zb-sync-button>
-        <label ng-if="false">
+        <label>
           同时显示zhibei.info数据(需要登录)
-          <input type="checkbox" ng-model="options.showZBdata" ng-change="getZbData()">
-        </label>        
+          <input type="checkbox" ng-model="showZBdata" ng-change="getZbData()">
+        </label>
         <div class="css-table odd-even">
           <div class="css-table-row header">
             <div ng-if="group.schedules" class="css-table-cell name-field"></div>
@@ -65,7 +65,8 @@
               ng-class="{'selected': user.selected}">
             <div class="css-table-cell name-field">{{user.name}}</div>
             <div ng-repeat="schedule in group.schedules" ng-if="!vacation(schedule)"
-                class="css-table-cell learning-record-cell">
+                class="css-table-cell learning-record-cell"
+                ng-class="{'diff-modified': !audited(user, schedule)}">
               <input type="checkbox" ng-model="user.records[schedule.course_id].video"
                   title="{{group.courses[schedule.course_id].name}}听传承"
                   ng-click="reportTask($event, user, schedule.course_id)">

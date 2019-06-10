@@ -4,7 +4,7 @@ define('zb_services', ['utils'], function() {
   var proxyUrl = 'php/proxy.php';
   var redirectUrl = 'php/redirect.php';
   var serviceUrl = 'zbServiceUrl';
-  
+
   function get_proxied_url(url) {
     return proxyUrl + '?url=' + encodeURIComponent(url);
   }
@@ -62,6 +62,10 @@ define('zb_services', ['utils'], function() {
     }
     
     var zbrpc = {
+      JX_COURSE_ID: 1,
+      RXL_COURSE_ID: 2,
+      JT_COURSE_ID: 3,
+      MAIN_GRID: 'main_course_grid',
       serviceUrl: serviceUrl,
       get_secure_url: function(url) {
         return '{0}?url={1}'.format(redirectUrl, encodeURIComponent(url));
@@ -123,7 +127,7 @@ define('zb_services', ['utils'], function() {
             serviceUrl, courseId, startdate, district1, localID);
         return $http.get(get_proxied_url(url));
       },
-      /// study: 1 face 2 face, 2 network.
+      /// study: 1 face to face, 2 network.
       create_class: function(groupId, courseId, startdate, district1, localID) {
         var data = {
           url: '{0}/pre/classselect_ajax'.format(serviceUrl),
@@ -197,6 +201,13 @@ define('zb_services', ['utils'], function() {
           data[key] = records[key];
         }
         return http_form_post($http, $httpParamSerializerJQLike(data));
+      },
+      get_course_id: function(depId) {
+        return {
+          2: zbrpc.RXL_COURSE_ID,
+          3: zbrpc.JX_COURSE_ID,
+          4: zbrpc.JT_COURSE_ID
+        }[depId];
       },
       get_preclass_lessons: function(pre_classID, courseID, half_term) {
         var url = ('{0}/pre/report_ajax?courseID={1}&half_term={2}' +
