@@ -16,6 +16,7 @@ define('zb_sync_button/zb_sync_button',
       return {
         scope: {
           classId: '=',
+          options: '=',
           scheduleGroup: '=',
           task: '=',
           type: '@',
@@ -570,7 +571,7 @@ define('zb_sync_button/zb_sync_button',
                 });
           }
 
-          scope.options = {};
+          scope.options = scope.options || {};
 
           function formatTerm() {
             return '第{0}学期{1}半学期'.format(scope.half_term / 2,

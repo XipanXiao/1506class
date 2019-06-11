@@ -15,7 +15,7 @@ define('learning_records/learning_records', [
             },
             link: function($scope) {
               var classInfo;
-
+              $scope.options = {overwriteWithZero: false};
               $scope.showZBData = false;
 
               $scope.attendOptions = ['缺席', '出席', '请假'];
@@ -327,8 +327,17 @@ define('learning_records/learning_records', [
                   return null;
                 }
                 if (noLocalData && hasRemoteData(zbUser, lessons)) {
-                  alert('{0}在zhibei.info有数据，本站没数据，可能是转学生，跳过。');
-                  return null;
+                  if ($scope.options.overwriteWithZero) {
+                    if (confirm('{0}在zhibei.info有数据，本站没数据，'.format(zbUser.name) +
+                        '您确定要清除zhibei.info的记录吗?(如果她是转学学生，请不要清除。)')) {
+                      return report;
+                    } else {
+                      return null;
+                    }
+                  } else {
+                    alert('{0}在zhibei.info有数据，本站没数据，可能是转学生，跳过。'.format(zbUser.name));
+                    return null;
+                  }
                 }
                 return report;
               }
@@ -390,7 +399,6 @@ define('learning_records/learning_records', [
               }
 
               $scope.sync_courses = function() {
-                if ($scope.inprogress) return;
                 $scope.inprogress = true;
     
                 var done = function() {
@@ -424,7 +432,7 @@ define('learning_records/learning_records', [
               };
     
             },
-            templateUrl : 'js/learning_records/learning_records.html?tag=201911132208'
+            templateUrl : 'js/learning_records/learning_records.html?tag=201906112208'
           };
         });
 });
