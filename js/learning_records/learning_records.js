@@ -289,7 +289,7 @@ define('learning_records/learning_records', [
               };
 
               function audited(user, courseId) {
-                return !parseInt(courseId) || user.records[courseId].audit;
+                return !user.records[courseId] || user.records[courseId].audit;
               }
 
               $scope.audited = function(user, schedule) {
