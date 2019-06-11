@@ -220,7 +220,7 @@ define('zb_sync_button/zb_sync_button',
                 utils.any(book, hasRecord);
             // Do not overwrite server records if user has no report at all
             // (transferred students).
-            if (!reported) {
+            if (!reported && !scope.options.overwriteWithZero) {
               return {
                 audio: zbBookAudio.audio,
                 book: zbBookAudio.book
@@ -1315,7 +1315,7 @@ define('zb_sync_button/zb_sync_button',
           scope.finished = 0;
           scope.results = {};
         },
-        templateUrl: 'js/zb_sync_button/zb_sync_button.html?tag=201906072109'
+        templateUrl: 'js/zb_sync_button/zb_sync_button.html?tag=201906102109'
       };
     });
 });

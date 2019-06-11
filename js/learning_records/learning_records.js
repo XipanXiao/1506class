@@ -276,15 +276,16 @@ define('learning_records/learning_records', [
 
               $scope.getZbData = function() {
                 $scope.showZBData = !$scope.showZBData;
-                if (!$scope.showZBData) return;
+                if (!$scope.showZBData) return utils.truePromise();
 
                 $scope.loading = true;
-                var half_terms = [$scope.term * 2, $scope.term * 2 + 1];
+                var group = utils.first($scope.schedule_groups);
+                var half_terms = utils.getHalfTerms(group);
                 var requests = [zbrpc.ensure_authenticated];
                 requests = requests.concat(half_terms.map(getZBLessons));
                 requests = requests.concat(half_terms.map(getZBCourseResults));
                 requests.push(auditUsers);
-                utils.requestOneByOne(requests);
+                return utils.requestOneByOne(requests);
               };
 
               function audited(user, courseId) {
@@ -297,6 +298,131 @@ define('learning_records/learning_records', [
                 return audited(user, schedule.course_id) &&
                     audited(user, schedule.course_id2);
               };
+
+              /// Converts bicw course result to zhibei.info format
+              function getCourseRecord(user, course_id, audio, book) {    
+                var record = user.records[course_id];
+                audio.push((record && record.video) ? 1 : 0);
+                book.push((record && record.text) ? 1 : 0);
+              }
+
+              /// Whether [zbUser] has reported in zhibe.info for [lessons].
+              function hasRemoteData(zbUser, lessons) {
+                return lessons.some(function(lesson) {
+                  return zbUser['audio' + lesson.lesson_id] ||
+                      zbUser['book' + lesson.lesson_id];
+                });
+              }
+
+              /// Checks whether the user has no local data but has remote data
+              /// (transferred student from other countries)
+              function checkReportData(user, report, half_term) {
+                var noLocalData = utils.isEmpty(report.book) &&
+                    utils.isEmpty(report.audio);
+
+                var zbUsers = classInfo.zb_course_results[half_term];
+                var zbUser = zbUsers[user.zb_id];
+                if (!zbUser) {
+                  alert('"{0}"在zhibei.info不存在，请修正.');
+                  return null;
+                }
+                if (noLocalData && hasRemoteData(zbUser, lessons)) {
+                  alert('{0}在zhibei.info有数据，本站没数据，可能是转学生，跳过。');
+                  return null;
+                }
+                return report;
+              }
+
+              /// Converts bicw course results for [user] of the [half_term].
+              function prepareZBCouresReport(user, half_term) {
+                var report = {
+                  book: [],
+                  audio: [],
+                };
+                var lessons = getCachedZBLessons(half_term);
+                lessons.forEach(function(lesson) {
+                  var course_id = getCourseIdFromZBLesson(lesson);
+                  getCourseRecord(user, course_id, report.audio, report.book);
+                });
+                return checkReportData(user, report, half_term);
+              }
+
+              var errors = [];
+
+              function checkResponse(response, user, task) {
+                var success = response.data &&
+                    (response.data.returnValue == 'success');
+                if (!success) {
+                  errors.push(
+                      '学员"{0}"的"{1}"记录未能成功提交，请重试'.format(user.name, task));
+                }
+                return true; 
+              };
+
+              function reportCourseResults(half_term) {
+                return function() {
+                  var taskKey = '传承';
+                  var users = utils.where($scope.users,
+                    (user) => user.selected);
+                  if (utils.isEmpty(users)) {
+                    users = $scope.users;
+                  }
+        
+                  var requests = [];
+      
+                  utils.forEach(users, function(user) {    
+                    var records = prepareZBCouresReport(user, half_term);
+                    if (!records) return;
+
+                    var request = function() {
+                      return zbrpc.report_schedule_task(
+                          zbrpc.get_report_type(classInfo.department_id, 0),
+                          classInfo.zb_id, parseInt(user.zb_id),
+                          half_term, records.book,
+                          records.audio).then(function(response) {
+                            return checkResponse(response, user, taskKey);
+                          });
+                    };
+                    requests.push(request);
+                  });
+                  return utils.requestOneByOne(requests);
+                }
+              }
+
+              $scope.sync_courses = function() {
+                if ($scope.inprogress) return;
+                $scope.inprogress = true;
+    
+                var done = function() {
+                  $scope.inprogress = false;
+                  if (errors.length) {
+                    alert(errors.join('\n'));
+                  }
+                };
+                errors = [];
+    
+                var group = utils.first($scope.schedule_groups);
+                var half_terms = utils.getHalfTerms(group);
+                if (!half_terms.length) {
+                  alert("还没到报数时间，请检查学修安排");
+                }
+                var requests = [
+                  zbrpc.ensure_authenticated,
+                ];
+                requests = requests.concat(half_terms.map(function(half_term) {
+                  return function() {
+                    $scope.half_term = half_term;
+                    return utils.requestOneByOne([
+                      getZBLessons(half_term),
+                      getZBCourseResults(half_term),
+                      reportCourseResults(half_term)
+                    ]);
+                  };
+                }));
+                requests.push($scope.getZbData);
+                utils.requestOneByOne(requests).then(done);
+              };
+    
             },
             templateUrl : 'js/learning_records/learning_records.html?tag=201911132208'
           };

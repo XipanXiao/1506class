@@ -547,6 +547,24 @@ define('utils', [], function() {
         midTerm.setDate(startDate.getDate() + 7 * weeks);
         return this.unixTimestamp(midTerm);
       },
+      getHalfTerms: function(scheduleGroup) {
+        var now = utils.unixTimestamp(new Date());
+        var midTerm = utils.getMidTerm(scheduleGroup);
+
+        // Before middle of the current term, nothing to report yet.
+        if (now < midTerm) return [];
+
+        var endTerm = utils.getEndTime(scheduleGroup);
+        
+        var half_term_base = scheduleGroup.term * 2;
+        // Between mid-term and the end of the term, report the first half.
+        if (midTerm <= now && now < endTerm) {
+          return [half_term_base];
+        }
+        
+        // Report both the first and the second half terms.
+        return [half_term_base, half_term_base + 1];
+      },
       /// Returns true if [schedule] has no classes.
       vacation: function(schedule) {
         return !parseInt(schedule.course_id);

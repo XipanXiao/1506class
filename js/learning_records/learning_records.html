@@ -41,6 +41,12 @@
           第{{group.term}}学期交叉合并.txt
         </a>
         &nbsp;&nbsp;
+        <iron-icon class="clickable small-icon"
+            icon="editor:border-all"
+            ng-click="sync_courses()"
+            title="只上报传承法本数据..."
+            ng-class="{'in-progress': inprogress}">
+        </iron-icon>
         <zb-sync-button type="schedule_task" users="users" class-id="classId"
             schedule-group="group" title="学修记录上报学院">
         </zb-sync-button>
