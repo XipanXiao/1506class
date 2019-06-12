@@ -34,13 +34,6 @@ function canReadClass($classInfo) {
   return canRead($user, $classInfo);
 }
 
-function canWriteClass($user, $classId) {
-  $classInfo = get_classes(["id" => $classId])[$classId];
-  if (!$classInfo) return false;
-
-  return canWrite($user, $classInfo);
-}
-
 /// Whether the current [$user] has permission to read [$another] or not.
 function canReadUser($another) {
   global $user;
@@ -240,12 +233,17 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   }  elseif ($resource_id == "schedule_group") {
     error_log($user->email. " UPDATES ". $resource_id. ":". 
         (empty($_POST["id"]) ? "" : $_POST["id"]));
-    $response = canWriteClass($user, $_POST["classId"]) 
+    $classId = $_POST["classId"];
+    $classInfo = get_classes(["id" => $classId])[$classId];
+    $response = canWrite($user, $classInfo) || is_master_teacher($user, $classInfo)
         ? ["updated" => update_schedule_group($_POST)]
         : permission_denied_error();
   } elseif ($resource_id == "class") {
+    $classId = $_POST["id"];
+    $classInfo = get_classes(["id" => $classId])[$classId];
     if (empty($_POST["id"]) && isYearLeader($user) ||
-        canWriteClass($user, $_POST["id"])) {
+        canWrite($user, $classInfo) ||
+        is_master_teacher($user, $classInfo)) {
       if (empty($_POST["id"])) {
         $_POST["country"] = $user->country;
       }

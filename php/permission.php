@@ -98,7 +98,7 @@ function canRead($user, $classInfo) {
 
 function canWrite($user, $classInfo) {
   $level = $classInfo["perm_level"];
-  if (!$level || is_master_teacher($user, $classInfo)) return true;
+  if (!$level) return true;
 
   $perm = ($user->permission >> (($level - 1) * 2)) & 2;
   if (!$perm) return false;
