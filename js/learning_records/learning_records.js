@@ -326,6 +326,7 @@ define('learning_records/learning_records', [
                   alert('"{0}"在zhibei.info不存在，请修正.');
                   return null;
                 }
+                var lessons = getCachedZBLessons(half_term);
                 if (noLocalData && hasRemoteData(zbUser, lessons)) {
                   if ($scope.options.overwriteWithZero) {
                     if (confirm('{0}在zhibei.info有数据，本站没数据，'.format(zbUser.name) +
