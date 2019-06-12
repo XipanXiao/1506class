@@ -228,6 +228,12 @@ define('learning_records/learning_records', [
                   record.audit = ((record.video || false) == (zbRecord.video || false)) &&
                       ((record.text || false) == (zbRecord.text || false));
                 }
+                for (var course_id in user.records) {
+                  if (zbUser.records[course_id]) continue;
+                  // Do not audit courses that do not exist in zhibei.info,
+                  // e.g. Kai xian jie tuo dao.
+                  user.records[course_id].audit = true;
+                }
               }
 
               function getCachedZBCourseResults(half_term) {
