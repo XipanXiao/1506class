@@ -247,6 +247,7 @@ define('learning_records/learning_records', [
 
                   return zbrpc.get_task_records(zbrpc.MAIN_GRID, classInfo.zb_id, half_term)
                       .then(function(response) {
+                        if (!response.data.data) return true;
                         var zbUsers = response.data.data.map(function(user) {
                           return parseZBCourseResults(half_term, user);
                         });
@@ -261,6 +262,7 @@ define('learning_records/learning_records', [
               function mergeZBRecords() {
                 var zbUsers1 = getCachedZBCourseResults($scope.term * 2);
                 var zbUsers2 = getCachedZBCourseResults($scope.term * 2 + 1);
+                if (!zbUsers2) return zbUsers1;
                 var merged = utils.map(zbUsers1, function(user) {
                   var user2 = zbUsers2[user.zb_id];
                   return {
@@ -299,10 +301,17 @@ define('learning_records/learning_records', [
               }
 
               $scope.audited = function(user, schedule) {
-                if (!$scope.showZBData || $scope.loading) return true;
+                if (!$scope.showZBData || $scope.loading) return false;
 
                 return audited(user, schedule.course_id) &&
                     audited(user, schedule.course_id2);
+              };
+
+              $scope.hasProblem = function(user, schedule) {
+                if (!$scope.showZBData || $scope.loading) return false;
+
+                return !audited(user, schedule.course_id) ||
+                    !audited(user, schedule.course_id2);
               };
 
               /// Converts bicw course result to zhibei.info format
@@ -439,7 +448,7 @@ define('learning_records/learning_records', [
               };
     
             },
-            templateUrl : 'js/learning_records/learning_records.html?tag=201906112208'
+            templateUrl : 'js/learning_records/learning_records.html?tag=201906111808'
           };
         });
 });

@@ -329,6 +329,7 @@ paper-dialog#preview {
   background: red;
 }
 
+.audited,
 .diff-added {
   background: green;
 }

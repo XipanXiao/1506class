@@ -73,7 +73,8 @@
             <div class="css-table-cell name-field">{{user.name}}</div>
             <div ng-repeat="schedule in group.schedules" ng-if="!vacation(schedule)"
                 class="css-table-cell learning-record-cell"
-                ng-class="{'diff-modified': !audited(user, schedule)}">
+                ng-class="{'diff-modified': hasProblem(user, schedule),
+                    'audited': audited(user, schedule)}">
               <input type="checkbox" ng-model="user.records[schedule.course_id].video"
                   title="{{group.courses[schedule.course_id].name}}听传承"
                   ng-click="reportTask($event, user, schedule.course_id)">
