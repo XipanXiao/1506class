@@ -13,7 +13,7 @@ define('learning_records/learning_records', [
               attendence: '@',
               classId: '='
             },
-            link: function($scope) {
+            link: function($scope, elements) {
               var classInfo;
               $scope.options = {overwriteWithZero: false};
               $scope.showZBData = false;
@@ -283,7 +283,7 @@ define('learning_records/learning_records', [
               }
 
               $scope.getZbData = function() {
-                $scope.showZBData = !$scope.showZBData;
+                $scope.showZBData = elements[0].querySelector('#show-zb-data-option').checked;
                 if (!$scope.showZBData) return utils.truePromise();
 
                 $scope.loading = true;
@@ -448,7 +448,7 @@ define('learning_records/learning_records', [
               };
     
             },
-            templateUrl : 'js/learning_records/learning_records.html?tag=201906111808'
+            templateUrl : 'js/learning_records/learning_records.html?tag=201906112208'
           };
         });
 });
