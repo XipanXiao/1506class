@@ -130,7 +130,7 @@ function update_course($course) {
   global $medoo;
   
   $datas = [];
-  $fields = ["group_id", "name", "video_url", "text_url"];
+  $fields = ["group_id", "name", "video_url", "text_url", "zb_name"];
   foreach ($fields as $field) {
     if (!empty($course[$field])) {
       $datas[$field] = $course[$field];

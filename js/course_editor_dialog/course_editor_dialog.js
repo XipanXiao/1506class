@@ -196,7 +196,7 @@ define('course_editor_dialog/course_editor_dialog',
                 }
               };
 					  },
-						templateUrl : 'js/course_editor_dialog/course_editor_dialog.html?tag=20190621'
+						templateUrl : 'js/course_editor_dialog/course_editor_dialog.html?tag=20190611'
 					};
 				});
 });
