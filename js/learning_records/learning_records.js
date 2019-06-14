@@ -157,6 +157,14 @@ define('learning_records/learning_records', [
                     $scope.exportedLimitedRecords);
               };
 
+              function checkLocalCourses(lessons) {
+                lessons.forEach(function(lesson) {
+                  if (!getCourseIdFromZBLesson(lesson)) {
+                    alert('"{0}"在学修系统中不存在，请改正'.format(lesson.name));
+                  }
+                });
+              }
+
               function getCachedZBLessons(half_term) {
                 classInfo.zb_lessons = classInfo.zb_lessons || {};
                 return classInfo.zb_lessons[half_term];
@@ -170,6 +178,7 @@ define('learning_records/learning_records', [
                   return zbrpc.get_preclass_lessons(classInfo.zb_id, courseId, half_term)
                       .then(function(response) {
                         classInfo.zb_lessons[half_term] = response.data.data;
+                        checkLocalCourses(response.data.data);
                         return true;
                       });
                 };
@@ -197,16 +206,14 @@ define('learning_records/learning_records', [
               /// }
               function parseZBCourseResults(half_term, zbUser) {
                 var user = {
+                  name: zbUser.name,
                   zb_id: zbUser.userID, 
                   records: {}
                 };
                 var lessons = getCachedZBLessons(half_term);
                 lessons.forEach(function(lesson) {
                   var course_id = getCourseIdFromZBLesson(lesson);
-                  if (!course_id) {
-                    console.log('"{0}"在学修系统中不存在，请改正'.format(lesson.name));
-                    return;
-                  }
+                  if (!course_id) return;
                   user.records[course_id] = {
                     video: parseInt(zbUser['audio' + lesson.lesson_id]) == 1,
                     text: parseInt(zbUser['book' + lesson.lesson_id]) == 1
@@ -217,7 +224,7 @@ define('learning_records/learning_records', [
 
               function auditUser(user, zbUser) {
                 if (!zbUser) {
-                  console.log('"{0}"在zhibei.info不存在，请修正'.format(user.name));
+                  alert('"{0}"在zhibei.info不存在，请修正'.format(user.name));
                   return;
                 }
                 for (var course_id in zbUser.records) {
@@ -266,6 +273,7 @@ define('learning_records/learning_records', [
                 var merged = utils.map(zbUsers1, function(user) {
                   var user2 = zbUsers2[user.zb_id];
                   return {
+                    name: user.name,
                     zb_id: user.zb_id,
                     records: utils.mix_in(user2.records, user.records)
                   };
@@ -273,11 +281,21 @@ define('learning_records/learning_records', [
                 return utils.toMap(merged, 'zb_id');
               }
 
+              function checkUsers(zbUsers) {
+                var users = utils.toMap($scope.users, 'zb_id');
+                utils.forEach(zbUsers, function(user) {
+                  if (!users[user.zb_id]) {
+                    alert('"{0}"在学修系统不存在，请修正'.format(user.name));
+                  }
+                });
+              }
+
               function auditUsers() {
                 var zbUsers = mergeZBRecords();
                 utils.forEach($scope.users, function(user) {
                   auditUser(user, zbUsers[user.zb_id]);
                 });
+                checkUsers(zbUsers);
                 $scope.loading = false;
                 return utils.truePromise();
               }
