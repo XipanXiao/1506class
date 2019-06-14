@@ -243,6 +243,11 @@ define('learning_records/learning_records', [
                 }
               }
 
+              function clearZBCoursesResultCache() {
+                classInfo.zb_course_results = null;
+                return utils.truePromise();
+              }
+
               function getCachedZBCourseResults(half_term) {
                 classInfo.zb_course_results = classInfo.zb_course_results || {};
                 return classInfo.zb_course_results[half_term];
@@ -461,6 +466,7 @@ define('learning_records/learning_records', [
                     ]);
                   };
                 }));
+                requests.push(clearZBCoursesResultCache);
                 requests.push($scope.getZbData);
                 utils.requestOneByOne(requests).then(done);
               };
