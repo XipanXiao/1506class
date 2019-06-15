@@ -170,6 +170,11 @@ define('learning_records/learning_records', [
                 return classInfo.zb_lessons[half_term];
               }
 
+              function getCachedZBLimitedLessons(half_term) {
+                classInfo.zb_limited_lessons = classInfo.zb_limited_lessons || {};
+                return classInfo.zb_limited_lessons[half_term];
+              }
+
               function getZBLessons(half_term) {
                 return function() {
                   if (getCachedZBLessons(half_term)) return utils.truePromise();
@@ -178,6 +183,20 @@ define('learning_records/learning_records', [
                   return zbrpc.get_preclass_lessons(classInfo.zb_id, courseId, half_term)
                       .then(function(response) {
                         classInfo.zb_lessons[half_term] = response.data.data;
+                        checkLocalCourses(response.data.data);
+                        return true;
+                      });
+                };
+              }
+
+              function getZBLimitedLessons(half_term) {
+                return function() {
+                  if (getCachedZBLimitedLessons(half_term)) return utils.truePromise();
+
+                  var courseId = zbrpc.get_limited_course_id();
+                  return zbrpc.get_preclass_lessons(classInfo.zb_id, courseId, half_term)
+                      .then(function(response) {
+                        classInfo.zb_limited_lessons[half_term] = response.data.data;
                         checkLocalCourses(response.data.data);
                         return true;
                       });
@@ -314,6 +333,7 @@ define('learning_records/learning_records', [
                 var half_terms = utils.getHalfTerms(group);
                 var requests = [zbrpc.ensure_authenticated];
                 requests = requests.concat(half_terms.map(getZBLessons));
+                requests = requests.concat(half_terms.map(getZBLimitedLessons));
                 requests = requests.concat(half_terms.map(getZBCourseResults));
                 requests.push(auditUsers);
                 return utils.requestOneByOne(requests);
@@ -465,6 +485,7 @@ define('learning_records/learning_records', [
                     $scope.half_term = half_term;
                     return utils.requestOneByOne([
                       getZBLessons(half_term),
+                      getZBLimitedLessons(half_term),
                       getZBCourseResults(half_term),
                       reportCourseResults(half_term)
                     ]);

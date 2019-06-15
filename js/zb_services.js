@@ -209,6 +209,9 @@ define('zb_services', ['utils'], function() {
           4: zbrpc.JT_COURSE_ID
         }[depId];
       },
+      get_limited_course_id: function() {
+        return 10;
+      },
       get_preclass_lessons: function(pre_classID, courseID, half_term) {
         var url = ('{0}/pre/report_ajax?courseID={1}&half_term={2}' +
             '&type=pre_class_lessons&pre_classID={3}').format(serviceUrl,
