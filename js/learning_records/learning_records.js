@@ -409,6 +409,10 @@ define('learning_records/learning_records', [
 
               function reportCourseResults(half_term) {
                 return function() {
+                  if (!getCachedZBCourseResults(half_term)) {
+                    return utils.truePromise();
+                  }
+
                   var taskKey = '传承';
                   var users = utils.where($scope.users,
                     (user) => user.selected);
