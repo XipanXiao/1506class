@@ -396,7 +396,7 @@ define('learning_records/learning_records', [
                 var zbUsers = classInfo.zb_course_results[half_term];
                 var zbUser = zbUsers[user.zb_id];
                 if (!zbUser) {
-                  alert('"{0}"在zhibei.info不存在，请修正.');
+                  alert('"{0}"在zhibei.info不存在，请修正.'.format(user.name));
                   return null;
                 }
 
@@ -414,10 +414,15 @@ define('learning_records/learning_records', [
                     return null;
                   }
                 }
-                for (var course_id in user.records) {
-                  if (!audited(user, course_id)) return report;
-                }
+
                 // If all records are audited, there is no need to report again.
+                if (lessons.some(function(lesson) {
+                  var course_id = getCourseIdFromZBLesson(lesson);
+                  return !audited(user, course_id);
+                })) {
+                  return report;
+                }
+
                 return null;
               }
 
