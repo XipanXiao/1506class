@@ -23,8 +23,11 @@
     </div>
   </div>
   <label>开始时间：<input type="date" ng-model="group.start_time" timestamp
+      ng-disabled="!canWrite()"
       ng-change="markDirty(group)"></label>
-  <label>中期报数：第<input type="number" max="26" min="1" ng-model="group.mid_week"
+  <label>中期报数：第<input type="number" max="26" min="1"
+      ng-model="group.mid_week"
+      ng-disabled="!canWrite()"
       ng-change="markDirty(group)">周</label>
 
   <paper-button ng-click="loadSchedules(term)" ng-disabled="!group.dirty" raised dismissive>
@@ -69,7 +72,7 @@
             key="schedule.course_id"
             label="courseInput"
             search="searchCourse"
-            editable="true"
+            editable="canWrite()"
             on-change="markDirty(group)">
         </paper-auto-suggest-input>
       </div>
@@ -78,7 +81,7 @@
             key="schedule.course_id2"
             label="courseInput"
             search="searchCourse"
-            editable="true"
+            editable="canWrite()"
             on-change="markDirty(group)">
         </paper-auto-suggest-input>
       </div>
@@ -98,7 +101,7 @@
           key="schedule.teacher_planned"
           hints="teachers"
           label="userInput"
-          editable="true"
+          editable="canWrite()"
           search="searchUser"
           class="user-label"
           on-change="markDirty(group)">
@@ -110,7 +113,7 @@
             key="schedule.teacher"
             hints="teachers"
             label="userInput"
-            editable="true"
+            editable="canWrite()"
             search="searchUser"
             class="user-label"
             on-change="markDirty(group)">
@@ -120,6 +123,7 @@
         <paper-input ng-model="schedule.notes"
             class="schedule-notes"
             ng-change="markDirty(group)"
+            ng-disabled="!canWrite()"
             no-label-float>
         </paper-input>
       </div>

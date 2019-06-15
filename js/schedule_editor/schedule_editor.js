@@ -21,7 +21,6 @@ define('schedule_editor/schedule_editor',
           return {
             scope: {
               classId: '=',
-              user: '='
             },
             link: function($scope) {
               $scope.week = 1000*3600*24*7;
@@ -382,8 +381,14 @@ define('schedule_editor/schedule_editor',
                 return group && group.dirty ?
                     '请保存或取消学修安排的修改' : null;
               };
+
+              $scope.canWrite = function() {
+                return $scope.classInfo &&
+                    (perm.canWrite($scope.classInfo) ||
+                        perm.isMasterTeacherOf($scope.classInfo));
+              };
             },
-            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201906082216'
+            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201906132216'
           };
         });
 });

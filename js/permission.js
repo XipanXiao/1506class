@@ -113,6 +113,9 @@ define('permission', ['utils'], function() {
       isElectionOwner: function(election) {
         return this.isSysAdmin() ||
             election && election.organizer == this.user.id;
+      },
+      isMasterTeacherOf: function(classInfo) {
+        return this.user.id == classInfo.teacher_id;
       }
     };
   });
