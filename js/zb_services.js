@@ -66,6 +66,7 @@ define('zb_services', ['utils'], function() {
       RXL_COURSE_ID: 2,
       JT_COURSE_ID: 3,
       MAIN_GRID: 'main_course_grid',
+      LIMITED_GRID: 'att_limit_grid',
       serviceUrl: serviceUrl,
       get_secure_url: function(url) {
         return '{0}?url={1}'.format(redirectUrl, encodeURIComponent(url));

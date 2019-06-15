@@ -165,18 +165,15 @@ define('learning_records/learning_records', [
                 });
               }
 
-              function getCachedZBLessons(half_term) {
+              function getCachedZBLessons(half_term, limited) {
                 classInfo.zb_lessons = classInfo.zb_lessons || {};
-                return classInfo.zb_lessons[half_term];
-              }
-
-              function getCachedZBLimitedLessons(half_term) {
                 classInfo.zb_limited_lessons = classInfo.zb_limited_lessons || {};
-                return classInfo.zb_limited_lessons[half_term];
+                return limited ? classInfo.zb_limited_lessons[half_term]:
+                    classInfo.zb_lessons[half_term];
               }
 
               function getZBLessons(half_term) {
-                return function() {
+                function getMainCourse() {
                   if (getCachedZBLessons(half_term)) return utils.truePromise();
 
                   var courseId = zbrpc.get_course_id(classInfo.department_id);
@@ -186,21 +183,21 @@ define('learning_records/learning_records', [
                         checkLocalCourses(response.data.data);
                         return true;
                       });
-                };
-              }
-
-              function getZBLimitedLessons(half_term) {
-                return function() {
-                  if (getCachedZBLimitedLessons(half_term)) return utils.truePromise();
+                }
+                function getLimitedCourse() {
+                  if (getCachedZBLessons(half_term, true)) return utils.truePromise();
 
                   var courseId = zbrpc.get_limited_course_id();
+                  classInfo.zb_limited_lessons = classInfo.zb_limited_lessons || {};
                   return zbrpc.get_preclass_lessons(classInfo.zb_id, courseId, half_term)
                       .then(function(response) {
+                        if (!response.data.data) return true;
                         classInfo.zb_limited_lessons[half_term] = response.data.data;
                         checkLocalCourses(response.data.data);
                         return true;
                       });
-                };
+                }
+                return () => utils.requestOneByOne([getMainCourse, getLimitedCourse]);
               }
 
               function getCourseIdFromZBLesson(lesson) {
@@ -223,13 +220,13 @@ define('learning_records/learning_records', [
               ///   schedule_id173: {video: true, text: true}, 
               ///   schedule_id174: {video: true, text: true}, 
               /// }
-              function parseZBCourseResults(half_term, zbUser) {
+              function parseZBCourseResults(half_term, zbUser, limited) {
                 var user = {
                   name: zbUser.name,
                   zb_id: zbUser.userID, 
                   records: {}
                 };
-                var lessons = getCachedZBLessons(half_term);
+                var lessons = getCachedZBLessons(half_term, limited) || [];
                 lessons.forEach(function(lesson) {
                   var course_id = getCourseIdFromZBLesson(lesson);
                   if (!course_id) return;
@@ -254,12 +251,6 @@ define('learning_records/learning_records', [
                   record.audit = ((record.video || false) == (zbRecord.video || false)) &&
                       ((record.text || false) == (zbRecord.text || false));
                 }
-                for (var course_id in user.records) {
-                  if (zbUser.records[course_id]) continue;
-                  // Do not audit courses that do not exist in zhibei.info,
-                  // e.g. Kai xian jie tuo dao.
-                  user.records[course_id].audit = true;
-                }
               }
 
               function clearZBCoursesResultCache() {
@@ -273,9 +264,7 @@ define('learning_records/learning_records', [
               }
 
               function getZBCourseResults(half_term) {
-                return function() {
-                  if (getCachedZBCourseResults(half_term)) return utils.truePromise();
-
+                function getMainCourseResults() {
                   return zbrpc.get_task_records(zbrpc.MAIN_GRID, classInfo.zb_id, half_term)
                       .then(function(response) {
                         if (!response.data.data) return true;
@@ -285,15 +274,34 @@ define('learning_records/learning_records', [
                         classInfo.zb_course_results[half_term] = utils.toMap(zbUsers, 'zb_id');
                         return true;
                       });
+                }
+                function getLimitedCourseResults() {
+                  return zbrpc.get_task_records(zbrpc.LIMITED_GRID, classInfo.zb_id, half_term)
+                      .then(function(response) {
+                        if (!response.data.data) return true;
+                        var zbUsers = response.data.data.map(function(user) {
+                          return parseZBCourseResults(half_term, user, true);
+                        });
+                        var limitedCourseResults = utils.toMap(zbUsers, 'zb_id');
+                        classInfo.zb_course_results[half_term] = _mergeZBRecords(
+                          classInfo.zb_course_results[half_term],
+                          limitedCourseResults,
+                        );
+                        return true;
+                      });
+                }
+                return function() {
+                  if (getCachedZBCourseResults(half_term)) return utils.truePromise();
+
+                  return utils.requestOneByOne([getMainCourseResults,
+                    getLimitedCourseResults]);
                 };
               }
 
-              /// Merges zb results of both the first half term and the
-              /// second half term.
-              function mergeZBRecords() {
-                var zbUsers1 = getCachedZBCourseResults($scope.term * 2);
-                var zbUsers2 = getCachedZBCourseResults($scope.term * 2 + 1);
-                if (!zbUsers2) return zbUsers1;
+              function _mergeZBRecords(zbUsers1, zbUsers2) {
+                if (!zbUsers2 || utils.isEmptyObject(zbUsers2)) {
+                  return zbUsers1;
+                }
                 var merged = utils.map(zbUsers1, function(user) {
                   var user2 = zbUsers2[user.zb_id];
                   return {
@@ -303,6 +311,14 @@ define('learning_records/learning_records', [
                   };
                 });
                 return utils.toMap(merged, 'zb_id');
+              }
+
+              /// Merges zb results of both the first half term and the
+              /// second half term.
+              function mergeZBRecords() {
+                var zbUsers1 = getCachedZBCourseResults($scope.term * 2);
+                var zbUsers2 = getCachedZBCourseResults($scope.term * 2 + 1);
+                return _mergeZBRecords(zbUsers1, zbUsers2);
               }
 
               function checkUsers(zbUsers) {
@@ -333,7 +349,6 @@ define('learning_records/learning_records', [
                 var half_terms = utils.getHalfTerms(group);
                 var requests = [zbrpc.ensure_authenticated];
                 requests = requests.concat(half_terms.map(getZBLessons));
-                requests = requests.concat(half_terms.map(getZBLimitedLessons));
                 requests = requests.concat(half_terms.map(getZBCourseResults));
                 requests.push(auditUsers);
                 return utils.requestOneByOne(requests);
@@ -374,7 +389,7 @@ define('learning_records/learning_records', [
 
               /// Checks whether the user has no local data but has remote data
               /// (transferred student from other countries)
-              function checkReportData(user, report, half_term) {
+              function checkReportData(user, report, half_term, limited) {
                 var noLocalData = utils.isEmpty(report.book) &&
                     utils.isEmpty(report.audio);
 
@@ -384,7 +399,8 @@ define('learning_records/learning_records', [
                   alert('"{0}"在zhibei.info不存在，请修正.');
                   return null;
                 }
-                var lessons = getCachedZBLessons(half_term);
+
+                var lessons = getCachedZBLessons(half_term, limited) || [];
                 if (noLocalData && hasRemoteData(zbUser, lessons)) {
                   if ($scope.options.overwriteWithZero) {
                     if (confirm('{0}在zhibei.info有数据，本站没数据，'.format(zbUser.name) +
@@ -398,21 +414,25 @@ define('learning_records/learning_records', [
                     return null;
                   }
                 }
-                return report;
+                for (var course_id in user.records) {
+                  if (!audited(user, course_id)) return report;
+                }
+                // If all records are audited, there is no need to report again.
+                return null;
               }
 
               /// Converts bicw course results for [user] of the [half_term].
-              function prepareZBCouresReport(user, half_term) {
+              function prepareZBCouresReport(user, half_term, limited) {
                 var report = {
                   book: [],
                   audio: [],
                 };
-                var lessons = getCachedZBLessons(half_term);
+                var lessons = getCachedZBLessons(half_term, limited) || [];
                 lessons.forEach(function(lesson) {
                   var course_id = getCourseIdFromZBLesson(lesson);
                   getCourseRecord(user, course_id, report.audio, report.book);
                 });
-                return checkReportData(user, report, half_term);
+                return checkReportData(user, report, half_term, limited);
               }
 
               var errors = [];
@@ -427,7 +447,7 @@ define('learning_records/learning_records', [
                 return true; 
               };
 
-              function reportCourseResults(half_term) {
+              function reportCourseResults(half_term, limited) {
                 return function() {
                   if (!getCachedZBCourseResults(half_term)) {
                     return utils.truePromise();
@@ -443,12 +463,13 @@ define('learning_records/learning_records', [
                   var requests = [];
       
                   utils.forEach(users, function(user) {    
-                    var records = prepareZBCouresReport(user, half_term);
+                    var records = prepareZBCouresReport(user, half_term, limited);
                     if (!records) return;
 
                     var request = function() {
                       return zbrpc.report_schedule_task(
-                          zbrpc.get_report_type(classInfo.department_id, 0),
+                          zbrpc.get_report_type(classInfo.department_id,
+                              limited ? 2 : 0),
                           classInfo.zb_id, parseInt(user.zb_id),
                           half_term, records.book,
                           records.audio).then(function(response) {
@@ -485,9 +506,9 @@ define('learning_records/learning_records', [
                     $scope.half_term = half_term;
                     return utils.requestOneByOne([
                       getZBLessons(half_term),
-                      getZBLimitedLessons(half_term),
                       getZBCourseResults(half_term),
-                      reportCourseResults(half_term)
+                      reportCourseResults(half_term),
+                      reportCourseResults(half_term, true)
                     ]);
                   };
                 }));
@@ -495,9 +516,8 @@ define('learning_records/learning_records', [
                 requests.push($scope.getZbData);
                 utils.requestOneByOne(requests).then(done);
               };
-    
             },
-            templateUrl : 'js/learning_records/learning_records.html?tag=201906112208'
+            templateUrl : 'js/learning_records/learning_records.html?tag=201906152208'
           };
         });
 });
