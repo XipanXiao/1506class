@@ -226,7 +226,9 @@ define('learning_records/learning_records', [
                   zb_id: zbUser.userID, 
                   records: {}
                 };
-                var lessons = getCachedZBLessons(half_term, limited) || [];
+                var lessons = getCachedZBLessons(half_term, limited);
+                if (!lessons.length) return user;
+
                 lessons.forEach(function(lesson) {
                   var course_id = getCourseIdFromZBLesson(lesson);
                   if (!course_id) return;
@@ -400,7 +402,8 @@ define('learning_records/learning_records', [
                   return null;
                 }
 
-                var lessons = getCachedZBLessons(half_term, limited) || [];
+                var lessons = getCachedZBLessons(half_term, limited);
+
                 if (noLocalData && hasRemoteData(zbUser, lessons)) {
                   if ($scope.options.overwriteWithZero) {
                     if (confirm('{0}在zhibei.info有数据，本站没数据，'.format(zbUser.name) +
@@ -432,7 +435,9 @@ define('learning_records/learning_records', [
                   book: [],
                   audio: [],
                 };
-                var lessons = getCachedZBLessons(half_term, limited) || [];
+                var lessons = getCachedZBLessons(half_term, limited);
+                if (!lessons.length) return null;
+
                 lessons.forEach(function(lesson) {
                   var course_id = getCourseIdFromZBLesson(lesson);
                   getCourseRecord(user, course_id, report.audio, report.book);
