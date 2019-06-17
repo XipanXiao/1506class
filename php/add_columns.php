@@ -231,6 +231,18 @@ function add_zb_name_for_courses($medoo) {
   rename_courses($medoo);
 }
 
+function add_task_records_half_term($medoo) {
+  if (column_exists($medoo, "task_records", "half_term")) {
+    return;
+  }
+
+  $sql = "ALTER TABLE task_records
+      ADD COLUMN half_term INT;";
+  $medoo->query($sql);
+  echo get_db_error2($medoo);
+  echo "ALTER TABLE task_records ADD COLUMN half_term INT;";
+}
+
 add_district_cfo($medoo);
 add_teacher_for_schedules($medoo);
 add_shipping_donation_for_orders($medoo);
@@ -238,5 +250,6 @@ create_inventory_tables($medoo);
 create_org_tables($medoo);
 add_staff_columns($medoo);
 add_zb_name_for_courses($medoo);
+add_task_records_half_term($medoo)
 ?>
 </html>

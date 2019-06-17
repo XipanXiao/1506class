@@ -210,7 +210,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $duration = empty($_POST["duration"]) ? null : intval($_POST["duration"]);
     if (canWriteUser($user, $task_user_id)) {
       report_task($task_user_id, $task_id, $_POST["sub_index"], $_POST["count"],
-          $duration);
+          $duration, $_POST["half_term"]);
       $response = get_last_task_record($task_user_id, $task_id, null);
     } else {
       $response = permission_denied_error();

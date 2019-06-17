@@ -505,7 +505,7 @@ function get_guanxiu_task_stats($classId, $task_id, $indexes) {
   return $users;
 }
 
-function report_task($user_id, $task_id, $sub_index, $count, $duration) {
+function report_task($user_id, $task_id, $sub_index, $count, $duration, $half_term) {
   global $medoo;
 
   if (empty($count)) return 0;
@@ -516,7 +516,8 @@ function report_task($user_id, $task_id, $sub_index, $count, $duration) {
   if (intval($task["sub_tasks"])) {
     $updated = $medoo->update("task_records", [
         "count[+]" => intval($count),
-        "duration[+]" => $duration
+        "duration[+]" => $duration,
+        "half_term" => $half_term
       ], 
       ["AND" => [
         "student_id" => intval($user_id),
@@ -531,7 +532,8 @@ function report_task($user_id, $task_id, $sub_index, $count, $duration) {
     "task_id" => intval($task_id),
     "sub_index" => intval($sub_index),
     "count" => intval($count),
-    "duration" => $duration
+    "duration" => $duration,
+    "half_term" => $half_term
   ]);
 }
 
