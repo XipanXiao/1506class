@@ -33,12 +33,14 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
           ///     guanxiuIndexes[66] = 73;
           var guanxiuIndexes = {};
 
-          scope.isJiaXing = function() {
+          function isJiaXing() {
             return classInfo && classInfo.department_id == 3;
           };
 
           function getTaskSubIndexes(half_term) {
             return function() {
+              if (!isJiaXing()) return utils.truePromise();
+
               return zbrpc.get_preclass_lessons(classInfo.zb_id,
                   guanxiuTask.zb_course_id, half_term + 1)
                   .then(function(response) {
@@ -74,7 +76,8 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
 
           function getZBGuanxiuStats(halfTerm) {
             return function() {
-              if (!scope.isJiaXing()) return utils.truePromise();
+              if (!isJiaXing()) return utils.truePromise();
+
               return zbrpc.get_guanxiu_tasks(classInfo.zb_id, halfTerm + 1)
                   .then(function(response) {
                     classInfo.task_stats = classInfo.task_stats || {};
@@ -130,7 +133,7 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
 
           /// Returns wehther the guanxiu task has inconistent number between
           /// the local and the remote (zhibei.info) data.
-          scope.hasProblem = function(user, subIndex) {
+          scope.guanxiuHasProblem = function(user, subIndex) {
             if (!scope.options.showZBdata || !user.stats || !user.guanxiuStats) {
               return false;
             }
@@ -139,13 +142,23 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
             return ((stat && stat.sum || 0) != (zbStat && zbStat.sum || 0)) ||
                 (utils.toGuanxiuHour(stat && stat.duration || 0) != 
                     utils.toGuanxiuHour(zbStat && zbStat.time || 0));
-    };
+          };
+
+          scope.getZBTaskValue = function(user) {
+            return user.zbLastTerm &&
+            (user.zbLastTerm[scope.selectedTask.zb_name + '_total'] ||
+                user.zbLastTerm[scope.selectedTask.zb_name + '_count']) || 0;
+          };
 
           /// Returns whether the selected task has inconsistent number between
           /// the local and the remove (zhibei.info) data.
           scope.taskHasProblem = function(user) {
-            return user.stats[0].sum !=
-                (user.zbLastTerm && user.zbLastTerm[scope.selectedTask.zb_name + '_total']);
+            if (!scope.options.showZBdata || !user.stats || !user.stats[0]) {
+              return false;
+            }
+
+            var value = parseInt(user.stats[0].sum);
+            return value != scope.getZBTaskValue(user);
           };
 
           scope.refreshStats = function() {
@@ -250,7 +263,7 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
           };
           scope.currentPage = 0;
         },
-        templateUrl: 'js/task_stats/task_stats.html?tag=201905162201'
+        templateUrl: 'js/task_stats/task_stats.html?tag=201905172201'
       };
     });
 });
