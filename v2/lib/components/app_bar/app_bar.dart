@@ -2,7 +2,7 @@ import 'dart:html';
 
 import 'package:angular/angular.dart';
 import 'package:angular_components/material_input/material_input.dart';
-import 'package:staff/model/user.dart';
+import 'package:v2/model/user.dart';
 
 @Component(
   selector: 'app-bar',

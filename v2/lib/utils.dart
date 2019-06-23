@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:html';
 
-import 'package:staff/model/base_entity.dart';
+import 'package:v2/model/base_entity.dart';
 
 /// Returns the Apache url (:80) instead of webdev (:8080) url
 /// to server php scripts, in local environment.

@@ -1,5 +1,5 @@
 import 'package:angular_components/model/date/date.dart';
-import 'package:staff/model/base_entity.dart';
+import 'package:v2/model/base_entity.dart';
 
 import 'class_info.dart';
 

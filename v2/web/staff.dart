@@ -1,6 +1,6 @@
 import 'package:angular/angular.dart';
-import 'package:staff/app.template.dart' as ng;
-import 'package:staff/services/user_service.dart';
+import 'package:v2/staff_app.template.dart' as ng;
+import 'package:v2/services/user_service.dart';
 
 import 'staff.template.dart' as self;
 

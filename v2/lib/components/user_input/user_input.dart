@@ -2,8 +2,8 @@ import 'package:angular/angular.dart';
 import 'package:angular_components/material_input/material_auto_suggest_input.dart';
 import 'package:angular_components/model/observable/observable.dart';
 import 'package:angular_components/utils/disposer/disposer.dart';
-import 'package:staff/model/user.dart';
-import 'package:staff/services/user_service.dart';
+import 'package:v2/model/user.dart';
+import 'package:v2/services/user_service.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 @Component(

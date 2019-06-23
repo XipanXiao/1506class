@@ -1,9 +1,9 @@
 import 'package:angular/angular.dart';
-import 'package:staff/components/app_bar/app_bar.dart';
-import 'package:staff/components/staff_editor/staff_editor.dart';
+import 'package:v2/components/app_bar/app_bar.dart';
+import 'package:v2/components/staff_editor/staff_editor.dart';
 
-import 'package:staff/model/user.dart';
-import 'package:staff/services/user_service.dart';
+import 'package:v2/model/user.dart';
+import 'package:v2/services/user_service.dart';
 
 @Component(
   selector: 'app',

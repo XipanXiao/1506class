@@ -8,9 +8,9 @@ import 'package:angular_components/material_input/material_number_accessor.dart'
 import 'package:angular_components/material_radio/material_radio_group.dart';
 import 'package:angular_components/material_radio/material_radio.dart';
 import 'package:angular_forms/angular_forms.dart';
-import 'package:staff/components/user_input/user_input.dart';
-import 'package:staff/model/user.dart';
-import 'package:staff/services/user_service.dart';
+import 'package:v2/components/user_input/user_input.dart';
+import 'package:v2/model/user.dart';
+import 'package:v2/services/user_service.dart';
 
 @Component(
   selector: 'staff-editor',

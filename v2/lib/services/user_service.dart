@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:angular/angular.dart';
-import 'package:staff/model/user.dart';
+import 'package:v2/model/user.dart';
 
-import 'package:staff/utils.dart' as utils;
+import 'package:v2/utils.dart' as utils;
 
 @Injectable()
 class UserService {
