@@ -9,3 +9,32 @@ material-button[affirmative] {
   background-color: #1a73e8;
   color: #FFF;
 }
+
+.main {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 40px;
+}
+
+.padded-element {
+  padding: 8px 16px;
+}
+
+.selectable {
+  cursor: pointer;
+}
+
+.selectable:hover {
+  background-color: lightcyan;
+}
+
+.selected {
+  background-color: lightcyan;
+  border-left: solid 2px green;
+}
+
+.selected.padded-element {
+  padding-left: 14px;
+}

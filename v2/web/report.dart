@@ -1,5 +1,7 @@
 import 'package:angular/angular.dart';
-import 'package:v2/report_app.template.dart' as ng;
+import 'package:angular_router/angular_router.dart';
+import 'package:v2/components/report_app/report_app.template.dart' as ng;
+import 'package:v2/services/class_service.dart';
 import 'package:v2/services/user_service.dart';
 
 import 'report.template.dart' as self;
@@ -13,5 +15,8 @@ Future<void> main() async {
 }
 
 @GenerateInjector([
-  FactoryProvider(UserService, getUserService),])
+  routerProviders,
+  ClassProvider(ClassService),
+  FactoryProvider(UserService, getUserService),
+])
 final staticInjector = self.staticInjector$Injector;

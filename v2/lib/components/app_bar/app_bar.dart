@@ -8,7 +8,7 @@ import 'package:v2/model/user.dart';
   selector: 'app-bar',
   directives: [MaterialInputComponent, NgIf],
   templateUrl: 'app_bar.html',
-  styleUrls: ["app_bar.css"],
+  styleUrls: ['app_bar.css'],
 )
 class AppBarComponent {
   @Input()

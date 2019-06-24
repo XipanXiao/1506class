@@ -7,6 +7,10 @@ handlers:
   static_files: \1
   upload: .+\.(html|js|css|ico|jpg|png|txt)$
   secure: always
+- url: /report/(.+\.(html|js|css|ico|jpg|png|txt))$
+  static_files: /report/\1
+  upload: .+\.(html|js|css|ico|jpg|png|txt)$
+  secure: always
 # Serve php scripts.
 - url: /(php/.+\.php)$
   script: \1

@@ -1,0 +1,18 @@
+<div class="class-list">
+  <ng-container *ngFor="let grade of grades.keys">
+    <div (click)="toggle(grade)" class="selectable">
+      <material-icon [icon]="isExpanded(grade) ? 'arrow_drop_down' : 'arrow_right'"
+          baseline>
+      </material-icon>
+      {{grade}}
+    </div>
+    <div *ngIf="isExpanded(grade)">
+      <div *ngFor="let classInfo of grades[grade]"
+          (click)="open(classInfo.id)"
+          class="padded-element selectable"
+          [class.selected]="isSelected(classInfo.id)">
+        {{classInfo.name}}
+      </div>
+    </div>
+  </ng-container>
+</div>
