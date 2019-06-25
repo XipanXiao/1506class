@@ -9,6 +9,7 @@ done;
 cd report;
 if [ ! -f "index.html" ]; then
     ln -s ../v2/web/index.html index.html
+    ln -s ../styles2.css styles2.css
 fi
 
 #echo "RewriteEngine on" > .htaccess
