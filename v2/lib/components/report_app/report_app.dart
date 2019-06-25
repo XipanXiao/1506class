@@ -26,7 +26,9 @@ class AppComponent {
         path: Routing.classRouting, component: ClassViewerComponentNgFactory),
   ];
 
-  AppComponent(this._userService);
+  AppComponent(Router router, this._userService) {
+    router.navigate(Routing.getClassRouting(user.classInfo.id));
+  }
 
   User get user => _userService.user;
 }

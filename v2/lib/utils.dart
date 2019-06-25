@@ -9,7 +9,7 @@ String _getPHPUrl(String url) => window.location.hostname == 'localhost'
     ? 'http://localhost/1506class/$url'
     : '/$url';
 
-Future<String> httpGetString(String url) async =>
+Future<String> httpGetString(String url) =>
     HttpRequest.getString(_getPHPUrl(url), withCredentials: true);
 
 Future<dynamic> httpGetObject(String url) async =>
