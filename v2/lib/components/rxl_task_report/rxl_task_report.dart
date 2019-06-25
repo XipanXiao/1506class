@@ -16,14 +16,14 @@ class RxlTaskReportComponent {
   final ZBService _zbService;
 
   final grid = RxlTaskGrid()
-      ..pre_classID = 7156
-      ..half_term = 17;
+    ..pre_classID = 7156
+    ..half_term = 17;
 
   RxlTaskReportComponent(this._zbService) {
     _init();
   }
 
   void _init() async {
-    grid.taskData.addAll(await _zbService.getRxlTaskData(grid));
+    grid.taskData.addAll(await _zbService.getRxlTaskData(grid.taskDataQuery));
   }
 }

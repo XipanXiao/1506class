@@ -9123,7 +9123,7 @@ while(true)switch(u){case 0:r=s.b
 q=C.a
 p=r.f
 u=2
-return P.a4(s.a.b8(r),$async$bq)
+return P.a4(s.a.b8("type="+r.b+"&pre_classID="+H.n(r.e)+"&half_term="+H.n(r.d)),$async$bq)
 case 2:q.bt(p,b)
 return P.ag(null,t)}})
 return P.ah($async$bq,t)}}
@@ -9342,7 +9342,7 @@ b8:function(a){var u=0,t=P.ai([P.e,M.bp]),s,r,q
 var $async$b8=P.aj(function(b,c){if(b===1)return P.af(c,t)
 while(true)switch(u){case 0:q=J
 u=3
-return P.a4(B.cG("php/proxy.php?url="+H.n(P.dS(C.r,"zbServiceUrl/pre/report_ajax?"+("type="+a.b+"&pre_classID="+H.n(a.e)+"&half_term="+H.n(a.d)),C.e,!1))),$async$b8)
+return P.a4(B.cG("php/proxy.php?url="+H.n(P.dS(C.r,"zbServiceUrl/pre/report_ajax?"+a,C.e,!1))),$async$b8)
 case 3:r=q.e0(c,"data")
 s=J.o_(H.bA(r==null?[]:r),new R.kV(),M.bp).ee(0)
 u=1

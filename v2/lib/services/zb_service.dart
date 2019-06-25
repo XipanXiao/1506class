@@ -12,8 +12,8 @@ class ZBService {
   static String _getProxiedUrl(String url) =>
       '$_proxyUrl?url=${Uri.encodeComponent(url)}';
 
-  Future<List<RxlTaskData>> getRxlTaskData(ReportGrid grid) async {
-    var url = '$_serviceUrl$_file?${grid.taskDataQuery}';
+  Future<List<RxlTaskData>> getRxlTaskData(String taskDataQuery) async {
+    var url = '$_serviceUrl$_file?${taskDataQuery}';
     var map = await utils.httpGetObject(_getProxiedUrl(url));
     List list = map['data'] ?? [];
     return list.map<RxlTaskData>((user) => RxlTaskData.fromJson(user)).toList();

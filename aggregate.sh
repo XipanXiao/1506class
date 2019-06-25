@@ -5,8 +5,10 @@ for deps in *.deps; do
     for f in `cat $deps`; do cat $f >> ${deps%.*}.js; done;
     echo Created ${deps%.*}.js;
 done;
-ln -s v2/web/staff.html staff.html
-ln -s v2/web report
+
+if [ ! -f "report/index.html" ]; then
+    ln -s v2/web/index.html report/index.html
+fi
 
 #echo "RewriteEngine on" > .htaccess
 #echo "RewriteCond %{HTTP:X-Forwarded-Proto} !https" >> .htaccess
