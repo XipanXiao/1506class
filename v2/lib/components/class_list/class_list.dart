@@ -19,9 +19,6 @@ import 'package:v2/services/class_service.dart';
 class ClassListComponent {
   final Router _router;
 
-  @Input()
-  String listType = 'list';
-
   final grades = SplayTreeMap<int, List<ClassInfo>>();
 
   final _expanded = Set<int>();

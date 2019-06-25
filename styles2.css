@@ -27,11 +27,11 @@ material-button[affirmative] {
 }
 
 .selectable:hover {
-  background-color: lightcyan;
+  background-color: lightgrey;
 }
 
 .selected {
-  background-color: lightcyan;
+  background-color: lightblue;
   border-left: solid 2px green;
 }
 
