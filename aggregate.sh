@@ -6,8 +6,9 @@ for deps in *.deps; do
     echo Created ${deps%.*}.js;
 done;
 
-if [ ! -f "report/index.html" ]; then
-    ln -s v2/web/index.html report/index.html
+cd report;
+if [ ! -f "index.html" ]; then
+    ln -s ../v2/web/index.html index.html
 fi
 
 #echo "RewriteEngine on" > .htaccess
