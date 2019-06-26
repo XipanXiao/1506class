@@ -38,3 +38,7 @@ material-button[affirmative] {
 .selected.padded-element {
   padding-left: 14px;
 }
+
+.field material-input {
+  width: 100%;
+}

@@ -21,6 +21,7 @@ import 'package:v2/components/dialogs/abstract_dialog.dart';
     materialInputDirectives,
   ],
   templateUrl: 'zb_login_dialog.html',
+  styleUrls: ['zb_login_dialog.css'],
 )
 class ZBLoginDialogComponent extends AbstractDialog {
   final phpUrlBase = utils.getPHPUrl('php/proxy.php');
