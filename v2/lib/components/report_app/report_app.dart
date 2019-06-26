@@ -24,6 +24,8 @@ class AppComponent {
   final routes = <RouteDefinition>[
     RouteDefinition(
         path: Routing.classRouting, component: ClassViewerComponentNgFactory),
+    RouteDefinition(
+        path: Routing.termRouting, component: ClassViewerComponentNgFactory),
   ];
 
   AppComponent(Router router, this._userService) {

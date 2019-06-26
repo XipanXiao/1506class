@@ -7,10 +7,9 @@ for deps in *.deps; do
 done;
 
 cd report;
-if [ ! -f "index.html" ]; then
-    ln -s ../v2/web/index.html index.html
-    ln -s ../styles2.css styles2.css
-fi
+rm index.html;  ln -s ../v2/web/index.html index.html;
+rm styles2.css; ln -s ../styles2.css styles2.css;
+
 
 #echo "RewriteEngine on" > .htaccess
 #echo "RewriteCond %{HTTP:X-Forwarded-Proto} !https" >> .htaccess

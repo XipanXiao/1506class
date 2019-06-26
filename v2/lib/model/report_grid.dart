@@ -32,7 +32,7 @@ class TaskData {}
 class RxlTaskData extends TaskData {
   final int att;
   final int gx_count;
-  final int gx_time;
+  final double gx_time;
   final int mantra_count;
   final int mantra_total;
   final String name;

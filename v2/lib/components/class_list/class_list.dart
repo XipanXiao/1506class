@@ -43,6 +43,8 @@ class ClassListComponent {
     _router.navigate(Routing.getClassRouting(classId));
   }
 
-  bool isSelected(int id) =>
-    Routing.getClassRouting(id) == _router.current?.path;
+  bool isSelected(int id) {
+    if (_router.current?.parameters == null) return false;
+    return int.tryParse(_router.current.parameters['id'] ?? '') == id;
+  }
 }
