@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:angular/angular.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:v2/components/app_bar/app_bar.dart';
@@ -6,7 +8,6 @@ import 'package:v2/components/class_viewer/class_viewer.template.dart';
 import 'package:v2/components/dialogs/dialog_manager.dart';
 import 'package:v2/components/progress_manager/progress_manager.dart';
 
-import 'package:v2/model/user.dart';
 import 'package:v2/routing.dart';
 import 'package:v2/services/user_service.dart';
 
@@ -25,8 +26,6 @@ import 'package:v2/services/user_service.dart';
   ],
 )
 class AppComponent {
-  final UserService _userService;
-
   final routes = <RouteDefinition>[
     RouteDefinition(
         path: Routing.classRouting, component: ClassViewerComponentNgFactory),
@@ -34,9 +33,11 @@ class AppComponent {
         path: Routing.termRouting, component: ClassViewerComponentNgFactory),
   ];
 
-  AppComponent(Router router, this._userService) {
-    router.navigate(Routing.getClassRouting(user.classInfo.id));
+  AppComponent(Router router, UserService userService) {
+    var routing = window.location.hash;
+    if (routing.isEmpty) {
+      routing = Routing.getClassRouting(userService.user.classInfo.id);
+    }
+    router.navigate(routing);
   }
-
-  User get user => _userService.user;
 }
