@@ -1,0 +1,8 @@
+.container {
+  background-color: white;
+  left: 0;
+  padding: 16px;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}

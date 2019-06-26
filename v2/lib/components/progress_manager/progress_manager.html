@@ -1,0 +1,8 @@
+<div *ngIf="data != null" class="container">
+  {{data.statusText}}
+  <material-progress [activeProgress]="data.activeProgress"
+    [indeterminate]="data.indeterminate"
+    [max]="data.max"
+    [min]="data.min">
+  </material-progress>
+</div>
