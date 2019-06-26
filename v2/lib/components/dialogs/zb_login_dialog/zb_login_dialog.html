@@ -1,0 +1,26 @@
+<modal [(visible)]="show">
+    <material-dialog>
+        <h1 header>登录zhibei.info</h1>
+
+        <div class="dialog-content">
+            <material-input [floatLabel]="true"
+                            label="用户名"
+                            [(ngModel)]="username">
+            </material-input>
+            <material-input [floatLabel]="true"
+                            label="密码"
+                            type="password"
+                            [(ngModel)]="password">
+            </material-input>
+            <img src="{{phpUrlBase}}?url=http://www.zhibei.info/zb/captcha/create">
+            <material-input [floatLabel]="true"
+                            label="验证码"
+                            [(ngModel)]="captcha">
+            </material-input>
+        </div>
+        <div footer>
+            <material-button (trigger)="close(false)">Close</material-button>
+            <material-button (trigger)="login()">登录</material-button>
+        </div>
+    </material-dialog>
+</modal>

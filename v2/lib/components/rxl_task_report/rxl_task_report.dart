@@ -38,6 +38,7 @@ class RxlTaskReportComponent {
   RxlTaskReportComponent(this._zbService);
 
   void _reload() async {
+    await _zbService.ensureAuthenticated();
     grid.taskData.addAll(await _zbService.getRxlTaskData(grid.taskDataQuery));
   }
 }
