@@ -50,7 +50,8 @@ define('tasks/tasks', ['progress_bar/progress_bar', 'services', 'utils'],
               task_id: task.id,
               count: task.record.count,
               sub_index: task.lastRecord.sub_index,
-              duration: task.record.duration || 0
+              duration: task.record.duration || 0,
+              half_term: $scope.half_term 
             };
 
             if (!utils.validateTaskInput(task, data)) return;

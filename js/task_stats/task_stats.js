@@ -239,7 +239,8 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
                 task_id: scope.selectedTask.id,
                 count: user.count,
                 sub_index: user.sub_index - 1,
-                duration: user.duration || 0
+                duration: user.duration || 0,
+                half_term: $scope.half_term
               };
 
             if (!utils.validateTaskInput(scope.selectedTask, data)) return;
