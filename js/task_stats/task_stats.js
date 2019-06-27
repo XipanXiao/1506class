@@ -233,20 +233,42 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
             if (scope.currentPage > max) scope.currentPage = max;
             else if (scope.currentPage < 0) scope.currentPage = 0;
           };
+
+          function getHalfTerm() {
+            return rpc.get_schedules(scope.classId, 0).then(function(response) {
+              var groups = response.data && response.data.groups;
+              var lastSchedule = utils.last(groups);
+
+              if (!lastSchedule) return 0;
+  
+              var half_term = lastSchedule.term * 2;
+              var midTerm = utils.getMidTerm(lastSchedule);
+              var now = utils.unixTimestamp(new Date());
+              if (now > midTerm) {
+                half_term++;
+              } 
+              return half_term;
+            });
+          };
+          
           scope.reportTask = function(user) {
             var data = {
                 student_id: user.id,
                 task_id: scope.selectedTask.id,
                 count: user.count,
                 sub_index: user.sub_index - 1,
-                duration: user.duration || 0,
-                half_term: $scope.half_term
+                duration: user.duration || 0
               };
 
             if (!utils.validateTaskInput(scope.selectedTask, data)) return;
 
-            rpc.report_task(data).then(function (response) {
-              scope.refreshStats();
+            getHalfTerm().then(function(half_term) {
+              if (!half_term) return;
+
+              data.half_term = half_term;
+              rpc.report_task(data).then(function (response) {
+                scope.refreshStats();
+              });  
             });
           };
           scope.select = function(user) {

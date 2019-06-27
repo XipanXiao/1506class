@@ -223,7 +223,6 @@ function rename_courses($medoo) {
 function add_zb_name_for_courses($medoo) {
   if (column_exists($medoo, "courses", "zb_name")) {
     return;
-    // $medoo->query("ALTER TABLE courses drop zb_name;");
   }
   $sql = "ALTER TABLE courses
       ADD COLUMN zb_name VARCHAR(64) CHARACTER SET utf8;";
@@ -240,7 +239,7 @@ function add_task_records_half_term($medoo) {
       ADD COLUMN half_term INT;";
   $medoo->query($sql);
   echo get_db_error2($medoo);
-  echo "ALTER TABLE task_records ADD COLUMN half_term INT;";
+  echo $medoo->last_query();
 }
 
 add_district_cfo($medoo);
