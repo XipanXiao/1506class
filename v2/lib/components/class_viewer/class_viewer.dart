@@ -7,10 +7,12 @@ import 'package:v2/services/schedule_service.dart';
 
 @Component(
   selector: 'class-viewer',
-  directives: [RxlTaskReportComponent,],
+  directives: [
+    RxlTaskReportComponent,
+  ],
   templateUrl: 'class_viewer.html',
 )
-class ClassViewerComponent implements OnActivate {
+class ClassViewerComponent implements OnActivate, CanReuse {
   final ClassService _classService;
   final ScheduleService _scheduleService;
 
@@ -26,10 +28,14 @@ class ClassViewerComponent implements OnActivate {
 
     if (classInfo == null) return;
 
-    var groups = await _scheduleService.getScheduleGroups(classId, term: half_term % 2);
+    var groups =
+        await _scheduleService.getScheduleGroups(classId, term: half_term % 2);
     if (groups.isEmpty) return;
 
     classInfo.half_term = half_term == 0 ? groups.last.term * 2 : half_term;
     this.classInfo = classInfo;
   }
+
+  @override
+  Future<bool> canReuse(RouterState current, RouterState next) async => true;
 }

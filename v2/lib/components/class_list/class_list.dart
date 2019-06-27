@@ -32,12 +32,22 @@ class ClassListComponent {
     for (var classInfo in classes.values) {
       grades.putIfAbsent(classInfo.start_year, () => []).add(classInfo);
     }
+    if (_router.current != null) {
+      _expandOnRouteChange(classes, _router.current);
+    }
+  }
+
+  void _expandOnRouteChange(Map<int, ClassInfo> classes, RouterState state) {
+    var id = int.tryParse(state.parameters['id']);
+    var classInfo = classes[id];
+    if (classInfo != null && !isExpanded(classInfo.start_year)) {
+      toggle(classInfo.start_year);
+    }
   }
 
   bool isExpanded(int year) => _expanded.contains(year);
 
-  void toggle(int year) =>
-      _expanded.add(year) || _expanded.remove(year);
+  void toggle(int year) => _expanded.add(year) || _expanded.remove(year);
 
   void open(int classId) {
     _router.navigate(Routing.getClassRouting(classId));

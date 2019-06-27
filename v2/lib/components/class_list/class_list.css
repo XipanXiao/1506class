@@ -1,5 +1,6 @@
 .class-list {
   background-color: white;
   height: 100%;
+  overflow: auto;
   width: 312px;
 }
