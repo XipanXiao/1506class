@@ -242,6 +242,12 @@ function add_task_records_half_term($medoo) {
   echo $medoo->last_query();
 }
 
+function change_task_records_timestamp($medoo) {
+  $sql = "ALTER TABLE task_records
+      MODIFY ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;";
+  $medoo->query($sql);
+}
+
 add_district_cfo($medoo);
 add_teacher_for_schedules($medoo);
 add_shipping_donation_for_orders($medoo);
@@ -249,6 +255,7 @@ create_inventory_tables($medoo);
 create_org_tables($medoo);
 add_staff_columns($medoo);
 add_zb_name_for_courses($medoo);
-add_task_records_half_term($medoo)
+add_task_records_half_term($medoo);
+change_task_records_timestamp($medoo);
 ?>
 </html>
