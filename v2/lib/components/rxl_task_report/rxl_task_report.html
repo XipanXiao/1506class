@@ -1,27 +1,37 @@
-<div class="container">
-  <div>修行(单位:个) & 出勤 & 限制性课程</div>
-  <table border="1">
+<div>修行(单位:个) & 出勤 & 限制性课程</div>
+<table border="1">
+  <tr>
+    <td rowspan="2">序号</td>
+    <td rowspan="2">姓名</td>
+    <td rowspan="2">数据源</td>
+    <td rowspan="2">出勤</td>
+    <td colspan="2">观修</td>
+    <td colspan="2">观音心咒</td>
+  </tr>
+  <tr>
+    <td>座次</td>
+    <td>时间</td>
+    <td>数量</td>
+    <td>总计</td>
+  </tr>
+  <ng-container *ngFor="let user of grid.taskData.values; let index = index">
     <tr>
-        <td rowspan="2">序号</td>
-        <td rowspan="2">姓名</td>
-        <td rowspan="2">出勤</td>
-        <td colspan="2">观修</td>
-        <td colspan="2">观音心咒</td>
-    </tr>
-    <tr>
-        <td>座次</td>
-        <td>时间</td>
-        <td>数量</td>
-        <td>总计</td>
-    </tr>
-    <tr *ngFor="let user of grid.taskData; let index = index">
-        <td>{{index}}</td>
-        <td>{{user.name}}</td>
+        <td rowspan="2">{{index}}</td>
+        <td rowspan="2">{{user.name}}</td>
+        <td>bicw</td>
         <td>{{user.att}}</td>
         <td>{{user.gx_count}}</td>
         <td>{{user.gx_time}}</td>
         <td>{{user.mantra_count}}</td>
         <td>{{user.mantra_total}}</td>
     </tr>
-  </table>
-</div>
+    <tr>
+        <td>zhibei.info</td>
+        <td>{{grid.zbTaskData[user.userID]?.att}}</td>
+        <td>{{grid.zbTaskData[user.userID]?.gx_count}}</td>
+        <td>{{grid.zbTaskData[user.userID]?.gx_time}}</td>
+        <td>{{grid.zbTaskData[user.userID]?.mantra_count}}</td>
+        <td>{{grid.zbTaskData[user.userID]?.mantra_total}}</td>
+    </tr>
+  </ng-container>
+</table>

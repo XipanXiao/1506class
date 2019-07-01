@@ -30,16 +30,17 @@ class ReportGrid {
 class TaskData {}
 
 class RxlTaskData extends TaskData {
-  final int att;
-  final int gx_count;
-  final double gx_time;
-  final int mantra_count;
-  final int mantra_total;
   final String name;
   final int operation;
   final int select_all;
   final int userID;
   final int user_style;
+
+  int att;
+  int gx_count;
+  double gx_time;
+  int mantra_count;
+  int mantra_total;
 
   RxlTaskData(
       {this.att,
@@ -55,20 +56,22 @@ class RxlTaskData extends TaskData {
 
   RxlTaskData.fromJson(Map<String, dynamic> map)
       : att = map['att'],
-        gx_count = map['gx_count'],
-        gx_time = map['gx_time'],
-        mantra_count = map['mantra_count'],
-        mantra_total = map['mantra_total'],
+        gx_count = map['gx_count'] ?? 0,
+        gx_time = map['gx_time'] ?? 0,
+        mantra_count = map['mantra_count'] ?? 0,
+        mantra_total = map['mantra_total'] ?? 0,
         name = map['name'],
-        operation = int.parse(map['operation']),
-        select_all = int.parse(map['select_all']),
-        user_style = int.parse(map['user_style']),
-        userID = int.parse(map['userID']);
+        operation = int.tryParse(map['operation'] ?? ''),
+        select_all = int.tryParse(map['select_all'] ?? ''),
+        user_style = int.tryParse(map['user_style'] ?? ''),
+        userID = int.tryParse(map['userID'] ?? '');
 }
 
 class RxlTaskGrid extends ReportGrid {
+  final taskData = <int, RxlTaskData>{};
+
   /// zhibein.info task data.
-  final taskData = <RxlTaskData>[];
+  final zbTaskData = <int, RxlTaskData>{};
 
   RxlTaskGrid() : super(2, 'rxl_work_grid');
 }

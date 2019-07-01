@@ -1,2 +1,5 @@
-<rxl-task-report [classInfo]="classInfo">
+<h2>{{classInfo?.name}}</h2>
+<h4>{{halfTermLabel}}</h4>
+<rxl-task-report [classInfo]="classInfo"
+    *ngIf="classInfo?.department_id == Department.RUXINGLUN_DEPARTMENT">
 </rxl-task-report>

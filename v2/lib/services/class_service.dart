@@ -20,4 +20,16 @@ class ClassService {
     }
     return _cache;
   }
+
+  Future<ClassInfo> getClassById(int id) async {
+    var classInfo = _cache[id];
+    if (classInfo != null) return classInfo;
+
+    var url = '$_serviceUrl?rid=classes&classId=$id';
+    var map = await utils.httpGetObject(url);
+    for (var id in map.keys) {
+      _cache[int.parse(id)] = ClassInfo.fromJson(map[id]);
+    }
+    return _cache[id];
+  }
 }

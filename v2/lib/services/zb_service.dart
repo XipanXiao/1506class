@@ -19,11 +19,13 @@ class ZBService {
 
   ZBService(this._dialogService, this._progressService);
 
-  Future<List<RxlTaskData>> getRxlTaskData(String taskDataQuery) async {
+  Future<Map<int, RxlTaskData>> getRxlTaskData(String taskDataQuery) async {
     var url = '$_serviceUrl$_file?${taskDataQuery}';
     var map = await utils.httpGetObject(_getProxiedUrl(url));
     List list = map['data'] ?? [];
-    return list.map<RxlTaskData>((user) => RxlTaskData.fromJson(user)).toList();
+    var users = list.map<RxlTaskData>((user) => RxlTaskData.fromJson(user));
+    return Map<int, RxlTaskData>.fromIterable(users,
+        key: (user) => user.userID);
   }
 
   Future<bool> _isAuthenticated() async {

@@ -13,15 +13,17 @@ class User implements BaseEntity {
 
   int education;
   int id;
+  final zb_id;
 
   final ClassInfo classInfo;
   StaffInfo staff;
 
-  User({this.classInfo});
+  User({this.classInfo, this.zb_id});
 
   User.fromJson(Map<String, dynamic> map)
       : name = map['name'],
         id = int.parse(map['id']),
+        zb_id = map['zb_id'],
         email = map['email'],
         nickName = map['nickname'],
         education = map['education'],
