@@ -14,7 +14,7 @@
     <td>数量</td>
     <td>总计</td>
   </tr>
-  <ng-container *ngFor="let user of grid.taskData.values; let index = index">
+  <ng-container *ngFor="let user of grid.taskData[half_term]?.values; let index = index">
     <tr>
         <td rowspan="2">{{index}}</td>
         <td rowspan="2">{{user.name}}</td>
@@ -27,11 +27,11 @@
     </tr>
     <tr>
         <td>zhibei.info</td>
-        <td>{{grid.zbTaskData[user.userID]?.att}}</td>
-        <td>{{grid.zbTaskData[user.userID]?.gx_count}}</td>
-        <td>{{grid.zbTaskData[user.userID]?.gx_time}}</td>
-        <td>{{grid.zbTaskData[user.userID]?.mantra_count}}</td>
-        <td>{{grid.zbTaskData[user.userID]?.mantra_total}}</td>
+        <td>{{getZbData(user.userID)?.att}}</td>
+        <td>{{getZbData(user.userID)?.gx_count}}</td>
+        <td>{{getZbData(user.userID)?.gx_time}}</td>
+        <td>{{getZbData(user.userID)?.mantra_count}}</td>
+        <td>{{getZbData(user.userID)?.mantra_total}}</td>
     </tr>
   </ng-container>
 </table>

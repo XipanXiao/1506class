@@ -15,38 +15,53 @@ class TaskRecordService {
   double _toGuanxiuHour(int minutes) =>
       double.parse(min(minutes / 60.0, 25.5).toStringAsFixed(1));
 
-  Map<int, RxlTaskData> _parseRxlTaskStats(
-      List records, Map<int, User> users, Map<int, Task> tasks) {
-    var rawRecords = Map<int, Map<String, dynamic>>.fromIterables(users.keys,
-        users.values.map((user) => {'name': user.name, 'userID': user.zb_id}));
+  Map<int, Map<int, T>> _parseTaskStats<T>(List records, Map<int, User> users,
+      Map<int, Task> tasks, TaskDataFromJson<T> creator) {
+    var rawRecords = <int, Map<int, Map<String, dynamic>>>{};
+
     for (var record in records) {
       var taskRecord = TaskRecord.fromJson(record);
-      var task = tasks[taskRecord.task_id];
+      int half_term = taskRecord.half_term;
+      if (half_term == null || half_term == 0) continue;
 
-      var rawRecord = rawRecords[taskRecord.student_id];
+      var halfTermData = rawRecords.putIfAbsent(half_term, () {
+        return Map<int, Map<String, dynamic>>.fromIterables(
+            users.keys,
+            users.values.map((user) =>
+                {'id': user.id, 'name': user.name, 'userID': user.zb_id}));
+      });
+
+      var task = tasks[taskRecord.task_id];
+      var rawRecord = halfTermData[taskRecord.student_id];
       rawRecord['${task.zb_name}_count'] = taskRecord.count;
       if (task.duration != 0) {
         rawRecord['${task.zb_name}_time'] =
             _toGuanxiuHour(taskRecord.duration ?? 0);
       }
     }
-    return rawRecords.map<int, RxlTaskData>((id, data) =>
-        MapEntry<int, RxlTaskData>(id, RxlTaskData.fromJson(data)));
+
+    var halfTerms = <int, Map<int, T>>{};
+    for (var half_term in rawRecords.keys) {
+      var halfTermRawData = rawRecords[half_term];
+      halfTerms[half_term] = halfTermRawData
+          .map<int, T>((id, data) => MapEntry<int, T>(id, creator(data)));
+    }
+    return halfTerms;
   }
 
-  Future<Map<int, RxlTaskData>> getRxlTaskRecords(
-      int classId, String reportGrid, int half_term) async {
-    var url = '$_serviceUrl?rid=task_records&grid_type=$reportGrid'
-        '&classId=$classId&half_term=$half_term';
+  Future<Map<int, Map<int, T>>> getTaskDataStats<T>(
+      int classId, TaskDataFromJson<T> creator) async {
+    var url = '$_serviceUrl?rid=task_records&classId=$classId';
 
     Map map = await utils.httpGetObject(url);
     var tasks = map['tasks'].map<Task>((task) => Task.fromJson(task));
     var users = map['users'].values.map<User>((task) => User.fromJson(task));
 
-    return _parseRxlTaskStats(
+    return _parseTaskStats(
         map['records'] as List,
         Map<int, User>.fromIterable(users, key: (user) => user.id),
-        Map<int, Task>.fromIterable(tasks, key: (task) => task.id));
+        Map<int, Task>.fromIterable(tasks, key: (task) => task.id),
+        creator);
   }
 
   Future<int> getLastHalfTerm(int classId) async {
