@@ -547,6 +547,25 @@ define('utils', [], function() {
         midTerm.setDate(startDate.getDate() + 7 * weeks);
         return this.unixTimestamp(midTerm);
       },
+      /// Returns the half_term a schedule identfied by [index]
+      /// belongs to.
+      getHalfTerm: function(scheduleGroup, index, limited) {
+        var half_term = scheduleGroup.term * 2;
+
+        if (limited) {
+          var length = utils.keys(scheduleGroup.limited_courses).length;
+          var firstHalf = index <= (length / 2);
+          return firstHalf ? half_term : half_term + 1;
+        }
+        var counter = 0;
+        var schedules = scheduleGroup.schedules;
+        for (var id in schedules) {
+          var schedule = schedules[id];
+          if (schedule.middle) return half_term + (index > counter ? 1 : 0);
+          counter++;
+        }
+        return half_term;
+      },
       getHalfTerms: function(scheduleGroup) {
         var now = utils.unixTimestamp(new Date());
         var midTerm = utils.getMidTerm(scheduleGroup);
@@ -567,7 +586,7 @@ define('utils', [], function() {
       },
       /// Returns true if [schedule] has no classes.
       vacation: function(schedule) {
-        return !parseInt(schedule.course_id);
+        return !parseInt(schedule.course_id) && !parseInt(schedule.course_id2);
       },
       /// Sets middle to true for the schedule of the week for middle 
       /// term reporting for the schedule [group].

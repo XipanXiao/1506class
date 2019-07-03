@@ -10,7 +10,7 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
             link: function($scope) {
               $scope.attendOptions = ['缺席', '出席', '请假'];
               $scope.vacation = function(schedule) {
-                return !parseInt(schedule.course_id); 
+                return !parseInt(schedule.course_id) && !parseInt(schedule.course_id2); 
               };
 
               $scope.getWeeklyTime = function(group, index) {
@@ -59,11 +59,12 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                 return true;
               };
               
-              $scope.reportTask = function (course_id) {
+              $scope.reportTask = function (course_id, group, index, limited) {
                 if ($scope.user.classId == 1) return;
 
                 var record = $scope.records[course_id];
                 record.course_id = course_id;
+                record.half_term = utils.getHalfTerm(group, index, limited);
                 rpc.report_schedule_task(record);
               };
               
@@ -94,7 +95,7 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                     '报数已截止于' + utils.toDateTime(tm).toLocaleString() : '';
               };
             },
-            templateUrl : 'js/schedule_tasks/schedule_tasks.html?tag=201906062203'
+            templateUrl : 'js/schedule_tasks/schedule_tasks.html?tag=201907062203'
           };
         });
 });

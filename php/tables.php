@@ -566,6 +566,7 @@ function report_schedule_task($user_id, $schedule) {
   
   $course_id = intval($schedule["course_id"]);
   $datas = convert_schedule_record($schedule, true);
+  $datas["half_term"] = $schedule["half_term"];
 
   $table = "schedule_records";
 

@@ -87,7 +87,8 @@ define('services', ['utils'], function() {
               course_id: schedule.course_id,
               attended: schedule.attended,
               video: schedule.video,
-              text: schedule.text
+              text: schedule.text,
+              half_term: schedule.half_term
             };
 
             return http_form_post($http, $httpParamSerializerJQLike(data));

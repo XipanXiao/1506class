@@ -20,7 +20,7 @@ define('learning_records/learning_records', [
 
               $scope.attendOptions = ['缺席', '出席', '请假'];
               $scope.vacation = function(schedule) {
-                return !parseInt(schedule.course_id); 
+                return !parseInt(schedule.course_id) && !parseInt(schedule.course_id2);
               };
 
               $scope.$watch('classId', function() {
@@ -37,16 +37,18 @@ define('learning_records/learning_records', [
 
                   $scope.term = group.term;
                   $scope.schedule_groups = response.data.groups;
+                  utils.forEach($scope.schedule_groups, utils.calcMiddleWeek);
                   $scope.users = response.data.users;
                   group.courseMap = utils.toMap(group.courses, "zb_name");
                 });
               };
               
-              $scope.reportTask = function($event, user, course_id) {
+              $scope.reportTask = function($event, user, course_id, group, index, limited) {
                 $event.stopPropagation();
                 var record = user.records[course_id];
                 record.student_id = user.id;
                 record.course_id = course_id;
+                record.half_term = utils.getHalfTerm(group, index, limited);
                 rpc.report_schedule_task(record).then(function(response) {
                   if (!parseInt(response.data.updated)) {
                     $scope.reload($scope.term);
@@ -527,7 +529,7 @@ define('learning_records/learning_records', [
                 utils.requestOneByOne(requests).then(done);
               };
             },
-            templateUrl : 'js/learning_records/learning_records.html?tag=201906152208'
+            templateUrl : 'js/learning_records/learning_records.html?tag=201907152208'
           };
         });
 });

@@ -22,7 +22,7 @@
                 class="css-table-cell">
               <input type="checkbox" ng-model="user.records[schedule.course_id].attended"
                   title="{{user.name + '/' + group.courses[schedule.course_id].name}}"
-                  ng-click="reportTask($event, user, schedule.course_id)">
+                  ng-click="reportTask($event, user, schedule.course_id, group, $index)">
             </div>
           </div>
         </div>
@@ -80,21 +80,21 @@
                   'audited': audited(user, {course_id: schedule.course_id})}">
                 <input type="checkbox" ng-model="user.records[schedule.course_id].video"
                     title="{{group.courses[schedule.course_id].name}}听传承"
-                    ng-click="reportTask($event, user, schedule.course_id)">
+                    ng-click="reportTask($event, user, schedule.course_id, group, $index)">
                 <input type="checkbox" ng-model="user.records[schedule.course_id].text"
                     title="{{group.courses[schedule.course_id].name}}读法本"
-                    ng-click="reportTask($event, user, schedule.course_id)">
+                    ng-click="reportTask($event, user, schedule.course_id, group, $index)">
               </div>
               <div ng-if="schedule.course_id2">
                 <hr/>
                 <input type="checkbox" ng-model="user.records[schedule.course_id2].video"
                     ng-if="schedule.course_id2"
                     title="{{group.courses[schedule.course_id2].name}}听传承"
-                    ng-click="reportTask($event, user, schedule.course_id2)">
+                    ng-click="reportTask($event, user, schedule.course_id2, group, $index)">
                 <input type="checkbox" ng-model="user.records[schedule.course_id2].text"
                     ng-if="schedule.course_id2"
                     title="{{group.courses[schedule.course_id2].name}}读法本"
-                    ng-click="reportTask($event, user, schedule.course_id2)">
+                    ng-click="reportTask($event, user, schedule.course_id2, group, $index)">
               </div>
             </div>
           </div>
@@ -125,9 +125,9 @@
                  ng-class="{'diff-modified': hasProblem(user, {course_id: course.id}),
                      'audited': audited(user, {course_id: course.id})}">
               <input type="checkbox" ng-model="user.records[course.id].video" title="{{course.name}}听传承"
-                ng-click="reportTask($event, user, course.id)">
+                ng-click="reportTask($event, user, course.id, group, $index, true)">
               <input type="checkbox" ng-model="user.records[course.id].text" title="{{course.name}}读法本"
-                ng-click="reportTask($event, user, course.id)">
+                ng-click="reportTask($event, user, course.id, group, $index, true)">
             </div>
           </div>
         </div>

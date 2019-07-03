@@ -246,6 +246,26 @@ function change_task_records_timestamp($medoo) {
   $sql = "ALTER TABLE task_records
       MODIFY ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;";
   $medoo->query($sql);
+  echo $medoo->last_query(). "<br>\n";
+}
+
+function add_schedule_records_half_term($medoo) {
+  if (column_exists($medoo, "schedule_records", "half_term")) {
+    return;
+  }
+
+  $sql = "ALTER TABLE schedule_records
+      ADD COLUMN half_term INT;";
+  $medoo->query($sql);
+  echo get_db_error2($medoo);
+  echo $medoo->last_query(). "<br>\n";
+}
+
+function change_schedule_records_timestamp($medoo) {
+  $sql = "ALTER TABLE schedule_records
+      MODIFY ts TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;";
+  $medoo->query($sql);
+  echo $medoo->last_query(). "<br>\n";
 }
 
 add_district_cfo($medoo);
@@ -257,5 +277,7 @@ add_staff_columns($medoo);
 add_zb_name_for_courses($medoo);
 add_task_records_half_term($medoo);
 change_task_records_timestamp($medoo);
+add_schedule_records_half_term($medoo);
+change_schedule_records_timestamp($medoo);
 ?>
 </html>
