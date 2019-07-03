@@ -28,16 +28,22 @@ class ReportGrid {
 }
 
 class TaskData {
-  /// bicw id.
+  /// bicw user id.
   int id;
 
+  /// User name.
   final String name;
 
-  TaskData({this.id, this.name});
+  /// Times of attendence of this user for
+  /// a specific half term.
+  int att = 0;
+
+  TaskData({this.id, this.name, this.att});
 
   TaskData.fromJson(Map<String, dynamic> map)
       : id = map['id'],
-        name = map['name'];
+        name = map['name'],
+        att = map['att'] ?? 0;
 }
 
 typedef T TaskDataFromJson<T>(Map<String, dynamic> json);
@@ -46,12 +52,11 @@ class RxlTaskData extends TaskData {
   final int operation;
   final int select_all;
 
-  /// zhibei.info id.
+  /// zhibei.info user id.
   final int userID;
 
   final int user_style;
 
-  int att;
   int gx_count;
   double gx_time;
   int mantra_count;
@@ -60,7 +65,7 @@ class RxlTaskData extends TaskData {
   RxlTaskData(
       {int id,
       String name,
-      this.att,
+      int att,
       this.gx_count,
       this.gx_time,
       this.mantra_count,
@@ -69,11 +74,10 @@ class RxlTaskData extends TaskData {
       this.select_all,
       this.user_style,
       this.userID})
-      : super(id: id, name: name);
+      : super(id: id, name: name, att: att);
 
   RxlTaskData.fromJson(Map<String, dynamic> map)
-      : att = map['att'],
-        gx_count = map['gx_count'] ?? 0,
+      : gx_count = map['gx_count'] ?? 0,
         gx_time = map['gx_time'] ?? 0,
         mantra_count = map['mantra_count'] ?? 0,
         mantra_total = map['mantra_total'] ?? 0,

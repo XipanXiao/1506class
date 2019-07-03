@@ -39,6 +39,63 @@ function offsetHalfYear($date, $operator = "+") {
   return $date;
 }
 
+function get_course_ids($schedule) {
+  $ids = [];
+  if (!empty($schedule["course_id"])) {
+    array_push($ids, intval($schedule["course_id"]));
+  }
+  if (!empty($schedule["course_id2"])) {
+    array_push($ids, intval($schedule["course_id2"]));
+  }
+  return $ids;
+}
+
+function vacation($schedule) {
+  return empty($schedule["course_id"]) && empty($schedule["course_id2"]);
+}
+
+function printTermCourses($group) {
+  global $medoo;
+
+  echo sprintf("Term: %d<br>\n", $group["term"]);
+  $names = $medoo->select("courses", "name", ["id" => $group["first_half"]]);
+  if (!empty($names)) {
+    echo sprintf("first half: %s<br>\n", join(",", $names));
+  }
+  $names = $medoo->select("courses", "name", ["id" => $group["second_half"]]);
+  if (!empty($names)) {
+    echo sprintf("second half: %s<br>\n", join(",", $names));
+  }
+}
+
+function prepare_middle_week($group) {
+  global $medoo;
+  $schedules = $medoo->select("schedules", "*", ["group_id" => $group["id"]]);
+
+  $vacations = array_filter($schedules, "vacation");
+  $total = count($schedules);
+  $effective = $total - count($vacations);
+  $middle = empty($group["mid_week"]) 
+      ? ($effective / 2 + 1)
+      : intval($group["mid_week"]);
+
+  $i = 0;
+  $group["first_half"] = [];
+  $group["second_half"] = [];
+  foreach($schedules as $schedule) {
+    $ids = get_course_ids($schedule);
+    if (count($ids) == 0) continue;
+
+    if (++$i <= $middle) {
+      $group["first_half"] = array_merge($group["first_half"], $ids);
+    } else {
+      $group["second_half"] = array_merge($group["second_half"], $ids);
+    }
+  }
+  // printTermCourses($group);
+  return $group;
+}
+
 function prepareEndTime($groups) {
   global $formatStr;
 
@@ -86,7 +143,7 @@ function verify($student_ids, $startTime, $endTime, $half_term) {
 
 function set_half_term_for_range($student_ids, $startTime, $endTime, $half_term,
     $dryrun = TRUE) {
-  // return verify($student_ids, $startTime, $endTime, $half_term);
+  return;
   global $medoo;
 
   echo sprintf("Setting half_term between [%s, %s] to %d for (%s)<br>\n",
@@ -141,6 +198,35 @@ function getTermEnd($groups, $term) {
   return $nextGroup ? $group["end_time"] : date($formatStr);
 } 
 
+function set_half_term_for_schedule_tasks($student_ids, $group) {
+  global $medoo;
+
+  $half_term = intval($group["term"]) * 2;
+  $updated = $medoo->update("schedule_records", 
+      ["half_term" => $half_term],
+      ["AND" => [
+        "half_term" => NULL,
+        "course_id" => $group["first_half"],
+        "student_id" => $student_ids
+      ]]);
+  if ($updated) {
+      echo sprintf("%s<br>\n. Updated %d records<br>\n",
+          $medoo->last_query(), $updated);
+  }
+
+  $updated = $medoo->update("schedule_records", 
+      ["half_term" => ($half_term == 2 ? 2 : ($half_term + 1))],
+      ["AND" => [
+        "half_term" => NULL,
+        "course_id" => $group["second_half"],
+        "student_id" => $student_ids
+      ]]);
+  if ($updated) {
+      echo sprintf("%s<br>\n. Updated %d records<br>\n",
+          $medoo->last_query(), $updated);
+  }
+}
+
 function fix_half_term_for_terms($classId, $groups) {
   global $medoo;
 
@@ -168,6 +254,7 @@ function fix_half_term_for_terms($classId, $groups) {
       set_half_term_for_range($student_ids, $midTime, $endTime,
           $term * 2 + 1, FALSE);
     }
+    set_half_term_for_schedule_tasks($student_ids, $group);
   }
 }
 
@@ -199,6 +286,7 @@ function fix_half_term($classId) {
   }
 
   $terms = prepareEndTime($terms);
+  $terms = array_map("prepare_middle_week", $terms);
   fix_half_term_for_terms($classId, $terms);
 }
 

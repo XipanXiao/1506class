@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:angular/angular.dart';
+import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/task.dart';
 import 'package:v2/model/task_data.dart';
 import 'package:v2/model/report_grid.dart';
@@ -19,6 +20,7 @@ class TaskRecordService {
       Map<int, Task> tasks, TaskDataFromJson<T> creator) {
     var rawRecords = <int, Map<int, Map<String, dynamic>>>{};
 
+    // Collect raw stats from raw records.
     for (var record in records) {
       var taskRecord = TaskRecord.fromJson(record);
       int half_term = taskRecord.half_term;
@@ -40,6 +42,7 @@ class TaskRecordService {
       }
     }
 
+    // Convert collected raw stats to resulting [TaskData].
     var halfTerms = <int, Map<int, T>>{};
     for (var half_term in rawRecords.keys) {
       var halfTermRawData = rawRecords[half_term];
@@ -49,7 +52,17 @@ class TaskRecordService {
     return halfTerms;
   }
 
-  Future<Map<int, Map<int, T>>> getTaskDataStats<T>(
+  void _parseAttendance<T extends TaskData>(
+      Iterable<ScheduleRecord> schedules, Map<int, Map<int, T>> stats) {
+    for (var schedule in schedules) {
+      var halfTerm = stats[schedule.half_term];
+      if (halfTerm == null) continue;
+      var user = halfTerm[schedule.student_id];
+      user?.att += (schedule.attended ? 1 : 0);
+    }
+  }
+
+  Future<Map<int, Map<int, T>>> getTaskDataStats<T extends TaskData>(
       int classId, TaskDataFromJson<T> creator) async {
     var url = '$_serviceUrl?rid=task_records&classId=$classId';
 
@@ -57,11 +70,17 @@ class TaskRecordService {
     var tasks = map['tasks'].map<Task>((task) => Task.fromJson(task));
     var users = map['users'].values.map<User>((task) => User.fromJson(task));
 
-    return _parseTaskStats(
+    var stats = _parseTaskStats(
         map['records'] as List,
         Map<int, User>.fromIterable(users, key: (user) => user.id),
         Map<int, Task>.fromIterable(tasks, key: (task) => task.id),
         creator);
+
+    var schedules = map['schedules']
+        .map<ScheduleRecord>((map) => ScheduleRecord.fromJson(map));
+
+    _parseAttendance(schedules, stats);
+    return stats;
   }
 
   Future<int> getLastHalfTerm(int classId) async {

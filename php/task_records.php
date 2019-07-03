@@ -27,22 +27,27 @@ function get_task_data_stats($classId) {
 
   $users = keyed_by_id($medoo->select("users", ["id", "name", "zb_id"],
     ["classId" => $classId]));
+  $student_ids = array_keys($users);
 
   $sql = sprintf("SELECT half_term, student_id, task_id, sub_index,
       SUM(count) as count, SUM(duration) as duration
       FROM task_records
       WHERE student_id in (%s)
       GROUP BY half_term, student_id, task_id, sub_index;",
-      join(",", array_keys($users)));
+      join(",", $student_ids));
   $records = $medoo->query($sql)->fetchAll();
+
+  $schedules = $medoo->select("schedule_records", "*",
+      ["student_id" => $student_ids]);
 
   $tasks = $medoo->select("tasks", ["id", "zb_name"]);
   // Returns the raw data and let the client to handle,
   // since dart is preferrable.
   return [
-    "users" => $users,
     "records" => $records,
-    "tasks" => $tasks
+    "schedules" => $schedules,
+    "tasks" => $tasks,
+    "users" => $users,
   ];
 }
 
