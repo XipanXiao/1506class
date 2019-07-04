@@ -21,6 +21,22 @@ class ReportGrid {
   /// A map from zhibei id to bicw id.
   final userIdMap = <int, int>{};
 
+  /// Bicw and zhibei.info task data.
+  ///
+  /// It is a map of maps (from user id to her task
+  /// data of a certain half_term). Then the outer map has
+  /// all half_terms. Like
+  ///
+  /// half_term 0, 1, 3 has a null map.
+  /// half_term 2 has a map like
+  /// {
+  ///   user_id1: user1 task data of the first term,
+  ///   user_id2: user2 task data of the first term,
+  ///   user_id3: user3 task data of the first term,
+  /// }
+  /// ...
+  final taskData = <int, Map<int, TaskDataPair>>{};
+
   ReportGrid(this.courseID, this.grid_type);
 
   String lessonQuery(int half_term) => 'courseID=$courseID&half_term=$half_term'
@@ -97,22 +113,6 @@ class RxlTaskData extends TaskData {
 }
 
 class RxlTaskGrid extends ReportGrid {
-  /// Bicw and zhibei.info task data.
-  ///
-  /// It is a map of maps (from user id to her task
-  /// data of a certain half_term). Then the outer map has
-  /// all half_terms. Like
-  ///
-  /// half_term 0, 1, 3 has a null map.
-  /// half_term 2 has a map like
-  /// {
-  ///   user_id1: user1 task data of the first term,
-  ///   user_id2: user2 task data of the first term,
-  ///   user_id3: user3 task data of the first term,
-  /// }
-  /// ...
-  final taskData = <int, Map<int, TaskDataPair>>{};
-
   RxlTaskGrid() : super(2, 'rxl_work_grid');
 
   /// Adds loaded bicw task data to this grid.

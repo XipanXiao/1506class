@@ -1,4 +1,6 @@
 import 'package:angular/angular.dart';
+import 'package:angular_components/angular_components.dart';
+import 'package:angular_components/material_select/material_dropdown_select.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:v2/components/rxl_task_report/rxl_task_report.dart';
 import 'package:v2/model/class_info.dart';
@@ -10,27 +12,37 @@ import 'package:v2/services/task_record_service.dart';
 @Component(
   selector: 'class-viewer',
   directives: [
+    MaterialDropdownSelectComponent,
     NgIf,
     RxlTaskReportComponent,
+  ],
+  providers: [
+    materialProviders,
   ],
   templateUrl: 'class_viewer.html',
   styleUrls: ['class_viewer.css'],
   exports: [Department],
 )
 class ClassViewerComponent implements OnActivate, CanReuse {
-  static const halfTermLabels = ['上', '下'];
+  static const _halfTermLabels = ['上', '下'];
+
   final ClassService _classService;
   final Router _router;
   final TaskRecordService _taskRecordService;
 
+  /// All possible half terms.
+  final halfTerms = List<int>.generate(17, (index) => index + 1)
+    ..remove(1)
+    ..remove(3);
+  int _halfTerm;
   ClassInfo classInfo;
 
   ClassViewerComponent(
       this._classService, this._router, this._taskRecordService);
 
-  int get _term => ((classInfo?.half_term ?? 0) / 2).floor();
-  int get _half => ((classInfo?.half_term ?? 0) % 2);
-  String get halfTermLabel => '第${_term}学期${halfTermLabels[_half]}半学期';
+  String getHalfTermLabel(halfTerm) => halfTerm == 2
+      ? '第1学期'
+      : '第${(halfTerm / 2).floor()}学期${_halfTermLabels[halfTerm % 2]}';
 
   @override
   Future onActivate(RouterState previous, RouterState current) async {
@@ -39,16 +51,15 @@ class ClassViewerComponent implements OnActivate, CanReuse {
     var classInfo = await _classService.getClassById(classId);
     if (classInfo == null) return;
 
-    int half_term = int.tryParse(current.parameters['half_term'] ?? '');
-    if (half_term == null) {
-      half_term = await _taskRecordService.getLastHalfTerm(classId);
-      if (half_term != 0) {
-        _redirect(classId, half_term);
+    _halfTerm = int.tryParse(current.parameters['half_term'] ?? '');
+    if (_halfTerm == null) {
+      _halfTerm = await _taskRecordService.getLastHalfTerm(classId);
+      if (_halfTerm != 0) {
+        _redirect(classId, _halfTerm);
       }
       return;
     }
 
-    classInfo.half_term = half_term;
     this.classInfo = classInfo;
   }
 
@@ -57,5 +68,11 @@ class ClassViewerComponent implements OnActivate, CanReuse {
 
   void _redirect(int classId, int half_term) {
     _router.navigate(Routing.getHalfTermRouting(classId, half_term));
+  }
+
+  int get halfTerm => _halfTerm;
+  set halfTerm(int halfTerm) {
+    if (classInfo == null) return;
+    _redirect(classInfo.id, halfTerm);
   }
 }

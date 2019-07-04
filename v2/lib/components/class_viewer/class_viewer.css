@@ -1,3 +1,7 @@
 :host {
   padding: 16px;
 }
+
+::ng-deep .material-popup-content {
+  min-height: 400px !important;
+}

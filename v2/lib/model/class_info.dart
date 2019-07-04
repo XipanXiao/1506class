@@ -9,7 +9,7 @@ class ClassInfo {
   final String name;
   final String class_room;
 
-  int half_term;
+  /// Cached task data.
   ReportGrid taskGrid;
 
   ClassInfo.fromJson(Map<String, dynamic> map)

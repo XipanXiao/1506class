@@ -1,5 +1,6 @@
 import 'package:angular/angular.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
+import 'package:angular_components/utils/disposer/disposer.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:v2/model/class_info.dart';
 import 'package:v2/model/report_grid.dart';
@@ -15,10 +16,12 @@ import 'package:v2/services/zb_service.dart';
   templateUrl: 'rxl_task_report.html',
   styleUrls: ['rxl_task_report.css'],
 )
-class RxlTaskReportComponent {
+class RxlTaskReportComponent implements OnDestroy {
   final ZBService _zbService;
   final Router _router;
   final TaskRecordService _taskService;
+
+  final _disposer = Disposer.oneShot();
 
   @Input()
   set classInfo(ClassInfo classInfo) {
@@ -29,25 +32,33 @@ class RxlTaskReportComponent {
     _reload();
   }
 
-  int half_term = 0;
-  RxlTaskGrid get grid => _classInfo.taskGrid;
+  RxlTaskGrid get grid => _classInfo?.taskGrid;
+
+  int halfTerm;
 
   ClassInfo _classInfo;
-  RxlTaskReportComponent(this._zbService, this._router, this._taskService);
+  RxlTaskReportComponent(this._zbService, this._router, this._taskService) {
+    _disposer.addStreamSubscription(_router.onRouteActivated.listen(_reload));
+  }
 
-  void _reload() async {
-    half_term = int.parse(_router.current.parameters['half_term']);
+  void _reload([_]) async {
+    halfTerm = int.parse(_router.current.parameters['half_term']);
     if (grid.taskData.isEmpty) {
       var taskData = await _taskService.getTaskDataStats(
           _classInfo.id, (json) => RxlTaskData.fromJson(json));
       grid.setBicwTaskData(taskData);
     }
-    if (!grid.isLoaded(half_term)) {
+    if (!grid.isLoaded(halfTerm)) {
       if (await _zbService.ensureAuthenticated()) {
         var zbData =
-            await _zbService.getRxlTaskData(grid.taskDataQuery(half_term));
-        grid.setTaskData({half_term: zbData}, zhibei: true);
+            await _zbService.getRxlTaskData(grid.taskDataQuery(halfTerm));
+        grid.setTaskData({halfTerm: zbData}, zhibei: true);
       }
     }
+  }
+
+  @override
+  void ngOnDestroy() {
+    _disposer.dispose();
   }
 }
