@@ -44,6 +44,29 @@ class ReportGrid {
 
   String taskDataQuery(int half_term) =>
       'type=$grid_type&pre_classID=$pre_classID&half_term=$half_term';
+
+  /// Adds loaded task data to this grid.
+  void setTaskData(Map<int, Map<int, TaskData>> data, {bool zhibei = false}) {
+    for (var halfTerm in data.keys) {
+      var dest = taskData.putIfAbsent(halfTerm, () => <int, TaskDataPair>{});
+      for (var user in data[halfTerm].values) {
+        var id = zhibei ? userIdMap[user.userID] : user.id;
+        var destUser = dest.putIfAbsent(id, () => TaskDataPair());
+        if (zhibei) {
+          destUser.zhibeiData = user;
+        } else {
+          destUser.bicwData = user;
+        }
+      }
+    }
+  }
+
+  /// Check whether task data of [half_term] are fully loaded.
+  bool isLoaded(half_term) {
+    var halfTermData = taskData[half_term];
+    if (halfTermData == null) return false;
+    return halfTermData.values.any((user) => user.zhibeiData != null);
+  }
 }
 
 class TaskData {
@@ -135,28 +158,5 @@ class RxlTaskGrid extends ReportGrid {
       }
     }
     setTaskData(data);
-  }
-
-  /// Adds loaded task data to this grid.
-  void setTaskData(Map<int, Map<int, TaskData>> data, {bool zhibei = false}) {
-    for (var halfTerm in data.keys) {
-      var dest = taskData.putIfAbsent(halfTerm, () => <int, TaskDataPair>{});
-      for (var user in data[halfTerm].values) {
-        var id = zhibei ? userIdMap[user.userID] : user.id;
-        var destUser = dest.putIfAbsent(id, () => TaskDataPair());
-        if (zhibei) {
-          destUser.zhibeiData = user;
-        } else {
-          destUser.bicwData = user;
-        }
-      }
-    }
-  }
-
-  /// Check whether task data of [half_term] are fully loaded.
-  bool isLoaded(half_term) {
-    var halfTermData = taskData[half_term];
-    if (halfTermData == null) return false;
-    return halfTermData.values.any((user) => user.zhibeiData != null);
   }
 }
