@@ -1,3 +1,8 @@
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
 <?php
 include_once 'config.php';
 include_once "connection.php";
@@ -303,3 +308,5 @@ function fix_all_classes() {
 
 fix_all_classes();
 ?>
+</body>
+</html>

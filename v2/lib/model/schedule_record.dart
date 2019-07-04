@@ -4,7 +4,7 @@ class ScheduleRecord {
   final int course_id;
   final int half_term;
 
-  final bool attended;
+  bool attended;
   final bool video;
   final bool text;
 

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:angular/angular.dart';
+import 'package:v2/model/schedule.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/task.dart';
 import 'package:v2/model/task_data.dart';
@@ -52,11 +53,52 @@ class TaskRecordService {
     return halfTerms;
   }
 
-  void _parseAttendance<T extends TaskData>(
-      Iterable<ScheduleRecord> schedules, Map<int, Map<int, T>> stats) {
+  /// Returns a map from course id to its associated schedule id.
+  Map<int, int> _buildCourseScheduleMap(Iterable<Schedule> schedules) {
+    var courses = <int, int>{};
     for (var schedule in schedules) {
+      courses[schedule.course_id] = schedule.id;
+      courses[schedule.course_id2] = schedule.id;
+    }
+    return courses;
+  }
+
+  /// Merges attendance records to remove duplicated records,
+  /// for those schedules having two courses.
+  ///
+  /// [{course_id_1, attended_1}, {course_id_2, attened}_2] will become
+  /// [{course_id1, attended_1 || attended_2 }] if course 1 and course 2
+  /// are in the same schedule.
+  Iterable<ScheduleRecord> _mergeUserAttendanceRecords<T extends TaskData>(
+      Iterable<ScheduleRecord> scheduleRecords, Map<int, int> schedulesMap) {
+    // Map from user id, schedule id pair to schedule record.
+    var recordsMap = <int, Map<int, ScheduleRecord>>{};
+
+    for (var record in scheduleRecords) {
+      var attended = record.attended;
+      if (!attended) continue;
+
+      var student_id = record.student_id;
+      var scheduleId = schedulesMap[record.course_id];
+      var user =
+          recordsMap.putIfAbsent(student_id, () => <int, ScheduleRecord>{});
+      record = user.putIfAbsent(scheduleId, () => record);
+      record.attended = record.attended || attended;
+    }
+    return recordsMap.values.expand((map) => map.values);
+  }
+
+  void _parseAttendance<T extends TaskData>(
+      Iterable<ScheduleRecord> schedulesRecords,
+      Map<int, Map<int, T>> stats,
+      Map<int, int> schedulesMap) {
+    schedulesRecords =
+        _mergeUserAttendanceRecords(schedulesRecords, schedulesMap);
+
+    for (var schedule in schedulesRecords) {
       var halfTerm = stats[schedule.half_term];
       if (halfTerm == null) continue;
+
       var user = halfTerm[schedule.student_id];
       user?.att += (schedule.attended ? 1 : 0);
     }
@@ -76,10 +118,14 @@ class TaskRecordService {
         Map<int, Task>.fromIterable(tasks, key: (task) => task.id),
         creator);
 
-    var schedules = map['schedules']
+    var schedules =
+        map['schedules'].map<Schedule>((map) => Schedule.fromJson(map));
+    var schedulesMap = _buildCourseScheduleMap(schedules);
+
+    var schedules_records = map['schedules_records']
         .map<ScheduleRecord>((map) => ScheduleRecord.fromJson(map));
 
-    _parseAttendance(schedules, stats);
+    _parseAttendance(schedules_records, stats, schedulesMap);
     return stats;
   }
 
