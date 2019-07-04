@@ -20,23 +20,23 @@ class RxlTaskReportComponent {
   final Router _router;
   final TaskRecordService _taskService;
 
-  final grid = RxlTaskGrid();
-
   @Input()
   set classInfo(ClassInfo classInfo) {
     if (classInfo == null || classInfo == _classInfo) return;
     _classInfo = classInfo;
+    _classInfo.taskGrid ??= RxlTaskGrid()..pre_classID = _classInfo.zb_id;
+
     _reload();
   }
 
   int half_term = 0;
+  RxlTaskGrid get grid => _classInfo.taskGrid;
 
   ClassInfo _classInfo;
   RxlTaskReportComponent(this._zbService, this._router, this._taskService);
 
   void _reload() async {
     half_term = int.parse(_router.current.parameters['half_term']);
-    grid.pre_classID = _classInfo.zb_id;
     if (grid.taskData.isEmpty) {
       var taskData = await _taskService.getTaskDataStats(
           _classInfo.id, (json) => RxlTaskData.fromJson(json));

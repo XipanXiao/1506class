@@ -1,3 +1,5 @@
+import 'package:v2/model/report_grid.dart';
+
 class ClassInfo {
   final int id;
   final int zb_id;
@@ -8,6 +10,7 @@ class ClassInfo {
   final String class_room;
 
   int half_term;
+  ReportGrid taskGrid;
 
   ClassInfo.fromJson(Map<String, dynamic> map)
       : id = map['id'],

@@ -17,13 +17,13 @@
   <ng-container *ngFor="let user of grid.taskData[half_term]?.values; let index = index">
     <tr>
         <td rowspan="2">{{index}}</td>
-        <td rowspan="2">{{user.bicwData.name}}</td>
+        <td rowspan="2">{{user.bicwData?.name ?? user.zhibeiData?.name}}</td>
         <td>bicw</td>
-        <td>{{user.bicwData.att}}</td>
-        <td>{{user.bicwData.gx_count}}</td>
-        <td>{{user.bicwData.gx_time}}</td>
-        <td>{{user.bicwData.mantra_count}}</td>
-        <td>{{user.bicwData.mantra_total}}</td>
+        <td>{{user.bicwData?.att}}</td>
+        <td>{{user.bicwData?.gx_count}}</td>
+        <td>{{user.bicwData?.gx_time}}</td>
+        <td>{{user.bicwData?.mantra_count}}</td>
+        <td>{{user.bicwData?.mantra_total}}</td>
     </tr>
     <tr>
         <td>zhibei.info</td>
