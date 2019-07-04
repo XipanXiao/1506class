@@ -37,12 +37,11 @@ function get_task_data_stats($classId) {
       join(",", $student_ids));
   $records = $medoo->query($sql)->fetchAll();
 
-  $groupIds =  $medoo->select("schedule_groups", "id", ["classId" => $classId]);
+  $groupIds = $medoo->select("schedule_groups", "id", ["classId" => $classId]);
   $schedules = $medoo->select("schedules", "*", ["group_id" => $groupIds]);
 
   $schedules_records = $medoo->select("schedule_records", "*",
       ["student_id" => $student_ids]);
-  // $schedules_records = $medoo->query("SELECT * FROM schedule_records WHERE student_id=76 and half_term=16;")->fetchAll();
 
   $tasks = $medoo->select("tasks", ["id", "zb_name"]);
   // Returns the raw data and let the client to handle,

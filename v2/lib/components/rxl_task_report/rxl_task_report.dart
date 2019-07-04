@@ -34,24 +34,19 @@ class RxlTaskReportComponent {
   ClassInfo _classInfo;
   RxlTaskReportComponent(this._zbService, this._router, this._taskService);
 
-  RxlTaskData getZbData(int userID) {
-    var halfTermData = grid.zbTaskData[half_term];
-    return halfTermData == null ? null : halfTermData[userID];
-  }
-
   void _reload() async {
     half_term = int.parse(_router.current.parameters['half_term']);
     grid.pre_classID = _classInfo.zb_id;
     if (grid.taskData.isEmpty) {
       var taskData = await _taskService.getTaskDataStats(
           _classInfo.id, (json) => RxlTaskData.fromJson(json));
-      grid.setTaskData(taskData);
+      grid.setBicwTaskData(taskData);
     }
-    if (!grid.zbTaskData.containsKey(half_term)) {
+    if (!grid.isLoaded(half_term)) {
       if (await _zbService.ensureAuthenticated()) {
         var zbData =
             await _zbService.getRxlTaskData(grid.taskDataQuery(half_term));
-        grid.zbTaskData[half_term] = zbData;
+        grid.setTaskData({half_term: zbData}, zhibei: true);
       }
     }
   }

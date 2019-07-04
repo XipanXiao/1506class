@@ -18,6 +18,9 @@ class ReportGrid {
   /// zhibei.info class id.
   int pre_classID;
 
+  /// A map from zhibei id to bicw id.
+  final userIdMap = <int, int>{};
+
   ReportGrid(this.courseID, this.grid_type);
 
   String lessonQuery(int half_term) => 'courseID=$courseID&half_term=$half_term'
@@ -31,6 +34,9 @@ class TaskData {
   /// bicw user id.
   int id;
 
+  /// zhibei.info user id.
+  final int userID;
+
   /// User name.
   final String name;
 
@@ -38,12 +44,18 @@ class TaskData {
   /// a specific half term.
   int att = 0;
 
-  TaskData({this.id, this.name, this.att});
+  TaskData({this.id, this.userID, this.name, this.att});
 
   TaskData.fromJson(Map<String, dynamic> map)
       : id = map['id'],
+        userID = int.tryParse(map['userID'] ?? ''),
         name = map['name'],
         att = map['att'] ?? 0;
+}
+
+class TaskDataPair {
+  TaskData bicwData;
+  TaskData zhibeiData;
 }
 
 typedef T TaskDataFromJson<T>(Map<String, dynamic> json);
@@ -52,9 +64,6 @@ class RxlTaskData extends TaskData {
   final int operation;
   final int select_all;
 
-  /// zhibei.info user id.
-  final int userID;
-
   final int user_style;
 
   int gx_count;
@@ -62,19 +71,19 @@ class RxlTaskData extends TaskData {
   int mantra_count;
   int mantra_total;
 
-  RxlTaskData(
-      {int id,
-      String name,
-      int att,
-      this.gx_count,
-      this.gx_time,
-      this.mantra_count,
-      this.mantra_total,
-      this.operation,
-      this.select_all,
-      this.user_style,
-      this.userID})
-      : super(id: id, name: name, att: att);
+  RxlTaskData({
+    int id,
+    int userID,
+    String name,
+    int att,
+    this.gx_count,
+    this.gx_time,
+    this.mantra_count,
+    this.mantra_total,
+    this.operation,
+    this.select_all,
+    this.user_style,
+  }) : super(id: id, userID: userID, name: name, att: att);
 
   RxlTaskData.fromJson(Map<String, dynamic> map)
       : gx_count = map['gx_count'] ?? 0,
@@ -84,12 +93,11 @@ class RxlTaskData extends TaskData {
         operation = int.tryParse(map['operation'] ?? ''),
         select_all = int.tryParse(map['select_all'] ?? ''),
         user_style = int.tryParse(map['user_style'] ?? ''),
-        userID = int.tryParse(map['userID'] ?? ''),
         super.fromJson(map);
 }
 
 class RxlTaskGrid extends ReportGrid {
-  /// Bicw task data.
+  /// Bicw and zhibei.info task data.
   ///
   /// It is a map of maps (from user id to her task
   /// data of a certain half_term). Then the outer map has
@@ -103,23 +111,21 @@ class RxlTaskGrid extends ReportGrid {
   ///   user_id3: user3 task data of the first term,
   /// }
   /// ...
-  final taskData = <int, Map<int, RxlTaskData>>{};
-
-  /// zhibein.info task data.
-  ///
-  /// It has the same structure of the above bicw
-  /// [taskData]. The only difference is, the maps
-  /// are from the zb_id to RxlTaskData.
-  final zbTaskData = <int, Map<int, RxlTaskData>>{};
+  final taskData = <int, Map<int, TaskDataPair>>{};
 
   RxlTaskGrid() : super(2, 'rxl_work_grid');
 
-  void setTaskData(Map<int, Map<int, RxlTaskData>> data) {
+  /// Adds loaded bicw task data to this grid.
+  ///
+  /// Note since `mantra_total` is not returned by the bicw server,
+  /// the values are calculated before storing the data.
+  void setBicwTaskData(Map<int, Map<int, RxlTaskData>> data) {
     if (data.isEmpty) return;
 
     var lastTerm = data.values.last;
     for (var halfTerm in data.values) {
       for (var user in halfTerm.values) {
+        userIdMap[user.userID] = user.id;
         lastTerm[user.id].mantra_total += user.mantra_count;
       }
     }
@@ -128,8 +134,29 @@ class RxlTaskGrid extends ReportGrid {
         user.mantra_total = lastTerm[user.id].mantra_total;
       }
     }
-    taskData
-      ..clear()
-      ..addAll(data);
+    setTaskData(data);
+  }
+
+  /// Adds loaded task data to this grid.
+  void setTaskData(Map<int, Map<int, TaskData>> data, {bool zhibei = false}) {
+    for (var halfTerm in data.keys) {
+      var dest = taskData.putIfAbsent(halfTerm, () => <int, TaskDataPair>{});
+      for (var user in data[halfTerm].values) {
+        var id = zhibei ? userIdMap[user.userID] : user.id;
+        var destUser = dest.putIfAbsent(id, () => TaskDataPair());
+        if (zhibei) {
+          destUser.zhibeiData = user;
+        } else {
+          destUser.bicwData = user;
+        }
+      }
+    }
+  }
+
+  /// Check whether task data of [half_term] are fully loaded.
+  bool isLoaded(half_term) {
+    var halfTermData = taskData[half_term];
+    if (halfTermData == null) return false;
+    return halfTermData.values.any((user) => user.zhibeiData != null);
   }
 }

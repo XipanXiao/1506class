@@ -17,21 +17,21 @@
   <ng-container *ngFor="let user of grid.taskData[half_term]?.values; let index = index">
     <tr>
         <td rowspan="2">{{index}}</td>
-        <td rowspan="2">{{user.name}}</td>
+        <td rowspan="2">{{user.bicwData.name}}</td>
         <td>bicw</td>
-        <td>{{user.att}}</td>
-        <td>{{user.gx_count}}</td>
-        <td>{{user.gx_time}}</td>
-        <td>{{user.mantra_count}}</td>
-        <td>{{user.mantra_total}}</td>
+        <td>{{user.bicwData.att}}</td>
+        <td>{{user.bicwData.gx_count}}</td>
+        <td>{{user.bicwData.gx_time}}</td>
+        <td>{{user.bicwData.mantra_count}}</td>
+        <td>{{user.bicwData.mantra_total}}</td>
     </tr>
     <tr>
         <td>zhibei.info</td>
-        <td>{{getZbData(user.userID)?.att}}</td>
-        <td>{{getZbData(user.userID)?.gx_count}}</td>
-        <td>{{getZbData(user.userID)?.gx_time}}</td>
-        <td>{{getZbData(user.userID)?.mantra_count}}</td>
-        <td>{{getZbData(user.userID)?.mantra_total}}</td>
+        <td>{{user.zhibeiData?.att}}</td>
+        <td>{{user.zhibeiData?.gx_count}}</td>
+        <td>{{user.zhibeiData?.gx_time}}</td>
+        <td>{{user.zhibeiData?.mantra_count}}</td>
+        <td>{{user.zhibeiData?.mantra_total}}</td>
     </tr>
   </ng-container>
 </table>
