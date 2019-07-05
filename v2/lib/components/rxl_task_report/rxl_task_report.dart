@@ -46,7 +46,7 @@ class RxlTaskReportComponent implements OnDestroy {
     if (grid.taskData.isEmpty) {
       var taskData = await _taskService.getTaskDataStats(
           _classInfo.id, (json) => RxlTaskData.fromJson(json));
-      grid.setBicwTaskData(taskData);
+      grid.setTaskData(taskData);
     }
     if (!grid.isLoaded(halfTerm)) {
       if (await _zbService.ensureAuthenticated()) {

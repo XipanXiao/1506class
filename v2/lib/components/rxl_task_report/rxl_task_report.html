@@ -17,7 +17,9 @@
   <ng-container *ngFor="let user of grid.taskData[halfTerm]?.values; let index = index">
     <tr>
         <td rowspan="2">{{index}}</td>
-        <td rowspan="2">{{user.bicwData?.name ?? user.zhibeiData?.name}}</td>
+        <td rowspan="2" [class.audited]="user.audited == true"
+            [class.error]="user.audited == false">
+          {{user.bicwData?.name ?? user.zhibeiData?.name}}</td>
         <td>bicw</td>
         <td>{{user.bicwData?.att}}</td>
         <td>{{user.bicwData?.gx_count}}</td>

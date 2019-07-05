@@ -54,6 +54,7 @@ class ReportGrid {
         var destUser = dest.putIfAbsent(id, () => TaskDataPair());
         if (zhibei) {
           destUser.zhibeiData = user;
+          _audit(destUser);
         } else {
           destUser.bicwData = user;
         }
@@ -66,6 +67,15 @@ class ReportGrid {
     var halfTermData = taskData[half_term];
     if (halfTermData == null) return false;
     return halfTermData.values.any((user) => user.zhibeiData != null);
+  }
+
+  /// Compares bicw and zhibei.info data.
+  void _audit(TaskDataPair user) {
+    if ((user.bicwData == null) != (user.zhibeiData == null)) {
+      user.audited = false;
+    } else if (user.bicwData != null) {
+      user.audited = user.bicwData == user.zhibeiData;
+    }
   }
 }
 
@@ -90,9 +100,13 @@ class TaskData {
         userID = int.tryParse(map['userID'] ?? ''),
         name = map['name'],
         att = map['att'] ?? 0;
+
+  @override
+  int get hashCode => id.hashCode;
 }
 
 class TaskDataPair {
+  bool audited;
   TaskData bicwData;
   TaskData zhibeiData;
 }
@@ -133,30 +147,47 @@ class RxlTaskData extends TaskData {
         select_all = int.tryParse(map['select_all'] ?? ''),
         user_style = int.tryParse(map['user_style'] ?? ''),
         super.fromJson(map);
+
+  bool operator ==(that) {
+    if (that is! RxlTaskData) return false;
+    var data = that as RxlTaskData;
+    return att == data.att &&
+        gx_count == data.gx_count &&
+        gx_time == data.gx_time &&
+        mantra_count == data.mantra_count &&
+        mantra_total == data.mantra_total;
+  }
 }
 
 class RxlTaskGrid extends ReportGrid {
   RxlTaskGrid() : super(2, 'rxl_work_grid');
 
-  /// Adds loaded bicw task data to this grid.
+  /// Adds loaded task data to this grid.
   ///
   /// Note since `mantra_total` is not returned by the bicw server,
   /// the values are calculated before storing the data.
-  void setBicwTaskData(Map<int, Map<int, RxlTaskData>> data) {
+  @override
+  void setTaskData(Map<int, Map<int, TaskData>> data, {bool zhibei = false}) {
     if (data.isEmpty) return;
 
-    var lastTerm = data.values.last;
-    for (var halfTerm in data.values) {
+    if (zhibei) {
+      return super.setTaskData(data, zhibei: true);
+    }
+
+    var rxlData = data as Map<int, Map<int, RxlTaskData>>;
+
+    var lastTerm = rxlData.values.last;
+    for (var halfTerm in rxlData.values) {
       for (var user in halfTerm.values) {
         userIdMap[user.userID] = user.id;
         lastTerm[user.id].mantra_total += user.mantra_count;
       }
     }
-    for (var halfTerm in data.values) {
+    for (var halfTerm in rxlData.values) {
       for (var user in halfTerm.values) {
         user.mantra_total = lastTerm[user.id].mantra_total;
       }
     }
-    setTaskData(data);
+    super.setTaskData(data);
   }
 }
