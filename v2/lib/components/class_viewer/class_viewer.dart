@@ -34,8 +34,10 @@ class ClassViewerComponent implements OnActivate, CanReuse {
   final halfTerms = List<int>.generate(17, (index) => index + 1)
     ..remove(1)
     ..remove(3);
-  int _halfTerm;
+
   ClassInfo classInfo;
+
+  int _halfTerm;
 
   ClassViewerComponent(
       this._classService, this._router, this._taskRecordService);

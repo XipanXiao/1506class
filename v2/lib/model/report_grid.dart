@@ -184,8 +184,7 @@ class RxlTaskData extends TaskData {
     return att == data.att &&
         gx_count == data.gx_count &&
         gx_time == data.gx_time &&
-        mantra_count == data.mantra_count &&
-        mantra_total == data.mantra_total;
+        mantra_count == data.mantra_count;
   }
 
   @override
