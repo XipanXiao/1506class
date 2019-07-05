@@ -1,4 +1,5 @@
 import 'package:angular/angular.dart';
+import 'package:angular_components/angular_components.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:angular_components/utils/disposer/disposer.dart';
 import 'package:angular_router/angular_router.dart';
@@ -11,6 +12,8 @@ import 'package:v2/services/zb_service.dart';
   selector: 'rxl-task-report',
   directives: [
     coreDirectives,
+    MaterialButtonComponent,
+    MaterialCheckboxComponent,
     MaterialIconComponent,
   ],
   templateUrl: 'rxl_task_report.html',
@@ -22,6 +25,9 @@ class RxlTaskReportComponent implements OnDestroy {
   final TaskRecordService _taskService;
 
   final _disposer = Disposer.oneShot();
+
+  final users = <RxlTaskDataPair>[];
+  final selection = SelectionModel<TaskDataPair>.multi();
 
   @Input()
   set classInfo(ClassInfo classInfo) {
@@ -55,10 +61,40 @@ class RxlTaskReportComponent implements OnDestroy {
         grid.setTaskData({halfTerm: zbData}, zhibei: true);
       }
     }
+
+    users.clear();
+    var halfTermData = grid.taskData[halfTerm];
+    if (halfTermData != null) {
+      users.addAll(halfTermData.values.map((user) => RxlTaskDataPair(user)));
+      selection.clear();
+      users.where((user) => user.audited == false).forEach(selection.select);
+    }
   }
 
   @override
   void ngOnDestroy() {
     _disposer.dispose();
+  }
+
+  /// Reports task data from bicw to zhibei.info, for all
+  /// selected users.
+  void report({TaskDataPair user}) {}
+
+  bool get allSelected => selection.selectedValues.length == users.length;
+
+  void toggleSelectAll(String label) {
+    if (label == true.toString()) {
+      users.forEach(selection.select);
+    } else if (label == false.toString()) {
+      selection.clear();
+    }
+  }
+
+  void toggleSelection(TaskDataPair user, bool checked) {
+    if (checked) {
+      selection.select(user);
+    } else {
+      selection.deselect(user);
+    }
   }
 }

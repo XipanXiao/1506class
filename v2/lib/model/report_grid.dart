@@ -106,9 +106,19 @@ class TaskData {
 }
 
 class TaskDataPair {
+  /// Whether [bicwData] is identical to [zhibeiData], or
+  /// null if a check is not done yet.
   bool audited;
+
   TaskData bicwData;
   TaskData zhibeiData;
+
+  TaskDataPair();
+
+  TaskDataPair.from(TaskDataPair that)
+      : audited = that.audited,
+        bicwData = that.bicwData,
+        zhibeiData = that.bicwData;
 }
 
 typedef T TaskDataFromJson<T>(Map<String, dynamic> json);
@@ -190,4 +200,14 @@ class RxlTaskGrid extends ReportGrid {
     }
     super.setTaskData(data);
   }
+}
+
+class RxlTaskDataPair extends TaskDataPair {
+  @override
+  RxlTaskData get bicwData => super.bicwData as RxlTaskData;
+
+  @override
+  RxlTaskData get zhibeiData => super.zhibeiData as RxlTaskData;
+
+  RxlTaskDataPair(TaskDataPair pair) : super.from(pair);
 }

@@ -42,3 +42,11 @@ material-button[affirmative] {
 .field material-input {
   width: 100%;
 }
+
+.selectable .hover-button {
+  visibility: hidden;
+}
+
+.selectable:hover .hover-button {
+  visibility: visible;
+}

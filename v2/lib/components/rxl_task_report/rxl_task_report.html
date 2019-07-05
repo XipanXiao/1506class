@@ -1,39 +1,65 @@
 <div>修行(单位:个) & 出勤 & 限制性课程</div>
 <table border="1">
   <tr>
+    <td rowspan="2">
+      <material-checkbox [checked]="allSelected"
+          [indeterminate]="selection.isNotEmpty && !allSelected"
+          (change)="toggleSelectAll($event)">
+      </material-checkbox>
+    </td>
     <td rowspan="2">序号</td>
     <td rowspan="2">姓名</td>
     <td rowspan="2">数据源</td>
     <td rowspan="2">出勤</td>
     <td colspan="2">观修</td>
     <td colspan="2">观音心咒</td>
+    <td>同步</td>
   </tr>
   <tr>
     <td>座次</td>
     <td>时间</td>
     <td>数量</td>
     <td>总计</td>
+    <td>
+      <material-button icon (trigger)="report()"
+          title="上报所有选中的用户数据">
+        <material-icon icon="backup"></material-icon>
+      </material-button>
+    </td>
   </tr>
-  <ng-container *ngFor="let user of grid.taskData[halfTerm]?.values; let index = index">
+  <ng-container *ngFor="let user of users; let index = index">
     <tr>
+        <td rowspan="2">
+          <material-checkbox [checked]="selection.isSelected(user)"
+              (checkedChange)="toggleSelection(user, $event)"
+              [disabled]="user.audited != false">
+          </material-checkbox>  
+        </td>
         <td rowspan="2">{{index}}</td>
         <td rowspan="2" [class.audited]="user.audited == true"
             [class.error]="user.audited == false">
           {{user.bicwData?.name ?? user.zhibeiData?.name}}</td>
+          <td>zhibei.info</td>
+          <td>{{user.zhibeiData?.att}}</td>
+          <td>{{user.zhibeiData?.gx_count}}</td>
+          <td>{{user.zhibeiData?.gx_time}}</td>
+          <td>{{user.zhibeiData?.mantra_count}}</td>
+          <td>{{user.zhibeiData?.mantra_total}}</td>
+          <td rowspan="2" class="selectable">
+            <material-button icon (trigger)="report(user: user)"
+                title="上报" class="hover-button"
+                *ngIf="user.audited == false">
+              <material-icon icon="backup"></material-icon>
+            </material-button>
+          </td>
+      </tr>
+    <tr>
         <td>bicw</td>
         <td>{{user.bicwData?.att}}</td>
         <td>{{user.bicwData?.gx_count}}</td>
         <td>{{user.bicwData?.gx_time}}</td>
         <td>{{user.bicwData?.mantra_count}}</td>
         <td>{{user.bicwData?.mantra_total}}</td>
-    </tr>
-    <tr>
-        <td>zhibei.info</td>
-        <td>{{user.zhibeiData?.att}}</td>
-        <td>{{user.zhibeiData?.gx_count}}</td>
-        <td>{{user.zhibeiData?.gx_time}}</td>
-        <td>{{user.zhibeiData?.mantra_count}}</td>
-        <td>{{user.zhibeiData?.mantra_total}}</td>
     </tr>
   </ng-container>
 </table>
