@@ -22,12 +22,15 @@ void login() {
   window.open(Uri.encodeFull(getPHPUrl(url)), '_self');
 }
 
-Future<void> httpPostObject(String url, BaseEntity obj) async {
-  var map = obj.toMap();
+Future<dynamic> httpPostObject(String url, BaseEntity obj,
+    {Map<String, String> extraData = const {}}) async {
+  var map = obj.toMap()..addAll(extraData);
   for (var key in map.keys.toList()) {
     if (map[key] == null) {
       map.remove(key);
     }
   }
-  return HttpRequest.postFormData(getPHPUrl(url), map, withCredentials: true);
+  var request = await HttpRequest.postFormData(getPHPUrl(url), map,
+      withCredentials: true, responseType: 'json');
+  return request.response;
 }

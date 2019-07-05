@@ -33,8 +33,8 @@ class ZBService {
     var url = '$_serviceUrl/pre/check_edit_password_ajax'
         '?type=get_edit_permission';
     try {
-      await utils.httpGetObject(_getProxiedUrl(url));
-      return true;
+      var response = await utils.httpGetObject(_getProxiedUrl(url));
+      return response['edit_permission'] == '1';
     } catch (err) {
       return false;
     } finally {
@@ -47,13 +47,43 @@ class ZBService {
     return await _dialogService.showZbLoginDialog();
   }
 
-  Future<bool> login(String user, String password, String captcha) async {
+  Future<bool> edit(String editPassword) async {
+    var url =
+        '$_serviceUrl/pre/check_edit_password_ajax?type=check_edit_password'
+        '&edit_password=$editPassword';
+    var response = await utils.httpGetObject(_getProxiedUrl(url));
+    return response['returnValue'] == 'true';
+  }
+
+  Future<bool> login(
+      String user, String password, String editPassword, String captcha) async {
     _progressService.showProgress('Signing into zhibei.info');
     var url = '$_serviceUrl/account/login?type=login&username=$user'
         '&password=$password&captcha=$captcha';
     try {
       var response = await utils.httpGetObject(_getProxiedUrl(url));
-      return response['returnValue'] == 'true';
+      if (response['returnValue'] != 'true') return false;
+      return await edit(editPassword);
+    } finally {
+      _progressService.done();
+    }
+  }
+
+  Future<bool> reportTask(
+      int pre_classID, int halfTerm, String gridType, TaskData data) async {
+    _progressService.showProgress('Reporting for ${data.name}');
+
+    var extraData = {
+      'pre_classID': '$pre_classID',
+      'type': gridType,
+      'half_term': '$halfTerm',
+      'url': '$_serviceUrl$_file',
+    };
+
+    try {
+      var response =
+          await utils.httpPostObject(_proxyUrl, data, extraData: extraData);
+      return response['returnValue'] == 'success';
     } finally {
       _progressService.done();
     }

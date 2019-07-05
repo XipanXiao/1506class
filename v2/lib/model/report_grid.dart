@@ -1,3 +1,5 @@
+import 'base_entity.dart';
+
 class Lesson {
   final int lesson_id;
   final String name;
@@ -69,6 +71,15 @@ class ReportGrid {
     return halfTermData.values.any((user) => user.zhibeiData != null);
   }
 
+  /// Clears zhibei.info cache for [halfTerm].
+  void clearCache(int halfTerm) {
+    var halfTermData = taskData[halfTerm];
+    if (halfTermData == null) return;
+    for (var user in halfTermData.values) {
+      user.zhibeiData = null;
+    }
+  }
+
   /// Compares bicw and zhibei.info data.
   void _audit(TaskDataPair user) {
     if ((user.bicwData == null) != (user.zhibeiData == null)) {
@@ -79,7 +90,7 @@ class ReportGrid {
   }
 }
 
-class TaskData {
+class TaskData extends BaseEntity {
   /// bicw user id.
   int id;
 
@@ -103,6 +114,14 @@ class TaskData {
 
   @override
   int get hashCode => id.hashCode;
+
+  @override
+  Map<String, String> toMap() {
+    return {
+      'userID': userID.toString(),
+      'att': att?.toString(),
+    };
+  }
 }
 
 class TaskDataPair {
@@ -118,7 +137,7 @@ class TaskDataPair {
   TaskDataPair.from(TaskDataPair that)
       : audited = that.audited,
         bicwData = that.bicwData,
-        zhibeiData = that.bicwData;
+        zhibeiData = that.zhibeiData;
 }
 
 typedef T TaskDataFromJson<T>(Map<String, dynamic> json);
@@ -158,6 +177,7 @@ class RxlTaskData extends TaskData {
         user_style = int.tryParse(map['user_style'] ?? ''),
         super.fromJson(map);
 
+  @override
   bool operator ==(that) {
     if (that is! RxlTaskData) return false;
     var data = that as RxlTaskData;
@@ -166,6 +186,16 @@ class RxlTaskData extends TaskData {
         gx_time == data.gx_time &&
         mantra_count == data.mantra_count &&
         mantra_total == data.mantra_total;
+  }
+
+  @override
+  Map<String, String> toMap() {
+    var map = <String, String>{
+      'gx_count': gx_count?.toString(),
+      'gx_time': gx_time?.toString(),
+      'mantra_count': mantra_count?.toString(),
+    };
+    return map..addAll(super.toMap());
   }
 }
 

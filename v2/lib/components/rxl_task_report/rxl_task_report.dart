@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
@@ -42,12 +44,19 @@ class RxlTaskReportComponent implements OnDestroy {
 
   int halfTerm;
 
+  bool _loading = false;
+
   ClassInfo _classInfo;
+
   RxlTaskReportComponent(this._zbService, this._router, this._taskService) {
     _disposer.addStreamSubscription(_router.onRouteActivated.listen(_reload));
   }
 
   void _reload([_]) async {
+    if (_loading) return;
+
+    _loading = true;
+
     halfTerm = int.parse(_router.current.parameters['half_term']);
     if (grid.taskData.isEmpty) {
       var taskData = await _taskService.getTaskDataStats(
@@ -69,6 +78,8 @@ class RxlTaskReportComponent implements OnDestroy {
       selection.clear();
       users.where((user) => user.audited == false).forEach(selection.select);
     }
+
+    _loading = false;
   }
 
   @override
@@ -78,7 +89,23 @@ class RxlTaskReportComponent implements OnDestroy {
 
   /// Reports task data from bicw to zhibei.info, for all
   /// selected users.
-  void report({TaskDataPair user}) {}
+  void report({TaskDataPair user}) async {
+    var users = user == null ? selection.selectedValues : [user];
+    if (users.isEmpty) return;
+
+    if (!await _zbService.ensureAuthenticated()) return;
+
+    for (var user in users) {
+      if (!await _zbService.reportTask(
+          grid.pre_classID, halfTerm, grid.grid_type, user.bicwData)) {
+        window.alert('Failed to report for ${user.bicwData.name}');
+        return;
+      }
+    }
+
+    grid.clearCache(halfTerm);
+    _reload();
+  }
 
   bool get allSelected => selection.selectedValues.length == users.length;
 
