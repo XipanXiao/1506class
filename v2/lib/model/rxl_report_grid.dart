@@ -2,7 +2,7 @@ import 'package:v2/model/report_grid.dart';
 import 'package:v2/model/zb_rxl_task_data.dart';
 import 'package:v2/model/zb_task_data.dart';
 
-class RxlTaskGrid extends ReportGrid {
+class RxlTaskGrid extends ReportGrid<RxlTaskData> {
   RxlTaskGrid() : super(2, 'rxl_work_grid');
 
   /// Adds loaded task data to this grid.
@@ -33,14 +33,4 @@ class RxlTaskGrid extends ReportGrid {
     }
     super.setTaskData(data);
   }
-}
-
-class RxlTaskDataPair extends TaskDataPair {
-  @override
-  RxlTaskData get bicwData => super.bicwData as RxlTaskData;
-
-  @override
-  RxlTaskData get zhibeiData => super.zhibeiData as RxlTaskData;
-
-  RxlTaskDataPair(TaskDataPair pair) : super.from(pair);
 }

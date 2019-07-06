@@ -7,7 +7,7 @@ class Lesson {
   Lesson(this.lesson_id, this.name);
 }
 
-class ReportGrid {
+class ReportGrid<T extends TaskData> {
   /// zhibei.info Lesson ID.
   final int courseID;
 
@@ -37,7 +37,7 @@ class ReportGrid {
   ///   user_id3: user3 task data of the first term,
   /// }
   /// ...
-  final taskData = <int, Map<int, TaskDataPair>>{};
+  final taskData = <int, Map<int, TaskDataPair<T>>>{};
 
   ReportGrid(this.courseID, this.grid_type);
 
@@ -47,10 +47,10 @@ class ReportGrid {
   /// Adds loaded task data to this grid.
   void setTaskData(Map<int, Map<int, TaskData>> data, {bool zhibei = false}) {
     for (var halfTerm in data.keys) {
-      var dest = taskData.putIfAbsent(halfTerm, () => <int, TaskDataPair>{});
+      var dest = taskData.putIfAbsent(halfTerm, () => <int, TaskDataPair<T>>{});
       for (var user in data[halfTerm].values) {
         var id = zhibei ? userIdMap[user.userID] : user.id;
-        var destUser = dest.putIfAbsent(id, () => TaskDataPair());
+        var destUser = dest.putIfAbsent(id, () => TaskDataPair<T>());
         if (zhibei) {
           destUser.zhibeiData = user;
           destUser.audit();

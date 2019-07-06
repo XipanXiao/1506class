@@ -53,13 +53,13 @@ enum AuditState {
   REMOTE_ONLY,
 }
 
-class TaskDataPair {
+class TaskDataPair<T extends TaskData> {
   /// Whether [bicwData] is consistent with [zhibeiData], or
   /// null if a check is not done yet.
   AuditState audited;
 
-  TaskData bicwData;
-  TaskData zhibeiData;
+  T bicwData;
+  T zhibeiData;
 
   TaskDataPair();
 

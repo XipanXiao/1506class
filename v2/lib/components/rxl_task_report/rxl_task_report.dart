@@ -25,7 +25,7 @@ class RxlTaskReportComponent {
   final ZBService _zbService;
   final TaskRecordService _taskService;
 
-  final users = <RxlTaskDataPair>[];
+  final users = <TaskDataPair<RxlTaskData>>[];
   final selection = SelectionModel<TaskDataPair>.multi();
 
   @Input()
@@ -74,7 +74,7 @@ class RxlTaskReportComponent {
     users.clear();
     var halfTermData = grid.taskData[_halfTerm];
     if (halfTermData != null) {
-      users.addAll(halfTermData.values.map((user) => RxlTaskDataPair(user)));
+      users.addAll(halfTermData.values);
       selection.clear();
       users.where((user) => user.reportable).forEach(selection.select);
     }
