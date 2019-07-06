@@ -49,6 +49,15 @@ class TaskDataPair {
       : audited = that.audited,
         bicwData = that.bicwData,
         zhibeiData = that.zhibeiData;
+
+  /// Compares bicw and zhibei.info data.
+  void audit() {
+    if ((bicwData == null) != (zhibeiData == null)) {
+      audited = false;
+    } else if (bicwData != null) {
+      audited = bicwData == zhibeiData;
+    }
+  }
 }
 
 typedef T TaskDataFromJson<T>(Map<String, dynamic> json);

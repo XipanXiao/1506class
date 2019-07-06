@@ -44,9 +44,6 @@ class ReportGrid {
   String lessonQuery(int half_term) => 'courseID=$courseID&half_term=$half_term'
       '&type=pre_class_lessons&pre_classID=$pre_classID';
 
-  String taskDataQuery(int half_term) =>
-      'type=$grid_type&pre_classID=$pre_classID&half_term=$half_term';
-
   /// Adds loaded task data to this grid.
   void setTaskData(Map<int, Map<int, TaskData>> data, {bool zhibei = false}) {
     for (var halfTerm in data.keys) {
@@ -56,7 +53,7 @@ class ReportGrid {
         var destUser = dest.putIfAbsent(id, () => TaskDataPair());
         if (zhibei) {
           destUser.zhibeiData = user;
-          _audit(destUser);
+          destUser.audit();
         } else {
           destUser.bicwData = user;
         }
@@ -77,15 +74,6 @@ class ReportGrid {
     if (halfTermData == null) return;
     for (var user in halfTermData.values) {
       user.zhibeiData = null;
-    }
-  }
-
-  /// Compares bicw and zhibei.info data.
-  void _audit(TaskDataPair user) {
-    if ((user.bicwData == null) != (user.zhibeiData == null)) {
-      user.audited = false;
-    } else if (user.bicwData != null) {
-      user.audited = user.bicwData == user.zhibeiData;
     }
   }
 }
