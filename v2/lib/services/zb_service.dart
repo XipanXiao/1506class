@@ -1,5 +1,6 @@
 import 'package:angular/angular.dart';
 import 'package:v2/model/report_grid.dart';
+import 'package:v2/model/rxl_report_grid.dart';
 import 'package:v2/services/dialog_service.dart';
 import 'package:v2/services/progress_service.dart';
 import 'package:v2/utils.dart' as utils;
