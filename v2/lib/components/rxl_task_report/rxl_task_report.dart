@@ -61,8 +61,8 @@ class RxlTaskReportComponent {
     }
     if (!grid.isLoaded(_halfTerm)) {
       if (await _zbService.ensureAuthenticated()) {
-        var zbData =
-            await _zbService.getRxlTaskData(grid.taskDataQuery(_halfTerm));
+        var zbData = await _zbService.getTaskData(_classInfo.zb_id,
+            grid.grid_type, _halfTerm, (map) => RxlTaskData.fromJson(map));
         grid.setTaskData({_halfTerm: zbData}, zhibei: true);
       }
     }

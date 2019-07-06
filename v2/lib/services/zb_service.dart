@@ -1,5 +1,4 @@
 import 'package:angular/angular.dart';
-import 'package:v2/model/zb_rxl_task_data.dart';
 import 'package:v2/model/zb_task_data.dart';
 import 'package:v2/services/dialog_service.dart';
 import 'package:v2/services/progress_service.dart';
@@ -20,13 +19,15 @@ class ZBService {
 
   ZBService(this._dialogService, this._progressService);
 
-  Future<Map<int, RxlTaskData>> getRxlTaskData(String taskDataQuery) async {
+  Future<Map<int, T>> getTaskData<T extends TaskData>(int pre_classID,
+      String gridType, int halfTerm, TaskDataFromJson<T> creator) async {
+    var taskDataQuery =
+        'type=$gridType&pre_classID=$pre_classID&half_term=$halfTerm';
     var url = '$_serviceUrl$_file?${taskDataQuery}';
     var map = await utils.httpGetObject(_getProxiedUrl(url));
     List list = map['data'] ?? [];
-    var users = list.map<RxlTaskData>((user) => RxlTaskData.fromJson(user));
-    return Map<int, RxlTaskData>.fromIterable(users,
-        key: (user) => user.userID);
+    var users = list.map<T>((json) => creator(json));
+    return Map<int, T>.fromIterable(users, key: (user) => user.userID);
   }
 
   Future<bool> _isAuthenticated() async {
