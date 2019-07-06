@@ -1,5 +1,5 @@
 import 'package:angular/angular.dart';
-import 'package:v2/model/rxl_report_grid.dart';
+import 'package:v2/model/zb_rxl_task_data.dart';
 import 'package:v2/model/zb_task_data.dart';
 import 'package:v2/services/dialog_service.dart';
 import 'package:v2/services/progress_service.dart';
