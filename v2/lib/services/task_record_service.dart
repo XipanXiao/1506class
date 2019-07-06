@@ -6,8 +6,8 @@ import 'package:v2/model/schedule.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/task.dart';
 import 'package:v2/model/task_record.dart';
-import 'package:v2/model/report_grid.dart';
 import 'package:v2/model/user.dart';
+import 'package:v2/model/zb_task_data.dart';
 import 'package:v2/utils.dart' as utils;
 
 @Injectable()

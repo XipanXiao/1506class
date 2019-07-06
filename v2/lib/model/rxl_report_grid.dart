@@ -1,5 +1,6 @@
 
 import 'package:v2/model/report_grid.dart';
+import 'package:v2/model/zb_task_data.dart';
 
 class RxlTaskData extends TaskData {
   final int operation;
