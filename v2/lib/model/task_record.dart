@@ -1,4 +1,4 @@
-/// Model of the 'task_records' database table.
+/// Model of the bicw 'task_records' database table.
 class TaskRecord {
   final int student_id;
   final int task_id;
