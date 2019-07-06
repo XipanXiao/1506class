@@ -33,12 +33,30 @@ class TaskData extends BaseEntity {
       'att': att?.toString(),
     };
   }
+
+  /// Whether there is any meaningful data.
+  bool get isEmpty => att == null || att == 0;
+  bool get isNotEmpty => !isEmpty;
+}
+
+enum AuditState {
+  /// bicw data are consistent with zhibei.info data.
+  PASS,
+
+  /// bicw data are not consistent with zhibei.info data.
+  FAIL,
+
+  /// bicw data are present but zhibei.info are not.
+  LOCAL_ONLY,
+
+  /// zhibei.info data are present but bicw data are not.
+  REMOTE_ONLY,
 }
 
 class TaskDataPair {
-  /// Whether [bicwData] is identical to [zhibeiData], or
+  /// Whether [bicwData] is consistent with [zhibeiData], or
   /// null if a check is not done yet.
-  bool audited;
+  AuditState audited;
 
   TaskData bicwData;
   TaskData zhibeiData;
@@ -50,12 +68,26 @@ class TaskDataPair {
         bicwData = that.bicwData,
         zhibeiData = that.zhibeiData;
 
+  /// Whether there is a need to report this user's task data to
+  /// zhibei.info.
+  bool get reportable =>
+      audited == AuditState.FAIL || audited == AuditState.LOCAL_ONLY;
+
+  bool get passed => audited == AuditState.PASS;
+
   /// Compares bicw and zhibei.info data.
   void audit() {
-    if ((bicwData == null) != (zhibeiData == null)) {
-      audited = false;
-    } else if (bicwData != null) {
-      audited = bicwData == zhibeiData;
+    if (bicwData == null && zhibeiData == null) return;
+
+    var hasLocalData = bicwData?.isNotEmpty == true;
+    var hasRemoteData = zhibeiData?.isNotEmpty == true;
+
+    if (hasLocalData && hasRemoteData) {
+      audited = bicwData == zhibeiData ? AuditState.PASS : AuditState.FAIL;
+    } else if (hasLocalData && !hasRemoteData) {
+      audited = AuditState.LOCAL_ONLY;
+    } else {
+      audited = AuditState.REMOTE_ONLY;
     }
   }
 }

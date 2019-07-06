@@ -32,12 +32,13 @@
         <td rowspan="2">
           <material-checkbox [checked]="selection.isSelected(user)"
               (checkedChange)="toggleSelection(user, $event)"
-              [disabled]="user.audited != false">
+              title="是否上报zhibei.info"
+              [disabled]="!user.reportable">
           </material-checkbox>  
         </td>
         <td rowspan="2">{{index}}</td>
-        <td rowspan="2" [class.audited]="user.audited == true"
-            [class.error]="user.audited == false">
+        <td rowspan="2" [class.audited]="user.passed"
+            [class.error]="user.reportable">
           {{user.bicwData?.name ?? user.zhibeiData?.name}}</td>
           <td>zhibei.info</td>
           <td>{{user.zhibeiData?.att}}</td>
@@ -48,7 +49,7 @@
           <td rowspan="2" class="selectable">
             <material-button icon (trigger)="report(user: user)"
                 title="上报" class="hover-button"
-                *ngIf="user.audited == false">
+                *ngIf="user.reportable">
               <material-icon icon="backup"></material-icon>
             </material-button>
           </td>

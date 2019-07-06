@@ -76,7 +76,7 @@ class RxlTaskReportComponent {
     if (halfTermData != null) {
       users.addAll(halfTermData.values.map((user) => RxlTaskDataPair(user)));
       selection.clear();
-      users.where((user) => user.audited == false).forEach(selection.select);
+      users.where((user) => user.reportable).forEach(selection.select);
     }
   }
 
