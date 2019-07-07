@@ -35,7 +35,6 @@ class RxlTaskData extends TaskData {
 
   @override
   bool get isEmpty =>
-    super.isEmpty &&
     (gx_count == null || gx_count == 0) &&
     (mantra_count == null || mantra_count == 0);
 

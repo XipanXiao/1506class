@@ -38,7 +38,7 @@ abstract class TaskData extends BaseEntity {
   }
 
   /// Whether there is any meaningful data.
-  bool get isEmpty => att == null || att == 0;
+  bool get isEmpty => true;
   bool get isNotEmpty => !isEmpty;
 
   /// Initializes all members whose name end with '_total' to 0.

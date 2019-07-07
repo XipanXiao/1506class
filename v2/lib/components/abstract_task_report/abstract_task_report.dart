@@ -94,7 +94,7 @@ abstract class AbstractTaskReportComponent<T extends TaskData> {
 
   void toggleSelectAll(String label) {
     if (label == true.toString()) {
-      users.forEach(selection.select);
+      users.where((user) => user.reportable).forEach(selection.select);
     } else if (label == false.toString()) {
       selection.clear();
     }
