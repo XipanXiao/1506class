@@ -7,6 +7,9 @@
     [popupMatchInputWidth]="true"
     [itemRenderer]="getHalfTermLabel">
 </material-dropdown-select>
+<jx-task-report [classInfo]="classInfo" [halfTerm]="halfTerm"
+    *ngIf="classInfo?.department_id == Department.JIAXING_DEPARTMENT">
+</jx-task-report>
 <rxl-task-report [classInfo]="classInfo" [halfTerm]="halfTerm"
     *ngIf="classInfo?.department_id == Department.RUXINGLUN_DEPARTMENT">
 </rxl-task-report>
