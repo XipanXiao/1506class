@@ -44,19 +44,19 @@ class JxTaskData extends TaskData {
   final int manza_type;
 
   JxTaskData.fromJson(Map<String, dynamic> map)
-      : baiziming_count = map['baiziming_count'] ?? 0,
-        baiziming_total = map['baiziming_total'] ?? 0,
-        dingli_count = map['dingli_count'] ?? 0,
-        dingli_total = map['dingli_total'] ?? 0,
+      : baiziming_count = map['baiziming_count'],
+        baiziming_total = map['baiziming_total'],
+        dingli_count = map['dingli_count'],
+        dingli_total = map['dingli_total'],
         dingli_type = int.tryParse(map['dingli_type'] ?? '0'),
-        faxin_count = map['faxin_count'] ?? 0,
-        faxin_total = map['faxin_total'] ?? 0,
-        guiyi_count = map['guiyi_count'] ?? 0,
-        guiyi_total = map['guiyi_total'] ?? 0,
-        lianshi_count = map['lianshi_count'] ?? 0,
-        lianshi_total = map['lianshi_total'] ?? 0,
-        manza_count = map['manza_count'] ?? 0,
-        manza_total = map['manza_total'] ?? 0,
+        faxin_count = map['faxin_count'],
+        faxin_total = map['faxin_total'],
+        guiyi_count = map['guiyi_count'],
+        guiyi_total = map['guiyi_total'],
+        lianshi_count = map['lianshi_count'],
+        lianshi_total = map['lianshi_total'],
+        manza_count = map['manza_count'],
+        manza_total = map['manza_total'],
         manza_type = int.tryParse(map['manza_type'] ?? '0'),
         super.fromJson(map);
 
@@ -64,15 +64,14 @@ class JxTaskData extends TaskData {
   bool operator ==(that) {
     if (that is! JxTaskData) return false;
     var data = that as JxTaskData;
-    return att == data.att &&
-        baiziming_count == data.baiziming_count &&
-        dingli_count == data.dingli_count &&
-        dingli_type == data.dingli_type &&
-        faxin_count == data.faxin_count &&
-        guiyi_count == data.guiyi_count &&
-        lianshi_count == data.lianshi_count &&
-        manza_count == data.manza_count &&
-        manza_type == data.manza_type;
+    return (baiziming_count ?? 0) == (data.baiziming_count ?? 0) &&
+        (dingli_count ?? 0) == (data.dingli_count ?? 0) &&
+        (dingli_type ?? 0) == (data.dingli_type ?? 0) &&
+        (faxin_count ?? 0) == (data.faxin_count ?? 0) &&
+        (guiyi_count ?? 0) == (data.guiyi_count ?? 0) &&
+        (lianshi_count ?? 0) == (data.lianshi_count ?? 0) &&
+        (manza_count ?? 0) == (data.manza_count ?? 0) &&
+        (manza_type ?? 0) == (data.manza_type ?? 0);
   }
 
   @override
@@ -92,11 +91,31 @@ class JxTaskData extends TaskData {
 
   @override
   bool get isEmpty =>
-      super.isEmpty &&
       (baiziming_count == null || baiziming_count == 0) &&
       (dingli_count == null || dingli_count == 0) &&
       (faxin_count == null || faxin_count == 0) &&
       (guiyi_count == null || guiyi_count == 0) &&
       (lianshi_count == null || lianshi_count == 0) &&
       (manza_count == null || manza_count == 0);
+
+  @override
+  void initTotal() {
+    baiziming_total ??= 0;
+    dingli_total ??= 0;
+    faxin_total ??= 0;
+    guiyi_total ??= 0;
+    lianshi_total ??= 0;
+    manza_total ??= 0;
+  }
+
+  @override
+  bool sameTotal(TaskData that) {
+    var data = that as JxTaskData;
+    return baiziming_total == data.baiziming_total &&
+        dingli_total == data.dingli_total &&
+        faxin_total == data.faxin_total &&
+        guiyi_total == data.guiyi_total &&
+        lianshi_total == data.lianshi_total &&
+        manza_total == data.manza_total;
+  }
 }

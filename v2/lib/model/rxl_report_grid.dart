@@ -23,7 +23,8 @@ class RxlTaskGrid extends ReportGrid<RxlTaskData> {
     for (var halfTerm in rxlData.values) {
       for (var user in halfTerm.values) {
         userIdMap[user.userID] = user.id;
-        lastTerm[user.id].mantra_total += user.mantra_count;
+        lastTerm[user.id].initTotal();
+        lastTerm[user.id].mantra_total += user.mantra_count ?? 0;
       }
     }
     for (var halfTerm in rxlData.values) {

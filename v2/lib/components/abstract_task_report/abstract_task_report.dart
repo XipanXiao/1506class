@@ -66,7 +66,7 @@ abstract class AbstractTaskReportComponent<T extends TaskData> {
     if (halfTermData != null) {
       users.addAll(halfTermData.values);
       selection.clear();
-      users.where((user) => user.reportable).forEach(selection.select);
+      users.where((user) => user.failed).forEach(selection.select);
     }
   }
 

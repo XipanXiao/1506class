@@ -1,7 +1,7 @@
 import 'base_entity.dart';
 
 /// Base structure to encode/decode zhibei.info task data.
-class TaskData extends BaseEntity {
+abstract class TaskData extends BaseEntity {
   final int operation;
   final int user_style;
 
@@ -40,11 +40,20 @@ class TaskData extends BaseEntity {
   /// Whether there is any meaningful data.
   bool get isEmpty => att == null || att == 0;
   bool get isNotEmpty => !isEmpty;
+
+  /// Initializes all members whose name end with '_total' to 0.
+  void initTotal();
+
+  /// Whether the '_total' memebers are all equal.
+  bool sameTotal(TaskData that);
 }
 
 enum AuditState {
   /// bicw data are consistent with zhibei.info data.
   PASS,
+
+  /// bicw data have same total numbers as zhibei.info data.
+  PARTIAL_PASS,
 
   /// bicw data are not consistent with zhibei.info data.
   FAIL,
@@ -74,9 +83,13 @@ class TaskDataPair<T extends TaskData> {
   /// Whether there is a need to report this user's task data to
   /// zhibei.info.
   bool get reportable =>
-      audited == AuditState.FAIL || audited == AuditState.LOCAL_ONLY;
+      audited == AuditState.FAIL ||
+      audited == AuditState.LOCAL_ONLY ||
+      audited == AuditState.PARTIAL_PASS;
 
   bool get passed => audited == AuditState.PASS;
+  bool get failed =>
+      audited == AuditState.FAIL || audited == AuditState.LOCAL_ONLY;
 
   /// Compares bicw and zhibei.info data.
   void audit() {
@@ -86,11 +99,19 @@ class TaskDataPair<T extends TaskData> {
     var hasRemoteData = zhibeiData?.isNotEmpty == true;
 
     if (hasLocalData && hasRemoteData) {
-      audited = bicwData == zhibeiData ? AuditState.PASS : AuditState.FAIL;
+      if (bicwData == zhibeiData) {
+        audited = AuditState.PASS;
+      } else if (bicwData.sameTotal(zhibeiData)) {
+        audited = AuditState.PARTIAL_PASS;
+      } else {
+        audited = AuditState.FAIL;
+      }
     } else if (hasLocalData && !hasRemoteData) {
       audited = AuditState.LOCAL_ONLY;
-    } else {
+    } else if (!hasLocalData && hasRemoteData) {
       audited = AuditState.REMOTE_ONLY;
+    } else if (bicwData.sameTotal(zhibeiData)) {
+      audited = AuditState.PASS;
     }
   }
 }

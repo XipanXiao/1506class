@@ -17,28 +17,30 @@ class JxTaskGrid extends ReportGrid<JxTaskData> {
       return super.setTaskData(data, zhibei: true);
     }
 
-    var rxlData = data as Map<int, Map<int, JxTaskData>>;
+    var jxData = data as Map<int, Map<int, JxTaskData>>;
 
-    var lastTerm = rxlData.values.last;
-    for (var halfTerm in rxlData.values) {
+    var lastTerm = jxData.values.last;
+    for (var halfTerm in jxData.values) {
       for (var user in halfTerm.values) {
         userIdMap[user.userID] = user.id;
-        lastTerm[user.id].baiziming_total += user.baiziming_count;
-        lastTerm[user.id].dingli_total += user.dingli_count;
-        lastTerm[user.id].faxin_total += user.faxin_count;
-        lastTerm[user.id].guiyi_total += user.guiyi_count;
-        lastTerm[user.id].lianshi_total += user.lianshi_count;
-        lastTerm[user.id].manza_total += user.manza_count;
+        var last = lastTerm[user.id]..initTotal();
+        last.baiziming_total += user.baiziming_count ?? 0;
+        last.dingli_total += user.dingli_count ?? 0;
+        last.faxin_total += user.faxin_count ?? 0;
+        last.guiyi_total += user.guiyi_count ?? 0;
+        last.lianshi_total += user.lianshi_count ?? 0;
+        last.manza_total += user.manza_count ?? 0;
       }
     }
-    for (var halfTerm in rxlData.values) {
+    for (var halfTerm in jxData.values) {
       for (var user in halfTerm.values) {
-        user.baiziming_total = lastTerm[user.id].baiziming_total;
-        user.dingli_total = lastTerm[user.id].dingli_total;
-        user.faxin_total = lastTerm[user.id].faxin_total;
-        user.guiyi_total = lastTerm[user.id].guiyi_total;
-        user.lianshi_total = lastTerm[user.id].lianshi_total;
-        user.manza_total = lastTerm[user.id].manza_total;
+        var last = lastTerm[user.id];
+        user.baiziming_total = last.baiziming_total;
+        user.dingli_total = last.dingli_total;
+        user.faxin_total = last.faxin_total;
+        user.guiyi_total = last.guiyi_total;
+        user.lianshi_total = last.lianshi_total;
+        user.manza_total = last.manza_total;
       }
     }
     super.setTaskData(data);

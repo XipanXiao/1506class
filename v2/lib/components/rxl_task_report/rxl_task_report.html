@@ -37,8 +37,9 @@
           </material-checkbox>  
         </td>
         <td rowspan="2">{{index}}</td>
-        <td rowspan="2" [class.audited]="user.passed"
-            [class.error]="user.reportable">
+        <td rowspan="2" [class.pass]="user.passed"
+            [class.warning]="user.audited == AuditState.PARTIAL_PASS"
+            [class.error]="user.failed">
           {{user.bicwData?.name ?? user.zhibeiData?.name}}</td>
           <td>zhibei.info</td>
           <td>{{user.zhibeiData?.att}}</td>

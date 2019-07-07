@@ -55,10 +55,14 @@ table {
   border-spacing: 0;
 }
 
-.audited {
+.pass {
   background-color: green;
 }
 
 .error {
   background-color: red;
+}
+
+.warning {
+  background-color: yellow;
 }
