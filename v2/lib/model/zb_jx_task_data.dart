@@ -66,12 +66,12 @@ class JxTaskData extends TaskData {
     var data = that as JxTaskData;
     return (baiziming_count ?? 0) == (data.baiziming_count ?? 0) &&
         (dingli_count ?? 0) == (data.dingli_count ?? 0) &&
-        (dingli_type ?? 0) == (data.dingli_type ?? 0) &&
+        (dingli_type ?? '0') == (data.dingli_type ?? '0') &&
         (faxin_count ?? 0) == (data.faxin_count ?? 0) &&
         (guiyi_count ?? 0) == (data.guiyi_count ?? 0) &&
         (lianshi_count ?? 0) == (data.lianshi_count ?? 0) &&
         (manza_count ?? 0) == (data.manza_count ?? 0) &&
-        (manza_type ?? 0) == (data.manza_type ?? 0);
+        (manza_type ?? '0') == (data.manza_type ?? '0');
   }
 
   @override
@@ -108,14 +108,16 @@ class JxTaskData extends TaskData {
     manza_total ??= 0;
   }
 
+  bool _checkTotal(int a, int b) => a == null || b == null || a == b;
+
   @override
   bool sameTotal(TaskData that) {
     var data = that as JxTaskData;
-    return baiziming_total == data.baiziming_total &&
-        dingli_total == data.dingli_total &&
-        faxin_total == data.faxin_total &&
-        guiyi_total == data.guiyi_total &&
-        lianshi_total == data.lianshi_total &&
-        manza_total == data.manza_total;
+    return _checkTotal(baiziming_total, data.baiziming_total) &&
+        _checkTotal(dingli_total, data.dingli_total) &&
+        _checkTotal(faxin_total, data.faxin_total) &&
+        _checkTotal(guiyi_total, data.guiyi_total) &&
+        _checkTotal(lianshi_total, data.lianshi_total) &&
+        _checkTotal(manza_total, data.manza_total);
   }
 }

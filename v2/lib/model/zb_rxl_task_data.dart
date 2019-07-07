@@ -35,17 +35,19 @@ class RxlTaskData extends TaskData {
 
   @override
   bool get isEmpty =>
-    (gx_count == null || gx_count == 0) &&
-    (mantra_count == null || mantra_count == 0);
+      (gx_count == null || gx_count == 0) &&
+      (mantra_count == null || mantra_count == 0);
 
   @override
   void initTotal() {
     mantra_total ??= 0;
   }
 
+  bool _checkTotal(int a, int b) => a == null || b == null || a == b;
+
   @override
   bool sameTotal(TaskData that) {
     var data = that as RxlTaskData;
-    return mantra_total == data.mantra_total;
+    return _checkTotal(mantra_total, data.mantra_total);
   }
 }
