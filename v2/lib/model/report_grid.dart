@@ -23,6 +23,9 @@ class ReportGrid<T extends TaskData> {
   /// A map from zhibei id to bicw id.
   final userIdMap = <int, int>{};
 
+  /// Set of visible column names.
+  final columns = <String>{};
+
   /// Bicw and zhibei.info task data.
   ///
   /// It is a map of maps (from user id to her task

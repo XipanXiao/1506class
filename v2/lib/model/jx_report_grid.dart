@@ -14,7 +14,8 @@ class JxTaskGrid extends ReportGrid<JxTaskData> {
     if (data.isEmpty) return;
 
     if (zhibei) {
-      return super.setTaskData(data, zhibei: true);
+      super.setTaskData(data, zhibei: true);
+      return _setColumns(data.values.single);
     }
 
     var jxData = data as Map<int, Map<int, JxTaskData>>;
@@ -44,5 +45,16 @@ class JxTaskGrid extends ReportGrid<JxTaskData> {
       }
     }
     super.setTaskData(data);
+  }
+
+  /// Initialize columns set from zhibei.info task data.
+  void _setColumns(Map<int, TaskData> halfTerm) {
+    columns.clear();
+
+    if (halfTerm.isEmpty) return;
+    var map = halfTerm.values.first.toMap();
+    columns.addAll(map.keys
+        .where((key) => map[key] != null)
+        .map((key) => key.split('_')[0]));
   }
 }

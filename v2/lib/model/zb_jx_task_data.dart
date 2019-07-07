@@ -28,7 +28,7 @@ class JxTaskData extends TaskData {
 
   final int dingli_count;
   int dingli_total;
-  final int dingli_type;
+  final String dingli_type;
 
   final int faxin_count;
   int faxin_total;
@@ -41,14 +41,14 @@ class JxTaskData extends TaskData {
 
   final int manza_count;
   int manza_total;
-  final int manza_type;
+  final String manza_type;
 
   JxTaskData.fromJson(Map<String, dynamic> map)
       : baiziming_count = map['baiziming_count'],
         baiziming_total = map['baiziming_total'],
         dingli_count = map['dingli_count'],
         dingli_total = map['dingli_total'],
-        dingli_type = int.tryParse(map['dingli_type'] ?? '0'),
+        dingli_type = map['dingli_type'],
         faxin_count = map['faxin_count'],
         faxin_total = map['faxin_total'],
         guiyi_count = map['guiyi_count'],
@@ -57,7 +57,7 @@ class JxTaskData extends TaskData {
         lianshi_total = map['lianshi_total'],
         manza_count = map['manza_count'],
         manza_total = map['manza_total'],
-        manza_type = int.tryParse(map['manza_type'] ?? '0'),
+        manza_type = map['manza_type'],
         super.fromJson(map);
 
   @override
@@ -79,12 +79,12 @@ class JxTaskData extends TaskData {
     var map = <String, String>{
       'baiziming_count': baiziming_count?.toString(),
       'dingli_count': dingli_count?.toString(),
-      'dingli_type': dingli_type?.toString(),
+      'dingli_type': dingli_type,
       'faxin_count': faxin_count?.toString(),
       'guiyi_count': guiyi_count?.toString(),
       'lianshi_count': lianshi_count?.toString(),
       'manza_count': manza_count?.toString(),
-      'manza_type': manza_type?.toString(),
+      'manza_type': manza_type,
     };
     return map..addAll(super.toMap());
   }

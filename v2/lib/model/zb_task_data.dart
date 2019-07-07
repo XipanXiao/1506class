@@ -110,7 +110,7 @@ class TaskDataPair<T extends TaskData> {
       audited = AuditState.LOCAL_ONLY;
     } else if (!hasLocalData && hasRemoteData) {
       audited = AuditState.REMOTE_ONLY;
-    } else if (bicwData.sameTotal(zhibeiData)) {
+    } else if (bicwData != null && bicwData.sameTotal(zhibeiData)) {
       audited = AuditState.PASS;
     }
   }

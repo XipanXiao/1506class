@@ -10,29 +10,41 @@
     <td rowspan="2">序号</td>
     <td rowspan="2">姓名</td>
     <td rowspan="2">数据源</td>
-    <td colspan="3">顶礼</td>
-    <td colspan="2">皈依</td>
-    <td colspan="2">发心</td>
-    <td colspan="2">百字明</td>
-    <td colspan="3">供曼扎</td>
-    <td colspan="2">莲师心咒</td>
+    <td colspan="3" *ngIf="grid.columns.contains('dingli')">顶礼</td>
+    <td colspan="2" *ngIf="grid.columns.contains('guiyi')">皈依</td>
+    <td colspan="2" *ngIf="grid.columns.contains('faxin')">发心</td>
+    <td colspan="2" *ngIf="grid.columns.contains('baiziming')">百字明</td>
+    <td colspan="3" *ngIf="grid.columns.contains('manza')">供曼扎</td>
+    <td colspan="2" *ngIf="grid.columns.contains('lianshi')">莲师心咒</td>
     <td>同步</td>
   </tr>
   <tr>
-    <td>类型</td>
-    <td>数量</td>
-    <td>总计</td>
-    <td>数量</td>
-    <td>总计</td>
-    <td>数量</td>
-    <td>总计</td>
-    <td>数量</td>
-    <td>总计</td>
-    <td>类型</td>
-    <td>数量</td>
-    <td>总计</td>
-    <td>数量</td>
-    <td>总计</td>
+    <ng-container *ngIf="grid.columns.contains('dingli')">
+      <td>类型</td>
+      <td>数量</td>
+      <td>总计</td>
+    </ng-container>
+    <ng-container *ngIf="grid.columns.contains('guiyi')">
+      <td>数量</td>
+      <td>总计</td>
+    </ng-container>
+    <ng-container *ngIf="grid.columns.contains('faxin')">
+      <td>数量</td>
+      <td>总计</td>
+    </ng-container>
+    <ng-container *ngIf="grid.columns.contains('baiziming')">
+      <td>数量</td>
+      <td>总计</td>
+    </ng-container>
+    <ng-container *ngIf="grid.columns.contains('manza')">
+      <td>类型</td>
+      <td>数量</td>
+      <td>总计</td>
+    </ng-container>
+    <ng-container *ngIf="grid.columns.contains('lianshi')">
+      <td>数量</td>
+      <td>总计</td>
+    </ng-container>
     <td>
       <material-button icon (trigger)="report()"
           title="上报所有选中的用户数据">
@@ -42,57 +54,82 @@
   </tr>
   <ng-container *ngFor="let user of users; let index = index">
     <tr>
-        <td rowspan="2">
-          <material-checkbox [checked]="selection.isSelected(user)"
-              (checkedChange)="toggleSelection(user, $event)"
-              title="是否上报zhibei.info"
-              [disabled]="!user.reportable">
-          </material-checkbox>  
-        </td>
-        <td rowspan="2">{{index}}</td>
-        <td rowspan="2" [class.pass]="user.passed"
-            [class.warning]="user.audited == AuditState.PARTIAL_PASS"
-            [class.error]="user.failed">
-          {{user.bicwData?.name ?? user.zhibeiData?.name}}</td>
-          <td>zhibei.info</td>
-          <td>{{user.zhibeiData?.dingli_type}}</td>
-          <td>{{user.zhibeiData?.dingli_count}}</td>
-          <td>{{user.zhibeiData?.dingli_total}}</td>
-          <td>{{user.zhibeiData?.guiyi_count}}</td>
-          <td>{{user.zhibeiData?.guiyi_total}}</td>
-          <td>{{user.zhibeiData?.faxin_count}}</td>
-          <td>{{user.zhibeiData?.faxin_total}}</td>
-          <td>{{user.zhibeiData?.baiziming_count}}</td>
-          <td>{{user.zhibeiData?.baiziming_total}}</td>
-          <td>{{user.zhibeiData?.manza_type}}</td>
-          <td>{{user.zhibeiData?.manza_count}}</td>
-          <td>{{user.zhibeiData?.manza_total}}</td>
-          <td>{{user.zhibeiData?.lianshi_count}}</td>
-          <td>{{user.zhibeiData?.lianshi_total}}</td>
-          <td rowspan="2" class="selectable">
-            <material-button icon (trigger)="report(user: user)"
-                title="上报" class="hover-button"
-                *ngIf="user.reportable">
-              <material-icon icon="backup"></material-icon>
-            </material-button>
-          </td>
-      </tr>
+      <td rowspan="2">
+        <material-checkbox [checked]="selection.isSelected(user)"
+            (checkedChange)="toggleSelection(user, $event)"
+            title="是否上报zhibei.info"
+            [disabled]="!user.reportable">
+        </material-checkbox>  
+      </td>
+      <td rowspan="2">{{index}}</td>
+      <td rowspan="2" [class.pass]="user.passed"
+          [class.warning]="user.audited == AuditState.PARTIAL_PASS"
+          [class.error]="user.failed">
+        {{user.bicwData?.name ?? user.zhibeiData?.name}}
+      </td>
+      <td>zhibei.info</td>
+      <ng-container *ngIf="grid.columns.contains('dingli')">
+        <td>{{user.zhibeiData?.dingli_type}}</td>
+        <td>{{user.zhibeiData?.dingli_count}}</td>
+        <td>{{user.zhibeiData?.dingli_total}}</td>
+      </ng-container>
+      <ng-container *ngIf="grid.columns.contains('guiyi')">
+        <td>{{user.zhibeiData?.guiyi_count}}</td>
+        <td>{{user.zhibeiData?.guiyi_total}}</td>
+      </ng-container>
+      <ng-container *ngIf="grid.columns.contains('faxin')">
+        <td>{{user.zhibeiData?.faxin_count}}</td>
+        <td>{{user.zhibeiData?.faxin_total}}</td>
+      </ng-container>
+      <ng-container *ngIf="grid.columns.contains('baiziming')">
+        <td>{{user.zhibeiData?.baiziming_count}}</td>
+        <td>{{user.zhibeiData?.baiziming_total}}</td>
+      </ng-container>
+      <ng-container *ngIf="grid.columns.contains('manza')">
+        <td>{{user.zhibeiData?.manza_type}}</td>
+        <td>{{user.zhibeiData?.manza_count}}</td>
+        <td>{{user.zhibeiData?.manza_total}}</td>
+      </ng-container>
+      <ng-container *ngIf="grid.columns.contains('lianshi')">
+        <td>{{user.zhibeiData?.lianshi_count}}</td>
+        <td>{{user.zhibeiData?.lianshi_total}}</td>
+      </ng-container>
+      <td rowspan="2" class="selectable">
+        <material-button icon (trigger)="report(user: user)"
+            title="上报" class="hover-button"
+            *ngIf="user.reportable">
+          <material-icon icon="backup"></material-icon>
+        </material-button>
+      </td>
+    </tr>
     <tr>
-        <td>bicw</td>
+      <td>bicw</td>
+      <ng-container *ngIf="grid.columns.contains('dingli')">
         <td>{{user.bicwData?.dingli_type}}</td>
         <td>{{user.bicwData?.dingli_count}}</td>
         <td>{{user.bicwData?.dingli_total}}</td>
+      </ng-container>
+      <ng-container *ngIf="grid.columns.contains('guiyi')">
         <td>{{user.bicwData?.guiyi_count}}</td>
         <td>{{user.bicwData?.guiyi_total}}</td>
+      </ng-container>
+      <ng-container *ngIf="grid.columns.contains('faxin')">
         <td>{{user.bicwData?.faxin_count}}</td>
         <td>{{user.bicwData?.faxin_total}}</td>
+      </ng-container>
+      <ng-container *ngIf="grid.columns.contains('baiziming')">
         <td>{{user.bicwData?.baiziming_count}}</td>
         <td>{{user.bicwData?.baiziming_total}}</td>
+      </ng-container>
+      <ng-container *ngIf="grid.columns.contains('manza')">
         <td>{{user.bicwData?.manza_type}}</td>
         <td>{{user.bicwData?.manza_count}}</td>
         <td>{{user.bicwData?.manza_total}}</td>
+      </ng-container>
+      <ng-container *ngIf="grid.columns.contains('lianshi')">
         <td>{{user.bicwData?.lianshi_count}}</td>
         <td>{{user.bicwData?.lianshi_total}}</td>
-  </tr>
+      </ng-container>
+    </tr>
   </ng-container>
 </table>
