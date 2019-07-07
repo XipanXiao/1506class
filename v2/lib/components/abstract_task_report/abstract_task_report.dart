@@ -4,7 +4,6 @@ import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:v2/model/class_info.dart';
 import 'package:v2/model/report_grid.dart';
-import 'package:v2/model/zb_rxl_task_data.dart';
 import 'package:v2/model/zb_task_data.dart';
 import 'package:v2/services/task_record_service.dart';
 import 'package:v2/services/zb_service.dart';
@@ -53,7 +52,7 @@ abstract class AbstractTaskReportComponent<T extends TaskData> {
     if (!grid.isLoaded(_halfTerm)) {
       if (await _zbService.ensureAuthenticated()) {
         var zbData = await _zbService.getTaskData(_classInfo.zb_id,
-            grid.grid_type, _halfTerm, (map) => RxlTaskData.fromJson(map));
+            grid.grid_type, _halfTerm, createTaskData);
         grid.setTaskData({_halfTerm: zbData}, zhibei: true);
       }
     }

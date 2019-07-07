@@ -17,7 +17,6 @@ import 'package:v2/services/zb_service.dart';
     MaterialIconComponent,
   ],
   templateUrl: 'rxl_task_report.html',
-  styleUrls: ['rxl_task_report.css'],
 )
 class RxlTaskReportComponent extends AbstractTaskReportComponent<RxlTaskData> {
   RxlTaskReportComponent(ZBService zbService, TaskRecordService taskService)

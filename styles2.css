@@ -50,3 +50,15 @@ material-button[affirmative] {
 .selectable:hover .hover-button {
   visibility: visible;
 }
+
+table {
+  border-spacing: 0;
+}
+
+.audited {
+  background-color: green;
+}
+
+.error {
+  background-color: red;
+}
