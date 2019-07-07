@@ -31,11 +31,10 @@ class ZBLoginDialogComponent extends AbstractDialog {
   String username;
   String password;
   String editPassword;
-  String captcha;
 
   ZBLoginDialogComponent(this._zbService);
 
   void login() async {
-    close(await _zbService.login(username, password, editPassword, captcha));
+    close(await _zbService.login(username, password, editPassword));
   }
 }

@@ -57,11 +57,10 @@ class ZBService {
     return response['returnValue'] == 'true';
   }
 
-  Future<bool> login(
-      String user, String password, String editPassword, String captcha) async {
+  Future<bool> login(String user, String password, String editPassword) async {
     _progressService.showProgress('Signing into zhibei.info');
     var url = '$_serviceUrl/account/login?type=login&username=$user'
-        '&password=$password&captcha=$captcha';
+        '&password=$password';
     try {
       var response = await utils.httpGetObject(_getProxiedUrl(url));
       if (response['returnValue'] != 'true') return false;
