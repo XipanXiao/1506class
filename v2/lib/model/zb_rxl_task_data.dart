@@ -8,18 +8,6 @@ class RxlTaskData extends TaskData {
   int mantra_count;
   int mantra_total;
 
-  RxlTaskData({
-    int id,
-    int userID,
-    String name,
-    int att,
-    this.gx_count,
-    this.gx_time,
-    this.mantra_count,
-    this.mantra_total,
-    this.select_all,
-  }) : super(id: id, userID: userID, name: name, att: att);
-
   RxlTaskData.fromJson(Map<String, dynamic> map)
       : gx_count = map['gx_count'] ?? 0,
         gx_time = map['gx_time'] ?? 0,

@@ -18,14 +18,6 @@ class TaskData extends BaseEntity {
   /// a specific half term.
   int att = 0;
 
-  TaskData(
-      {this.id,
-      this.userID,
-      this.name,
-      this.att,
-      this.operation,
-      this.user_style});
-
   TaskData.fromJson(Map<String, dynamic> map)
       : id = map['id'],
         userID = int.tryParse(map['userID'] ?? ''),
