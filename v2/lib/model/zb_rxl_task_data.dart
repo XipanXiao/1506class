@@ -1,10 +1,7 @@
 import 'package:v2/model/zb_task_data.dart';
 
 class RxlTaskData extends TaskData {
-  final int operation;
   final int select_all;
-
-  final int user_style;
 
   int gx_count;
   double gx_time;
@@ -20,9 +17,7 @@ class RxlTaskData extends TaskData {
     this.gx_time,
     this.mantra_count,
     this.mantra_total,
-    this.operation,
     this.select_all,
-    this.user_style,
   }) : super(id: id, userID: userID, name: name, att: att);
 
   RxlTaskData.fromJson(Map<String, dynamic> map)
@@ -30,9 +25,7 @@ class RxlTaskData extends TaskData {
         gx_time = map['gx_time'] ?? 0,
         mantra_count = map['mantra_count'] ?? 0,
         mantra_total = map['mantra_total'] ?? 0,
-        operation = int.tryParse(map['operation'] ?? ''),
         select_all = int.tryParse(map['select_all'] ?? ''),
-        user_style = int.tryParse(map['user_style'] ?? ''),
         super.fromJson(map);
 
   @override

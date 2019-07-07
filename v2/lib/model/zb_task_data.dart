@@ -2,6 +2,9 @@ import 'base_entity.dart';
 
 /// Base structure to encode/decode zhibei.info task data.
 class TaskData extends BaseEntity {
+  final int operation;
+  final int user_style;
+
   /// bicw user id.
   int id;
 
@@ -15,13 +18,21 @@ class TaskData extends BaseEntity {
   /// a specific half term.
   int att = 0;
 
-  TaskData({this.id, this.userID, this.name, this.att});
+  TaskData(
+      {this.id,
+      this.userID,
+      this.name,
+      this.att,
+      this.operation,
+      this.user_style});
 
   TaskData.fromJson(Map<String, dynamic> map)
       : id = map['id'],
         userID = int.tryParse(map['userID'] ?? ''),
         name = map['name'],
-        att = map['att'] ?? 0;
+        att = map['att'] ?? 0,
+        operation = int.tryParse(map['operation'] ?? ''),
+        user_style = int.tryParse(map['user_style'] ?? '');
 
   @override
   int get hashCode => id.hashCode;
