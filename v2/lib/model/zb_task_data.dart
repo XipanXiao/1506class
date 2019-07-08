@@ -1,3 +1,5 @@
+import 'package:v2/model/schedule_record.dart';
+
 import 'base_entity.dart';
 
 /// Base structure to encode/decode zhibei.info task data.
@@ -5,14 +7,17 @@ abstract class TaskData extends BaseEntity {
   final int operation;
   final int user_style;
 
-  /// bicw user id.
-  int id;
-
   /// zhibei.info user id.
   final int userID;
 
   /// User name.
   final String name;
+
+  /// Schedule task records, keyed by bicw course id.
+  final scheduleRecords = <int, ScheduleRecord>{};
+
+  /// bicw user id.
+  int id;
 
   /// Times of attendence of this user for
   /// a specific half term.

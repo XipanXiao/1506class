@@ -38,7 +38,10 @@ abstract class AbstractTaskReportComponent<T extends TaskData> {
 
   AbstractTaskReportComponent(this._zbService, this._taskService);
 
+  /// Construts a type specific [RedportGrid] object.
   ReportGrid<T> createTaskGrid();
+
+  /// Construts a type specific [TaskData] object.
   T createTaskData(Map<String, dynamic> map);
 
   void _reload() async {

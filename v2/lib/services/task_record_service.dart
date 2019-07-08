@@ -104,6 +104,17 @@ class TaskRecordService {
     }
   }
 
+  void _setScheduleRecords<T extends TaskData>(
+      Iterable<ScheduleRecord> schedulesRecords, Map<int, Map<int, T>> stats) {
+    for (var schedule in schedulesRecords) {
+      var halfTerm = stats[schedule.half_term];
+      if (halfTerm == null) continue;
+
+      var user = halfTerm[schedule.student_id];
+      user.scheduleRecords[schedule.course_id] = schedule;
+    }
+  }
+
   Future<Map<int, Map<int, T>>> getTaskDataStats<T extends TaskData>(
       int classId, TaskDataFromJson<T> creator) async {
     var url = '$_serviceUrl?rid=task_records&classId=$classId';
@@ -125,6 +136,7 @@ class TaskRecordService {
     var schedules_records = map['schedules_records']
         .map<ScheduleRecord>((map) => ScheduleRecord.fromJson(map));
 
+    _setScheduleRecords(schedules_records, stats);
     _parseAttendance(schedules_records, stats, schedulesMap);
     return stats;
   }
