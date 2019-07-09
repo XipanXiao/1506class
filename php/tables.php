@@ -241,7 +241,7 @@ function get_courses($course_group_id) {
   global $medoo;
 
   return keyed_by_id($medoo->select("courses", "*", 
-      ["group_id" => $course_group_id]));
+      $course_group_id ? ["group_id" => $course_group_id] : null));
 }
 
 function get_course_by_id($course_ids) {

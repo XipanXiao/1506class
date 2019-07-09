@@ -1,4 +1,6 @@
 import 'package:angular/angular.dart';
+import 'package:v2/model/report_grid.dart';
+import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/zb_task_data.dart';
 import 'package:v2/services/dialog_service.dart';
 import 'package:v2/services/progress_service.dart';
@@ -49,6 +51,7 @@ class ZBService {
     return await _dialogService.showZbLoginDialog();
   }
 
+  /// Enters editing mode with the [editPassword].
   Future<bool> edit(String editPassword) async {
     var url =
         '$_serviceUrl/pre/check_edit_password_ajax?type=check_edit_password'
@@ -68,6 +71,84 @@ class ZBService {
     } finally {
       _progressService.done();
     }
+  }
+
+  /// Get lesson names and ids for a given [half_term].
+  Future<List<Lesson>> getLessons(
+      int pre_classID, int courseID, int half_term) async {
+    var url =
+        '$_serviceUrl/pre/report_ajax?courseID=$courseID&half_term=$half_term'
+        '&type=pre_class_lessons&pre_classID=$pre_classID';
+    var lessons = await utils.httpGetObject(_getProxiedUrl(url));
+    return (lessons['data'] ?? [])
+        .map<Lesson>((json) => Lesson.fromJson(json))
+        .toList();
+  }
+
+  /// Given a record responed from zhibei.info, returns a parsed map (keyed by
+  /// lesson ids).
+  ///
+  /// The record is like:
+  /// audio173: "1"
+  /// audio174: "1"
+  /// audio175: "1"
+  /// audio176: "1"
+  /// audio177: "1"
+  /// ...
+  /// book173: "1"
+  /// book174: "1"
+  /// book175: "0"
+  /// book176: "1"
+  /// book177: "1"
+  /// ...
+  /// name: "张三"
+  /// operation: "0"
+  /// select_all: "0"
+  /// userID: "123623"
+  /// user_style: "0"
+  ///
+  /// And the returning map is like:
+  /// {
+  ///     173: {video: 1, text: 1},
+  ///     174: {video: 1, text: 1},
+  ///     175: {video: 1, text: 0},
+  ///     ...
+  /// }
+  Map<int, ScheduleRecord> _parseScheduleRecord(Map<String, dynamic> record) {
+    var rawData = <int, Map<String, String>>{};
+
+    void convertKey(String key, String prefix, String newKey) {
+      int lesson_id = int.parse(key.substring(prefix.length));
+      var schedule = rawData.putIfAbsent(lesson_id, () => <String, String>{});
+      schedule[newKey] = record[key];
+    }
+
+    for (var key in record.keys) {
+      if (key.startsWith('audio')) {
+        convertKey(key, 'audio', 'video');
+      } else if (key.startsWith('book')) {
+        convertKey(key, 'book', 'text');
+      }
+    }
+    return rawData
+        .map((key, value) => MapEntry(key, ScheduleRecord.fromJson(value)));
+  }
+
+  /// Fetches all users' schedule records from zhibei.info,
+  /// for the class identified by [pre_classID] and the
+  /// [halfTerm].
+  ///
+  /// Returns the map (keyed by userID) of maps (keyed by lesson id).
+  Future<Map<int, Map<int, ScheduleRecord>>> getScheduleRecords(
+      int pre_classID, int halfTerm) async {
+    var taskDataQuery =
+        'type=main_course_grid&pre_classID=$pre_classID&half_term=$halfTerm';
+    var url = '$_serviceUrl$_file?${taskDataQuery}';
+    var map = await utils.httpGetObject(_getProxiedUrl(url));
+    List list = map['data'] ?? [];
+    return Map.fromIterable(list,
+        key: (json) => int.parse(json['userID']),
+        value: (json) => _parseScheduleRecord(json));
   }
 
   Future<bool> reportTask(

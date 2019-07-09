@@ -13,7 +13,11 @@ abstract class TaskData extends BaseEntity {
   /// User name.
   final String name;
 
-  /// Schedule task records, keyed by bicw course id.
+  /// Schedule task records, keyed by bicw course id or
+  /// zhibei lesson ids.
+  /// 
+  /// When being compared, they're both keyed by zhibei
+  /// lesson ids.
   final scheduleRecords = <int, ScheduleRecord>{};
 
   /// bicw user id.
@@ -84,6 +88,8 @@ class TaskDataPair<T extends TaskData> {
       : audited = that.audited,
         bicwData = that.bicwData,
         zhibeiData = that.zhibeiData;
+
+  String get name => bicwData?.name ?? zhibeiData?.name;
 
   /// Whether there is a need to report this user's task data to
   /// zhibei.info.

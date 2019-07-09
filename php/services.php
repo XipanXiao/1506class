@@ -109,7 +109,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         $_GET["user_id"] : $student_id; 
     $response = get_task_history($user_id, $_GET["task_id"]);
   } elseif ($resource_id == "courses") {
-    $response = get_courses($_GET["group_id"]);
+    $response = get_courses(empty($_GET["group_id"]) ? null : $_GET["group_id"]);
   } elseif ($resource_id == "users") {
     $email = empty($_GET["email"]) ? null : $_GET["email"];
     $classId = empty($_GET["classId"]) ? null : $_GET["classId"];

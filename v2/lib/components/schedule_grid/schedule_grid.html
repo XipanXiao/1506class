@@ -1,0 +1,34 @@
+<table border="1" *ngIf="lessons != null">
+  <tr>
+    <td rowspan="2">序号</td>
+    <td rowspan="2">姓名</td>
+    <td rowspan="2">数据源</td>
+    <td colspan="2" *ngFor="let lesson of lessons">
+      {{lesson.name}}
+    </td>
+  </tr>
+  <tr>
+    <ng-container *ngFor="let lesson of lessons">
+      <td>法本</td>
+      <td>传承</td>
+    </ng-container>
+  </tr>
+  <ng-container *ngFor="let user of users; let index = index">
+    <tr>
+      <td rowspan="2">{{index + 1}}</td>
+      <td rowspan="2">{{user.name}}</td>
+      <td>zhibei.info</td>
+      <ng-container *ngFor="let lesson of lessons">
+        <td>{{getUserScheduleRecord(user, lesson.lesson_id, zhibei: true)?.text}}</td>
+        <td>{{getUserScheduleRecord(user, lesson.lesson_id, zhibei: true)?.video}}</td>
+      </ng-container>
+    </tr>
+    <tr>
+      <td>bicw</td>
+      <ng-container *ngFor="let lesson of lessons">
+        <td>{{getUserScheduleRecord(user, lesson.lesson_id)?.text}}</td>
+        <td>{{getUserScheduleRecord(user, lesson.lesson_id)?.video}}</td>
+      </ng-container>
+    </tr>
+  </ng-container>
+</table>
