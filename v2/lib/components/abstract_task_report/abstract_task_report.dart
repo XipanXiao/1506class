@@ -1,7 +1,6 @@
 import 'dart:html';
 
 import 'package:angular/angular.dart';
-import 'package:angular_components/angular_components.dart';
 import 'package:v2/model/class_info.dart';
 import 'package:v2/model/report_grid.dart';
 import 'package:v2/model/zb_task_data.dart';
@@ -9,13 +8,16 @@ import 'package:v2/services/course_service.dart';
 import 'package:v2/services/task_record_service.dart';
 import 'package:v2/services/zb_service.dart';
 
-abstract class AbstractTaskReportComponent<T extends TaskData> {
+import 'has_selectable.dart';
+
+abstract class AbstractTaskReportComponent<T extends TaskData>
+    extends HasSelectable<T> {
   final CourseService _courseService;
   final ZBService _zbService;
   final TaskRecordService _taskService;
 
+  @override
   final users = <TaskDataPair<T>>[];
-  final selection = SelectionModel<TaskDataPair<T>>.multi();
 
   @Input()
   set classInfo(ClassInfo classInfo) {
@@ -119,23 +121,5 @@ abstract class AbstractTaskReportComponent<T extends TaskData> {
 
     grid.clearCache(_halfTerm);
     _reload();
-  }
-
-  bool get allSelected => selection.selectedValues.length == users.length;
-
-  void toggleSelectAll(String label) {
-    if (label == true.toString()) {
-      users.where((user) => user.reportable).forEach(selection.select);
-    } else if (label == false.toString()) {
-      selection.clear();
-    }
-  }
-
-  void toggleSelection(TaskDataPair<T> user, bool checked) {
-    if (checked) {
-      selection.select(user);
-    } else {
-      selection.deselect(user);
-    }
   }
 }
