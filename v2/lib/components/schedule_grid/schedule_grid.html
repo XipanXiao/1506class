@@ -1,5 +1,11 @@
 <table border="1" *ngIf="lessons != null">
   <tr>
+    <td rowspan="2">
+        <material-checkbox [checked]="allSelected"
+            [indeterminate]="selection.isNotEmpty && !allSelected"
+            (change)="toggleSelectAll($event)">
+        </material-checkbox>
+      </td>
     <td rowspan="2">序号</td>
     <td rowspan="2">姓名</td>
     <td rowspan="2">数据源</td>
@@ -15,6 +21,13 @@
   </tr>
   <ng-container *ngFor="let user of users; let index = index">
     <tr>
+      <td rowspan="2">
+        <material-checkbox [checked]="selection.isSelected(user)"
+            (checkedChange)="toggleSelection(user, $event)"
+            title="是否上报zhibei.info"
+            [disabled]="!user.reportable">
+        </material-checkbox>  
+      </td>  
       <td rowspan="2">{{index + 1}}</td>
       <td rowspan="2" [class.pass]="user.passed"
           [class.warning]="user.audited == AuditState.PARTIAL_PASS"

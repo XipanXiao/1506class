@@ -64,7 +64,7 @@
               [disabled]="!user.reportable">
           </material-checkbox>  
         </td>
-        <td rowspan="2">{{index}}</td>
+        <td rowspan="2">{{index + 1}}</td>
         <td rowspan="2" [class.pass]="user.passed"
             [class.warning]="user.audited == AuditState.PARTIAL_PASS"
             [class.error]="user.failed">

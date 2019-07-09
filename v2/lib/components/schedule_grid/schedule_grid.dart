@@ -1,6 +1,7 @@
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
+import 'package:v2/components/abstract_task_report/has_selectable.dart';
 import 'package:v2/model/lesson.dart';
 import 'package:v2/model/report_grid.dart';
 import 'package:v2/model/schedule_record.dart';
@@ -19,9 +20,9 @@ import 'package:v2/services/zb_service.dart';
   styleUrls: ['schedule_grid.css'],
   exports: [AuditState],
 )
-class ScheduleGridComponent {
+class ScheduleGridComponent extends HasSelectable<TaskData> {
   final ZBService _zbService;
-  final users = <TaskDataPair>[];
+  final users = <TaskDataPair<TaskData>>[];
 
   @Input()
   set grid(ReportGrid grid) {
@@ -59,6 +60,7 @@ class ScheduleGridComponent {
       ..addAll(_grid.taskData[_halfTerm].values.map((pair) =>
           TaskDataPair.from(pair)
             ..auditScheduleRecords(_grid.getLessons(_halfTerm))));
+    users.where((user) => user.failed).forEach(selection.select);
   }
 
   ScheduleRecord getUserScheduleRecord(TaskDataPair user, int lesson_id,
