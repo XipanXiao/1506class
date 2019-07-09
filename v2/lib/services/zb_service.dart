@@ -1,5 +1,5 @@
 import 'package:angular/angular.dart';
-import 'package:v2/model/report_grid.dart';
+import 'package:v2/model/lesson.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/zb_task_data.dart';
 import 'package:v2/services/dialog_service.dart';

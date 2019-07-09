@@ -16,7 +16,11 @@
   <ng-container *ngFor="let user of users; let index = index">
     <tr>
       <td rowspan="2">{{index + 1}}</td>
-      <td rowspan="2">{{user.name}}</td>
+      <td rowspan="2" [class.pass]="user.passed"
+          [class.warning]="user.audited == AuditState.PARTIAL_PASS"
+          [class.error]="user.failed">
+        {{user.name}}
+      </td>
       <td>zhibei</td>
       <ng-container *ngFor="let lesson of lessons">
         <td [class.done]="getUserScheduleRecord(user, lesson.lesson_id, zhibei: true)?.text"></td>

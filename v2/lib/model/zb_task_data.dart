@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+import 'package:v2/model/lesson.dart';
 import 'package:v2/model/schedule_record.dart';
 
 import 'base_entity.dart';
@@ -15,7 +17,7 @@ abstract class TaskData extends BaseEntity {
 
   /// Schedule task records, keyed by bicw course id or
   /// zhibei lesson ids.
-  /// 
+  ///
   /// When being compared, they're both keyed by zhibei
   /// lesson ids.
   final scheduleRecords = <int, ScheduleRecord>{};
@@ -122,6 +124,39 @@ class TaskDataPair<T extends TaskData> {
     } else if (!hasLocalData && hasRemoteData) {
       audited = AuditState.REMOTE_ONLY;
     } else if (bicwData != null && bicwData.sameTotal(zhibeiData)) {
+      audited = AuditState.PASS;
+    }
+  }
+
+  List<bool> _expand(ScheduleRecord record) =>
+      [record?.text ?? false, record?.video ?? false];
+
+  void auditScheduleRecords(List<Lesson> lessons) {
+    audited = null;
+    if (bicwData == null && zhibeiData == null) return;
+
+    var bicw = bicwData?.scheduleRecords ?? {};
+    var zhibei = zhibeiData?.scheduleRecords ?? {};
+
+    var bicwRecords =
+        lessons.expand((lesson) => _expand(bicw[lesson.lesson_id])).toList();
+    var zhibeiRecords =
+        lessons.expand((lesson) => _expand(zhibei[lesson.lesson_id])).toList();
+
+    var hasLocalData = bicwRecords.isNotEmpty;
+    var hasRemoteData = zhibeiRecords.isNotEmpty;
+
+    if (hasLocalData && hasRemoteData) {
+      if (ListEquality<bool>().equals(bicwRecords, zhibeiRecords)) {
+        audited = AuditState.PASS;
+      } else {
+        audited = AuditState.FAIL;
+      }
+    } else if (hasLocalData && !hasRemoteData) {
+      audited = AuditState.LOCAL_ONLY;
+    } else if (!hasLocalData && hasRemoteData) {
+      audited = AuditState.REMOTE_ONLY;
+    } else {
       audited = AuditState.PASS;
     }
   }

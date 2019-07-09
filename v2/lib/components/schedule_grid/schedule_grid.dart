@@ -1,6 +1,7 @@
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
+import 'package:v2/model/lesson.dart';
 import 'package:v2/model/report_grid.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/zb_task_data.dart';
@@ -46,13 +47,18 @@ class ScheduleGridComponent {
 
   void _reload() async {
     if (_grid == null || _halfTerm == null) return;
-    users..clear()..addAll(_grid.taskData[_halfTerm].values);
 
     if (!_grid.isScheduleLoaded(_halfTerm)) {
       var scheduleRecords =
           await _zbService.getScheduleRecords(_grid.pre_classID, _halfTerm);
       _grid.setZBScheduleRecords(_halfTerm, scheduleRecords);
     }
+
+    users
+      ..clear()
+      ..addAll(_grid.taskData[_halfTerm].values.map((pair) =>
+          TaskDataPair.from(pair)
+            ..auditScheduleRecords(_grid.getLessons(_halfTerm))));
   }
 
   ScheduleRecord getUserScheduleRecord(TaskDataPair user, int lesson_id,

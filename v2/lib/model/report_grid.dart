@@ -2,16 +2,7 @@ import 'package:v2/model/course.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/zb_task_data.dart';
 
-class Lesson {
-  final int lesson_id;
-  final String name;
-
-  Lesson(this.lesson_id, this.name);
-
-  Lesson.fromJson(Map<String, dynamic> map)
-      : lesson_id = int.parse(map['lesson_id']),
-        name = map['name'];
-}
+import 'lesson.dart';
 
 class ReportGrid<T extends TaskData> {
   /// zhibei.info Lesson ID.
