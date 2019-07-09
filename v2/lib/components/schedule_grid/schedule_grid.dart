@@ -15,6 +15,7 @@ import 'package:v2/services/zb_service.dart';
     MaterialIconComponent,
   ],
   templateUrl: 'schedule_grid.html',
+  styleUrls: ['schedule_grid.css'],
   exports: [AuditState],
 )
 class ScheduleGridComponent {
@@ -45,13 +46,13 @@ class ScheduleGridComponent {
 
   void _reload() async {
     if (_grid == null || _halfTerm == null) return;
+    users..clear()..addAll(_grid.taskData[_halfTerm].values);
 
     if (!_grid.isScheduleLoaded(_halfTerm)) {
       var scheduleRecords =
           await _zbService.getScheduleRecords(_grid.pre_classID, _halfTerm);
       _grid.setZBScheduleRecords(_halfTerm, scheduleRecords);
     }
-    users.addAll(_grid.taskData[_halfTerm].values);
   }
 
   ScheduleRecord getUserScheduleRecord(TaskDataPair user, int lesson_id,

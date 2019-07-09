@@ -17,17 +17,17 @@
     <tr>
       <td rowspan="2">{{index + 1}}</td>
       <td rowspan="2">{{user.name}}</td>
-      <td>zhibei.info</td>
+      <td>zhibei</td>
       <ng-container *ngFor="let lesson of lessons">
-        <td>{{getUserScheduleRecord(user, lesson.lesson_id, zhibei: true)?.text}}</td>
-        <td>{{getUserScheduleRecord(user, lesson.lesson_id, zhibei: true)?.video}}</td>
+        <td [class.done]="getUserScheduleRecord(user, lesson.lesson_id, zhibei: true)?.text"></td>
+        <td [class.done]="getUserScheduleRecord(user, lesson.lesson_id, zhibei: true)?.video"></td>
       </ng-container>
     </tr>
     <tr>
       <td>bicw</td>
       <ng-container *ngFor="let lesson of lessons">
-        <td>{{getUserScheduleRecord(user, lesson.lesson_id)?.text}}</td>
-        <td>{{getUserScheduleRecord(user, lesson.lesson_id)?.video}}</td>
+        <td [class.done]="getUserScheduleRecord(user, lesson.lesson_id)?.text"></td>
+        <td [class.done]="getUserScheduleRecord(user, lesson.lesson_id)?.video"></td>
       </ng-container>
     </tr>
   </ng-container>
