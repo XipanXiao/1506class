@@ -67,8 +67,14 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
       grid.courses.addAll(await _courseService.getCourses());
     }
 
-    var lessons = grid.getLessons(halfTerm);
+    if (grid.taskData.isEmpty) {
+      var taskData =
+          await _taskService.getTaskDataStats(_classInfo.id, createTaskData);
+      grid.setTaskData(taskData);
+    }
+
     bool authenticated = false;
+    var lessons = grid.getLessons(halfTerm);
     if (lessons == null) {
       authenticated = await _zbService.ensureAuthenticated();
       if (authenticated) {
@@ -76,12 +82,6 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
             grid.pre_classID, grid.courseID, halfTerm);
         grid.setLessons(halfTerm, lessons);
       }
-    }
-
-    if (grid.taskData.isEmpty) {
-      var taskData =
-          await _taskService.getTaskDataStats(_classInfo.id, createTaskData);
-      grid.setTaskData(taskData);
     }
 
     if (!grid.isLoaded(halfTerm) && authenticated) {

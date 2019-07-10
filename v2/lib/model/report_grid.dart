@@ -75,7 +75,6 @@ abstract class ReportGrid<T extends TaskData> {
           destUser.zhibeiData = user;
           destUser.audit();
         } else {
-          _convertScheduleRecordsMap(user);
           destUser.bicwData = user;
         }
       }
@@ -111,7 +110,7 @@ abstract class ReportGrid<T extends TaskData> {
     var halfTermData = taskData[halfTerm];
     if (halfTermData == null) return;
     for (var user in halfTermData.values) {
-      user.zhibeiData?.scheduleRecords?.clear();      
+      user.zhibeiData?.scheduleRecords?.clear();
     }
   }
 
@@ -154,15 +153,20 @@ abstract class ReportGrid<T extends TaskData> {
         _courseIdMap[id] = lesson.lesson_id;
       }
     }
+
+    _convertScheduleRecordsMap(halfTerm);
   }
 
   /// Converts the scheduleRecords map of the bicwData of [user],
   /// to a new map from zhibei [Lesson] IDs to [ScheduleRecord]s.
-  void _convertScheduleRecordsMap(TaskData user) {
-    var map = user.scheduleRecords
-        .map((id, course) => MapEntry(_courseIdMap[id], course));
-    user.scheduleRecords
-      ..clear()
-      ..addAll(map);
+  void _convertScheduleRecordsMap(int halfTerm) {
+    var halfTermUsers = taskData[halfTerm];
+    for (var user in halfTermUsers.values) {
+      var map = user.bicwData.scheduleRecords
+          .map((id, course) => MapEntry(_courseIdMap[id], course));
+      user.bicwData.scheduleRecords
+        ..clear()
+        ..addAll(map);
+    }
   }
 }
