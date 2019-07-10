@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
@@ -22,6 +24,8 @@ import 'package:v2/services/zb_service.dart';
 )
 class ScheduleGridComponent extends HasSelectable<TaskData> {
   final ZBService _zbService;
+
+  @override
   final users = <TaskDataPair<TaskData>>[];
 
   @Input()
@@ -69,5 +73,28 @@ class ScheduleGridComponent extends HasSelectable<TaskData> {
         ? user.zhibeiData?.scheduleRecords
         : user.bicwData?.scheduleRecords;
     return records == null ? null : records[lesson_id];
+  }
+
+  /// Reports task data from bicw to zhibei.info, for all
+  /// selected users.
+  void report({TaskDataPair<TaskData> user}) async {
+    var users = user == null ? selection.selectedValues : [user];
+    if (users.isEmpty) return;
+
+    if (!await _zbService.ensureAuthenticated()) return;
+
+    for (var user in users) {
+      if (!await _zbService.reportScheduleTask(
+          grid.gridTypes.report_main_grid,
+          grid.pre_classID,
+          _halfTerm,
+          user.bicwData,
+          grid.getLessons(_halfTerm))) {
+        window.alert('Failed to report for ${user.name}');
+      }
+    }
+
+    grid.clearScheduleCache(_halfTerm);
+    _reload();
   }
 }

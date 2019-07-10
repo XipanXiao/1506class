@@ -3,7 +3,13 @@ import 'package:v2/model/zb_jx_task_data.dart';
 import 'package:v2/model/zb_task_data.dart';
 
 class JxTaskGrid extends ReportGrid<JxTaskData> {
-  JxTaskGrid() : super(1, 'jxWork_grid');
+  @override
+  final gridTypes = GridTypes(
+      report_main_grid: 'jx_grid',
+      workGrid: 'jxWork_grid',
+      attLimitGrid: 'att_limit_grid');
+
+  JxTaskGrid() : super(1);
 
   /// Adds loaded task data to this grid.
   ///

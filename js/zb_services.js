@@ -319,9 +319,9 @@ define('zb_services', ['utils'], function() {
       /// Returns the 'type' field when reporting.
       ///
       /// grid 0: the main audio/book grid
-      /// grid 1: the task/work grid
+      /// grid 1: the jiaxing task/work grid
       /// grid 2: the limited class and attendance gird
-      /// grid 4: the guanxiu grid
+      /// grid 3: the guanxiu grid
       get_report_type: function(depId, grid) {
         switch (depId) {
         case 2:

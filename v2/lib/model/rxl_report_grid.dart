@@ -3,7 +3,11 @@ import 'package:v2/model/zb_rxl_task_data.dart';
 import 'package:v2/model/zb_task_data.dart';
 
 class RxlTaskGrid extends ReportGrid<RxlTaskData> {
-  RxlTaskGrid() : super(2, 'rxl_work_grid');
+  @override
+  final gridTypes =
+      GridTypes(report_main_grid: 'rxl_grid', workGrid: 'rxl_work_grid');
+
+  RxlTaskGrid() : super(2);
 
   /// Adds loaded task data to this grid.
   ///

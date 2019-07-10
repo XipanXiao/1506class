@@ -84,7 +84,7 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
     }
     if (!grid.isLoaded(_halfTerm) && authenticated) {
       var zbData = await _zbService.getTaskData(
-          _classInfo.zb_id, grid.grid_type, _halfTerm, createTaskData);
+          _classInfo.zb_id, grid.gridTypes.workGrid, _halfTerm, createTaskData);
       grid.setTaskData({_halfTerm: zbData}, zhibei: true);
     }
 
@@ -112,10 +112,9 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
     if (!await _zbService.ensureAuthenticated()) return;
 
     for (var user in users) {
-      if (!await _zbService.reportTask(
-          grid.pre_classID, _halfTerm, grid.grid_type, user.bicwData)) {
+      if (!await _zbService.reportTask(grid.pre_classID, _halfTerm,
+          grid.gridTypes.workGrid, user.bicwData)) {
         window.alert('Failed to report for ${user.bicwData.name}');
-        return;
       }
     }
 

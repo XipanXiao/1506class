@@ -153,7 +153,7 @@ class ZBService {
 
   Future<bool> reportTask(
       int pre_classID, int halfTerm, String gridType, TaskData data) async {
-    _progressService.showProgress('Reporting for ${data.name}');
+    _progressService.showProgress('Reporting task for ${data.name}');
 
     var extraData = {
       'pre_classID': '$pre_classID',
@@ -165,6 +165,40 @@ class ZBService {
     try {
       var response =
           await utils.httpPostObject(_proxyUrl, data, extraData: extraData);
+      return response['returnValue'] == 'success';
+    } finally {
+      _progressService.done();
+    }
+  }
+
+  List<int> _getBookRecords(List<Lesson> lessons, TaskData user) => lessons
+      .map<int>((lesson) =>
+          user.scheduleRecords[lesson.lesson_id]?.text == true ? 1 : 0)
+      .toList();
+
+  List<int> _getAudioRecords(List<Lesson> lessons, TaskData user) => lessons
+      .map<int>((lesson) =>
+          user.scheduleRecords[lesson.lesson_id]?.video == true ? 1 : 0)
+      .toList();
+
+  Future<bool> reportScheduleTask(String gridType, int pre_classID,
+      int half_term, TaskData user, List<Lesson> lessons) async {
+    _progressService.showProgress('Reporting for ${user.name}');
+    var data = <String, dynamic>{
+      'url': '$_serviceUrl/pre/report_ajax',
+      'userID': user.userID,
+      'pre_classID': pre_classID,
+      'type': gridType,
+      'half_term': half_term,
+    };
+    var entries = data.entries.toList()
+      ..addAll(_getBookRecords(lessons, user)
+          .map((value) => MapEntry('book[]', value)))
+      ..addAll(_getAudioRecords(lessons, user)
+          .map((value) => MapEntry('audio[]', value)));
+
+    try {
+      var response = await utils.httpPostFormData(_proxyUrl, entries);
       return response['returnValue'] == 'success';
     } finally {
       _progressService.done();

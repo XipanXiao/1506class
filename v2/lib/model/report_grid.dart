@@ -4,12 +4,27 @@ import 'package:v2/model/zb_task_data.dart';
 
 import 'lesson.dart';
 
-class ReportGrid<T extends TaskData> {
+class GridTypes {
+  /// The grid type parameter when fetching schedule records
+  /// from zhibei.info.
+  final String main_course_grid = 'main_course_grid';
+
+  /// The grid type parameter when reporting schedule records
+  /// to zhibei.info.
+  final String report_main_grid;
+  final String workGrid;
+  final String attLimitGrid;
+
+  /// The grid type parameter when reporting jiaxing
+  /// guanxiu task data to zhibei.info.
+  final String guanxiuGrid = 'guanxiu_grid';
+
+  GridTypes({this.report_main_grid, this.workGrid, this.attLimitGrid});
+}
+
+abstract class ReportGrid<T extends TaskData> {
   /// zhibei.info Lesson ID.
   final int courseID;
-
-  /// zhibei.info report grid type.
-  final String grid_type;
 
   /// zhibei.info main course lessons list.
   final lessons = <int, List<Lesson>>{};
@@ -45,7 +60,9 @@ class ReportGrid<T extends TaskData> {
   /// ...
   final taskData = <int, Map<int, TaskDataPair<T>>>{};
 
-  ReportGrid(this.courseID, this.grid_type);
+  GridTypes get gridTypes;
+
+  ReportGrid(this.courseID);
 
   /// Adds loaded task data to this grid.
   void setTaskData(Map<int, Map<int, TaskData>> data, {bool zhibei = false}) {
@@ -72,6 +89,15 @@ class ReportGrid<T extends TaskData> {
     return halfTermData.values.any((user) => user.zhibeiData != null);
   }
 
+  /// Clears zhibei.info cache for [halfTerm].
+  void clearCache(int halfTerm) {
+    var halfTermData = taskData[halfTerm];
+    if (halfTermData == null) return;
+    for (var user in halfTermData.values) {
+      user.zhibeiData = null;
+    }
+  }
+
   /// Check whether schedule task data of [half_term] are fully loaded.
   bool isScheduleLoaded(half_term) {
     var halfTermData = taskData[half_term];
@@ -80,12 +106,12 @@ class ReportGrid<T extends TaskData> {
         .any((user) => user.zhibeiData?.scheduleRecords?.isNotEmpty == true);
   }
 
-  /// Clears zhibei.info cache for [halfTerm].
-  void clearCache(int halfTerm) {
+  /// Clears zhibei.info schedule data cache for [halfTerm].
+  void clearScheduleCache(int halfTerm) {
     var halfTermData = taskData[halfTerm];
     if (halfTermData == null) return;
     for (var user in halfTermData.values) {
-      user.zhibeiData = null;
+      user.zhibeiData?.scheduleRecords?.clear();      
     }
   }
 
