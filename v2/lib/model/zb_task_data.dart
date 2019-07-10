@@ -143,8 +143,9 @@ class TaskDataPair<T extends TaskData> {
     var zhibeiRecords =
         lessons.expand((lesson) => _expand(zhibei[lesson.lesson_id])).toList();
 
-    var hasLocalData = bicwRecords.isNotEmpty;
-    var hasRemoteData = zhibeiRecords.isNotEmpty;
+    bool isTrue(bool value) => value;
+    var hasLocalData = bicwRecords.any(isTrue);
+    var hasRemoteData = zhibeiRecords.any(isTrue);
 
     if (hasLocalData && hasRemoteData) {
       if (ListEquality<bool>().equals(bicwRecords, zhibeiRecords)) {
