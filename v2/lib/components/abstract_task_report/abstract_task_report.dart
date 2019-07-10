@@ -25,14 +25,17 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
     _classInfo = classInfo;
     _classInfo.taskGrid ??= createTaskGrid()..pre_classID = _classInfo.zb_id;
 
-    _reload();
+    if (_halfTerm != null) {
+      _reload(_halfTerm);
+    }
   }
 
   @Input()
   set halfTerm(int halfTerm) {
     if (halfTerm == null || halfTerm == _halfTerm) return;
-    _halfTerm = halfTerm;
-    _reload();
+    if (_classInfo != null) {
+      _reload(halfTerm);
+    }
   }
 
   ReportGrid<T> grid;
@@ -57,23 +60,21 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
   /// Construts a type specific [TaskData] object.
   T createTaskData(Map<String, dynamic> map);
 
-  void _reload() async {
-    if (_classInfo == null || _halfTerm == null) return;
-
+  void _reload(int halfTerm) async {
     var grid = _classInfo.taskGrid;
 
     if (grid.courses.isEmpty) {
       grid.courses.addAll(await _courseService.getCourses());
     }
 
-    var lessons = grid.getLessons(_halfTerm);
+    var lessons = grid.getLessons(halfTerm);
     bool authenticated = false;
     if (lessons == null) {
       authenticated = await _zbService.ensureAuthenticated();
       if (authenticated) {
         var lessons = await _zbService.getLessons(
-            grid.pre_classID, grid.courseID, _halfTerm);
-        grid.setLessons(_halfTerm, lessons);
+            grid.pre_classID, grid.courseID, halfTerm);
+        grid.setLessons(halfTerm, lessons);
       }
     }
 
@@ -82,14 +83,16 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
           await _taskService.getTaskDataStats(_classInfo.id, createTaskData);
       grid.setTaskData(taskData);
     }
-    if (!grid.isLoaded(_halfTerm) && authenticated) {
+
+    if (!grid.isLoaded(halfTerm) && authenticated) {
       var zbData = await _zbService.getTaskData(
-          _classInfo.zb_id, grid.gridTypes.workGrid, _halfTerm, createTaskData);
-      grid.setTaskData({_halfTerm: zbData}, zhibei: true);
+          _classInfo.zb_id, grid.gridTypes.workGrid, halfTerm, createTaskData);
+      grid.setTaskData({halfTerm: zbData}, zhibei: true);
     }
 
-    // Initialize the grid object after everything is loaded.
+    // Initialize the grid object and _halfTerm after everything is loaded.
     this.grid = grid;
+    this._halfTerm = halfTerm;
     _initSelection();
   }
 
@@ -119,6 +122,6 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
     }
 
     grid.clearCache(_halfTerm);
-    _reload();
+    _reload(_halfTerm);
   }
 }
