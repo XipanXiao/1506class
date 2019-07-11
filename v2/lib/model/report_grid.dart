@@ -24,6 +24,11 @@ class GridTypes {
 }
 
 abstract class ReportGrid<T extends TaskData> {
+  /// All possible half terms.
+  static final halfTerms = List<int>.generate(17, (index) => index + 1)
+    ..remove(1)
+    ..remove(3);
+
   /// zhibei.info Lesson ID.
   final int courseID;
 

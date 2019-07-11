@@ -6,6 +6,7 @@ import 'package:v2/components/jx_task_report/jx_task_report.dart';
 import 'package:v2/components/rxl_task_report/rxl_task_report.dart';
 import 'package:v2/model/class_info.dart';
 import 'package:v2/model/departments.dart';
+import 'package:v2/model/report_grid.dart';
 import 'package:v2/routing.dart';
 import 'package:v2/services/class_service.dart';
 import 'package:v2/services/task_record_service.dart';
@@ -32,17 +33,15 @@ class ClassViewerComponent implements OnActivate, CanReuse {
   final Router _router;
   final TaskRecordService _taskRecordService;
 
-  /// All possible half terms.
-  final halfTerms = List<int>.generate(17, (index) => index + 1)
-    ..remove(1)
-    ..remove(3);
-
   ClassInfo classInfo;
 
   int _halfTerm;
 
   ClassViewerComponent(
       this._classService, this._router, this._taskRecordService);
+
+  /// All possible half terms.
+  List<int> get halfTerms => ReportGrid.halfTerms;
 
   String getHalfTermLabel(halfTerm) => halfTerm == 2
       ? '第1学期'
