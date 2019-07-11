@@ -3,6 +3,7 @@ import 'dart:html';
 import 'package:angular/angular.dart';
 import 'package:v2/model/class_info.dart';
 import 'package:v2/model/report_grid.dart';
+import 'package:v2/model/task_data_pair.dart';
 import 'package:v2/model/zb_task_data.dart';
 import 'package:v2/services/course_service.dart';
 import 'package:v2/services/task_record_service.dart';

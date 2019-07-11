@@ -1,4 +1,5 @@
 import 'package:angular_components/model/selection/selection_model.dart';
+import 'package:v2/model/task_data_pair.dart';
 import 'package:v2/model/zb_task_data.dart';
 
 abstract class HasSelectable<T extends TaskData> {

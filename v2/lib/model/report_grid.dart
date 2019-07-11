@@ -1,5 +1,6 @@
 import 'package:v2/model/course.dart';
 import 'package:v2/model/schedule_record.dart';
+import 'package:v2/model/task_data_pair.dart';
 import 'package:v2/model/zb_task_data.dart';
 
 import 'lesson.dart';
