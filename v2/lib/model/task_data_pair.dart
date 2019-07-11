@@ -54,20 +54,21 @@ class TaskDataPair<T extends TaskData> {
 
     var hasLocalData = bicwData?.isNotEmpty == true;
     var hasRemoteData = zhibeiData?.isNotEmpty == true;
+    var sameTotal = bicwData?.sameTotal(zhibeiData) == true;
 
     if (hasLocalData && hasRemoteData) {
       if (bicwData == zhibeiData) {
         audited = AuditState.PASS;
-      } else if (bicwData.sameTotal(zhibeiData)) {
+      } else if (sameTotal) {
         audited = AuditState.PARTIAL_PASS;
       } else {
         audited = AuditState.FAIL;
       }
     } else if (hasLocalData && !hasRemoteData) {
-      audited = AuditState.LOCAL_ONLY;
+      audited = sameTotal ? AuditState.PARTIAL_PASS : AuditState.LOCAL_ONLY;
     } else if (!hasLocalData && hasRemoteData) {
       audited = AuditState.REMOTE_ONLY;
-    } else if (bicwData != null && bicwData.sameTotal(zhibeiData)) {
+    } else if (bicwData != null && sameTotal) {
       audited = AuditState.PASS;
     }
   }
