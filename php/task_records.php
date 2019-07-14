@@ -43,7 +43,7 @@ function get_task_data_stats($classId) {
   $schedules_records = $medoo->select("schedule_records", "*",
       ["student_id" => $student_ids]);
 
-  $tasks = $medoo->select("tasks", ["id", "zb_name"]);
+  $tasks = keyed_by_id($medoo->select("tasks", ["id", "zb_name"]));
   // Returns the raw data and let the client to handle,
   // since dart is preferrable.
   return [

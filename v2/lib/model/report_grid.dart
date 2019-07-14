@@ -82,6 +82,7 @@ abstract class ReportGrid<T extends TaskData> {
           destUser.audit();
         } else {
           destUser.bicwData = user;
+          userIdMap[user.userID] = user.id;
         }
       }
     }
@@ -167,6 +168,8 @@ abstract class ReportGrid<T extends TaskData> {
   /// to a new map from zhibei [Lesson] IDs to [ScheduleRecord]s.
   void _convertScheduleRecordsMap(int halfTerm) {
     var halfTermUsers = taskData[halfTerm];
+    if (halfTermUsers == null) return;
+
     for (var user in halfTermUsers.values) {
       var map = user.bicwData.scheduleRecords
           .map((id, course) => MapEntry(_courseIdMap[id], course));
@@ -175,4 +178,26 @@ abstract class ReportGrid<T extends TaskData> {
         ..addAll(map);
     }
   }
+
+  /// Adds task data from [halfTerm] to the first reportable term.
+  ///
+  /// For example, suppose baiziming task is reportable at ht14 (half term 14),
+  /// while bicw starts collecting baiziming data since ht10 (half term 10).
+  ///
+  /// Then all task data at bicw from ht10 to ht14, should be summed up.
+  /// The accumulated value is then compared against, or reported as zhibei.info
+  /// ht14 data.
+  void moveBicwData(int halfTerm) {
+    var term = taskData[halfTerm];
+    if (term.isEmpty) return;
+
+    for (var user in term.values) {
+      user.bicwData?.moveToFirstReportableTerm(taskData, halfTerm);
+      user.audit();
+    }
+  }
+
+  /// Compute the '*_total' fields, since they are not returned by the
+  /// bicw server.
+  void computeTotals() {}
 }

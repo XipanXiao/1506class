@@ -23,13 +23,20 @@ class ZBService {
 
   Future<Map<int, T>> getTaskData<T extends TaskData>(int pre_classID,
       String gridType, int halfTerm, TaskDataFromJson<T> creator) async {
+    _progressService
+        .showProgress('Fetching task data for $gridType of the $halfTerm-th half term.');
+
     var taskDataQuery =
         'type=$gridType&pre_classID=$pre_classID&half_term=$halfTerm';
     var url = '$_serviceUrl$_file?${taskDataQuery}';
-    var map = await utils.httpGetObject(_getProxiedUrl(url));
-    List list = map['data'] ?? [];
-    var users = list.map<T>((json) => creator(json));
-    return Map<int, T>.fromIterable(users, key: (user) => user.userID);
+    try {
+      var map = await utils.httpGetObject(_getProxiedUrl(url));
+      List list = map['data'] ?? [];
+      var users = list.map<T>((json) => creator(json));
+      return Map<int, T>.fromIterable(users, key: (user) => user.userID);
+    } finally {
+      _progressService.done();
+    }
   }
 
   Future<bool> _isAuthenticated() async {
@@ -76,13 +83,19 @@ class ZBService {
   /// Get lesson names and ids for a given [half_term].
   Future<List<Lesson>> getLessons(
       int pre_classID, int courseID, int half_term) async {
+    _progressService.showProgress('Fetching lessons of the $half_term-th half term.');
+
     var url =
         '$_serviceUrl/pre/report_ajax?courseID=$courseID&half_term=$half_term'
         '&type=pre_class_lessons&pre_classID=$pre_classID';
-    var lessons = await utils.httpGetObject(_getProxiedUrl(url));
-    return (lessons['data'] ?? [])
-        .map<Lesson>((json) => Lesson.fromJson(json))
-        .toList();
+    try {
+      var lessons = await utils.httpGetObject(_getProxiedUrl(url));
+      return (lessons['data'] ?? [])
+          .map<Lesson>((json) => Lesson.fromJson(json))
+          .toList();
+    } finally {
+      _progressService.done();
+    }
   }
 
   /// Given a record responed from zhibei.info, returns a parsed map (keyed by

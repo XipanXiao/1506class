@@ -27,7 +27,7 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
     _classInfo.taskGrid ??= createTaskGrid()..pre_classID = _classInfo.zb_id;
 
     if (_halfTerm != null) {
-      _reload(_halfTerm);
+      reload(_halfTerm);
     }
   }
 
@@ -35,7 +35,7 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
   set halfTerm(int halfTerm) {
     if (halfTerm == null || halfTerm == _halfTerm) return;
     if (_classInfo != null) {
-      _reload(halfTerm);
+      reload(halfTerm);
     }
   }
 
@@ -61,7 +61,7 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
   /// Construts a type specific [TaskData] object.
   T createTaskData(Map<String, dynamic> map);
 
-  void _reload(int halfTerm) async {
+  Future<void> reload(int halfTerm) async {
     var grid = _classInfo.taskGrid;
 
     if (grid.courses.isEmpty) {
@@ -85,10 +85,8 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
       }
     }
 
-    if (!grid.isLoaded(halfTerm) && authenticated) {
-      var zbData = await _zbService.getTaskData(
-          _classInfo.zb_id, grid.gridTypes.workGrid, halfTerm, createTaskData);
-      grid.setTaskData({halfTerm: zbData}, zhibei: true);
+    if (authenticated) {
+      await loadTaskDataForTerm(grid, halfTerm);
     }
 
     // Initialize the grid object and _halfTerm after everything is loaded.
@@ -123,6 +121,15 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
     }
 
     grid.clearCache(_halfTerm);
-    _reload(_halfTerm);
+    await loadTaskDataForTerm(grid, _halfTerm);
+  }
+
+  /// Fetches zhibei task data for [halfTerm].
+  Future<void> loadTaskDataForTerm(ReportGrid<T> grid, int halfTerm) async {
+    if (grid.isLoaded(halfTerm)) return;
+
+    var zbData = await _zbService.getTaskData(
+        _classInfo.zb_id, grid.gridTypes.workGrid, halfTerm, createTaskData);
+    grid.setTaskData({halfTerm: zbData}, zhibei: true);
   }
 }

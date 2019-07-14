@@ -1,4 +1,5 @@
 import 'package:v2/model/schedule_record.dart';
+import 'package:v2/model/task_data_pair.dart';
 
 import 'base_entity.dart';
 
@@ -55,6 +56,14 @@ abstract class TaskData extends BaseEntity {
 
   /// Whether the '_total' memebers are all equal.
   bool sameTotal(TaskData that);
+
+  /// Moves data from [this] object to the first reportable term.
+  ///
+  /// When a field is reportable, zhibei.info returns a non-null
+  /// value for that field. For example, for the first several
+  /// half terms, the `baiziming` field is always null.
+  void moveToFirstReportableTerm(
+      Map<int, Map<int, TaskDataPair>> taskData, int fromTerm) {}
 }
 
 typedef T TaskDataFromJson<T>(Map<String, dynamic> json);

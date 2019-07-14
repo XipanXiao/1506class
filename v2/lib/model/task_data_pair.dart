@@ -54,7 +54,8 @@ class TaskDataPair<T extends TaskData> {
 
     var hasLocalData = bicwData?.isNotEmpty == true;
     var hasRemoteData = zhibeiData?.isNotEmpty == true;
-    var sameTotal = bicwData?.sameTotal(zhibeiData) == true;
+    var sameTotal =
+        zhibeiData != null && bicwData?.sameTotal(zhibeiData) == true;
 
     if (hasLocalData && hasRemoteData) {
       if (bicwData == zhibeiData) {
@@ -106,4 +107,6 @@ class TaskDataPair<T extends TaskData> {
       audited = AuditState.PASS;
     }
   }
+
+  void moveToFirstReportTerm(Map<int, Map<int, TaskDataPair<T>>> taskData) {}
 }

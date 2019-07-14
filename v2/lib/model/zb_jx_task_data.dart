@@ -1,3 +1,4 @@
+import 'package:v2/model/task_data_pair.dart';
 import 'package:v2/model/zb_task_data.dart';
 
 /// Jiaxing data retrieved from zhibei.info.
@@ -23,23 +24,23 @@ import 'package:v2/model/zb_task_data.dart';
 ///   user_style: "0",
 /// }
 class JxTaskData extends TaskData {
-  final int baiziming_count;
+  int baiziming_count;
   int baiziming_total;
 
-  final int dingli_count;
+  int dingli_count;
   int dingli_total;
   final String dingli_type;
 
-  final int faxin_count;
+  int faxin_count;
   int faxin_total;
 
-  final int guiyi_count;
+  int guiyi_count;
   int guiyi_total;
 
-  final int lianshi_count;
+  int lianshi_count;
   int lianshi_total;
 
-  final int manza_count;
+  int manza_count;
   int manza_total;
   final String manza_type;
 
@@ -119,5 +120,90 @@ class JxTaskData extends TaskData {
         _checkTotal(guiyi_total, data.guiyi_total) &&
         _checkTotal(lianshi_total, data.lianshi_total) &&
         _checkTotal(manza_total, data.manza_total);
+  }
+
+  @override
+  void moveToFirstReportableTerm(
+      Map<int, Map<int, TaskDataPair>> data, int fromTerm) {
+    var taskData = data as Map<int, Map<int, TaskDataPair<JxTaskData>>>;
+    if (baiziming_count != null && baiziming_count > 0) {
+      for (var term in taskData.keys) {
+        if (term <= fromTerm) continue;
+        var user = taskData[term][id];
+        if (user?.bicwData == null ||
+            user?.zhibeiData?.baiziming_total == null) {
+          continue;
+        }
+        user.bicwData.baiziming_count =
+            (user.bicwData.baiziming_count ?? 0) + baiziming_count;
+        baiziming_count = 0;
+        break;
+      }
+    }
+    if (dingli_count != null && dingli_count > 0) {
+      for (var term in taskData.keys) {
+        if (term <= fromTerm) continue;
+        var user = taskData[term][id];
+        if (user?.bicwData == null || user?.zhibeiData?.dingli_total == null) {
+          continue;
+        }
+        user.bicwData.dingli_count =
+            (user.bicwData.dingli_count ?? 0) + dingli_count;
+        dingli_count = 0;
+        break;
+      }
+    }
+    if (faxin_count != null && faxin_count > 0) {
+      for (var term in taskData.keys) {
+        if (term <= fromTerm) continue;
+        var user = taskData[term][id];
+        if (user?.bicwData == null || user?.zhibeiData?.faxin_total == null) {
+          continue;
+        }
+        user.bicwData.faxin_count =
+            (user.bicwData.faxin_count ?? 0) + faxin_count;
+        faxin_count = 0;
+        break;
+      }
+    }
+    if (guiyi_count != null && guiyi_count > 0) {
+      for (var term in taskData.keys) {
+        if (term <= fromTerm) continue;
+        var user = taskData[term][id];
+        if (user?.bicwData == null || user?.zhibeiData?.guiyi_total == null) {
+          continue;
+        }
+        user.bicwData.guiyi_count =
+            (user.bicwData.guiyi_count ?? 0) + guiyi_count;
+        guiyi_count = 0;
+        break;
+      }
+    }
+    if (lianshi_count != null && lianshi_count > 0) {
+      for (var term in taskData.keys) {
+        if (term <= fromTerm) continue;
+        var user = taskData[term][id];
+        if (user?.bicwData == null || user?.zhibeiData?.lianshi_total == null) {
+          continue;
+        }
+        user.bicwData.lianshi_count =
+            (user.bicwData.lianshi_count ?? 0) + lianshi_count;
+        lianshi_count = 0;
+        break;
+      }
+    }
+    if (manza_count != null && manza_count > 0) {
+      for (var term in taskData.keys) {
+        if (term <= fromTerm) continue;
+        var user = taskData[term][id];
+        if (user?.bicwData == null || user?.zhibeiData?.manza_total == null) {
+          continue;
+        }
+        user.bicwData.manza_count =
+            (user.bicwData.manza_count ?? 0) + manza_count;
+        manza_count = 0;
+        break;
+      }
+    }
   }
 }

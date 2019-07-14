@@ -34,4 +34,27 @@ class JxTaskReportComponent extends AbstractTaskReportComponent<JxTaskData> {
 
   @override
   ReportGrid<JxTaskData> createTaskGrid() => JxTaskGrid();
+
+  @override
+  Future<void> reload(int halfTerm) async {
+    await super.reload(halfTerm);
+    await _loadAllTaskData();
+    (grid as JxTaskGrid).setColumns(halfTerm);
+  }
+
+  /// Fetches zhibei task data for all terms.
+  ///
+  /// This is needed to determine in which half term a task becomes reportable.
+  void _loadAllTaskData() async {
+    var terms = ReportGrid.halfTerms;
+    if (terms.every(grid.isLoaded)) return;
+
+    for (var halfTerm in terms) {
+      await loadTaskDataForTerm(grid, halfTerm);
+    }
+    for (var halfTerm in terms) {
+      grid.moveBicwData(halfTerm);
+    }
+    grid.computeTotals();
+  }
 }

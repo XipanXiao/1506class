@@ -34,4 +34,10 @@ class RxlTaskReportComponent extends AbstractTaskReportComponent<RxlTaskData> {
 
   @override
   ReportGrid<RxlTaskData> createTaskGrid() => RxlTaskGrid();
+
+  @override
+  Future<void> reload(int halfTerm) async {
+    await super.reload(halfTerm);
+    grid.computeTotals();
+  }
 }

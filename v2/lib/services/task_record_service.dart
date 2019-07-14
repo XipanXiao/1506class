@@ -105,12 +105,22 @@ class TaskRecordService {
   }
 
   void _setScheduleRecords<T extends TaskData>(
-      Iterable<ScheduleRecord> schedulesRecords, Map<int, Map<int, T>> stats) {
+      Iterable<ScheduleRecord> schedulesRecords,
+      Map<int, Map<int, T>> stats,
+      Map<int, User> users,
+      TaskDataFromJson<T> creator) {
     for (var schedule in schedulesRecords) {
-      var halfTerm = stats[schedule.half_term];
-      if (halfTerm == null) continue;
+      if (schedule.half_term == null) continue;
+      var halfTerm = stats.putIfAbsent(schedule.half_term, () => <int, T>{});
 
-      var user = halfTerm[schedule.student_id];
+      var user = halfTerm.putIfAbsent(schedule.student_id, () {
+        var userInfo = users[schedule.student_id];
+        return creator({
+          'id': schedule.student_id,
+          'userID': userInfo.zb_id,
+          'name': userInfo.name,
+        });
+      });
       user.scheduleRecords[schedule.course_id] = schedule;
     }
   }
@@ -120,14 +130,12 @@ class TaskRecordService {
     var url = '$_serviceUrl?rid=task_records&classId=$classId';
 
     Map map = await utils.httpGetObject(url);
-    var tasks = map['tasks'].map<Task>((task) => Task.fromJson(task));
-    var users = map['users'].values.map<User>((task) => User.fromJson(task));
+    var tasks = map['tasks'].map<int, Task>(
+        (id, task) => MapEntry(int.parse(id), Task.fromJson(task)));
+    var users = map['users'].map<int, User>(
+        (id, user) => MapEntry(int.parse(id), User.fromJson(user)));
 
-    var stats = _parseTaskStats(
-        map['records'] as List,
-        Map<int, User>.fromIterable(users, key: (user) => user.id),
-        Map<int, Task>.fromIterable(tasks, key: (task) => task.id),
-        creator);
+    var stats = _parseTaskStats(map['records'] as List, users, tasks, creator);
 
     var schedules =
         map['schedules'].map<Schedule>((map) => Schedule.fromJson(map));
@@ -136,7 +144,7 @@ class TaskRecordService {
     var schedules_records = map['schedules_records']
         .map<ScheduleRecord>((map) => ScheduleRecord.fromJson(map));
 
-    _setScheduleRecords(schedules_records, stats);
+    _setScheduleRecords(schedules_records, stats, users, creator);
     _parseAttendance(schedules_records, stats, schedulesMap);
     return stats;
   }

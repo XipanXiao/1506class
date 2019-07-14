@@ -1,6 +1,6 @@
 <schedule-grid [grid]="grid" [halfTerm]="halfTerm">
 </schedule-grid>
-<ng-container *ngIf="grid != null">
+<ng-container *ngIf="grid != null && grid.columns.isNotEmpty">
   <div>五加行 (单位:个)</div>
   <table border="1">
     <tr>
