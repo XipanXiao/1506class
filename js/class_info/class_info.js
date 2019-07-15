@@ -65,7 +65,7 @@ define('class_info/class_info', ['bit_editor/bit_editor',
               var classInfo = $scope.classInfo;
               var departmentNames =
                 ['', 'jc', 'rxl', 'jx', 'jt', 'mf', 'wl', 'nf', 'gdh', 'tc', 'yj', 'xx', 'xj'];
-              var prefix = '{0}.{1}.'.format(classInfo.start_year % 100,
+              var prefix = '{0}{1}.'.format(classInfo.start_year % 100,
                   departmentNames[classInfo.department_id]);
               classInfo.users = $scope.users;
               utils.forEach(classInfo.users, function (user) {
@@ -74,7 +74,7 @@ define('class_info/class_info', ['bit_editor/bit_editor',
               utils.showConfirmGraduateDialog(classInfo);
             };
           },
-          templateUrl: 'js/class_info/class_info.html?tag=201910062245'
+          templateUrl: 'js/class_info/class_info.html?tag=201907062245'
         };
       });
   });
