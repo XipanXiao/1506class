@@ -258,8 +258,13 @@ define('services', ['utils'], function() {
             return http_form_post($http, $httpParamSerializerJQLike(user));
           },
 
-          clone_user: function(user_id) {
-            var data = {rid: 'clone_user', user_id: user_id};
+          clone_user: function(user_id, newEmail, newClassId) {
+            var data = {
+              rid: 'clone_user',
+              user_id: user_id,
+              new_email: newEmail,
+              new_class_id: newClassId
+            };
             return http_form_post($http, $httpParamSerializerJQLike(data));
           },
 

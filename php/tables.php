@@ -362,25 +362,30 @@ function update_user($user) {
   return null;
 }
 
-function clone_user($user_id) {
+function clone_user($user_id, $newEmail = null, $newClassId = null) {
   global $medoo;
   
   $user = get_single_record($medoo, "users", $user_id);
-  if (!user) return 0;
+  if (!$user) return 0;
 
-  $email = $user["email"]. ".deleted";
+  $email = $newEmail ? $newEmail : ($user["email"]. ".deleted");
   if (!$medoo->update("users", ["email" => $email], ["id" => $user_id])) {
     return 0;
   }
   
   unset($user["id"]);
   unset($user["internal_id"]);
+  if ($newClassId) {
+    $user["classId"] = $newClassId;
+  }
   $newId = $medoo->insert("users", $user);
   if (!$newId) {
     return 0;
   }
 
-  remove_user($user_id);
+  if (!$newEmail) {
+    remove_user($user_id);
+  }
   return $newId;
 }
 

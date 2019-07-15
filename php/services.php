@@ -240,7 +240,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         : permission_denied_error();
   } elseif ($resource_id == "class") {
     $classId = $_POST["id"];
-    $classInfo = get_classes(["id" => $classId])[$classId];
+    $classInfo = empty($_POST["id"]) ? null : get_classes(["id" => $classId])[$classId];
     if (empty($_POST["id"]) && isYearLeader($user) ||
         canWrite($user, $classInfo) ||
         is_master_teacher($user, $classInfo)) {
@@ -268,27 +268,27 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = update_course($_POST); 
   } elseif ($resource_id == "user") {
     if (!isset($_POST["id"])) {
-      $response = ["error" => "User id is not set"];
-      echo json_encode($response);
-      exit();
-    }
-    $targetUser = intval($_POST["id"]);
-    if ($targetUser != $user->id) {
-      $targetUser = get_users(null, null, $targetUser)[$targetUser];
-    } else {
-      $targetUser = $user;
-    }
+        $response = ["error" => "User id is not set"];
+        echo json_encode($response);
+        exit();
+      }
+      $targetUser = intval($_POST["id"]);
+      if ($targetUser != $user->id) {
+        $targetUser = get_users(null, null, $targetUser)[$targetUser];
+      } else {
+        $targetUser = $user;
+      }
 
-    if (!canWriteUser($user, $targetUser)) {
-      $response = permission_denied_error();
-    }
-    
-    if (isset($_POST["permission"]) &&
-        (!canGrant($user, $targetUser->permission) || 
-        !canGrant($user, intval($_POST["permission"])))) {
-      $response = permission_denied_error();
-    }
-    
+      if (!canWriteUser($user, $targetUser)) {
+        $response = permission_denied_error();
+      }
+      
+      if (isset($_POST["permission"]) &&
+          (!canGrant($user, $targetUser->permission) || 
+          !canGrant($user, intval($_POST["permission"])))) {
+        $response = permission_denied_error();
+      }
+
     if (!$response) {
     	// Country is set when registering and can't be changed later.
       unset($_POST["country"]);
@@ -306,9 +306,12 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "class_prefs") {
     update_class_pref($user->id, $_POST);
   } elseif ($resource_id == "clone_user") {
-    error_log($user->email. " DELETE learning records of ". $_POST["user_id"]);
+    if (empty($_POST["new_email"])) {
+      error_log($user->email. " DELETE learning records of ". $_POST["user_id"]);
+    }
     $response = canWriteUser($user, $_POST["user_id"])
-        ? ["updated" => clone_user($_POST["user_id"])] 
+        ? ["updated" => clone_user($_POST["user_id"], $_POST["new_email"],
+            $_POST["new_class_id"])] 
         : permission_denied_error();
   }
 } elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE" &&

@@ -1,0 +1,27 @@
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+<paper-dialog id="confirm-graduate">
+  <h2>确认毕业</h2>
+  请选择需要注册新账户的学生
+  <div class="css-table">
+    <div class="css-table-row">
+      <label class="css-table-cell">
+        <input type="checkbox" ng-model="allChecked" ng-click="toggleSelection()">全选
+      </label>
+      <div class="css-table-cell">姓名</div>
+      <div class="css-table-cell">email</div>
+      <div class="css-table-cell">毕业后email</div>
+    </div>
+    <div ng-repeat="user in classInfo.users" class="css-table-row">
+      <div class="css-table-cell">
+        <input type="checkbox" ng-model="user.selected">
+      </div>
+      <div class="css-table-cell">{{user.name}}</div>
+      <div class="css-table-cell">{{user.email}}</div>
+      <div class="css-table-cell">{{user.newEmail}}</div>
+    </div>
+  </div>
+  请选择新注册用户加入的班级
+  <classes class-id="selectedClass.id"></classes>
+  <paper-button dialog-dismiss raised autofocus>Cancel</paper-button>
+  <paper-button dialog-confirm raised autofocus ng-click="graduate()">OK</paper-button>
+</paper-dialog>

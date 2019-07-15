@@ -10,13 +10,16 @@ define('admin_app',
 
   angular.module('AppModule', ['AppBarModule', 'ClassesModule',
       'ClassInfoModule',
+      'ConfirmGraduateDialogModule',
       'EmailDialogModule',
       'TaskStatsModule',
       'LearningRecordsModule',
       'PermissionModule',
       'ScoresModule',
       'ScheduleEditorModule',
-      'ServicesModule', 'UtilsModule', 'ZBLoginDialogModule',
+      'ServicesModule',
+      'UtilsModule',
+      'ZBLoginDialogModule',
       'ZBChooseRootDialogModule'])
       .directive('body', function(rpc, perm, utils) {
         return {

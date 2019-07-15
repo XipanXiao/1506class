@@ -23,6 +23,7 @@ js/permission_editor/permission_editor.js
 js/user_picker/user_picker.js
 js/class_editor/class_editor.js
 js/progress_bar/progress_bar.js
+js/confirm_graduate_dialog/confirm_graduate_dialog.js
 js/task_editor_dialog/task_editor_dialog.js
 js/task_history/task_history.js
 js/task_stats/task_stats.js

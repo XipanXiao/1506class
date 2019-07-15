@@ -704,6 +704,12 @@ define('utils', [], function() {
         scope.progress = progress;
         return scope.deferredLogin.promise;
       },
+      showConfirmGraduateDialog: function(classInfo) {
+        var dialog = document.getElementById('confirm-graduate');
+        dialog.open();
+        var scope = angular.element(dialog).scope();
+        scope.classInfo = classInfo;
+      },
       addressFields: ['name', 'street', 'city', 'state',
           'country', 'zip', 'phone', 'email'],
       getDistrictAddress: function(rpc, district) {

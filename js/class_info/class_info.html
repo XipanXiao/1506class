@@ -14,7 +14,8 @@
     class="clickable small-icon"
     title="发送班级邮件...">
 </iron-icon>
-  <input type="button" value="毕业" ng-click="graduate()">
+<input type="button" value="毕业" ng-click="graduate()"
+    ng-if="isYearLeader() && classInfo && !classInfo.graduated">
 <users users="users" on-delete="reload(classId)" class-id="classId"
     show-serial-button="true"></users>
 <serial-number-dialog class-id="classId" users="users"><serial-number-dialog>

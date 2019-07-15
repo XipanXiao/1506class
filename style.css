@@ -1105,3 +1105,8 @@ election-list .collapse-button {
   background-color: inherit;
   border-style: none;
 }
+
+#confirm-graduate {
+  height: 600px;
+  width: 800px;
+}
