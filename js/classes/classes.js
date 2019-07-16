@@ -57,6 +57,11 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
             $scope.classId = id;
             $scope.currentClass.id = id;
           };
+
+          $scope.$watch("classId", function(classId) {
+            if (!classId) return;
+            $scope.currentClass.id = classId;
+          });
           
           $scope.locateClass = function (classInfo) {
             $scope.currentClass.year = classInfo.start_year;

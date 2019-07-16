@@ -68,9 +68,10 @@ define('class_info/class_info', ['bit_editor/bit_editor',
                 ['', 'jc', 'rxl', 'jx', 'jt', 'mf', 'wl', 'nf', 'gdh', 'tc', 'yj', 'xx', 'xj'];
               var prefix = '{0}{1}.'.format(classInfo.start_year % 100,
                 departmentNames[classInfo.department_id]);
-              classInfo.users = $scope.users;
+              classInfo.users = utils.toList($scope.users);
               utils.forEach(classInfo.users, function (user) {
                 user.newEmail = prefix + user.email;
+                user.newClassId = user.classId;
               });
               utils.showConfirmGraduateDialog(classInfo);
             };

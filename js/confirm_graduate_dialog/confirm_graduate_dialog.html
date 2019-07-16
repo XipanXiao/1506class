@@ -10,6 +10,8 @@
       <div class="css-table-cell">姓名</div>
       <div class="css-table-cell">email</div>
       <div class="css-table-cell">毕业后email</div>
+      <div class="css-table-cell">升学到班级</div>
+      <div class="css-table-cell"></div>
     </div>
     <div ng-repeat="user in classInfo.users" class="css-table-row">
       <div class="css-table-cell">
@@ -18,10 +20,15 @@
       <div class="css-table-cell">{{user.name}}</div>
       <div class="css-table-cell">{{user.email}}</div>
       <div class="css-table-cell">{{user.newEmail}}</div>
+      <div class="css-table-cell">
+        <classes class-id="user.newClassId"></classes>
+      </div>
+      <div class="css-table-cell">
+        <input type="button" value="班级同上" ng-show="$index > 0"
+            ng-click="setClassId(user, $index)">
+      </div>
     </div>
   </div>
-  请选择新注册用户加入的班级
-  <classes class-id="selectedClass.id"></classes>
   <paper-button dialog-dismiss raised autofocus>Cancel</paper-button>
   <paper-button dialog-confirm raised autofocus ng-click="graduate()">OK</paper-button>
 </paper-dialog>

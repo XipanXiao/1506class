@@ -8,8 +8,6 @@ angular.module('ConfirmGraduateDialogModule', [
       classInfo: '='
     },
     link: function (scope) {
-      scope.selectedClass = { id: 1 };
-
       scope.toggleSelection = function () {
         utils.forEach(scope.classInfo.users, function (user) {
           user.selected = scope.allChecked;
@@ -19,13 +17,12 @@ angular.module('ConfirmGraduateDialogModule', [
       function markClassGraduate() {
         scope.classInfo.graduated = 1;
         rpc.update_class(scope.classInfo).then(function (response) {
-          alert('请记得把email 地址改动同步到zhibei.info.');
           return parseInt(response.data.updated);
         });
       }
       function renameEmail(user) {
         return function () {
-          return rpc.clone_user(user.id, user.newEmail, scope.selectedClass.id).then(function (response) {
+          return rpc.clone_user(user.id, user.newEmail, user.newClassId).then(function (response) {
             if (parseInt(response.data.updated)) {
               user.email = user.newEmail;
               return true;
@@ -40,7 +37,17 @@ angular.module('ConfirmGraduateDialogModule', [
         requests.push(markClassGraduate);
         utils.requestOneByOne(requests);
       };
+
+      scope.setClassId = function(user, index) {
+        while (index > 0) {
+          var id = scope.classInfo.users[--index].newClassId;
+          if (id != scope.classInfo.id) {
+            user.newClassId = id;
+            break;
+          }
+        }
+      };
     },
-    templateUrl: 'js/confirm_graduate_dialog/confirm_graduate_dialog.html?tag=20190604'
+    templateUrl: 'js/confirm_graduate_dialog/confirm_graduate_dialog.html?tag=20190704'
   };
 });
