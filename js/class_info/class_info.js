@@ -26,13 +26,14 @@ define('class_info/class_info', ['bit_editor/bit_editor',
               return $scope.classId === 1;
             };
 
-            $scope.isYearLeader = function() {
-              return perm.isYearLeader();
-            };
-
             function getClassInfo() {
               return rpc.get_classes($scope.classId).then(function (response) {
-                return $scope.classInfo = response.data[$scope.classId];
+                $scope.classInfo = response.data[$scope.classId];
+                $scope.showGraduateButton = perm.isYearLeader() &&
+                  $scope.classInfo &&
+                  !parseInt($scope.classInfo.graduated) &&
+                  ((new Date()).getFullYear() - $scope.classInfo.start_year >= 4);
+                return $scope.classInfo;
               });
             }
 
@@ -66,7 +67,7 @@ define('class_info/class_info', ['bit_editor/bit_editor',
               var departmentNames =
                 ['', 'jc', 'rxl', 'jx', 'jt', 'mf', 'wl', 'nf', 'gdh', 'tc', 'yj', 'xx', 'xj'];
               var prefix = '{0}{1}.'.format(classInfo.start_year % 100,
-                  departmentNames[classInfo.department_id]);
+                departmentNames[classInfo.department_id]);
               classInfo.users = $scope.users;
               utils.forEach(classInfo.users, function (user) {
                 user.newEmail = prefix + user.email;
@@ -74,7 +75,7 @@ define('class_info/class_info', ['bit_editor/bit_editor',
               utils.showConfirmGraduateDialog(classInfo);
             };
           },
-          templateUrl: 'js/class_info/class_info.html?tag=201907062245'
+          templateUrl: 'js/class_info/class_info.html?tag=201907152245'
         };
       });
   });
