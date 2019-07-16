@@ -375,6 +375,7 @@ function clone_user($user_id, $newEmail = null, $newClassId = null) {
   
   unset($user["id"]);
   unset($user["internal_id"]);
+  unset($user["zb_id"]);
   if ($newClassId) {
     $user["classId"] = $newClassId;
   }

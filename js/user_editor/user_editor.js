@@ -96,32 +96,6 @@ define('user_editor/user_editor',
           });
         }
         
-        /// Clears all learning record by deleting the user and cloning a new 
-        /// one.
-        function clearLearningRecord() {
-          return rpc.clone_user($scope.user.id).then(function(response) {
-            if (!response.data.updated) return false;
-            return $scope.user.id = response.data.updated;
-          });
-        }
-
-        /// Checks whether the user's learning records need to be cleared.
-        function checkClassChange() {
-          var classInfo = $scope.user.classInfo;
-          var previousInfo = $scope.originalUser.classInfo;
-          if (parseInt(previousInfo.department_id) == 1 &&
-              parseInt(classInfo.department_id) != 1) {
-            return utils.truePromise();
-          }
-          if (classInfo.department_id != previousInfo.department_id ||
-              classInfo.start_year != previousInfo.start_year) {
-            if (confirm('需要清除{0}的所有学修记录吗？'.format($scope.user.name))) { 
-              return clearLearningRecord();
-            }
-          }
-          return utils.truePromise();
-        }
-        
         $scope.$watch('editing', function() {
           if (!$scope.editing) return;
           document.querySelector('div.user-info-editor').scrollIntoView();
