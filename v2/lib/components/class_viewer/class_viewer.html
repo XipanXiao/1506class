@@ -7,6 +7,11 @@
     [popupMatchInputWidth]="true"
     [itemRenderer]="getHalfTermLabel">
 </material-dropdown-select>
+<div class="legend-container">
+  <div class="legend"><div class="green box"></div>数据一致</div>
+  <div class="legend"><div class="yellow box"></div>总数一致，本学期数据不一致</div>
+  <div class="legend"><div class="red box"></div>数据不一致</div>
+</div>
 <jx-task-report [classInfo]="classInfo" [halfTerm]="halfTerm"
     *ngIf="classInfo?.department_id == Department.JIAXING_DEPARTMENT">
 </jx-task-report>

@@ -6,3 +6,30 @@
 ::ng-deep .material-popup-content {
   min-height: 400px !important;
 }
+
+.legend-container {
+  padding: 16px;
+}
+
+.legend {
+  align-items: center;
+  display: flex;
+}
+
+.box {
+  height: 12px;
+  margin: 8px;
+  width: 12px;
+}
+
+.green {
+  background-color: green;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
+.red {
+  background-color: red;
+}
