@@ -128,12 +128,14 @@ class JxTaskData extends TaskData {
     var taskData = data as Map<int, Map<int, TaskDataPair<JxTaskData>>>;
     if (baiziming_count != null && baiziming_count > 0) {
       for (var term in taskData.keys) {
-        if (term <= fromTerm) continue;
         var user = taskData[term][id];
         if (user?.bicwData == null ||
             user?.zhibeiData?.baiziming_total == null) {
           continue;
         }
+        // The first reportable term is earlier than [fromTerm],
+        // nothing needed.
+        if (term <= fromTerm) break;
         user.bicwData.baiziming_count =
             (user.bicwData.baiziming_count ?? 0) + baiziming_count;
         baiziming_count = 0;
@@ -142,11 +144,13 @@ class JxTaskData extends TaskData {
     }
     if (dingli_count != null && dingli_count > 0) {
       for (var term in taskData.keys) {
-        if (term <= fromTerm) continue;
         var user = taskData[term][id];
         if (user?.bicwData == null || user?.zhibeiData?.dingli_total == null) {
           continue;
         }
+        // The first reportable term is earlier than [fromTerm],
+        // nothing needed.
+        if (term <= fromTerm) break;
         user.bicwData.dingli_count =
             (user.bicwData.dingli_count ?? 0) + dingli_count;
         dingli_count = 0;
@@ -155,11 +159,13 @@ class JxTaskData extends TaskData {
     }
     if (faxin_count != null && faxin_count > 0) {
       for (var term in taskData.keys) {
-        if (term <= fromTerm) continue;
         var user = taskData[term][id];
         if (user?.bicwData == null || user?.zhibeiData?.faxin_total == null) {
           continue;
         }
+        // The first reportable term is earlier than [fromTerm],
+        // nothing needed.
+        if (term <= fromTerm) break;
         user.bicwData.faxin_count =
             (user.bicwData.faxin_count ?? 0) + faxin_count;
         faxin_count = 0;
@@ -168,11 +174,13 @@ class JxTaskData extends TaskData {
     }
     if (guiyi_count != null && guiyi_count > 0) {
       for (var term in taskData.keys) {
-        if (term <= fromTerm) continue;
         var user = taskData[term][id];
         if (user?.bicwData == null || user?.zhibeiData?.guiyi_total == null) {
           continue;
         }
+        // The first reportable term is earlier than [fromTerm],
+        // nothing needed.
+        if (term <= fromTerm) break;
         user.bicwData.guiyi_count =
             (user.bicwData.guiyi_count ?? 0) + guiyi_count;
         guiyi_count = 0;
@@ -181,11 +189,13 @@ class JxTaskData extends TaskData {
     }
     if (lianshi_count != null && lianshi_count > 0) {
       for (var term in taskData.keys) {
-        if (term <= fromTerm) continue;
         var user = taskData[term][id];
         if (user?.bicwData == null || user?.zhibeiData?.lianshi_total == null) {
           continue;
         }
+        // The first reportable term is earlier than [fromTerm],
+        // nothing needed.
+        if (term <= fromTerm) break;
         user.bicwData.lianshi_count =
             (user.bicwData.lianshi_count ?? 0) + lianshi_count;
         lianshi_count = 0;
@@ -194,11 +204,13 @@ class JxTaskData extends TaskData {
     }
     if (manza_count != null && manza_count > 0) {
       for (var term in taskData.keys) {
-        if (term <= fromTerm) continue;
         var user = taskData[term][id];
         if (user?.bicwData == null || user?.zhibeiData?.manza_total == null) {
           continue;
         }
+        // The first reportable term is earlier than [fromTerm],
+        // nothing needed.
+        if (term <= fromTerm) break;
         user.bicwData.manza_count =
             (user.bicwData.manza_count ?? 0) + manza_count;
         manza_count = 0;
