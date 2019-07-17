@@ -10,6 +10,8 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
           permission: '@'
         },
         link: function($scope) {
+          $scope.currentClass = {};
+
           $scope.initUser = function() {
             return rpc.get_user().then(function(user) {
               return perm.user = user;
