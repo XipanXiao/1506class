@@ -16,7 +16,7 @@ final _userService = UserService();
 UserService getUserService() => _userService;
 
 Future<void> main() async {
-  await _userService.initUser();
+  await _userService.initUser(includeStaffInfo: false);
   runApp(ng.AppComponentNgFactory, createInjector: staticInjector);
 }
 

@@ -24,16 +24,17 @@ class UserService {
     }
     var user = User.fromJson(map);
     if (includeStaffInfo) {
-      var url = 'php/organization.php?rid=staff&user=${map["id"]}';
+      var url = 'php/organization.php?rid=staff&user=${user.id}';
       var staffs = (await utils.httpGetObject(url));
+      if (staffs == null || staffs.isEmpty) return user;
       user.staff = StaffInfo.fromJson(staffs[0]);
     }
     return user;
   }
 
   /// Initialize the current logged on [user].
-  Future<void> initUser() async {
-    user = await getUserByEmail();
+  Future<void> initUser({bool includeStaffInfo = true}) async {
+    user = await getUserByEmail(includeStaffInfo: includeStaffInfo);
   }
 
   Future<List<User>> searchByName(String name) async {
@@ -51,8 +52,7 @@ class UserService {
   Future<void> updateUser(User user) async {
     await utils.httpPostObject('$_serviceUrl?rid=user', user);
     if (user.staff != null) {
-      await utils.httpPostObject('php/organization.php?rid=staff',
-          user.staff);
+      await utils.httpPostObject('php/organization.php?rid=staff', user.staff);
     }
   }
 }
