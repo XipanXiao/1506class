@@ -66,3 +66,7 @@ table {
 .warning {
   background-color: yellow;
 }
+
+table {
+  margin: 16px;
+}

@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:angular/angular.dart';
+import 'package:angular_components/angular_components.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:angular_router/angular_router.dart';
 import 'package:v2/model/class_info.dart';
@@ -11,6 +12,7 @@ import 'package:v2/services/class_service.dart';
   selector: 'class-list',
   directives: [
     coreDirectives,
+    MaterialButtonComponent,
     MaterialIconComponent,
   ],
   templateUrl: 'class_list.html',
@@ -22,6 +24,8 @@ class ClassListComponent {
   final grades = SplayTreeMap<int, List<ClassInfo>>();
 
   final _expanded = Set<int>();
+
+  bool hidden = false;
 
   ClassListComponent(this._router, ClassService classService) {
     _init(classService);

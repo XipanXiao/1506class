@@ -1,4 +1,4 @@
-<div class="class-list">
+<div class="class-list" [hidden]="hidden">
   <ng-container *ngFor="let grade of grades.keys">
     <div (click)="toggle(grade)" class="selectable">
       <material-icon [icon]="isExpanded(grade) ? 'arrow_drop_down' : 'arrow_right'"
@@ -16,3 +16,8 @@
     </div>
   </ng-container>
 </div>
+<material-button (trigger)="hidden = !hidden"
+    [title]="hidden ? '显示左边栏' : '隐藏左边栏'" icon>
+  <material-icon [icon]="hidden ? 'chevron_right' : 'chevron_left'">
+  </material-icon>
+</material-button>

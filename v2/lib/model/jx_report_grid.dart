@@ -1,5 +1,4 @@
 import 'package:v2/model/report_grid.dart';
-import 'package:v2/model/task_data_pair.dart';
 import 'package:v2/model/zb_jx_task_data.dart';
 
 class JxTaskGrid extends ReportGrid<JxTaskData> {
