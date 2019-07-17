@@ -394,7 +394,7 @@ define('utils', [], function() {
           class_room: '',
           teacher_id: 0,
           start_year: (new Date()).getFullYear(),
-          perm_level: 0
+          perm_level: 2
         };
       },
       isEmptyObject: function(map) {
