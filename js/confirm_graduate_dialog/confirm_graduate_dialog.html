@@ -1,6 +1,9 @@
 <link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
 <paper-dialog id="confirm-graduate">
   <h2>确认毕业</h2>
+  <div class="padded-element">
+    <input type="checkbox" ng-model="classInfo.graduated">标记本班为“已毕业”
+  </div>
   请选择需要注册新账户的学生
   <div class="css-table">
     <div class="css-table-row">

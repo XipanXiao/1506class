@@ -31,6 +31,7 @@ define('class_info/class_info', ['bit_editor/bit_editor',
                 $scope.classInfo = response.data[$scope.classId];
                 $scope.showGraduateButton = perm.isYearLeader() &&
                   $scope.classInfo &&
+                  [2, 3, 4].indexOf($scope.classInfo.department_id) >= 0 &&
                   !parseInt($scope.classInfo.graduated) &&
                   ((new Date()).getFullYear() - $scope.classInfo.start_year >= 4);
                 return $scope.classInfo;

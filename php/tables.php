@@ -362,6 +362,8 @@ function update_user($user) {
   return null;
 }
 
+/// Renames email of the user (identified by [$user_id]) to ['$newEmail'],
+/// and registers a new user with the old (current) email.
 function clone_user($user_id, $newEmail = null, $newClassId = null) {
   global $medoo;
   
@@ -387,6 +389,12 @@ function clone_user($user_id, $newEmail = null, $newClassId = null) {
   if (!$newEmail) {
     remove_user($user_id);
   }
+  $medoo->update("classes", ["teacher_id" => $newId], ["teacher_id" => $user_id]);
+  $medoo->update("classes", ["teacher2_id" => $newId], ["teacher2_id" => $user_id]);
+  $medoo->update("schedules", ["teacher" => $newId],
+      ["teacher" => $user_id]);
+  $medoo->update("schedules", ["teacher_planned" => $newId],
+      ["teacher_planned" => $user_id]);
   return $newId;
 }
 

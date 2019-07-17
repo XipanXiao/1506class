@@ -15,7 +15,8 @@ angular.module('ConfirmGraduateDialogModule', [
       };
 
       function markClassGraduate() {
-        scope.classInfo.graduated = 1;
+        if (!scope.classInfo.graduated) return utils.truePromise();
+
         rpc.update_class(scope.classInfo).then(function (response) {
           return parseInt(response.data.updated);
         });
@@ -48,6 +49,6 @@ angular.module('ConfirmGraduateDialogModule', [
         }
       };
     },
-    templateUrl: 'js/confirm_graduate_dialog/confirm_graduate_dialog.html?tag=20190704'
+    templateUrl: 'js/confirm_graduate_dialog/confirm_graduate_dialog.html?tag=20190717'
   };
 });
