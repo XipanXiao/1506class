@@ -16,6 +16,10 @@
     <select ng-options="year for year in years" ng-model="classInfo.start_year">
     </select> 
   </label>
+  <div class="padded-element">
+    地区：
+    <districts user="classInfo" editable="true"></districts>
+  </div>
   <label class="padded-element">
     固定上课时间(美东)：
     <select ng-options="dayLabels[day] for day in [0, 1, 2, 3, 4, 5, 6]"

@@ -167,7 +167,8 @@ function get_classes($filters = []) {
   global $medoo;
   
   $int_fields = ["id", "department_id", "teacher_id", "start_year",
-      "perm_level", "weekday", "zb_id", "teacher2_id", "graduated"];
+      "perm_level", "weekday", "zb_id", "teacher2_id", "graduated",
+      "district"];
   $filters = array_merge($filters, ["deleted" => 0]);
   $classes = keyed_by_id($medoo->select("classes", "*", ["AND" => $filters]));
 
@@ -191,7 +192,8 @@ function update_class($classInfo) {
   
   $datas = [];
   $fields = ["department_id", "name", "class_room", "email", "start_year", 
-      "perm_level", "weekday", "time", "zb_id", "teacher_id", "teacher2_id", "graduated"];
+      "perm_level", "weekday", "time", "zb_id", "teacher_id", "teacher2_id",
+      "graduated", "district"];
 
   foreach ($fields as $field) {
     if (isset($classInfo[$field])) {

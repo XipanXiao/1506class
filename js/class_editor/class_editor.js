@@ -9,7 +9,10 @@ define('class_editor/class_editor', ['departments/departments',
 
   return angular.module('ClassEditorModule',
       ['DepartmentEditorDialogModule',
-       'DepartmentsModule', 'EditableLabelModule', 'TimeModule', 
+       'DepartmentsModule',
+       'DistrictsModule',
+       'EditableLabelModule',
+       'TimeModule', 
        'PaperAutoSuggestInputModule',
        'ServicesModule',
        'UserPickerModule', 'UtilsModule',
@@ -101,7 +104,7 @@ define('class_editor/class_editor', ['departments/departments',
 
               scope.searchUser = rpc.searchUser;
             },
-            templateUrl : 'js/class_editor/class_editor.html?tag=201906152243'
+            templateUrl : 'js/class_editor/class_editor.html?tag=201907152243'
           };
         });
 });
