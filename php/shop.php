@@ -54,6 +54,12 @@ function _getDepartmentLevel($user) {
   return $department ? $department["level"] : 0;
 }
 
+function _getDistrictClasses($district) {
+  global $medoo;
+
+  return $medoo->select("classes", "id", ["district" => $district]);
+}
+
 function get_order($id) {
   global $medoo;
   
@@ -542,8 +548,11 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         $response = get_orders(null, $_GET, $_GET["items"], 
             canReadOrderAddress($user));
       } elseif (isDistrictInspector($user)) {
-        $filters = array_merge($_GET, ["district" => $user->district]);
-        $response = get_orders(null, $filters, $_GET["items"],  TRUE);
+        $classIds = _getDistrictClasses($user->district);
+        $response = $classIds ? get_orders(null, 
+            array_merge($_GET, ["class_id" => $classIds]), 
+            $_GET["items"],
+            TRUE) : permission_denied_error();
       } else {
         $classIds = _getManagedClasses($user);
         $response = $classIds ? get_orders(null, 
