@@ -207,6 +207,10 @@ function update_class($classInfo) {
   if (empty($datas['teacher2_id'])) {
     $datas['teacher2_id'] = null;
   }
+
+  if (isset($datas["district"]) && intval($datas["district"]) == 0) {
+    unset($datas["district"]);
+  }
   
   if (isset($classInfo["self_report"])) {
     $datas["self_report"] = $classInfo["self_report"] == "true" ? 1 : 0;
