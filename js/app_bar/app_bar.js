@@ -18,6 +18,7 @@ define('app_bar/app_bar', ['permission', 'search_bar/search_bar', 'utils'],
             return perm.isSysAdmin();
           };
           scope.isDistrictInspector = () => perm.isDistrictInspector();
+          scope.isCountryInspector = () => perm.isCountryInspector();
           scope.isYearLeader = function() {
             return perm.isYearLeader();
           };
@@ -37,7 +38,7 @@ define('app_bar/app_bar', ['permission', 'search_bar/search_bar', 'utils'],
             return location.pathname.endsWith(page);
           };
         },
-        templateUrl : 'js/app_bar/app_bar.html?tag=201904062357'
+        templateUrl : 'js/app_bar/app_bar.html?tag=201907062357'
       };
     });
 });
