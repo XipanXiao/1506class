@@ -2,6 +2,7 @@ import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:v2/components/abstract_task_report/abstract_task_report.dart';
+import 'package:v2/components/att_limit_grid/att_limit_grid.dart';
 import 'package:v2/components/schedule_grid/schedule_grid.dart';
 import 'package:v2/model/jx_report_grid.dart';
 import 'package:v2/model/report_grid.dart';
@@ -15,6 +16,7 @@ import 'package:v2/services/zb_service.dart';
   selector: 'jx-task-report',
   directives: [
     coreDirectives,
+    AttLimitGridComponent,
     MaterialButtonComponent,
     MaterialCheckboxComponent,
     MaterialIconComponent,

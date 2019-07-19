@@ -23,8 +23,8 @@ class ZBService {
 
   Future<Map<int, T>> getTaskData<T extends TaskData>(int pre_classID,
       String gridType, int halfTerm, TaskDataFromJson<T> creator) async {
-    _progressService
-        .showProgress('Fetching task data for $gridType of the $halfTerm-th half term.');
+    _progressService.showProgress(
+        'Fetching task data for $gridType of the $halfTerm-th half term.');
 
     var taskDataQuery =
         'type=$gridType&pre_classID=$pre_classID&half_term=$halfTerm';
@@ -83,7 +83,8 @@ class ZBService {
   /// Get lesson names and ids for a given [half_term].
   Future<List<Lesson>> getLessons(
       int pre_classID, int courseID, int half_term) async {
-    _progressService.showProgress('Fetching lessons of the $half_term-th half term.');
+    _progressService
+        .showProgress('Fetching lessons of the $half_term-th half term.');
 
     var url =
         '$_serviceUrl/pre/report_ajax?courseID=$courseID&half_term=$half_term'
@@ -153,9 +154,10 @@ class ZBService {
   ///
   /// Returns the map (keyed by userID) of maps (keyed by lesson id).
   Future<Map<int, Map<int, ScheduleRecord>>> getScheduleRecords(
-      int pre_classID, int halfTerm) async {
+      int pre_classID, int halfTerm,
+      {String grid = 'main_course_grid'}) async {
     var taskDataQuery =
-        'type=main_course_grid&pre_classID=$pre_classID&half_term=$halfTerm';
+        'type=$grid&pre_classID=$pre_classID&half_term=$halfTerm';
     var url = '$_serviceUrl$_file?${taskDataQuery}';
     var map = await utils.httpGetObject(_getProxiedUrl(url));
     List list = map['data'] ?? [];
@@ -217,4 +219,8 @@ class ZBService {
       _progressService.done();
     }
   }
+
+  Future<Map<int, Map<int, ScheduleRecord>>> getAttLimitRecords(
+          int pre_classID, int halfTerm) =>
+      getScheduleRecords(pre_classID, halfTerm);
 }

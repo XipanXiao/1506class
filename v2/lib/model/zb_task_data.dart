@@ -21,6 +21,9 @@ abstract class TaskData extends BaseEntity {
   /// lesson ids.
   final scheduleRecords = <int, ScheduleRecord>{};
 
+  /// Schedule task records for limited courses.
+  final limitRecords = <int, ScheduleRecord>{};
+
   /// bicw user id.
   int id;
 
