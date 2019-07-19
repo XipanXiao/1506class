@@ -15,9 +15,10 @@ angular.module('ConfirmGraduateDialogModule', [
       };
 
       function markClassGraduate() {
-        if (!scope.classInfo.graduated) return utils.truePromise();
+        var info = scope.classInfo;
+        if (!info.graduated) return utils.truePromise();
 
-        rpc.update_class(scope.classInfo).then(function (response) {
+        rpc.update_class({id: info.id, graduated: 1}).then(function (response) {
           return parseInt(response.data.updated);
         });
       }
