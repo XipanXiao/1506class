@@ -4,7 +4,7 @@ import 'package:v2/model/task_data_pair.dart';
 import 'base_entity.dart';
 
 /// Base structure to encode/decode zhibei.info task data.
-abstract class TaskData extends BaseEntity {
+class TaskData extends BaseEntity {
   final int operation;
   final int user_style;
 
@@ -55,10 +55,10 @@ abstract class TaskData extends BaseEntity {
   bool get isNotEmpty => !isEmpty;
 
   /// Initializes all members whose name end with '_total' to 0.
-  void initTotal();
+  void initTotal() {}
 
   /// Whether the '_total' memebers are all equal.
-  bool sameTotal(TaskData that);
+  bool sameTotal(TaskData that) => false;
 
   /// Moves data from [this] object to the first reportable term.
   ///

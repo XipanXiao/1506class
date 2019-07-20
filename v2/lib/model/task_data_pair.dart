@@ -108,5 +108,21 @@ class TaskDataPair<T extends TaskData> {
     }
   }
 
+  void auditAttLimit() {
+    if (bicwData == null && zhibeiData == null) return;
+    if (bicwData == null && zhibeiData != null) {
+      audited = AuditState.REMOTE_ONLY;
+    } else if (bicwData != null && zhibeiData == null) {
+      audited = AuditState.LOCAL_ONLY;
+    } else {
+      if (bicwData.att == 0 && zhibeiData.att > 0) {
+        audited = AuditState.REMOTE_ONLY;
+      } else {
+        audited =
+            bicwData.att == zhibeiData.att ? AuditState.PASS : AuditState.FAIL;
+      }
+    }
+  }
+
   void moveToFirstReportTerm(Map<int, Map<int, TaskDataPair<T>>> taskData) {}
 }

@@ -105,11 +105,19 @@ abstract class ReportGrid<T extends TaskData> {
   }
 
   /// Check whether schedule task data of [half_term] are fully loaded.
-  bool isScheduleLoaded(half_term) {
+  bool isScheduleLoaded(int half_term) {
     var halfTermData = taskData[half_term];
     if (halfTermData == null) return false;
     return halfTermData.values
         .any((user) => user.zhibeiData?.scheduleRecords?.isNotEmpty == true);
+  }
+
+  /// Check whether limit schedule task data of [halfTerm] are loaded.
+  bool isLimitScheduleLoaded(int halfTerm) {
+    var halfTermData = taskData[halfTerm];
+    if (halfTermData == null) return false;
+    return halfTermData.values
+        .any((user) => user.zhibeiData?.limitRecords?.isNotEmpty == true);
   }
 
   /// Clears zhibei.info schedule data cache for [halfTerm].
@@ -125,13 +133,19 @@ abstract class ReportGrid<T extends TaskData> {
   ///
   /// The records are keyed by zhibei user ID. For each user,
   /// the map is keyed by zhibei lesson id.
-  void setZBScheduleRecords(
-      int halfTerm, Map<int, Map<int, ScheduleRecord>> scheduleRecords) {
+  void setZBScheduleRecords(int halfTerm, Map<int, TaskData> data,
+      {bool limit = false}) {
     var users = taskData[halfTerm];
-    for (var userID in scheduleRecords.keys) {
+    for (var userID in data.keys) {
       var user = users[userIdMap[userID]];
       if (user == null) continue;
-      user.zhibeiData.scheduleRecords.addAll(scheduleRecords[userID]);
+      var zbUserData = data[userID];
+      if (limit) {
+        user.zhibeiData.limitRecords.addAll(zbUserData.limitRecords);
+        user.zhibeiData.att = zbUserData.att;
+      } else {
+        user.zhibeiData.scheduleRecords.addAll(zbUserData.scheduleRecords);
+      }
     }
   }
 
@@ -200,4 +214,8 @@ abstract class ReportGrid<T extends TaskData> {
   /// Compute the '*_total' fields, since they are not returned by the
   /// bicw server.
   void computeTotals() {}
+
+  void setZBLitmitScheduleData(int halfTerm, Map<int, TaskData> data) {
+    setZBScheduleRecords(halfTerm, data, limit: true);
+  }
 }

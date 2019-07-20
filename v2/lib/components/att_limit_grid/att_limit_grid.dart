@@ -1,4 +1,3 @@
-
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
@@ -49,10 +48,16 @@ class AttLimitGridComponent extends HasSelectable<TaskData> {
   void _reload() async {
     if (_grid == null || _halfTerm == null) return;
 
+    if (!grid.isLimitScheduleLoaded(_halfTerm)) {
+      var data = await _zbService.getAttLimitRecords(
+          _grid.pre_classID, _halfTerm, grid.gridTypes.attLimitGrid);
+      grid.setZBLitmitScheduleData(_halfTerm, data);
+    }
+
     users
       ..clear()
-      ..addAll(_grid.taskData[_halfTerm].values.map((pair) =>
-          TaskDataPair.from(pair)));
+      ..addAll(_grid.taskData[_halfTerm].values
+          .map((pair) => TaskDataPair.from(pair)..auditAttLimit()));
     users.where((user) => user.failed).forEach(selection.select);
   }
 
@@ -64,8 +69,7 @@ class AttLimitGridComponent extends HasSelectable<TaskData> {
 
     if (!await _zbService.ensureAuthenticated()) return;
 
-    for (var user in users) {
-    }
+    for (var user in users) {}
     _reload();
   }
 }

@@ -99,8 +99,8 @@ class ZBService {
     }
   }
 
-  /// Given a record responed from zhibei.info, returns a parsed map (keyed by
-  /// lesson ids).
+  /// Given a schedule record responded from zhibei.info, returns a
+  /// parsed map (keyed by lesson ids).
   ///
   /// The record is like:
   /// audio173: "1"
@@ -128,7 +128,7 @@ class ZBService {
   ///     175: {video: 1, text: 0},
   ///     ...
   /// }
-  Map<int, ScheduleRecord> _parseScheduleRecord(Map<String, dynamic> record) {
+  TaskData _parseScheduleRecord(Map<String, dynamic> record) {
     var rawData = <int, Map<String, String>>{};
 
     void convertKey(String key, String prefix, String newKey) {
@@ -144,8 +144,9 @@ class ZBService {
         convertKey(key, 'book', 'text');
       }
     }
-    return rawData
+    var scheduleRecords = rawData
         .map((key, value) => MapEntry(key, ScheduleRecord.fromJson(value)));
+    return TaskData.fromJson(record)..scheduleRecords.addAll(scheduleRecords);
   }
 
   /// Fetches all users' schedule records from zhibei.info,
@@ -153,8 +154,7 @@ class ZBService {
   /// [halfTerm].
   ///
   /// Returns the map (keyed by userID) of maps (keyed by lesson id).
-  Future<Map<int, Map<int, ScheduleRecord>>> getScheduleRecords(
-      int pre_classID, int halfTerm,
+  Future<Map<int, TaskData>> getScheduleRecords(int pre_classID, int halfTerm,
       {String grid = 'main_course_grid'}) async {
     var taskDataQuery =
         'type=$grid&pre_classID=$pre_classID&half_term=$halfTerm';
@@ -220,7 +220,7 @@ class ZBService {
     }
   }
 
-  Future<Map<int, Map<int, ScheduleRecord>>> getAttLimitRecords(
-          int pre_classID, int halfTerm) =>
-      getScheduleRecords(pre_classID, halfTerm);
+  Future<Map<int, TaskData>> getAttLimitRecords(
+          int pre_classID, int halfTerm, String gridName) =>
+      getScheduleRecords(pre_classID, halfTerm, grid: gridName);
 }

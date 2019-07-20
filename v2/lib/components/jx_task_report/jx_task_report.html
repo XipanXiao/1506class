@@ -137,5 +137,5 @@
     </ng-container>
   </table>
 </ng-container>
-<att-limit-grid [grid]="grid" [halfTerm]="halfTerm">
+<att-limit-grid [grid]="grid" [halfTerm]="halfTerm" *ngIf="grid != null">
 </att-limit-grid>
