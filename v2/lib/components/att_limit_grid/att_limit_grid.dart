@@ -51,10 +51,10 @@ class AttLimitGridComponent extends HasSelectable<TaskData> {
   void _reload() async {
     if (_grid == null || _halfTerm == null) return;
 
-    if (!grid.isLimitScheduleLoaded(_halfTerm)) {
+    if (!grid.isScheduleLoaded(_halfTerm, limited: true)) {
       var data = await _zbService.getAttLimitRecords(
           _grid.pre_classID, _halfTerm, grid.gridTypes.attLimitGrid);
-      grid.setZBLitmitScheduleData(_halfTerm, data);
+      grid.setZBScheduleRecords(_halfTerm, data, limit: true);
     }
 
     users

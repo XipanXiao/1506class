@@ -110,19 +110,15 @@ abstract class ReportGrid<T extends TaskData> {
   }
 
   /// Check whether schedule task data of [half_term] are fully loaded.
-  bool isScheduleLoaded(int half_term) {
+  bool isScheduleLoaded(int half_term, {bool limited = false}) {
     var halfTermData = taskData[half_term];
     if (halfTermData == null) return false;
-    return halfTermData.values
-        .any((user) => user.zhibeiData?.scheduleRecords?.isNotEmpty == true);
-  }
-
-  /// Check whether limit schedule task data of [halfTerm] are loaded.
-  bool isLimitScheduleLoaded(int halfTerm) {
-    var halfTermData = taskData[halfTerm];
-    if (halfTermData == null) return false;
-    return halfTermData.values
-        .any((user) => user.zhibeiData?.limitRecords?.isNotEmpty == true);
+    bool isNotEmpty(TaskData data) =>
+        (data != null) &&
+        (limited
+            ? data.limitRecords.isNotEmpty
+            : data.scheduleRecords.isNotEmpty);
+    return halfTermData.values.any((user) => isNotEmpty(user.zhibeiData));
   }
 
   /// Clears zhibei.info schedule data cache for [halfTerm].
@@ -223,8 +219,4 @@ abstract class ReportGrid<T extends TaskData> {
   /// Compute the '*_total' fields, since they are not returned by the
   /// bicw server.
   void computeTotals() {}
-
-  void setZBLitmitScheduleData(int halfTerm, Map<int, TaskData> data) {
-    setZBScheduleRecords(halfTerm, data, limit: true);
-  }
 }
