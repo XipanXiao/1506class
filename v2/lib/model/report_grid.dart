@@ -24,6 +24,8 @@ class GridTypes {
 }
 
 abstract class ReportGrid<T extends TaskData> {
+  static const limitedCoruseId = 10;
+
   /// All possible half terms.
   static final halfTerms = List<int>.generate(17, (index) => index + 1)
     ..remove(1)
@@ -32,8 +34,11 @@ abstract class ReportGrid<T extends TaskData> {
   /// zhibei.info Lesson ID.
   final int courseID;
 
-  /// zhibei.info main course lessons list.
+  /// zhibei.info main course lessons list, keyed by half term.
   final lessons = <int, List<Lesson>>{};
+
+  /// zhibei.info limited course lessons list, keyed by half term.
+  final limitedLessons = <int, List<Lesson>>{};
 
   /// bicw course map, keyed by bicw course id.
   final courses = <int, Course>{};
@@ -161,11 +166,13 @@ abstract class ReportGrid<T extends TaskData> {
   }
 
   /// Returns zhibei [Lesson]'s for [halfTerm].
-  List<Lesson> getLessons(int halfTerm) => lessons[halfTerm];
+  List<Lesson> getLessons(int halfTerm, {bool limited = false}) =>
+      limited ? limitedLessons[halfTerm] : lessons[halfTerm];
 
   /// Sets zhibei [Lesson]'s for [halfTerm].
-  void setLessons(int halfTerm, List<Lesson> lessons) {
-    var halfTermData = this.lessons.putIfAbsent(halfTerm, () => <Lesson>[]);
+  void setLessons(int halfTerm, List<Lesson> lessons, {bool limited = false}) {
+    var lessonsMap = limited ? this.limitedLessons : this.lessons;
+    var halfTermData = lessonsMap.putIfAbsent(halfTerm, () => <Lesson>[]);
     halfTermData.addAll(lessons);
 
     var nameMap = _courseNameMap;
@@ -175,19 +182,21 @@ abstract class ReportGrid<T extends TaskData> {
       }
     }
 
-    _convertScheduleRecordsMap(halfTerm);
+    _convertScheduleRecordsMap(halfTerm, limited: limited);
   }
 
   /// Converts the scheduleRecords map of the bicwData of [user],
   /// to a new map from zhibei [Lesson] IDs to [ScheduleRecord]s.
-  void _convertScheduleRecordsMap(int halfTerm) {
+  void _convertScheduleRecordsMap(int halfTerm, {bool limited = false}) {
     var halfTermUsers = taskData[halfTerm];
     if (halfTermUsers == null) return;
 
     for (var user in halfTermUsers.values) {
-      var map = user.bicwData.scheduleRecords
-          .map((id, course) => MapEntry(_courseIdMap[id], course));
-      user.bicwData.scheduleRecords
+      var schedules =
+          limited ? user.bicwData.limitRecords : user.bicwData.scheduleRecords;
+      var map =
+          schedules.map((id, course) => MapEntry(_courseIdMap[id], course));
+      schedules
         ..clear()
         ..addAll(map);
     }

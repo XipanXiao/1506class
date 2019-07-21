@@ -2,7 +2,9 @@ import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:v2/components/abstract_task_report/has_selectable.dart';
+import 'package:v2/model/lesson.dart';
 import 'package:v2/model/report_grid.dart';
+import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/task_data_pair.dart';
 import 'package:v2/model/zb_task_data.dart';
 import 'package:v2/services/zb_service.dart';
@@ -44,6 +46,7 @@ class AttLimitGridComponent extends HasSelectable<TaskData> {
   AttLimitGridComponent(this._zbService);
 
   ReportGrid get grid => _grid;
+  List<Lesson> get lessons => _grid?.getLessons(_halfTerm, limited: true);
 
   void _reload() async {
     if (_grid == null || _halfTerm == null) return;
@@ -59,6 +62,14 @@ class AttLimitGridComponent extends HasSelectable<TaskData> {
       ..addAll(_grid.taskData[_halfTerm].values
           .map((pair) => TaskDataPair.from(pair)..auditAttLimit()));
     users.where((user) => user.failed).forEach(selection.select);
+  }
+
+  ScheduleRecord getUserScheduleRecord(TaskDataPair user, int lesson_id,
+      {bool zhibei = false}) {
+    var records = zhibei
+        ? user.zhibeiData?.limitRecords
+        : user.bicwData?.limitRecords;
+    return records == null ? null : records[lesson_id];
   }
 
   /// Reports task data from bicw to zhibei.info, for all

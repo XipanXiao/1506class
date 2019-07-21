@@ -82,6 +82,9 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
         var lessons = await _zbService.getLessons(
             grid.pre_classID, grid.courseID, halfTerm);
         grid.setLessons(halfTerm, lessons);
+        var limited = await _zbService.getLessons(
+            grid.pre_classID, ReportGrid.limitedCoruseId, halfTerm);
+        grid.setLessons(halfTerm, limited, limited: true);
       }
     }
 
