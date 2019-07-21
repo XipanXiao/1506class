@@ -647,7 +647,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   $record = get_single_record($medoo, $resource_id, $_REQUEST["id"]);
   error_log($user->email ." DELETE ". json_encode($record));
   if ($resource_id == "orders") {
-    if ($record["status"] || !canWriteOrder($user, $record)) {
+    if (!canWriteOrder($user, $record)) {
       $response = permission_denied_error();
     } elseif (floatval($record["paid"]) >= 0.01 || 
         !empty($record["paypal_trans_id"]) || 
