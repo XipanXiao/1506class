@@ -197,7 +197,8 @@ class ZBService {
       .toList();
 
   Future<bool> reportScheduleTask(String gridType, int pre_classID,
-      int half_term, TaskData user, List<Lesson> lessons) async {
+      int half_term, TaskData user, List<Lesson> lessons,
+      {bool limited = false}) async {
     _progressService.showProgress('Reporting for ${user.name}');
     var data = <String, dynamic>{
       'url': '$_serviceUrl/pre/report_ajax',
@@ -206,6 +207,9 @@ class ZBService {
       'type': gridType,
       'half_term': half_term,
     };
+    if (limited) {
+      data['att'] = user.att;
+    }
     var entries = data.entries.toList()
       ..addAll(_getBookRecords(lessons, user)
           .map((value) => MapEntry('book[]', value)))

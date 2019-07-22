@@ -30,6 +30,9 @@ class ScheduleGridComponent extends HasSelectable<TaskData> {
   final users = <TaskDataPair<TaskData>>[];
 
   @Input()
+  bool limited = false;
+
+  @Input()
   set grid(ReportGrid grid) {
     if (grid == null || grid == _grid) return;
     _grid = grid;
@@ -49,22 +52,25 @@ class ScheduleGridComponent extends HasSelectable<TaskData> {
   ScheduleGridComponent(this._zbService);
 
   ReportGrid get grid => _grid;
-  List<Lesson> get lessons => _grid?.getLessons(_halfTerm);
+  List<Lesson> get lessons => _grid?.getLessons(_halfTerm, limited: limited);
 
   void _reload() async {
     if (_grid == null || _halfTerm == null) return;
 
-    if (!_grid.isScheduleLoaded(_halfTerm)) {
-      var scheduleRecords =
-          await _zbService.getScheduleRecords(_grid.pre_classID, _halfTerm);
-      _grid.setZBScheduleRecords(_halfTerm, scheduleRecords);
+    if (!_grid.isScheduleLoaded(_halfTerm, limited: limited)) {
+      var gridType = limited
+          ? grid.gridTypes.attLimitGrid
+          : grid.gridTypes.main_course_grid;
+      var scheduleRecords = await _zbService
+          .getScheduleRecords(_grid.pre_classID, _halfTerm, grid: gridType);
+      _grid.setZBScheduleRecords(_halfTerm, scheduleRecords, limit: limited);
     }
 
     users
       ..clear()
       ..addAll(_grid.taskData[_halfTerm].values.map((pair) =>
           TaskDataPair.from(pair)
-            ..auditScheduleRecords(_grid.getLessons(_halfTerm))));
+            ..auditScheduleRecords(lessons, limited: limited)));
     users.where((user) => user.failed).forEach(selection.select);
   }
 
@@ -84,18 +90,21 @@ class ScheduleGridComponent extends HasSelectable<TaskData> {
 
     if (!await _zbService.ensureAuthenticated()) return;
 
+    var gridType =
+        limited ? grid.gridTypes.attLimitGrid : grid.gridTypes.report_main_grid;
     for (var user in users) {
       if (!await _zbService.reportScheduleTask(
-          grid.gridTypes.report_main_grid,
+          gridType,
           grid.pre_classID,
           _halfTerm,
           user.bicwData,
-          grid.getLessons(_halfTerm))) {
+          grid.getLessons(_halfTerm, limited: limited),
+          limited: limited)) {
         window.alert('Failed to report for ${user.name}');
       }
     }
 
-    grid.clearScheduleCache(_halfTerm);
+    grid.clearScheduleCache(_halfTerm, limited: limited);
     _reload();
   }
 }

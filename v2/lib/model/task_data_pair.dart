@@ -77,7 +77,11 @@ class TaskDataPair<T extends TaskData> {
   List<bool> _expand(ScheduleRecord record) =>
       [record?.text ?? false, record?.video ?? false];
 
-  void auditScheduleRecords(List<Lesson> lessons) {
+  void auditScheduleRecords(List<Lesson> lessons, {bool limited = false}) {
+    if (limited) {
+      return auditAttLimit();
+    }
+
     audited = null;
     if (bicwData == null && zhibeiData == null) return;
 

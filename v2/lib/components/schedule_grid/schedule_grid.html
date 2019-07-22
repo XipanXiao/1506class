@@ -9,6 +9,7 @@
     <td rowspan="2">序号</td>
     <td rowspan="2">姓名</td>
     <td rowspan="2">数据源</td>
+    <td rowspan="2" *ngIf="limited">出勤</td>
     <td colspan="2" *ngFor="let lesson of lessons">
       {{lesson.name}}
     </td>
@@ -42,6 +43,7 @@
         {{user.name}}
       </td>
       <td>zhibei</td>
+      <td *ngIf="limited">{{user.zhibeiData?.att}}</td>
       <ng-container *ngFor="let lesson of lessons">
         <td [class.done]="getUserScheduleRecord(user, lesson.lesson_id, zhibei: true)?.text == true">
         </td>
@@ -58,6 +60,7 @@
     </tr>
     <tr>
       <td>bicw</td>
+      <td *ngIf="limited">{{user.bicwData?.att}}</td>
       <ng-container *ngFor="let lesson of lessons">
         <td [class.done]="getUserScheduleRecord(user, lesson.lesson_id)?.text == true"></td>
         <td [class.done]="getUserScheduleRecord(user, lesson.lesson_id)?.video == true"></td>

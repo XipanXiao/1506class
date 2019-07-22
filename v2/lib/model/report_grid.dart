@@ -122,11 +122,15 @@ abstract class ReportGrid<T extends TaskData> {
   }
 
   /// Clears zhibei.info schedule data cache for [halfTerm].
-  void clearScheduleCache(int halfTerm) {
+  void clearScheduleCache(int halfTerm, {bool limited = false}) {
     var halfTermData = taskData[halfTerm];
     if (halfTermData == null) return;
     for (var user in halfTermData.values) {
-      user.zhibeiData?.scheduleRecords?.clear();
+      if (limited) {
+        user.zhibeiData?.limitRecords?.clear();
+      } else {
+        user.zhibeiData?.scheduleRecords?.clear();
+      }
     }
   }
 
