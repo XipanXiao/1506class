@@ -1,3 +1,4 @@
+import 'package:v2/model/class_task_data.dart';
 import 'package:v2/model/course.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/task_data_pair.dart';
@@ -69,7 +70,7 @@ abstract class ReportGrid<T extends TaskData> {
   ///   user_id3: user3 task data of the first term,
   /// }
   /// ...
-  final taskData = <int, Map<int, TaskDataPair<T>>>{};
+  final taskData = <int, ClassTaskData<T>>{};
 
   GridTypes get gridTypes;
 
@@ -78,7 +79,7 @@ abstract class ReportGrid<T extends TaskData> {
   /// Adds loaded task data to this grid.
   void setTaskData(Map<int, Map<int, TaskData>> data, {bool zhibei = false}) {
     for (var halfTerm in data.keys) {
-      var dest = taskData.putIfAbsent(halfTerm, () => <int, TaskDataPair<T>>{});
+      var dest = taskData.putIfAbsent(halfTerm, () => ClassTaskData<T>()).users;
       for (var user in data[halfTerm].values) {
         var id = zhibei ? (userIdMap[user.userID] ?? user.userID) : user.id;
         var destUser = dest.putIfAbsent(id, () => TaskDataPair<T>());
@@ -140,7 +141,7 @@ abstract class ReportGrid<T extends TaskData> {
   /// the map is keyed by zhibei lesson id.
   void setZBScheduleRecords(int halfTerm, Map<int, TaskData> data,
       {bool limit = false}) {
-    var users = taskData[halfTerm];
+    var users = taskData[halfTerm].users;
     for (var userID in data.keys) {
       var user = users[userIdMap[userID]];
       if (user == null) continue;

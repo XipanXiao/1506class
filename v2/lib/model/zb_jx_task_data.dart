@@ -1,3 +1,4 @@
+import 'package:v2/model/class_task_data.dart';
 import 'package:v2/model/task_data_pair.dart';
 import 'package:v2/model/zb_task_data.dart';
 
@@ -123,12 +124,11 @@ class JxTaskData extends TaskData {
   }
 
   @override
-  void moveToFirstReportableTerm(
-      Map<int, Map<int, TaskDataPair>> data, int fromTerm) {
-    var taskData = data as Map<int, Map<int, TaskDataPair<JxTaskData>>>;
+  void moveToFirstReportableTerm(Map<int, ClassTaskData> data, int fromTerm) {
+    var taskData = data as Map<int, ClassTaskData<JxTaskData>>;
     if (baiziming_count != null && baiziming_count > 0) {
       for (var term in taskData.keys) {
-        var user = taskData[term][id];
+        var user = taskData[term].users[id];
         if (user?.bicwData == null ||
             user?.zhibeiData?.baiziming_total == null) {
           continue;
@@ -144,7 +144,7 @@ class JxTaskData extends TaskData {
     }
     if (dingli_count != null && dingli_count > 0) {
       for (var term in taskData.keys) {
-        var user = taskData[term][id];
+        var user = taskData[term].users[id];
         if (user?.bicwData == null || user?.zhibeiData?.dingli_total == null) {
           continue;
         }
@@ -159,7 +159,7 @@ class JxTaskData extends TaskData {
     }
     if (faxin_count != null && faxin_count > 0) {
       for (var term in taskData.keys) {
-        var user = taskData[term][id];
+        var user = taskData[term].users[id];
         if (user?.bicwData == null || user?.zhibeiData?.faxin_total == null) {
           continue;
         }
@@ -174,7 +174,7 @@ class JxTaskData extends TaskData {
     }
     if (guiyi_count != null && guiyi_count > 0) {
       for (var term in taskData.keys) {
-        var user = taskData[term][id];
+        var user = taskData[term].users[id];
         if (user?.bicwData == null || user?.zhibeiData?.guiyi_total == null) {
           continue;
         }
@@ -189,7 +189,7 @@ class JxTaskData extends TaskData {
     }
     if (lianshi_count != null && lianshi_count > 0) {
       for (var term in taskData.keys) {
-        var user = taskData[term][id];
+        var user = taskData[term].users[id];
         if (user?.bicwData == null || user?.zhibeiData?.lianshi_total == null) {
           continue;
         }
@@ -204,7 +204,7 @@ class JxTaskData extends TaskData {
     }
     if (manza_count != null && manza_count > 0) {
       for (var term in taskData.keys) {
-        var user = taskData[term][id];
+        var user = taskData[term].users[id];
         if (user?.bicwData == null || user?.zhibeiData?.manza_total == null) {
           continue;
         }

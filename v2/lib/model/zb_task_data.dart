@@ -1,5 +1,5 @@
+import 'package:v2/model/class_task_data.dart';
 import 'package:v2/model/schedule_record.dart';
-import 'package:v2/model/task_data_pair.dart';
 
 import 'base_entity.dart';
 
@@ -66,7 +66,7 @@ class TaskData extends BaseEntity {
   /// value for that field. For example, for the first several
   /// half terms, the `baiziming` field is always null.
   void moveToFirstReportableTerm(
-      Map<int, Map<int, TaskDataPair>> taskData, int fromTerm) {}
+      Map<int, ClassTaskData> taskData, int fromTerm) {}
 }
 
 typedef T TaskDataFromJson<T>(Map<String, dynamic> json);
