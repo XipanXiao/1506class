@@ -61,8 +61,9 @@ class ScheduleGridComponent extends HasSelectable<TaskData> {
       var gridType = limited
           ? grid.gridTypes.attLimitGrid
           : grid.gridTypes.main_course_grid;
-      var scheduleRecords = await _zbService
-          .getScheduleRecords(_grid.pre_classID, _halfTerm, grid: gridType);
+      var scheduleRecords = await _zbService.getScheduleRecords(
+          _grid.pre_classID, _halfTerm,
+          grid: gridType, limited: limited);
       _grid.setZBScheduleRecords(_halfTerm, scheduleRecords, limit: limited);
     }
 
@@ -76,9 +77,9 @@ class ScheduleGridComponent extends HasSelectable<TaskData> {
 
   ScheduleRecord getUserScheduleRecord(TaskDataPair user, int lesson_id,
       {bool zhibei = false}) {
-    var records = zhibei
-        ? user.zhibeiData?.scheduleRecords
-        : user.bicwData?.scheduleRecords;
+    var dataSource = zhibei ? user.zhibeiData : user.bicwData;
+    var records =
+        limited ? dataSource?.limitRecords : dataSource?.scheduleRecords;
     return records == null ? null : records[lesson_id];
   }
 

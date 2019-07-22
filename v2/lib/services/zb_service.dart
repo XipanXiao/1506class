@@ -128,7 +128,8 @@ class ZBService {
   ///     175: {video: 1, text: 0},
   ///     ...
   /// }
-  TaskData _parseScheduleRecord(Map<String, dynamic> record) {
+  TaskData _parseScheduleRecord(Map<String, dynamic> record,
+      {bool limited = false}) {
     var rawData = <int, Map<String, String>>{};
 
     void convertKey(String key, String prefix, String newKey) {
@@ -146,7 +147,13 @@ class ZBService {
     }
     var scheduleRecords = rawData
         .map((key, value) => MapEntry(key, ScheduleRecord.fromJson(value)));
-    return TaskData.fromJson(record)..scheduleRecords.addAll(scheduleRecords);
+    var data = TaskData.fromJson(record);
+    if (limited) {
+      data.limitRecords.addAll(scheduleRecords);
+    } else {
+      data.scheduleRecords.addAll(scheduleRecords);
+    }
+    return data;
   }
 
   /// Fetches all users' schedule records from zhibei.info,
@@ -155,7 +162,7 @@ class ZBService {
   ///
   /// Returns the map (keyed by userID) of maps (keyed by lesson id).
   Future<Map<int, TaskData>> getScheduleRecords(int pre_classID, int halfTerm,
-      {String grid = 'main_course_grid'}) async {
+      {String grid = 'main_course_grid', bool limited = false}) async {
     var taskDataQuery =
         'type=$grid&pre_classID=$pre_classID&half_term=$halfTerm';
     var url = '$_serviceUrl$_file?${taskDataQuery}';
@@ -163,7 +170,7 @@ class ZBService {
     List list = map['data'] ?? [];
     return Map.fromIterable(list,
         key: (json) => int.parse(json['userID']),
-        value: (json) => _parseScheduleRecord(json));
+        value: (json) => _parseScheduleRecord(json, limited: limited));
   }
 
   Future<bool> reportTask(
