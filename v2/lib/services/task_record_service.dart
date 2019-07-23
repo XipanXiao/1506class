@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:angular/angular.dart';
 import 'package:v2/model/schedule.dart';
 import 'package:v2/model/schedule_record.dart';
+import 'package:v2/model/schedule_records.dart';
 import 'package:v2/model/task.dart';
 import 'package:v2/model/task_record.dart';
 import 'package:v2/model/user.dart';
@@ -154,5 +155,23 @@ class TaskRecordService {
 
     Map map = await utils.httpGetObject(url);
     return map['half_term'];
+  }
+
+  /// Returns the shecule records for the class identified by [classId].
+  ///
+  /// The returned map is keyed by bicw user IDs.
+  Future<Map<int, ScheduleRecords>> getScheduleRecords(int classId) async {
+    var url = '$_serviceUrl?rid=schedule_records&classId=$classId';
+
+    List response = await utils.httpGetObject(url);
+    var records =
+        response.map<ScheduleRecord>((map) => ScheduleRecord.fromJson(map));
+
+    var map = <int, ScheduleRecords>{};
+    for (var record in records) {
+      var user = map.putIfAbsent(record.student_id, () => ScheduleRecords());
+      user.addRecord(record);
+    }
+    return map;
   }
 }
