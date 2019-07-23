@@ -14,15 +14,11 @@ class TaskData extends BaseEntity {
   /// User name.
   final String name;
 
-  /// Schedule task records, keyed by bicw course id or
-  /// zhibei lesson ids.
-  ///
-  /// When being compared, they're both keyed by zhibei
-  /// lesson ids.
+  /// Schedule task records, keyed by zhibei [Lesson] IDs.
   final scheduleRecords = <int, ScheduleRecord>{};
 
-  /// Schedule task records for limited courses.
-  final limitRecords = <int, ScheduleRecord>{};
+  /// Schedule task records, keyed by bicw [Course] IDs.
+  final _scheduleRecords = <int, ScheduleRecord>{};
 
   /// bicw user id.
   int id;
@@ -67,6 +63,21 @@ class TaskData extends BaseEntity {
   /// half terms, the `baiziming` field is always null.
   void moveToFirstReportableTerm(
       Map<int, ClassTaskData> taskData, int fromTerm) {}
+
+  /// Stores the bicw schedule [record] at the [_scheuleRecords]
+  /// map.
+  void addBicwScheduleRecord(ScheduleRecord record) {
+    _scheduleRecords[record.course_id] = record;
+  }
+
+  /// Rebuilds the map of bicw schedule records, to use
+  /// zhibei [Lesson] ID's as keys, instead of bicw [Course]
+  /// ID's, using the [courseIdMap].
+  void buildScheduleRecords(Map<int, int> courseIdMap) {
+    for (var courseId in _scheduleRecords.keys) {
+      scheduleRecords[courseIdMap[courseId]] = _scheduleRecords[courseId];
+    }
+  }
 }
 
 typedef T TaskDataFromJson<T>(Map<String, dynamic> json);

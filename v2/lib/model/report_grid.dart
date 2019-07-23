@@ -111,27 +111,20 @@ abstract class ReportGrid<T extends TaskData> {
   }
 
   /// Check whether schedule task data of [half_term] are fully loaded.
-  bool isScheduleLoaded(int half_term, {bool limited = false}) {
+  bool isScheduleLoaded(int half_term) {
     var halfTermData = taskData[half_term];
     if (halfTermData == null) return false;
-    bool isNotEmpty(TaskData data) =>
-        (data != null) &&
-        (limited
-            ? data.limitRecords.isNotEmpty
-            : data.scheduleRecords.isNotEmpty);
-    return halfTermData.values.any((user) => isNotEmpty(user.zhibeiData));
+    bool isNotEmpty(TaskDataPair user) =>
+        user.zhibeiData?.scheduleRecords?.isNotEmpty == true;
+    return halfTermData.values.any(isNotEmpty);
   }
 
   /// Clears zhibei.info schedule data cache for [halfTerm].
-  void clearScheduleCache(int halfTerm, {bool limited = false}) {
+  void clearScheduleCache(int halfTerm) {
     var halfTermData = taskData[halfTerm];
     if (halfTermData == null) return;
     for (var user in halfTermData.values) {
-      if (limited) {
-        user.zhibeiData?.limitRecords?.clear();
-      } else {
-        user.zhibeiData?.scheduleRecords?.clear();
-      }
+      user.zhibeiData?.scheduleRecords?.clear();
     }
   }
 
@@ -147,11 +140,9 @@ abstract class ReportGrid<T extends TaskData> {
       if (user == null) continue;
       var zbUserData = data[userID];
       if (limit) {
-        user.zhibeiData.limitRecords.addAll(zbUserData.limitRecords);
         user.zhibeiData.att = zbUserData.att;
-      } else {
-        user.zhibeiData.scheduleRecords.addAll(zbUserData.scheduleRecords);
       }
+      user.zhibeiData.scheduleRecords.addAll(zbUserData.scheduleRecords);
     }
   }
 
@@ -183,23 +174,20 @@ abstract class ReportGrid<T extends TaskData> {
       }
     }
 
-    _convertScheduleRecordsMap(halfTerm, limited: limited);
+    _convertScheduleRecordsMap(halfTerm);
   }
 
   /// Converts the scheduleRecords map of the bicwData of [user],
   /// to a new map from zhibei [Lesson] IDs to [ScheduleRecord]s.
-  void _convertScheduleRecordsMap(int halfTerm, {bool limited = false}) {
+  ///
+  /// Note the original bicw schedule task map is keyed by courses'
+  /// bicw IDs.
+  void _convertScheduleRecordsMap(int halfTerm) {
     var halfTermUsers = taskData[halfTerm];
     if (halfTermUsers == null) return;
 
     for (var user in halfTermUsers.values) {
-      var schedules =
-          limited ? user.bicwData.limitRecords : user.bicwData.scheduleRecords;
-      var map =
-          schedules.map((id, course) => MapEntry(_courseIdMap[id], course));
-      schedules
-        ..clear()
-        ..addAll(map);
+      user.bicwData.buildScheduleRecords(_courseIdMap);
     }
   }
 

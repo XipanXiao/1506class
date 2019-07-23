@@ -45,9 +45,9 @@
       <td>zhibei</td>
       <td *ngIf="limited">{{user.zhibeiData?.att}}</td>
       <ng-container *ngFor="let lesson of lessons">
-        <td [class.done]="getUserScheduleRecord(user, lesson.lesson_id, zhibei: true)?.text == true">
+        <td [class.done]="getUserScheduleRecord(user.zhibeiData, lesson.lesson_id)?.text == true">
         </td>
-        <td [class.done]="getUserScheduleRecord(user, lesson.lesson_id, zhibei: true)?.video == true">
+        <td [class.done]="getUserScheduleRecord(user.zhibeiData, lesson.lesson_id)?.video == true">
         </td>
       </ng-container>
       <td rowspan="2" class="selectable">
@@ -62,8 +62,8 @@
       <td>bicw</td>
       <td *ngIf="limited">{{user.bicwData?.att}}</td>
       <ng-container *ngFor="let lesson of lessons">
-        <td [class.done]="getUserScheduleRecord(user, lesson.lesson_id)?.text == true"></td>
-        <td [class.done]="getUserScheduleRecord(user, lesson.lesson_id)?.video == true"></td>
+        <td [class.done]="getUserScheduleRecord(user.bicwData, lesson.lesson_id)?.text == true"></td>
+        <td [class.done]="getUserScheduleRecord(user.bicwData, lesson.lesson_id)?.video == true"></td>
       </ng-container>
     </tr>
   </ng-container>

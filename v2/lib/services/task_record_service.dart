@@ -121,7 +121,7 @@ class TaskRecordService {
           'name': userInfo.name,
         });
       });
-      user.scheduleRecords[schedule.course_id] = schedule;
+      user.addBicwScheduleRecord(schedule);
     }
   }
 

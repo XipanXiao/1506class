@@ -57,7 +57,7 @@ class ScheduleGridComponent extends HasSelectable<TaskData> {
   void _reload() async {
     if (_grid == null || _halfTerm == null) return;
 
-    if (!_grid.isScheduleLoaded(_halfTerm, limited: limited)) {
+    if (!_grid.isScheduleLoaded(_halfTerm)) {
       var gridType = limited
           ? grid.gridTypes.attLimitGrid
           : grid.gridTypes.main_course_grid;
@@ -75,11 +75,8 @@ class ScheduleGridComponent extends HasSelectable<TaskData> {
     users.where((user) => user.failed).forEach(selection.select);
   }
 
-  ScheduleRecord getUserScheduleRecord(TaskDataPair user, int lesson_id,
-      {bool zhibei = false}) {
-    var dataSource = zhibei ? user.zhibeiData : user.bicwData;
-    var records =
-        limited ? dataSource?.limitRecords : dataSource?.scheduleRecords;
+  ScheduleRecord getUserScheduleRecord(TaskData user, int lesson_id) {
+    var records = user?.scheduleRecords;
     return records == null ? null : records[lesson_id];
   }
 
@@ -105,7 +102,7 @@ class ScheduleGridComponent extends HasSelectable<TaskData> {
       }
     }
 
-    grid.clearScheduleCache(_halfTerm, limited: limited);
+    grid.clearScheduleCache(_halfTerm);
     _reload();
   }
 }

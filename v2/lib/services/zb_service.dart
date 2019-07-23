@@ -148,11 +148,7 @@ class ZBService {
     var scheduleRecords = rawData
         .map((key, value) => MapEntry(key, ScheduleRecord.fromJson(value)));
     var data = TaskData.fromJson(record);
-    if (limited) {
-      data.limitRecords.addAll(scheduleRecords);
-    } else {
-      data.scheduleRecords.addAll(scheduleRecords);
-    }
+    data.scheduleRecords.addAll(scheduleRecords);
     return data;
   }
 
