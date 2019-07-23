@@ -74,8 +74,11 @@ class TaskData extends BaseEntity {
   /// zhibei [Lesson] ID's as keys, instead of bicw [Course]
   /// ID's, using the [courseIdMap].
   void buildScheduleRecords(Map<int, int> courseIdMap) {
-    for (var courseId in _scheduleRecords.keys) {
-      scheduleRecords[courseIdMap[courseId]] = _scheduleRecords[courseId];
+    for (var courseId in courseIdMap.keys) {
+      var record = _scheduleRecords[courseId];
+      if (record != null) {
+        scheduleRecords[courseIdMap[courseId]] = record;
+      }
     }
   }
 }

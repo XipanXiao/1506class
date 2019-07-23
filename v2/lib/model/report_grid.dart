@@ -50,9 +50,6 @@ abstract class ReportGrid<T extends TaskData> {
   /// A map from zhibei id to bicw id.
   final userIdMap = <int, int>{};
 
-  /// A map from bicw [Course] id to zhibei [Lesson] id.
-  final _courseIdMap = <int, int>{};
-
   /// Set of visible column names.
   final columns = <String>{};
 
@@ -168,13 +165,15 @@ abstract class ReportGrid<T extends TaskData> {
     halfTermData.addAll(lessons);
 
     var nameMap = _courseNameMap;
+    // A map from bicw course ID to zhibei [Lesson] ID.
+    var courseIdMap = <int, int>{};
     for (var lesson in lessons) {
       for (var id in nameMap[lesson.name]) {
-        _courseIdMap[id] = lesson.lesson_id;
+        courseIdMap[id] = lesson.lesson_id;
       }
     }
 
-    _convertScheduleRecordsMap(halfTerm);
+    _convertScheduleRecordsMap(halfTerm, courseIdMap);
   }
 
   /// Converts the scheduleRecords map of the bicwData of [user],
@@ -182,12 +181,12 @@ abstract class ReportGrid<T extends TaskData> {
   ///
   /// Note the original bicw schedule task map is keyed by courses'
   /// bicw IDs.
-  void _convertScheduleRecordsMap(int halfTerm) {
+  void _convertScheduleRecordsMap(int halfTerm, Map<int, int> courseIdMap) {
     var halfTermUsers = taskData[halfTerm];
     if (halfTermUsers == null) return;
 
     for (var user in halfTermUsers.values) {
-      user.bicwData.buildScheduleRecords(_courseIdMap);
+      user.bicwData.buildScheduleRecords(courseIdMap);
     }
   }
 
