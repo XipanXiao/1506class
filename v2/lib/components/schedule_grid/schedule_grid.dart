@@ -61,9 +61,8 @@ class ScheduleGridComponent extends HasSelectable<TaskData> {
       var gridType = limited
           ? grid.gridTypes.attLimitGrid
           : grid.gridTypes.main_course_grid;
-      var scheduleRecords = await _zbService.getScheduleRecords(
-          _grid.pre_classID, _halfTerm,
-          grid: gridType, limited: limited);
+      var scheduleRecords = await _zbService
+          .getScheduleRecords(_grid.pre_classID, _halfTerm, grid: gridType);
       _grid.setZBScheduleRecords(_halfTerm, scheduleRecords, limit: limited);
     }
 

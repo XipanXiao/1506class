@@ -128,8 +128,7 @@ class ZBService {
   ///     175: {video: 1, text: 0},
   ///     ...
   /// }
-  TaskData _parseScheduleRecord(Map<String, dynamic> record,
-      {bool limited = false}) {
+  TaskData _parseScheduleRecord(Map<String, dynamic> record) {
     var rawData = <int, Map<String, String>>{};
 
     void convertKey(String key, String prefix, String newKey) {
@@ -158,7 +157,7 @@ class ZBService {
   ///
   /// Returns the map (keyed by userID) of maps (keyed by lesson id).
   Future<Map<int, TaskData>> getScheduleRecords(int pre_classID, int halfTerm,
-      {String grid = 'main_course_grid', bool limited = false}) async {
+      {String grid = 'main_course_grid'}) async {
     var taskDataQuery =
         'type=$grid&pre_classID=$pre_classID&half_term=$halfTerm';
     var url = '$_serviceUrl$_file?${taskDataQuery}';
@@ -166,7 +165,7 @@ class ZBService {
     List list = map['data'] ?? [];
     return Map.fromIterable(list,
         key: (json) => int.parse(json['userID']),
-        value: (json) => _parseScheduleRecord(json, limited: limited));
+        value: (json) => _parseScheduleRecord(json));
   }
 
   Future<bool> reportTask(
@@ -226,8 +225,4 @@ class ZBService {
       _progressService.done();
     }
   }
-
-  Future<Map<int, TaskData>> getAttLimitRecords(
-          int pre_classID, int halfTerm, String gridName) =>
-      getScheduleRecords(pre_classID, halfTerm, grid: gridName);
 }
