@@ -33,7 +33,8 @@ class JxTaskReportComponent extends AbstractTaskReportComponent<JxTaskData> {
       JxTaskData.fromJson(map);
 
   @override
-  ReportGrid<JxTaskData> createTaskGrid() => JxTaskGrid();
+  ReportGrid<JxTaskData> createTaskGrid(int classId, int pre_classID) =>
+      JxTaskGrid(classId, pre_classID);
 
   @override
   Future<void> reload(int halfTerm) async {

@@ -157,7 +157,7 @@ class TaskRecordService {
     return map['half_term'];
   }
 
-  /// Returns the shecule records for the class identified by [classId].
+  /// Returns the schedule records for the class identified by [classId].
   ///
   /// The returned map is keyed by bicw user IDs.
   Future<Map<int, ScheduleRecords>> getScheduleRecords(int classId) async {

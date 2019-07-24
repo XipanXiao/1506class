@@ -6,7 +6,7 @@ class RxlTaskGrid extends ReportGrid<RxlTaskData> {
   final gridTypes =
       GridTypes(report_main_grid: 'rxl_grid', workGrid: 'rxl_work_grid');
 
-  RxlTaskGrid() : super(2);
+  RxlTaskGrid(int classId, int pre_classID) : super(2, classId, pre_classID);
 
   @override
   void computeTotals() {

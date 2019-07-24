@@ -1,6 +1,7 @@
 import 'package:v2/model/class_task_data.dart';
 import 'package:v2/model/course.dart';
 import 'package:v2/model/schedule_record.dart';
+import 'package:v2/model/schedule_records.dart';
 import 'package:v2/model/task_data_pair.dart';
 import 'package:v2/model/zb_task_data.dart';
 
@@ -44,8 +45,14 @@ abstract class ReportGrid<T extends TaskData> {
   /// bicw course map, keyed by bicw course id.
   final courses = <int, Course>{};
 
+  /// schedule records (both bicw and zhibei), keyed by bicw user id.
+  final scheduleRecords = <int, ScheduleRecords>{};
+
+  /// bicw class id.
+  final int classId;
+
   /// zhibei.info class id.
-  int pre_classID;
+  final int pre_classID;
 
   /// A map from zhibei id to bicw id.
   final userIdMap = <int, int>{};
@@ -71,7 +78,7 @@ abstract class ReportGrid<T extends TaskData> {
 
   GridTypes get gridTypes;
 
-  ReportGrid(this.courseID);
+  ReportGrid(this.courseID, this.classId, this.pre_classID);
 
   /// Adds loaded task data to this grid.
   void setTaskData(Map<int, Map<int, TaskData>> data, {bool zhibei = false}) {
@@ -174,6 +181,7 @@ abstract class ReportGrid<T extends TaskData> {
     }
 
     _convertScheduleRecordsMap(halfTerm, courseIdMap);
+    _convertGlobalScheduleRecordsMap(courseIdMap);
   }
 
   /// Converts the scheduleRecords map of the bicwData of [user],
@@ -187,6 +195,12 @@ abstract class ReportGrid<T extends TaskData> {
 
     for (var user in halfTermUsers.values) {
       user.bicwData.buildScheduleRecords(courseIdMap);
+    }
+  }
+
+  void _convertGlobalScheduleRecordsMap(Map<int, int> courseIdMap) {
+    for (var user in scheduleRecords.values) {
+      user.convertCourseIds(courseIdMap);
     }
   }
 

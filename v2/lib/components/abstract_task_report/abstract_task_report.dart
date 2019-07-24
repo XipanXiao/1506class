@@ -24,7 +24,7 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
   set classInfo(ClassInfo classInfo) {
     if (classInfo == null || classInfo == _classInfo) return;
     _classInfo = classInfo;
-    _classInfo.taskGrid ??= createTaskGrid()..pre_classID = _classInfo.zb_id;
+    _classInfo.taskGrid ??= createTaskGrid(classInfo.id, classInfo.zb_id);
 
     if (_halfTerm != null) {
       reload(_halfTerm);
@@ -56,7 +56,7 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
   bool hasColumn(String column) => grid.columns.contains(column);
 
   /// Construts a type specific [RedportGrid] object.
-  ReportGrid<T> createTaskGrid();
+  ReportGrid<T> createTaskGrid(int classId, int pre_classID);
 
   /// Construts a type specific [TaskData] object.
   T createTaskData(Map<String, dynamic> map);

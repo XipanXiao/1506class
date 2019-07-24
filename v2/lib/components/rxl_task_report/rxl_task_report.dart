@@ -33,7 +33,8 @@ class RxlTaskReportComponent extends AbstractTaskReportComponent<RxlTaskData> {
       RxlTaskData.fromJson(map);
 
   @override
-  ReportGrid<RxlTaskData> createTaskGrid() => RxlTaskGrid();
+  ReportGrid<RxlTaskData> createTaskGrid(int classId, int pre_classID) =>
+      RxlTaskGrid(classId, pre_classID);
 
   @override
   Future<void> reload(int halfTerm) async {

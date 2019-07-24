@@ -9,6 +9,7 @@ import 'package:v2/model/report_grid.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/task_data_pair.dart';
 import 'package:v2/model/zb_task_data.dart';
+import 'package:v2/services/task_record_service.dart';
 import 'package:v2/services/zb_service.dart';
 
 @Component(
@@ -25,6 +26,7 @@ import 'package:v2/services/zb_service.dart';
 )
 class ScheduleGridComponent extends HasSelectable<TaskData> {
   final ZBService _zbService;
+  final TaskRecordService _taskService;
 
   @override
   final users = <TaskDataPair<TaskData>>[];
@@ -49,13 +51,18 @@ class ScheduleGridComponent extends HasSelectable<TaskData> {
   int _halfTerm;
   ReportGrid _grid;
 
-  ScheduleGridComponent(this._zbService);
+  ScheduleGridComponent(this._zbService, this._taskService);
 
   ReportGrid get grid => _grid;
   List<Lesson> get lessons => _grid?.getLessons(_halfTerm, limited: limited);
 
   void _reload() async {
     if (_grid == null || _halfTerm == null) return;
+
+    if (_grid.scheduleRecords.isEmpty) {
+      var records = await _taskService.getScheduleRecords(_grid.classId);
+      _grid.scheduleRecords.addAll(records);
+    }
 
     if (!_grid.isScheduleLoaded(_halfTerm)) {
       var gridType = limited
@@ -75,6 +82,8 @@ class ScheduleGridComponent extends HasSelectable<TaskData> {
   }
 
   ScheduleRecord getUserScheduleRecord(TaskData user, int lesson_id) {
+    // var records = _grid.scheduleRecords[user.id];
+    // return records?.getRecord(lesson_id);
     var records = user?.scheduleRecords;
     return records == null ? null : records[lesson_id];
   }

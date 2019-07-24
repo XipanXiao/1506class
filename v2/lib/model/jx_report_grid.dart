@@ -8,7 +8,7 @@ class JxTaskGrid extends ReportGrid<JxTaskData> {
       workGrid: 'jxWork_grid',
       attLimitGrid: 'att_limit_grid');
 
-  JxTaskGrid() : super(1);
+  JxTaskGrid(int classId, int pre_classID) : super(1, classId, pre_classID);
 
   @override
   void computeTotals() {
