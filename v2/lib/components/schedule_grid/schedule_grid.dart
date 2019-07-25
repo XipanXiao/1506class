@@ -7,7 +7,6 @@ import 'package:v2/components/abstract_task_report/has_selectable.dart';
 import 'package:v2/model/auditable.dart';
 import 'package:v2/model/lesson.dart';
 import 'package:v2/model/report_grid.dart';
-import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/task_data_pair.dart';
 import 'package:v2/model/zb_task_data.dart';
 import 'package:v2/services/task_record_service.dart';
@@ -80,13 +79,6 @@ class ScheduleGridComponent extends HasSelectable<TaskDataPair<TaskData>> {
           TaskDataPair.from(pair)
             ..auditScheduleRecords(lessons, limited: limited)));
     users.where((user) => user.failed).forEach(selection.select);
-  }
-
-  ScheduleRecord getUserScheduleRecord(TaskData user, int lesson_id) {
-    // var records = _grid.scheduleRecords[user.id];
-    // return records?.getRecord(lesson_id);
-    var records = user?.scheduleRecords;
-    return records == null ? null : records[lesson_id];
   }
 
   /// Reports task data from bicw to zhibei.info, for all

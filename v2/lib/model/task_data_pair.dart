@@ -107,5 +107,11 @@ class TaskDataPair<T extends TaskData> extends Auditable {
     }
   }
 
+  /// Returns the [ScheduleRecord] for the [Lesson] identified by [lesson_id].
+  ScheduleRecord getRecord(int lesson_id, {bool zhibei = false}) {
+    var records = (zhibei ? zhibeiData : bicwData)?.scheduleRecords;
+    return records == null ? null : records[lesson_id];
+  }
+
   void moveToFirstReportTerm(Map<int, Map<int, TaskDataPair<T>>> taskData) {}
 }
