@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:v2/model/lesson.dart';
+import 'package:v2/model/reportable.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/zb_task_data.dart';
 
@@ -20,7 +21,7 @@ enum AuditState {
   REMOTE_ONLY,
 }
 
-class TaskDataPair<T extends TaskData> {
+class TaskDataPair<T extends TaskData> implements Reportable {
   /// Whether [bicwData] is consistent with [zhibeiData], or
   /// null if a check is not done yet.
   AuditState audited;
@@ -39,6 +40,7 @@ class TaskDataPair<T extends TaskData> {
 
   /// Whether there is a need to report this user's task data to
   /// zhibei.info.
+  @override
   bool get reportable =>
       audited == AuditState.FAIL ||
       audited == AuditState.LOCAL_ONLY ||

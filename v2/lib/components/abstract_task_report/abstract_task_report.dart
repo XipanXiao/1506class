@@ -12,7 +12,7 @@ import 'package:v2/services/zb_service.dart';
 import 'has_selectable.dart';
 
 abstract class AbstractTaskReportComponent<T extends TaskData>
-    extends HasSelectable<T> {
+    extends HasSelectable<TaskDataPair<T>> {
   final CourseService _courseService;
   final ZBService _zbService;
   final TaskRecordService _taskService;

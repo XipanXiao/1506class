@@ -24,7 +24,7 @@ import 'package:v2/services/zb_service.dart';
   styleUrls: ['schedule_grid.css'],
   exports: [AuditState],
 )
-class ScheduleGridComponent extends HasSelectable<TaskData> {
+class ScheduleGridComponent extends HasSelectable<TaskDataPair<TaskData>> {
   final ZBService _zbService;
   final TaskRecordService _taskService;
 
