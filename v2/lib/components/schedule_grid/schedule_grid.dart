@@ -4,6 +4,7 @@ import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:v2/components/abstract_task_report/has_selectable.dart';
+import 'package:v2/model/auditable.dart';
 import 'package:v2/model/lesson.dart';
 import 'package:v2/model/report_grid.dart';
 import 'package:v2/model/schedule_record.dart';

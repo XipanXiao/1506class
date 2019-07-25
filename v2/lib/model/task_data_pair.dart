@@ -1,40 +1,20 @@
 import 'package:collection/collection.dart';
 import 'package:v2/model/lesson.dart';
-import 'package:v2/model/reportable.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/zb_task_data.dart';
 
-enum AuditState {
-  /// bicw data are consistent with zhibei.info data.
-  PASS,
+import 'auditable.dart';
 
-  /// bicw data have same total numbers as zhibei.info data.
-  PARTIAL_PASS,
-
-  /// bicw data are not consistent with zhibei.info data.
-  FAIL,
-
-  /// bicw data are present but zhibei.info are not.
-  LOCAL_ONLY,
-
-  /// zhibei.info data are present but bicw data are not.
-  REMOTE_ONLY,
-}
-
-class TaskDataPair<T extends TaskData> implements Reportable {
-  /// Whether [bicwData] is consistent with [zhibeiData], or
-  /// null if a check is not done yet.
-  AuditState audited;
-
+class TaskDataPair<T extends TaskData> extends Auditable {
   T bicwData;
   T zhibeiData;
 
   TaskDataPair();
 
   TaskDataPair.from(TaskDataPair that)
-      : audited = that.audited,
-        bicwData = that.bicwData,
-        zhibeiData = that.zhibeiData;
+      : bicwData = that.bicwData,
+        zhibeiData = that.zhibeiData,
+        super.from(that);
 
   String get name => bicwData?.name ?? zhibeiData?.name;
 
@@ -46,11 +26,8 @@ class TaskDataPair<T extends TaskData> implements Reportable {
       audited == AuditState.LOCAL_ONLY ||
       audited == AuditState.PARTIAL_PASS;
 
-  bool get passed => audited == AuditState.PASS;
-  bool get failed =>
-      audited == AuditState.FAIL || audited == AuditState.LOCAL_ONLY;
-
   /// Compares bicw and zhibei.info data.
+  @override
   void audit() {
     if (bicwData == null && zhibeiData == null) return;
 
