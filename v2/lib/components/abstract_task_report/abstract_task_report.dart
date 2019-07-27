@@ -1,11 +1,11 @@
 import 'dart:html';
 
 import 'package:angular/angular.dart';
+import 'package:v2/components/abstract_task_report/schedule_records_loader.dart';
 import 'package:v2/model/class_info.dart';
 import 'package:v2/model/report_grid.dart';
 import 'package:v2/model/task_data_pair.dart';
 import 'package:v2/model/zb_task_data.dart';
-import 'package:v2/services/course_service.dart';
 import 'package:v2/services/task_record_service.dart';
 import 'package:v2/services/zb_service.dart';
 
@@ -13,9 +13,9 @@ import 'has_selectable.dart';
 
 abstract class AbstractTaskReportComponent<T extends TaskData>
     extends HasSelectable<TaskDataPair<T>> {
-  final CourseService _courseService;
   final ZBService _zbService;
   final TaskRecordService _taskService;
+  final ScheduleRecordsLoader _scheduleLoader;
 
   @override
   final users = <TaskDataPair<T>>[];
@@ -40,12 +40,13 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
   }
 
   ReportGrid<T> grid;
+  bool loadLimitRecords = false;
 
   int _halfTerm;
   ClassInfo _classInfo;
 
   AbstractTaskReportComponent(
-      this._courseService, this._zbService, this._taskService);
+      this._zbService, this._taskService, this._scheduleLoader);
 
   int get halfTerm => _halfTerm;
 
@@ -64,32 +65,16 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
   Future<void> reload(int halfTerm) async {
     var grid = _classInfo.taskGrid;
 
-    if (grid.courses.isEmpty) {
-      grid.courses.addAll(await _courseService.getCourses());
-    }
-
     if (grid.taskData.isEmpty) {
       var taskData =
           await _taskService.getTaskDataStats(_classInfo.id, createTaskData);
       grid.setTaskData(taskData);
     }
 
-    bool authenticated = false;
-    var lessons = grid.getLessons(halfTerm);
-    if (lessons == null) {
-      authenticated = await _zbService.ensureAuthenticated();
-      if (authenticated) {
-        var lessons = await _zbService.getLessons(
-            grid.pre_classID, grid.courseID, halfTerm);
-        grid.setLessons(halfTerm, lessons);
-        var limited = await _zbService.getLessons(
-            grid.pre_classID, ReportGrid.limitedCoruseId, halfTerm);
-        grid.setLessons(halfTerm, limited, limited: true);
-      }
-    }
-
-    if (authenticated) {
+    if (await _zbService.ensureAuthenticated()) {
       await loadTaskDataForTerm(grid, halfTerm);
+      await _scheduleLoader.load(grid, halfTerm,
+          loadLimitRecords: loadLimitRecords);
     }
 
     // Initialize the grid object and _halfTerm after everything is loaded.
