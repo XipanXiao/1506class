@@ -163,15 +163,14 @@ class TaskRecordService {
   Future<Map<int, ScheduleRecords>> getScheduleRecords(int classId) async {
     var url = '$_serviceUrl?rid=schedule_records&classId=$classId';
 
-    List response = await utils.httpGetObject(url);
-    var records =
-        response.map<ScheduleRecord>((map) => ScheduleRecord.fromJson(map));
+    Map response = await utils.httpGetObject(url);
+    var users = response['users'].map<int, ScheduleRecords>(
+        (id, user) => MapEntry(int.parse(id), ScheduleRecords.fromJson(user)));
 
-    var map = <int, ScheduleRecords>{};
-    for (var record in records) {
-      var user = map.putIfAbsent(record.student_id, () => ScheduleRecords());
-      user.addRecord(record);
+    for (var data in response['records']) {
+      var record = ScheduleRecord.fromJson(data);
+      users[record.student_id].addRecord(record);
     }
-    return map;
+    return users;
   }
 }

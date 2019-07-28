@@ -4,7 +4,7 @@ import 'package:v2/model/schedule_record.dart';
 import 'base_entity.dart';
 
 /// Base structure to encode/decode zhibei.info task data.
-class TaskData extends BaseEntity {
+class TaskData implements BaseEntity {
   final int operation;
   final int user_style;
 

@@ -1,5 +1,4 @@
 import 'package:v2/model/class_task_data.dart';
-import 'package:v2/model/task_data_pair.dart';
 import 'package:v2/model/zb_task_data.dart';
 
 /// Jiaxing data retrieved from zhibei.info.

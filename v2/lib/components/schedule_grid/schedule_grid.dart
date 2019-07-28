@@ -60,8 +60,7 @@ class ScheduleGridComponent extends HasSelectable<TaskDataPair<TaskData>> {
     users
       ..clear()
       ..addAll(_grid.taskData[_halfTerm].values.map((pair) =>
-          TaskDataPair.from(pair)
-            ..auditScheduleRecords(lessons, limited: limited)));
+          pair.clone()..auditScheduleRecords(lessons, limited: limited)));
     users.where((user) => user.failed).forEach(selection.select);
   }
 

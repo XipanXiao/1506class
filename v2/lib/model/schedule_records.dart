@@ -1,9 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:v2/model/auditable.dart';
 import 'package:v2/model/schedule_record.dart';
+import 'package:v2/model/zb_task_data.dart';
 
 /// All schedule records of all terms for a single user.
-class ScheduleRecords extends Auditable {
+class ScheduleRecords extends TaskData with Auditable {
   /// Map from zhibei Lesson ID to [ScheduleRecord]s.
   final _bicwData = <int, ScheduleRecord>{};
   final _zhibeiData = <int, ScheduleRecord>{};
@@ -13,10 +14,14 @@ class ScheduleRecords extends Auditable {
 
   Iterable<int> _lessonIds;
 
+  ScheduleRecords.fromJson(Map<String, dynamic> map) : super.fromJson(map);
+
   void addRecord(ScheduleRecord record, {bool zhibei = false}) {
     var map = zhibei ? _zhibeiData : _rawBicwData;
     map[record.course_id] = record;
   }
+
+  Map<int, ScheduleRecord> get bicwData => _bicwData;
 
   void convertCourseIds(Map<int, int> courseIdMap) {
     for (var courseId in courseIdMap.keys) {

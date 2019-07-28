@@ -17,14 +17,12 @@ enum AuditState {
   REMOTE_ONLY,
 }
 
-abstract class Auditable extends Reportable {
+class Auditable implements Reportable {
   /// Whether [bicwData] is consistent with [zhibeiData], or
   /// null if a check is not done yet.
   AuditState audited;
 
-  Auditable();
-
-  Auditable.from(Auditable that) : audited = that.audited;
+  Auditable clone() => Auditable()..audited = audited;
 
   @override
   bool get reportable =>
@@ -36,5 +34,5 @@ abstract class Auditable extends Reportable {
   bool get failed =>
       audited == AuditState.FAIL || audited == AuditState.LOCAL_ONLY;
 
-  void audit();
+  void audit() {}
 }

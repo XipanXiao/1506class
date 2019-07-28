@@ -9,12 +9,11 @@ class TaskDataPair<T extends TaskData> extends Auditable {
   T bicwData;
   T zhibeiData;
 
-  TaskDataPair();
-
-  TaskDataPair.from(TaskDataPair that)
-      : bicwData = that.bicwData,
-        zhibeiData = that.zhibeiData,
-        super.from(that);
+  @override
+  TaskDataPair clone() => TaskDataPair()
+    ..bicwData = bicwData
+    ..zhibeiData = zhibeiData
+    ..audited = audited;
 
   String get name => bicwData?.name ?? zhibeiData?.name;
 

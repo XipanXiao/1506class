@@ -58,11 +58,21 @@ function get_task_data_stats($classId) {
 function get_schedule_records($classId) {
   global $medoo;
 
-  $users = $medoo->select("users", "id",
-    ["classId" => $classId]);
-  $student_ids = array_values($users);
+  $users = keyed_by_id($medoo->select("users", ["id", "name", "zb_id"],
+      ["classId" => $classId]));
+  $student_ids = array_keys($users);
 
-  return $medoo->select("schedule_records", "*", ["student_id" => $student_ids]);
+  $records = $medoo->select("schedule_records", "*", ["student_id" => $student_ids]);
+  return [
+    "users" => array_map(function($user) {
+      return [
+        "id" => intval($user["id"]),
+        "name" => $user["name"], 
+        "zb_id" => intval($user["zb_id"])
+      ];
+    }, $users),
+    "records" => $records
+  ];
 }
 
 if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset($_GET["rid"])) {
