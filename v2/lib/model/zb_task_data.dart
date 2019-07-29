@@ -35,6 +35,15 @@ class TaskData implements BaseEntity {
         operation = int.tryParse(map['operation'] ?? ''),
         user_style = int.tryParse(map['user_style'] ?? '');
 
+  TaskData clone() {
+    return TaskData.fromJson({
+      'id': id,
+      'userID': userID,
+      'name': name,
+      'att': att
+    });
+  }
+
   @override
   int get hashCode => id.hashCode;
 

@@ -137,10 +137,11 @@ abstract class ReportGrid<T extends TaskData> {
   /// the map is keyed by zhibei lesson id.
   void setZBScheduleRecords(int halfTerm, Map<int, TaskData> data,
       {bool limit = false}) {
-    var users = taskData[halfTerm].users;
     for (var userID in data.keys) {
-      var user = users[userIdMap[userID]];
+      var id = userIdMap[userID];
+      var user = scheduleRecords[id];
       if (user == null) continue;
+      user.zhibeiData ??= user.bicwData.clone();
       var zbUserData = data[userID];
       if (limit) {
         user.zhibeiData.att = zbUserData.att;
