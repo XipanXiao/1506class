@@ -128,12 +128,17 @@ class ZBService {
   ///     175: {video: 1, text: 0},
   ///     ...
   /// }
-  ScheduleTaskData _parseScheduleRecord(Map<String, dynamic> record) {
+  ScheduleTaskData _parseScheduleRecord(
+      int halfTerm, Map<String, dynamic> record) {
     var rawData = <int, Map<String, String>>{};
 
     void convertKey(String key, String prefix, String newKey) {
       int lesson_id = int.parse(key.substring(prefix.length));
-      var schedule = rawData.putIfAbsent(lesson_id, () => <String, String>{});
+      var schedule = rawData.putIfAbsent(
+          lesson_id,
+          () => <String, String>{
+                'half_term': '$halfTerm',
+              });
       schedule[newKey] = record[key];
     }
 
@@ -166,7 +171,7 @@ class ZBService {
     List list = map['data'] ?? [];
     return Map.fromIterable(list,
         key: (json) => int.parse(json['userID']),
-        value: (json) => _parseScheduleRecord(json));
+        value: (json) => _parseScheduleRecord(halfTerm, json));
   }
 
   Future<bool> reportTask(

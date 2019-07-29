@@ -117,23 +117,23 @@ abstract class ReportGrid<T extends TaskData> {
 
   /// Check whether schedule task data of [half_term] are fully loaded.
   bool isScheduleLoaded(int half_term) {
-    var halfTermData = taskData[half_term];
-    if (halfTermData == null) return false;
-    bool isNotEmpty(TaskDataPair user) =>
-        user.zhibeiData?.scheduleRecords?.isNotEmpty == true;
-    return halfTermData.values.any(isNotEmpty);
+    bool matchesTerm(ScheduleRecord record) => record.half_term == half_term;
+    Iterable<ScheduleRecord> getZBRecords(ScheduleTaskDataPair user) =>
+        (user.zhibeiData?.scheduleRecords ?? {}).values;
+    return scheduleRecords.values
+        .expand<ScheduleRecord>(getZBRecords)
+        .any((matchesTerm));
   }
 
   /// Clears zhibei.info schedule data cache for [halfTerm].
   void clearScheduleCache(int halfTerm) {
-    var halfTermData = taskData[halfTerm];
-    if (halfTermData == null) return;
-    for (var user in halfTermData.values) {
-      user.zhibeiData?.scheduleRecords?.clear();
+    for (var user in scheduleRecords.values) {
+      user.zhibeiData.scheduleRecords
+          .removeWhere((_, record) => record.half_term == halfTerm);
     }
   }
 
-  /// Stores the [scheduleRecords] from zhibei.info here.
+  /// Stores the [ScheduleTaskData] from zhibei.info here.
   ///
   /// The records are keyed by zhibei user ID. For each user,
   /// the map is keyed by zhibei lesson id.
