@@ -1,4 +1,5 @@
 import 'package:v2/model/report_grid.dart';
+import 'package:v2/model/task_data_pair.dart';
 import 'package:v2/services/course_service.dart';
 import 'package:v2/services/task_record_service.dart';
 import 'package:v2/services/zb_service.dart';
@@ -21,7 +22,8 @@ class ScheduleRecordsLoader {
     // Load all bicw schedule records for this class.
     if (grid.scheduleRecords.isEmpty) {
       var records = await _taskService.getScheduleRecords(grid.classId);
-      grid.scheduleRecords.addAll(records);
+      grid.scheduleRecords.addAll(records
+          .map((id, user) => MapEntry(id, TaskDataPair()..bicwData = user)));
     }
 
     // Load zhibei [Lesson]s. This will re-map the bicw schedule records,

@@ -17,14 +17,6 @@ class TaskDataPair<T extends TaskData> extends Auditable {
 
   String get name => bicwData?.name ?? zhibeiData?.name;
 
-  /// Whether there is a need to report this user's task data to
-  /// zhibei.info.
-  @override
-  bool get reportable =>
-      audited == AuditState.FAIL ||
-      audited == AuditState.LOCAL_ONLY ||
-      audited == AuditState.PARTIAL_PASS;
-
   /// Compares bicw and zhibei.info data.
   @override
   void audit() {
@@ -110,6 +102,10 @@ class TaskDataPair<T extends TaskData> extends Auditable {
   ScheduleRecord getRecord(int lesson_id, {bool zhibei = false}) {
     var records = (zhibei ? zhibeiData : bicwData)?.scheduleRecords;
     return records == null ? null : records[lesson_id];
+  }
+
+  void convertCourseIds(Map<int, int> courseIdMap) {
+    bicwData.buildScheduleRecords(courseIdMap);
   }
 
   void moveToFirstReportTerm(Map<int, Map<int, TaskDataPair<T>>> taskData) {}
