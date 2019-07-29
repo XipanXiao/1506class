@@ -1,6 +1,8 @@
 import 'package:v2/model/class_task_data.dart';
 import 'package:v2/model/course.dart';
 import 'package:v2/model/schedule_record.dart';
+import 'package:v2/model/schedule_task_data.dart';
+import 'package:v2/model/schedule_task_data_pair.dart';
 import 'package:v2/model/task_data_pair.dart';
 import 'package:v2/model/zb_task_data.dart';
 
@@ -45,7 +47,7 @@ abstract class ReportGrid<T extends TaskData> {
   final courses = <int, Course>{};
 
   /// schedule records (both bicw and zhibei), keyed by bicw user id.
-  final scheduleRecords = <int, TaskDataPair<TaskData>>{};
+  final scheduleRecords = <int, ScheduleTaskDataPair>{};
 
   /// bicw class id.
   final int classId;
@@ -135,7 +137,7 @@ abstract class ReportGrid<T extends TaskData> {
   ///
   /// The records are keyed by zhibei user ID. For each user,
   /// the map is keyed by zhibei lesson id.
-  void setZBScheduleRecords(int halfTerm, Map<int, TaskData> data,
+  void setZBScheduleRecords(int halfTerm, Map<int, ScheduleTaskData> data,
       {bool limit = false}) {
     for (var userID in data.keys) {
       var id = userIdMap[userID];

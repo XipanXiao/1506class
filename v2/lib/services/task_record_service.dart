@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:angular/angular.dart';
 import 'package:v2/model/schedule.dart';
 import 'package:v2/model/schedule_record.dart';
+import 'package:v2/model/schedule_task_data.dart';
 import 'package:v2/model/task.dart';
 import 'package:v2/model/task_record.dart';
 import 'package:v2/model/user.dart';
@@ -159,12 +160,13 @@ class TaskRecordService {
   /// Returns the schedule records for the class identified by [classId].
   ///
   /// The returned map is keyed by bicw user IDs.
-  Future<Map<int, TaskData>> getScheduleRecords(int classId) async {
+  Future<Map<int, ScheduleTaskData>> getScheduleRecords(int classId) async {
     var url = '$_serviceUrl?rid=schedule_records&classId=$classId';
 
     Map response = await utils.httpGetObject(url);
-    var users = response['users'].map<int, TaskData>(
-        (id, user) => MapEntry(int.parse(id), TaskData.fromJson(user)));
+    Map<int, ScheduleTaskData> users = response['users']
+        .map<int, ScheduleTaskData>((id, user) =>
+            MapEntry(int.parse(id), ScheduleTaskData.fromJson(user)));
 
     for (var data in response['records']) {
       var record = ScheduleRecord.fromJson(data);

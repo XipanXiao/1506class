@@ -1,6 +1,7 @@
 import 'package:angular/angular.dart';
 import 'package:v2/model/lesson.dart';
 import 'package:v2/model/schedule_record.dart';
+import 'package:v2/model/schedule_task_data.dart';
 import 'package:v2/model/zb_task_data.dart';
 import 'package:v2/services/dialog_service.dart';
 import 'package:v2/services/progress_service.dart';
@@ -9,7 +10,6 @@ import 'package:v2/utils.dart' as utils;
 @Injectable()
 class ZBService {
   static const _proxyUrl = 'php/proxy.php';
-  static const _redirectUrl = 'php/redirect.php';
   static const _serviceUrl = 'zbServiceUrl';
   static const _file = '/pre/report_ajax';
 
@@ -128,7 +128,7 @@ class ZBService {
   ///     175: {video: 1, text: 0},
   ///     ...
   /// }
-  TaskData _parseScheduleRecord(Map<String, dynamic> record) {
+  ScheduleTaskData _parseScheduleRecord(Map<String, dynamic> record) {
     var rawData = <int, Map<String, String>>{};
 
     void convertKey(String key, String prefix, String newKey) {
@@ -146,7 +146,7 @@ class ZBService {
     }
     var scheduleRecords = rawData
         .map((key, value) => MapEntry(key, ScheduleRecord.fromJson(value)));
-    var data = TaskData.fromJson(record);
+    var data = ScheduleTaskData.fromJson(record);
     data.scheduleRecords.addAll(scheduleRecords);
     return data;
   }
@@ -156,7 +156,8 @@ class ZBService {
   /// [halfTerm].
   ///
   /// Returns the map (keyed by userID) of maps (keyed by lesson id).
-  Future<Map<int, TaskData>> getScheduleRecords(int pre_classID, int halfTerm,
+  Future<Map<int, ScheduleTaskData>> getScheduleRecords(
+      int pre_classID, int halfTerm,
       {String grid = 'main_course_grid'}) async {
     var taskDataQuery =
         'type=$grid&pre_classID=$pre_classID&half_term=$halfTerm';
