@@ -70,7 +70,7 @@ class TaskRecordService {
   /// [{course_id_1, attended_1}, {course_id_2, attened}_2] will become
   /// [{course_id1, attended_1 || attended_2 }] if course 1 and course 2
   /// are in the same schedule.
-  Iterable<ScheduleRecord> _mergeUserAttendanceRecords<T extends TaskData>(
+  Iterable<ScheduleRecord> _mergeUserAttendanceRecords(
       Iterable<ScheduleRecord> scheduleRecords, Map<int, int> schedulesMap) {
     // Map from user id, schedule id pair to schedule record.
     var recordsMap = <int, Map<int, ScheduleRecord>>{};
@@ -171,6 +171,37 @@ class TaskRecordService {
     for (var data in response['records']) {
       var record = ScheduleRecord.fromJson(data);
       users[record.student_id].addBicwScheduleRecord(record);
+    }
+    return users;
+  }
+
+  Future<List<Schedule>> getSchedules(int classId) async {
+    var url = '$_serviceUrl?rid=schedules&classId=$classId';
+
+    List response = await utils.httpGetObject(url);
+    return response.map<Schedule>((json) => Schedule.fromJson(json));
+  }
+
+  /// Given all [schedules] and all [scheduleRecords] of a certain
+  /// class, collects attendance information of a certain [halfTerm].
+  Map<int, TaskData> statAttendance(List<Schedule> schedules,
+      Map<int, ScheduleTaskData> scheduleRecords, int halfTerm) {
+    var schedulesMap = _buildCourseScheduleMap(schedules);
+    var records =
+        scheduleRecords.values.expand((user) => user.scheduleRecords.values);
+    records = _mergeUserAttendanceRecords(records, schedulesMap);
+
+    var users = <int, TaskData>{};
+    for (var schedule in records) {
+      var user = users.putIfAbsent(schedule.student_id, () {
+        var data = scheduleRecords[schedule.student_id];
+        return TaskData.fromJson({
+          'id': data.id,
+          'userID': data.userID,
+          'name': data.name,
+        });
+      });
+      user?.att += (schedule.attended ? 1 : 0);
     }
     return users;
   }

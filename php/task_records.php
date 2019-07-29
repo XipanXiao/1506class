@@ -75,6 +75,13 @@ function get_schedule_records($classId) {
   ];
 }
 
+function get_schedules($classId) {
+  global $medoo;
+
+  $groupIds = $medoo->select("schedule_groups", "id", ["classId" => $classId]);
+  return $medoo->select("schedules", "*", ["group_id" => $groupIds]);
+}
+
 if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset($_GET["rid"])) {
   $classId = $_GET["classId"];
   $recourse_id = $_GET["rid"];
@@ -93,6 +100,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset($_GET["rid"])) {
     $response = canRead($user, $classInfo)
       ? get_schedule_records($classId)
       : permission_denied_error();
+  } elseif ($recourse_id == "schedules") {
+    $response = get_schedules($classId);
   }
 }
 
