@@ -1,5 +1,6 @@
 import 'package:v2/model/report_grid.dart';
 import 'package:v2/model/schedule_task_data_pair.dart';
+import 'package:v2/model/zb_task_data.dart';
 import 'package:v2/services/course_service.dart';
 import 'package:v2/services/task_record_service.dart';
 import 'package:v2/services/zb_service.dart';
@@ -53,6 +54,24 @@ class ScheduleRecordsLoader {
             grid: grid.gridTypes.attLimitGrid);
         grid.setZBScheduleRecords(halfTerm, scheduleRecords, limit: true);
       }
+    }
+  }
+
+  /// Loads attendence records for [halfTerm] for the given list
+  /// of [users].
+  Future<void> loadAttendences(
+      ReportGrid grid, int halfTerm, Iterable<TaskData> users) async {
+    if (grid.schedules.isEmpty) {
+      var schedules = await _taskService.getSchedules(grid.classId);
+      grid.schedules.addAll(schedules);
+    }
+    var bicwScheduleRecords =
+        grid.scheduleRecords.map((id, pair) => MapEntry(id, pair.bicwData));
+    var attendances = _taskService.statAttendance(
+        grid.schedules, bicwScheduleRecords, grid.getLessons(halfTerm));
+
+    for (var user in users) {
+      user.att = attendances[user.id]?.att;
     }
   }
 }

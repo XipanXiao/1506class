@@ -4,11 +4,11 @@ import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:v2/components/abstract_task_report/has_selectable.dart';
+import 'package:v2/components/abstract_task_report/schedule_records_loader.dart';
 import 'package:v2/model/auditable.dart';
 import 'package:v2/model/lesson.dart';
 import 'package:v2/model/report_grid.dart';
 import 'package:v2/model/schedule_task_data_pair.dart';
-import 'package:v2/services/task_record_service.dart';
 import 'package:v2/services/zb_service.dart';
 
 @Component(
@@ -25,7 +25,7 @@ import 'package:v2/services/zb_service.dart';
 )
 class ScheduleGridComponent extends HasSelectable<ScheduleTaskDataPair> {
   final ZBService _zbService;
-  final TaskRecordService _taskRecordService;
+  final ScheduleRecordsLoader _loader;
 
   @override
   final users = <ScheduleTaskDataPair>[];
@@ -50,7 +50,7 @@ class ScheduleGridComponent extends HasSelectable<ScheduleTaskDataPair> {
   int _halfTerm;
   ReportGrid _grid;
 
-  ScheduleGridComponent(this._zbService, this._taskRecordService);
+  ScheduleGridComponent(this._zbService, this._loader);
 
   ReportGrid get grid => _grid;
   List<Lesson> get lessons => _grid?.getLessons(_halfTerm, limited: limited);
@@ -99,18 +99,8 @@ class ScheduleGridComponent extends HasSelectable<ScheduleTaskDataPair> {
     _reload();
   }
 
-  Future<void> _loadAttendences(int halfTerm) async {
-    if (grid.schedules.isEmpty) {
-      var schedules = await _taskRecordService.getSchedules(grid.classId);
-      grid.schedules.addAll(schedules);
-    }
-    var bicwScheduleRecords =
-        grid.scheduleRecords.map((id, pair) => MapEntry(id, pair.bicwData));
-    var attendances = _taskRecordService.statAttendance(
-        grid.schedules, bicwScheduleRecords, grid.getLessons(halfTerm));
-
-    for (var user in users) {
-      user.bicwData.att = attendances[user.bicwData.id]?.att;
-    }
+  Future<void> _loadAttendences(int halfTerm) {
+    var bicwUsers = users.map((user) => user.bicwData);
+    return _loader.loadAttendences(grid, halfTerm, bicwUsers);
   }
 }
