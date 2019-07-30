@@ -24,6 +24,7 @@ class ScheduleTaskDataPair extends TaskDataPair<ScheduleTaskData> {
     ..zhibeiData = zhibeiData
     ..audited = audited;
 
+  /// TODO (xxp): the limited grid also needs to check schedule records.
   void _auditScheduleRecords(List<Lesson> lessons, {bool limited = false}) {
     if (limited) {
       return _auditAttLimit();
