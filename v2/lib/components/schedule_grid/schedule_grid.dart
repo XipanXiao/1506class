@@ -9,6 +9,7 @@ import 'package:v2/model/lesson.dart';
 import 'package:v2/model/report_grid.dart';
 import 'package:v2/model/task_data_pair.dart';
 import 'package:v2/model/zb_task_data.dart';
+import 'package:v2/services/task_record_service.dart';
 import 'package:v2/services/zb_service.dart';
 
 @Component(
@@ -25,6 +26,7 @@ import 'package:v2/services/zb_service.dart';
 )
 class ScheduleGridComponent extends HasSelectable<TaskDataPair<TaskData>> {
   final ZBService _zbService;
+  final TaskRecordService _taskRecordService;
 
   @override
   final users = <TaskDataPair<TaskData>>[];
@@ -49,7 +51,7 @@ class ScheduleGridComponent extends HasSelectable<TaskDataPair<TaskData>> {
   int _halfTerm;
   ReportGrid _grid;
 
-  ScheduleGridComponent(this._zbService);
+  ScheduleGridComponent(this._zbService, this._taskRecordService);
 
   ReportGrid get grid => _grid;
   List<Lesson> get lessons => _grid?.getLessons(_halfTerm, limited: limited);
@@ -62,6 +64,8 @@ class ScheduleGridComponent extends HasSelectable<TaskDataPair<TaskData>> {
       ..addAll(_grid.scheduleRecords.values.map((pair) =>
           pair.clone()..auditScheduleRecords(lessons, limited: limited)));
     users.where((user) => user.failed).forEach(selection.select);
+
+    await _loadAttendences(_halfTerm);
   }
 
   /// Reports task data from bicw to zhibei.info, for all
@@ -88,5 +92,20 @@ class ScheduleGridComponent extends HasSelectable<TaskDataPair<TaskData>> {
 
     grid.clearScheduleCache(_halfTerm);
     _reload();
+  }
+
+  Future<void> _loadAttendences(int halfTerm) async {
+    if (grid.schedules.isEmpty) {
+      var schedules = await _taskRecordService.getSchedules(grid.classId);
+      grid.schedules.addAll(schedules);
+    }
+    var bicwScheduleRecords =
+        grid.scheduleRecords.map((id, pair) => MapEntry(id, pair.bicwData));
+    var attendances = _taskRecordService.statAttendance(
+        grid.schedules, bicwScheduleRecords, grid.getLessons(halfTerm));
+
+    for (var user in users) {
+      user.bicwData.att = attendances[user.bicwData.id]?.att;
+    }
   }
 }

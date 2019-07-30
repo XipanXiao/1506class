@@ -47,7 +47,7 @@ class RxlTaskReportComponent extends AbstractTaskReportComponent<RxlTaskData> {
 
   Future<void> _loadAttendences(int halfTerm) async {
     if (grid.schedules.isEmpty) {
-      var schedules = await _taskService.getSchedules(classInfo.id);
+      var schedules = await _taskService.getSchedules(grid.classId);
       grid.schedules.addAll(schedules);
     }
     var bicwScheduleRecords =

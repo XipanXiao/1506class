@@ -49,7 +49,6 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
       this._zbService, this._taskService, this._scheduleLoader);
 
   int get halfTerm => _halfTerm;
-  ClassInfo get classInfo => _classInfo;
 
   /// Whether the [column] is displayed in the task grid.
   ///
