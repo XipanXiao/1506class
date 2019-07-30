@@ -24,9 +24,11 @@ import 'package:v2/services/zb_service.dart';
   exports: [AuditState],
 )
 class RxlTaskReportComponent extends AbstractTaskReportComponent<RxlTaskData> {
-  RxlTaskReportComponent(ZBService zbService, TaskRecordService taskService,
-      ScheduleRecordsLoader loader)
-      : super(zbService, taskService, loader);
+  final TaskRecordService _taskService;
+
+  RxlTaskReportComponent(
+      ZBService zbService, this._taskService, ScheduleRecordsLoader loader)
+      : super(zbService, _taskService, loader);
 
   @override
   RxlTaskData createTaskData(Map<String, dynamic> map) =>
@@ -40,5 +42,21 @@ class RxlTaskReportComponent extends AbstractTaskReportComponent<RxlTaskData> {
   Future<void> reload(int halfTerm) async {
     await super.reload(halfTerm);
     grid.computeTotals();
+    await _loadAttendences(halfTerm);
+  }
+
+  Future<void> _loadAttendences(int halfTerm) async {
+    if (grid.schedules.isEmpty) {
+      var schedules = await _taskService.getSchedules(classInfo.id);
+      grid.schedules.addAll(schedules);
+    }
+    var bicwScheduleRecords =
+        grid.scheduleRecords.map((id, pair) => MapEntry(id, pair.bicwData));
+    var attendances = _taskService.statAttendance(
+        grid.schedules, bicwScheduleRecords, grid.getLessons(halfTerm));
+    var halfTermData = grid.taskData[halfTerm];
+    for (var user in halfTermData.values) {
+      user.bicwData.att = attendances[user.bicwData.id]?.att;
+    }
   }
 }

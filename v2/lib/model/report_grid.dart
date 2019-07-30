@@ -1,5 +1,6 @@
 import 'package:v2/model/class_task_data.dart';
 import 'package:v2/model/course.dart';
+import 'package:v2/model/schedule.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/schedule_task_data.dart';
 import 'package:v2/model/schedule_task_data_pair.dart';
@@ -48,6 +49,9 @@ abstract class ReportGrid<T extends TaskData> {
 
   /// schedule records (both bicw and zhibei), keyed by bicw user id.
   final scheduleRecords = <int, ScheduleTaskDataPair>{};
+
+  /// all bicw schedules of the this class.
+  final schedules = <Schedule>[];
 
   /// bicw class id.
   final int classId;

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:angular/angular.dart';
+import 'package:v2/model/lesson.dart';
 import 'package:v2/model/schedule.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/schedule_task_data.dart';
@@ -175,7 +176,7 @@ class TaskRecordService {
     return users;
   }
 
-  Future<List<Schedule>> getSchedules(int classId) async {
+  Future<Iterable<Schedule>> getSchedules(int classId) async {
     var url = '$_serviceUrl?rid=schedules&classId=$classId';
 
     List response = await utils.httpGetObject(url);
@@ -185,24 +186,24 @@ class TaskRecordService {
   /// Given all [schedules] and all [scheduleRecords] of a certain
   /// class, collects attendance information of a certain [halfTerm].
   Map<int, TaskData> statAttendance(List<Schedule> schedules,
-      Map<int, ScheduleTaskData> scheduleRecords, int halfTerm) {
+      Map<int, ScheduleTaskData> scheduleRecords, List<Lesson> lessons) {
     var schedulesMap = _buildCourseScheduleMap(schedules);
-    var records =
-        scheduleRecords.values.expand((user) => user.scheduleRecords.values);
-    records = _mergeUserAttendanceRecords(records, schedulesMap);
 
-    var users = <int, TaskData>{};
-    for (var schedule in records) {
-      var user = users.putIfAbsent(schedule.student_id, () {
-        var data = scheduleRecords[schedule.student_id];
-        return TaskData.fromJson({
-          'id': data.id,
-          'userID': data.userID,
-          'name': data.name,
-        });
-      });
-      user?.att += (schedule.attended ? 1 : 0);
-    }
-    return users;
+    return scheduleRecords.map((id, user) {
+      var records = lessons
+          .map((lesson) => user.scheduleRecords[lesson.lesson_id])
+          .where((record) => record != null);
+      records = _mergeUserAttendanceRecords(records, schedulesMap);
+      int att =
+          records.fold(0, (att, record) => att += record.attended ? 1 : 0);
+      return MapEntry(
+          id,
+          TaskData.fromJson({
+            'id': user.id,
+            'userID': user.userID,
+            'name': user.name,
+            'att': att,
+          }));
+    });
   }
 }
