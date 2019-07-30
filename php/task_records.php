@@ -37,19 +37,11 @@ function get_task_data_stats($classId) {
       join(",", $student_ids));
   $records = $medoo->query($sql)->fetchAll();
 
-  $groupIds = $medoo->select("schedule_groups", "id", ["classId" => $classId]);
-  $schedules = $medoo->select("schedules", "*", ["group_id" => $groupIds]);
-
-  $schedules_records = $medoo->select("schedule_records", "*",
-      ["student_id" => $student_ids]);
-
   $tasks = keyed_by_id($medoo->select("tasks", ["id", "zb_name"]));
   // Returns the raw data and let the client to handle,
   // since dart is preferrable.
   return [
     "records" => $records,
-    "schedules" => $schedules,
-    "schedules_records" => $schedules_records,
     "tasks" => $tasks,
     "users" => $users,
   ];

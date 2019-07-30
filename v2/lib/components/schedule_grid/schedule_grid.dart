@@ -7,8 +7,7 @@ import 'package:v2/components/abstract_task_report/has_selectable.dart';
 import 'package:v2/model/auditable.dart';
 import 'package:v2/model/lesson.dart';
 import 'package:v2/model/report_grid.dart';
-import 'package:v2/model/task_data_pair.dart';
-import 'package:v2/model/zb_task_data.dart';
+import 'package:v2/model/schedule_task_data_pair.dart';
 import 'package:v2/services/task_record_service.dart';
 import 'package:v2/services/zb_service.dart';
 
@@ -24,12 +23,12 @@ import 'package:v2/services/zb_service.dart';
   styleUrls: ['schedule_grid.css'],
   exports: [AuditState],
 )
-class ScheduleGridComponent extends HasSelectable<TaskDataPair<TaskData>> {
+class ScheduleGridComponent extends HasSelectable<ScheduleTaskDataPair> {
   final ZBService _zbService;
   final TaskRecordService _taskRecordService;
 
   @override
-  final users = <TaskDataPair<TaskData>>[];
+  final users = <ScheduleTaskDataPair>[];
 
   @Input()
   bool limited = false;
@@ -59,18 +58,24 @@ class ScheduleGridComponent extends HasSelectable<TaskDataPair<TaskData>> {
   void _reload() async {
     if (_grid == null || _halfTerm == null) return;
 
-    users
-      ..clear()
-      ..addAll(_grid.scheduleRecords.values.map((pair) =>
-          pair.clone()..auditScheduleRecords(lessons, limited: limited)));
-    users.where((user) => user.failed).forEach(selection.select);
+    users.clear();
+    for (var pair in _grid.scheduleRecords.values) {
+      pair = (pair.clone() as ScheduleTaskDataPair)
+        ..lessons = lessons
+        ..limited = limited
+        ..audit();
+      users.add(pair);
+      if (pair.failed) {
+        selection.select(pair);
+      }
+    }
 
     await _loadAttendences(_halfTerm);
   }
 
   /// Reports task data from bicw to zhibei.info, for all
   /// selected users.
-  void report({TaskDataPair<TaskData> user}) async {
+  void report({ScheduleTaskDataPair user}) async {
     var users = user == null ? selection.selectedValues : [user];
     if (users.isEmpty) return;
 

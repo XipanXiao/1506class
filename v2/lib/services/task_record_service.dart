@@ -90,43 +90,6 @@ class TaskRecordService {
     return recordsMap.values.expand((map) => map.values);
   }
 
-  void _parseAttendance<T extends TaskData>(
-      Iterable<ScheduleRecord> schedulesRecords,
-      Map<int, Map<int, T>> stats,
-      Map<int, int> schedulesMap) {
-    schedulesRecords =
-        _mergeUserAttendanceRecords(schedulesRecords, schedulesMap);
-
-    for (var schedule in schedulesRecords) {
-      var halfTerm = stats[schedule.half_term];
-      if (halfTerm == null) continue;
-
-      var user = halfTerm[schedule.student_id];
-      user?.att += (schedule.attended ? 1 : 0);
-    }
-  }
-
-  void _setScheduleRecords<T extends TaskData>(
-      Iterable<ScheduleRecord> schedulesRecords,
-      Map<int, Map<int, T>> stats,
-      Map<int, User> users,
-      TaskDataFromJson<T> creator) {
-    for (var schedule in schedulesRecords) {
-      if (schedule.half_term == null) continue;
-      var halfTerm = stats.putIfAbsent(schedule.half_term, () => <int, T>{});
-
-      var user = halfTerm.putIfAbsent(schedule.student_id, () {
-        var userInfo = users[schedule.student_id];
-        return creator({
-          'id': schedule.student_id,
-          'userID': userInfo.zb_id,
-          'name': userInfo.name,
-        });
-      });
-      user.addBicwScheduleRecord(schedule);
-    }
-  }
-
   Future<Map<int, Map<int, T>>> getTaskDataStats<T extends TaskData>(
       int classId, TaskDataFromJson<T> creator) async {
     var url = '$_serviceUrl?rid=task_records&classId=$classId';
@@ -137,18 +100,7 @@ class TaskRecordService {
     var users = map['users'].map<int, User>(
         (id, user) => MapEntry(int.parse(id), User.fromJson(user)));
 
-    var stats = _parseTaskStats(map['records'] as List, users, tasks, creator);
-
-    var schedules =
-        map['schedules'].map<Schedule>((map) => Schedule.fromJson(map));
-    var schedulesMap = _buildCourseScheduleMap(schedules);
-
-    var schedules_records = map['schedules_records']
-        .map<ScheduleRecord>((map) => ScheduleRecord.fromJson(map));
-
-    _setScheduleRecords(schedules_records, stats, users, creator);
-    _parseAttendance(schedules_records, stats, schedulesMap);
-    return stats;
+    return _parseTaskStats(map['records'] as List, users, tasks, creator);
   }
 
   Future<int> getLastHalfTerm(int classId) async {

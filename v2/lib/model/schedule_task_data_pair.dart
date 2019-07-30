@@ -18,6 +18,12 @@ class ScheduleTaskDataPair extends TaskDataPair<ScheduleTaskData> {
     _auditScheduleRecords(lessons, limited: limited);
   }
 
+  @override
+  TaskDataPair clone() => ScheduleTaskDataPair()
+    ..bicwData = bicwData
+    ..zhibeiData = zhibeiData
+    ..audited = audited;
+
   void _auditScheduleRecords(List<Lesson> lessons, {bool limited = false}) {
     if (limited) {
       return _auditAttLimit();
@@ -67,5 +73,15 @@ class ScheduleTaskDataPair extends TaskDataPair<ScheduleTaskData> {
             bicwData.att == zhibeiData.att ? AuditState.PASS : AuditState.FAIL;
       }
     }
+  }
+
+  /// Returns the [ScheduleRecord] for the [Lesson] identified by [lesson_id].
+  ScheduleRecord getRecord(int lesson_id, {bool zhibei = false}) {
+    var records = (zhibei ? zhibeiData : bicwData)?.scheduleRecords;
+    return records == null ? null : records[lesson_id];
+  }
+
+  void convertCourseIds(Map<int, int> courseIdMap) {
+    bicwData.buildScheduleRecords(courseIdMap);
   }
 }

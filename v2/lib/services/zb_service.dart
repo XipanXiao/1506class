@@ -194,18 +194,21 @@ class ZBService {
     }
   }
 
-  List<int> _getBookRecords(List<Lesson> lessons, TaskData user) => lessons
-      .map<int>((lesson) =>
-          user.scheduleRecords[lesson.lesson_id]?.text == true ? 1 : 0)
-      .toList();
+  List<int> _getBookRecords(List<Lesson> lessons, ScheduleTaskData user) =>
+      lessons
+          .map<int>((lesson) =>
+              user.scheduleRecords[lesson.lesson_id]?.text == true ? 1 : 0)
+          .toList();
 
-  List<int> _getAudioRecords(List<Lesson> lessons, TaskData user) => lessons
-      .map<int>((lesson) =>
-          user.scheduleRecords[lesson.lesson_id]?.video == true ? 1 : 0)
-      .toList();
+  List<int> _getAudioRecords(
+          List<Lesson> lessons, ScheduleTaskData user) =>
+      lessons
+          .map<int>((lesson) =>
+              user.scheduleRecords[lesson.lesson_id]?.video == true ? 1 : 0)
+          .toList();
 
   Future<bool> reportScheduleTask(String gridType, int pre_classID,
-      int half_term, TaskData user, List<Lesson> lessons,
+      int half_term, ScheduleTaskData user, List<Lesson> lessons,
       {bool limited = false}) async {
     _progressService.showProgress('Reporting for ${user.name}');
     var data = <String, dynamic>{

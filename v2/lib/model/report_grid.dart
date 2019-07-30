@@ -186,22 +186,7 @@ abstract class ReportGrid<T extends TaskData> {
       }
     }
 
-    _convertScheduleRecordsMap(halfTerm, courseIdMap);
     _convertGlobalScheduleRecordsMap(courseIdMap);
-  }
-
-  /// Converts the scheduleRecords map of the bicwData of [user],
-  /// to a new map from zhibei [Lesson] IDs to [ScheduleRecord]s.
-  ///
-  /// Note the original bicw schedule task map is keyed by courses'
-  /// bicw IDs.
-  void _convertScheduleRecordsMap(int halfTerm, Map<int, int> courseIdMap) {
-    var halfTermUsers = taskData[halfTerm];
-    if (halfTermUsers == null) return;
-
-    for (var user in halfTermUsers.values) {
-      user.bicwData.buildScheduleRecords(courseIdMap);
-    }
   }
 
   void _convertGlobalScheduleRecordsMap(Map<int, int> courseIdMap) {
