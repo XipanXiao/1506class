@@ -152,7 +152,7 @@ class TaskRecordService {
           id,
           TaskData.fromJson({
             'id': user.id,
-            'userID': user.userID,
+            'userID': user.userID?.toString(),
             'name': user.name,
             'att': att,
           }));

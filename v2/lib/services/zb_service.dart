@@ -229,7 +229,7 @@ class ZBService {
 
     try {
       var response = await utils.httpPostFormData(_proxyUrl, entries);
-      return response['returnValue'] == 'success';
+      return response != null && response['returnValue'] == 'success';
     } finally {
       _progressService.done();
     }

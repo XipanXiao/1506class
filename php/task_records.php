@@ -60,7 +60,7 @@ function get_schedule_records($classId) {
       return [
         "id" => intval($user["id"]),
         "name" => $user["name"], 
-        "zb_id" => intval($user["zb_id"])
+        "userID" => $user["zb_id"]
       ];
     }, $users),
     "records" => $records

@@ -57,6 +57,9 @@ class ScheduleGridComponent extends HasSelectable<ScheduleTaskDataPair> {
 
   void _reload() async {
     if (_grid == null || _halfTerm == null) return;
+    if (limited) {
+      await _loadAttendences(_halfTerm);
+    }
 
     users.clear();
     for (var pair in _grid.scheduleRecords.values) {
@@ -69,8 +72,6 @@ class ScheduleGridComponent extends HasSelectable<ScheduleTaskDataPair> {
         selection.select(pair);
       }
     }
-
-    await _loadAttendences(_halfTerm);
   }
 
   /// Reports task data from bicw to zhibei.info, for all
@@ -96,11 +97,12 @@ class ScheduleGridComponent extends HasSelectable<ScheduleTaskDataPair> {
     }
 
     grid.clearScheduleCache(_halfTerm);
+    // TODO (xxp): This '_reload' actually does nothing but auditing.
     _reload();
   }
 
   Future<void> _loadAttendences(int halfTerm) {
-    var bicwUsers = users.map((user) => user.bicwData);
+    var bicwUsers = _grid.scheduleRecords.values.map((user) => user.bicwData);
     return _loader.loadAttendences(grid, halfTerm, bicwUsers);
   }
 }

@@ -15,7 +15,7 @@ class ScheduleTaskData extends TaskData {
   TaskData clone() {
     return ScheduleTaskData.fromJson({
       'id': id,
-      'userID': userID,
+      'userID': '$userID',
       'name': name,
       'att': att
     });

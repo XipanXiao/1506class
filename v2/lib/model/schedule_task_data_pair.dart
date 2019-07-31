@@ -14,22 +14,13 @@ class ScheduleTaskDataPair extends TaskDataPair<ScheduleTaskData> {
   List<Lesson> lessons;
 
   @override
-  void audit() {
-    _auditScheduleRecords(lessons, limited: limited);
-  }
-
-  @override
   TaskDataPair clone() => ScheduleTaskDataPair()
     ..bicwData = bicwData
     ..zhibeiData = zhibeiData
     ..audited = audited;
 
-  /// TODO (xxp): the limited grid also needs to check schedule records.
-  void _auditScheduleRecords(List<Lesson> lessons, {bool limited = false}) {
-    if (limited) {
-      return _auditAttLimit();
-    }
-
+  @override
+  void audit() {
     audited = null;
     if (bicwData == null && zhibeiData == null) return;
 
@@ -42,11 +33,15 @@ class ScheduleTaskDataPair extends TaskDataPair<ScheduleTaskData> {
         lessons.expand((lesson) => _expand(zhibei[lesson.lesson_id])).toList();
 
     bool isTrue(bool value) => value;
-    var hasLocalData = bicwRecords.any(isTrue);
-    var hasRemoteData = zhibeiRecords.any(isTrue);
+    var hasLocalData =
+        bicwRecords.any(isTrue) || limited && (bicwData?.att ?? 0) != 0;
+    var hasRemoteData =
+        zhibeiRecords.any(isTrue) || limited && (zhibeiData?.att ?? 0) != 0;
 
     if (hasLocalData && hasRemoteData) {
-      if (ListEquality<bool>().equals(bicwRecords, zhibeiRecords)) {
+      if (limited && (bicwData?.att ?? 0) != (zhibeiData?.att ?? 0)) {
+        audited = AuditState.FAIL;
+      } else if (ListEquality<bool>().equals(bicwRecords, zhibeiRecords)) {
         audited = AuditState.PASS;
       } else {
         audited = AuditState.FAIL;
@@ -57,22 +52,6 @@ class ScheduleTaskDataPair extends TaskDataPair<ScheduleTaskData> {
       audited = AuditState.REMOTE_ONLY;
     } else {
       audited = AuditState.PASS;
-    }
-  }
-
-  void _auditAttLimit() {
-    if (bicwData == null && zhibeiData == null) return;
-    if (bicwData == null && zhibeiData != null) {
-      audited = AuditState.REMOTE_ONLY;
-    } else if (bicwData != null && zhibeiData == null) {
-      audited = AuditState.LOCAL_ONLY;
-    } else {
-      if (bicwData.att == 0 && zhibeiData.att > 0) {
-        audited = AuditState.REMOTE_ONLY;
-      } else {
-        audited =
-            bicwData.att == zhibeiData.att ? AuditState.PASS : AuditState.FAIL;
-      }
     }
   }
 
