@@ -97,8 +97,8 @@ class ScheduleGridComponent extends HasSelectable<ScheduleTaskDataPair> {
     }
 
     grid.clearScheduleCache(_halfTerm);
-    // TODO (xxp): This '_reload' actually does nothing but auditing.
-    _reload();
+    await _loader.load(grid, _halfTerm, loadLimitRecords: limited);
+    await _reload();
   }
 
   Future<void> _loadAttendences(int halfTerm) {
