@@ -7,9 +7,6 @@ import 'package:v2/model/task_data_pair.dart';
 import 'auditable.dart';
 
 class ScheduleTaskDataPair extends TaskDataPair<ScheduleTaskData> {
-  List<bool> _expand(ScheduleRecord record) =>
-      [record?.text ?? false, record?.video ?? false];
-
   bool limited;
   List<Lesson> lessons;
 
@@ -26,22 +23,25 @@ class ScheduleTaskDataPair extends TaskDataPair<ScheduleTaskData> {
 
     var bicw = bicwData?.scheduleRecords ?? {};
     var zhibei = zhibeiData?.scheduleRecords ?? {};
+    var emptyRecord = ScheduleRecord.fromJson({});
 
     var bicwRecords =
-        lessons.expand((lesson) => _expand(bicw[lesson.lesson_id])).toList();
-    var zhibeiRecords =
-        lessons.expand((lesson) => _expand(zhibei[lesson.lesson_id])).toList();
+        lessons.map((lesson) => bicw[lesson.lesson_id] ?? emptyRecord).toList();
+    var zhibeiRecords = lessons
+        .map((lesson) => zhibei[lesson.lesson_id] ?? emptyRecord)
+        .toList();
 
-    bool isTrue(bool value) => value;
+    bool isNotEmpty(record) => record.isNotEmpty;
     var hasLocalData =
-        bicwRecords.any(isTrue) || limited && (bicwData?.att ?? 0) != 0;
+        limited && (bicwData?.att ?? 0) != 0 || bicwRecords.any(isNotEmpty);
     var hasRemoteData =
-        zhibeiRecords.any(isTrue) || limited && (zhibeiData?.att ?? 0) != 0;
+        limited && (zhibeiData?.att ?? 0) != 0 || zhibeiRecords.any(isNotEmpty);
 
     if (hasLocalData && hasRemoteData) {
       if (limited && (bicwData?.att ?? 0) != (zhibeiData?.att ?? 0)) {
         audited = AuditState.FAIL;
-      } else if (ListEquality<bool>().equals(bicwRecords, zhibeiRecords)) {
+      } else if (ListEquality<ScheduleRecord>()
+          .equals(bicwRecords, zhibeiRecords)) {
         audited = AuditState.PASS;
       } else {
         audited = AuditState.FAIL;
