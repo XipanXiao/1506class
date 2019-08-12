@@ -5,6 +5,7 @@ import 'package:v2/model/schedule_task_data.dart';
 import 'package:v2/model/task_data_pair.dart';
 
 import 'auditable.dart';
+import 'has_schedule_records.dart';
 
 class ScheduleTaskDataPair extends TaskDataPair<ScheduleTaskData> {
   bool limited;
@@ -18,11 +19,29 @@ class ScheduleTaskDataPair extends TaskDataPair<ScheduleTaskData> {
 
   @override
   void audit() {
-    audited = null;
-    if (bicwData == null && zhibeiData == null) return;
+    audited = ScheduleRecordsAuditor.audit(lessons, bicwData, zhibeiData,
+        limited: limited);
+  }
 
-    var bicw = bicwData?.scheduleRecords ?? {};
-    var zhibei = zhibeiData?.scheduleRecords ?? {};
+  /// Returns the [ScheduleRecord] for the [Lesson] identified by [lesson_id].
+  ScheduleRecord getRecord(int lesson_id, {bool zhibei = false}) {
+    var records = (zhibei ? zhibeiData : bicwData)?.scheduleRecords;
+    return records == null ? null : records[lesson_id];
+  }
+
+  void convertCourseIds(Map<int, int> courseIdMap) {
+    bicwData.buildScheduleRecords(courseIdMap);
+  }
+}
+
+class ScheduleRecordsAuditor {
+  static AuditState audit(List<Lesson> lessons, HasScheduleRecords bicwData,
+      HasScheduleRecords zhibeiData,
+      {bool limited}) {
+    if (bicwData == null && zhibeiData == null) return null;
+
+    var bicw = bicwData?.records ?? {};
+    var zhibei = zhibeiData?.records ?? {};
     var emptyRecord = ScheduleRecord.fromJson({});
 
     var bicwRecords =
@@ -39,29 +58,19 @@ class ScheduleTaskDataPair extends TaskDataPair<ScheduleTaskData> {
 
     if (hasLocalData && hasRemoteData) {
       if (limited && (bicwData?.att ?? 0) != (zhibeiData?.att ?? 0)) {
-        audited = AuditState.FAIL;
-      } else if (ListEquality<ScheduleRecord>()
+        return AuditState.FAIL;
+      } else if (ListEquality<AbstractScheduleRecord>()
           .equals(bicwRecords, zhibeiRecords)) {
-        audited = AuditState.PASS;
+        return AuditState.PASS;
       } else {
-        audited = AuditState.FAIL;
+        return AuditState.FAIL;
       }
     } else if (hasLocalData && !hasRemoteData) {
-      audited = AuditState.LOCAL_ONLY;
+      return AuditState.LOCAL_ONLY;
     } else if (!hasLocalData && hasRemoteData) {
-      audited = AuditState.REMOTE_ONLY;
+      return AuditState.REMOTE_ONLY;
     } else {
-      audited = AuditState.PASS;
+      return AuditState.PASS;
     }
-  }
-
-  /// Returns the [ScheduleRecord] for the [Lesson] identified by [lesson_id].
-  ScheduleRecord getRecord(int lesson_id, {bool zhibei = false}) {
-    var records = (zhibei ? zhibeiData : bicwData)?.scheduleRecords;
-    return records == null ? null : records[lesson_id];
-  }
-
-  void convertCourseIds(Map<int, int> courseIdMap) {
-    bicwData.buildScheduleRecords(courseIdMap);
   }
 }

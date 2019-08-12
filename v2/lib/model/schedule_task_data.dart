@@ -1,8 +1,10 @@
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/zb_task_data.dart';
 
+import 'has_schedule_records.dart';
+
 /// Base structure to encode/decode zhibei.info task data.
-class ScheduleTaskData extends TaskData {
+class ScheduleTaskData extends TaskData implements HasScheduleRecords {
   /// Schedule task records, keyed by zhibei [Lesson] IDs.
   final scheduleRecords = <int, ScheduleRecord>{};
 
@@ -38,4 +40,7 @@ class ScheduleTaskData extends TaskData {
       }
     }
   }
+
+  @override
+  Map<int, AbstractScheduleRecord> get records => scheduleRecords;
 }

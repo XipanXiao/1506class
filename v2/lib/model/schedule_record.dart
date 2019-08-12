@@ -1,5 +1,7 @@
+import 'has_schedule_records.dart';
+
 /// Model class for the 'schedule_records' database table.
-class ScheduleRecord {
+class ScheduleRecord implements AbstractScheduleRecord {
   final int student_id;
   final int course_id;
   final int half_term;
