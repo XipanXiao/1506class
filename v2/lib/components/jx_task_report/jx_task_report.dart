@@ -3,6 +3,7 @@ import 'package:angular_components/angular_components.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
 import 'package:v2/components/abstract_task_report/abstract_task_report.dart';
 import 'package:v2/components/abstract_task_report/schedule_records_loader.dart';
+import 'package:v2/components/guanxiu_grid/guanxiu_grid.dart';
 import 'package:v2/components/schedule_grid/schedule_grid.dart';
 import 'package:v2/model/auditable.dart';
 import 'package:v2/model/jx_report_grid.dart';
@@ -15,6 +16,7 @@ import 'package:v2/services/zb_service.dart';
   selector: 'jx-task-report',
   directives: [
     coreDirectives,
+    GuanxiuGridComponent,
     MaterialButtonComponent,
     MaterialCheckboxComponent,
     MaterialIconComponent,

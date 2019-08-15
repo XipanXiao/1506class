@@ -1,4 +1,5 @@
 import 'package:angular/angular.dart';
+import 'package:v2/model/guanxiu_record.dart';
 import 'package:v2/model/lesson.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/schedule_task_data.dart';
@@ -233,5 +234,20 @@ class ZBService {
     } finally {
       _progressService.done();
     }
+  }
+
+  /// Returns the [GuanxiuRecord] of the certain class, keyed by
+  /// zhibei user id.
+  Future<Map<int, GuanxiuRecord>> getGuanxiuRecords(
+      int pre_classID, int halfTerm, Iterable<Lesson> lessons) async {
+    var taskDataQuery =
+        'type=guanxiu_grid&pre_classID=$pre_classID&half_term=$halfTerm';
+    var url = '$_serviceUrl$_file?${taskDataQuery}';
+    var map = await utils.httpGetObject(_getProxiedUrl(url));
+    List list = map['data'] ?? [];
+    var records =
+        list.map<GuanxiuRecord>((map) => GuanxiuRecord.fromJson(map, lessons));
+    return Map<int, GuanxiuRecord>.fromIterable(records,
+        key: (record) => record.userID);
   }
 }

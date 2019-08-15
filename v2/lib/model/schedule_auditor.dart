@@ -8,7 +8,7 @@ class ScheduleRecordsAuditor {
   static AuditState audit(List<Lesson> lessons, HasScheduleRecords bicwData,
       HasScheduleRecords zhibeiData,
       AbstractScheduleRecord emptyRecord,
-      {bool limited}) {
+      {bool limited = false}) {
     if (bicwData == null && zhibeiData == null) return null;
 
     var bicw = bicwData?.records ?? {};

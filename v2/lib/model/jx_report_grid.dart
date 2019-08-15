@@ -1,5 +1,9 @@
+import 'package:v2/model/guanxiu_record.dart';
+import 'package:v2/model/lesson.dart';
 import 'package:v2/model/report_grid.dart';
 import 'package:v2/model/zb_jx_task_data.dart';
+
+import 'guanxiu_data_pair.dart';
 
 class JxTaskGrid extends ReportGrid<JxTaskData> {
   @override
@@ -8,7 +12,15 @@ class JxTaskGrid extends ReportGrid<JxTaskData> {
       workGrid: 'jxWork_grid',
       attLimitGrid: 'att_limit_grid');
 
+  /// Guanxiu [Lesson]s loaded from zhibei.info, keyed by half terms.
+  final guanxiuLessons = <int, List<Lesson>>{};
+
+  /// [GuanxiuRecord] of all users in the class, keyed by half terms.
+  final guanxiuRecords = <int, Map<int, GuanxiuDataPair>>{};
+
   JxTaskGrid(int classId, int pre_classID) : super(1, classId, pre_classID);
+
+  List<Lesson> getGuanxiuLessons(int halfTerm) => guanxiuLessons[halfTerm];
 
   @override
   void computeTotals() {

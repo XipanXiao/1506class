@@ -28,6 +28,7 @@ class GridTypes {
 }
 
 abstract class ReportGrid<T extends TaskData> {
+  static const guanxiuCoruseId = 4;
   static const limitedCoruseId = 10;
 
   /// All possible half terms.
