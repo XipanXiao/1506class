@@ -7,6 +7,7 @@ import 'package:v2/model/guanxiu_data_pair.dart';
 import 'package:v2/model/jx_report_grid.dart';
 import 'package:v2/model/lesson.dart';
 import 'package:v2/model/report_grid.dart';
+import 'package:v2/services/task_record_service.dart';
 import 'package:v2/services/zb_service.dart';
 
 @Component(
@@ -23,6 +24,7 @@ import 'package:v2/services/zb_service.dart';
 )
 class GuanxiuGridComponent extends HasSelectable<GuanxiuDataPair> {
   final ZBService _zbService;
+  final TaskRecordService _recordService;
 
   @override
   final users = <GuanxiuDataPair>[];
@@ -44,7 +46,7 @@ class GuanxiuGridComponent extends HasSelectable<GuanxiuDataPair> {
   int _halfTerm;
   JxTaskGrid _grid;
 
-  GuanxiuGridComponent(this._zbService);
+  GuanxiuGridComponent(this._zbService, this._recordService);
 
   JxTaskGrid get grid => _grid;
   List<Lesson> get lessons => _grid?.getGuanxiuLessons(_halfTerm);
@@ -58,15 +60,21 @@ class GuanxiuGridComponent extends HasSelectable<GuanxiuDataPair> {
           _grid.pre_classID, ReportGrid.guanxiuCoruseId, _halfTerm);
       _grid.guanxiuLessons[_halfTerm] = lessons;
 
-      var guanxiuRecords = await _zbService.getGuanxiuRecords(
-          _grid.pre_classID, _halfTerm, lessons);
+      var bicwRecords =
+          await _recordService.getGuanxiuRecords(_grid.classId, lessons);
       records = _grid.guanxiuRecords[_halfTerm] = <int, GuanxiuDataPair>{};
-      for (var userID in guanxiuRecords.keys) {
-        var pair = GuanxiuDataPair()..zhibeiData = guanxiuRecords[userID];
+      for (var userID in bicwRecords.keys) {
+        var pair = GuanxiuDataPair()..bicwData = bicwRecords[userID];
         records[userID] = pair;
       }
+
+      var guanxiuRecords = await _zbService.getGuanxiuRecords(
+          _grid.pre_classID, _halfTerm, lessons);
+      for (var userID in guanxiuRecords.keys) {
+        var pair = records.putIfAbsent(userID, () => GuanxiuDataPair());
+        pair.zhibeiData = guanxiuRecords[userID];
+      }
     }
-    ;
 
     users.clear();
     for (var pair in records.values) {

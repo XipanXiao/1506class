@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:angular/angular.dart';
+import 'package:v2/model/guanxiu_record.dart';
 import 'package:v2/model/lesson.dart';
 import 'package:v2/model/schedule.dart';
 import 'package:v2/model/schedule_record.dart';
@@ -157,5 +158,31 @@ class TaskRecordService {
             'att': att,
           }));
     });
+  }
+
+  Map<String, dynamic> _convertGuanxiuRecord(Map<String, dynamic> map) {
+    map['duration'] = _toGuanxiuHour(int.parse(map['duration']));
+    return map;
+  }
+
+  /// Returns bicw Guanxiu records for all students of the class identified
+  /// by [classId], for zhibei [lessons].
+  ///
+  /// The returned map is keyed by zhibei userID.
+  Future<Map<int, GuanxiuRecord>> getGuanxiuRecords(
+      int classId, List<Lesson> lessons) async {
+    var indexes = lessons.map((lesson) => lesson.lesson_id - 1).toList();
+    var url = '$_serviceUrl?rid=guanxiu&classId=$classId&task_indexes=$indexes';
+    var response = await utils.httpGetObject(url);
+    Map<int, GuanxiuRecord> users = response['users'].map<int, GuanxiuRecord>(
+        (id, user) =>
+            MapEntry(int.parse(id), GuanxiuRecord.fromJson(user, lessons)));
+    Iterable<GuanxiuData> records = response['records'].map<GuanxiuData>(
+        (json) => GuanxiuData.fromJson(_convertGuanxiuRecord(json)));
+    for (var record in records) {
+      var user = users[record.student_id];
+      user.guanxiu[record.lesson_id] = record;
+    }
+    return users.map((id, user) => MapEntry(user.userID, user));
   }
 }

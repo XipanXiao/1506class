@@ -64,7 +64,7 @@ class JxTaskGrid extends ReportGrid<JxTaskData> {
     }
   }
 
-  /// Initialize columns set from zhibei.info task data.
+  /// Initializes columns set from zhibei.info task data.
   void setColumns(int halfTerm) {
     columns.clear();
 

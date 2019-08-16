@@ -29,15 +29,31 @@ class GuanxiuRecord extends TaskData implements HasScheduleRecords {
 }
 
 class GuanxiuData implements AbstractScheduleRecord {
+  final int student_id;
   final int lesson_id;
   final int count;
   final double time;
-  GuanxiuData(this.lesson_id, this.count, this.time);
+  GuanxiuData(this.lesson_id, this.count, this.time, {this.student_id});
 
-  GuanxiuData.empty({this.lesson_id, this.count, this.time});
+  GuanxiuData.empty({this.lesson_id, this.count, this.time, this.student_id});
+
+  GuanxiuData.fromJson(Map<String, dynamic> map)
+      : count = int.parse(map['count']),
+        time = map['duration'],
+        student_id = int.parse(map['student_id']),
+        lesson_id = int.parse(map['sub_index']) + 1;
 
   @override
   bool get isNotEmpty => (count ?? 0) > 0 || (time ?? 0.0) > 0.0;
+
+  @override
+  int get hashCode => count * 1000 + time.round();
+
+  @override
+  bool operator ==(that) {
+    if (that is! GuanxiuData) return false;
+    return count == that.count && time == that.time;
+  }
 }
 
 class GuanxiuTaskDataPair extends TaskDataPair<GuanxiuRecord> {

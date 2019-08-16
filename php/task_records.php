@@ -74,6 +74,33 @@ function get_schedules($classId) {
   return $medoo->select("schedules", "*", ["group_id" => $groupIds]);
 }
 
+function get_guanxiu_task_stats($classId, $indexes) {
+  global $medoo;
+
+  $users = keyed_by_id($medoo->select("users", ["id", "name", "zb_id"],
+      ["classId" => $classId]));
+  $student_ids = array_keys($users);
+
+  $sql = sprintf("SELECT student_id, sub_index,
+      SUM(count) as count, SUM(duration) as duration
+      FROM task_records
+      WHERE task_id=4 AND student_id in (%s)
+      GROUP BY student_id, sub_index;",
+      join(",", $student_ids));
+  $records = $medoo->query($sql)->fetchAll();
+  
+  return [
+    "users" => array_map(function($user) {
+      return [
+        "id" => intval($user["id"]),
+        "name" => $user["name"], 
+        "userID" => $user["zb_id"]
+      ];
+    }, $users),
+    "records" => $records
+  ];
+}
+
 if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset($_GET["rid"])) {
   $classId = $_GET["classId"];
   $recourse_id = $_GET["rid"];
@@ -94,6 +121,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset($_GET["rid"])) {
       : permission_denied_error();
   } elseif ($recourse_id == "schedules") {
     $response = get_schedules($classId);
+  } elseif ($recourse_id == "guanxiu") {
+    $response = get_guanxiu_task_stats($classId, $_GET["task_indexes"]);
   }
 }
 
