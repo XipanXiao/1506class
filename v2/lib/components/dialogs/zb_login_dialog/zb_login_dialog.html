@@ -2,20 +2,22 @@
   <material-dialog>
     <h1 header>登录zhibei.info</h1>
     <div class="dialog-content">
-      <div class="field">
-        <material-input [floatingLabel]="true" label="用户名" [(ngModel)]="username">
-        </material-input>
-      </div>
-      <div class="field">
-        <material-input [floatingLabel]="true" label="密码" type="password"
-            [(ngModel)]="password">
-        </material-input>
-      </div>
-      <div class="field">
+      <div class="field" *ngIf="edit">
         <material-input [floatingLabel]="true" label="编辑密码" type="password"
             [(ngModel)]="editPassword">
         </material-input>
       </div>
+      <ng-container *ngIf="!edit">
+        <div class="field">
+          <material-input [floatingLabel]="true" label="用户名" [(ngModel)]="username">
+          </material-input>
+        </div>
+        <div class="field">
+          <material-input [floatingLabel]="true" label="密码" type="password"
+              [(ngModel)]="password">
+          </material-input>
+        </div>
+      </ng-container>
       <!--div class="field">
         <img src="{{phpUrlBase}}?url=http://www.zhibei.info/zb/captcha/create">
       </div>

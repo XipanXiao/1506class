@@ -40,7 +40,7 @@ class ZBService {
     }
   }
 
-  Future<bool> _isAuthenticated() async {
+  Future<bool> canEdit() async {
     _progressService.showProgress('Checking zhibei.info login credentials');
     var url = '$_serviceUrl/pre/check_edit_password_ajax'
         '?type=get_edit_permission';
@@ -48,15 +48,20 @@ class ZBService {
       var response = await utils.httpGetObject(_getProxiedUrl(url));
       return response['edit_permission'] == '1';
     } catch (err) {
-      return false;
+      return null;
     } finally {
       _progressService.done();
     }
   }
 
   Future<bool> ensureAuthenticated() async {
-    if (await _isAuthenticated()) return true;
+    if (await canEdit() != null) return true;
     return await _dialogService.showZbLoginDialog();
+  }
+
+  Future<bool> ensureEditPermission() async {
+    if (await canEdit() == true) return true;
+    return await _dialogService.showZbLoginDialog(edit: true);
   }
 
   /// Enters editing mode with the [editPassword].
@@ -64,18 +69,26 @@ class ZBService {
     var url =
         '$_serviceUrl/pre/check_edit_password_ajax?type=check_edit_password'
         '&edit_password=$editPassword';
-    var response = await utils.httpGetObject(_getProxiedUrl(url));
-    return response['returnValue'] == 'true';
+    _progressService.showProgress('Gaining edit permission from zhibei.info');
+    try {
+      var response = await utils.httpGetObject(_getProxiedUrl(url));
+      return response['returnValue'] == 'true';
+    } finally {
+      _progressService.done();
+    }
   }
 
   Future<bool> login(String user, String password, String editPassword) async {
+    if (editPassword != null) {
+      return await edit(editPassword);
+    }
+
     _progressService.showProgress('Signing into zhibei.info');
     var url = '$_serviceUrl/account/login?type=login&username=$user'
         '&password=$password';
     try {
       var response = await utils.httpGetObject(_getProxiedUrl(url));
-      if (response['returnValue'] != 'true') return false;
-      return await edit(editPassword);
+      return response['returnValue'] == 'true';
     } finally {
       _progressService.done();
     }

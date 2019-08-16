@@ -1,6 +1,7 @@
 import 'package:angular/angular.dart';
 import 'package:v2/components/dialogs/abstract_dialog.dart';
 import 'package:v2/components/dialogs/zb_login_dialog/zb_login_dialog.template.dart';
+import 'package:v2/model/zb_login_dialog_data.dart';
 import 'package:v2/services/dialog_service.dart';
 
 @Component(
@@ -9,7 +10,7 @@ import 'package:v2/services/dialog_service.dart';
 )
 class DialogManagerComponent {
   static final _dialogFactories = <String, ComponentFactory>{
-    DialogService.zbLoginDialog: ZBLoginDialogComponentNgFactory,
+    ZBLoginDialogData.zbLoginDialog: ZBLoginDialogComponentNgFactory,
   };
 
   final DialogService _dialogService;

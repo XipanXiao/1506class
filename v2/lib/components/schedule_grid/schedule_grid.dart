@@ -80,7 +80,7 @@ class ScheduleGridComponent extends HasSelectable<ScheduleTaskDataPair> {
     var users = user == null ? selection.selectedValues : [user];
     if (users.isEmpty) return;
 
-    if (!await _zbService.ensureAuthenticated()) return;
+    if (!await _zbService.ensureEditPermission()) return;
 
     var gridType =
         limited ? grid.gridTypes.attLimitGrid : grid.gridTypes.report_main_grid;

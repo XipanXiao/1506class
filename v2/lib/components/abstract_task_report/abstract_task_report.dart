@@ -99,7 +99,7 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
     var users = user == null ? selection.selectedValues : [user];
     if (users.isEmpty) return;
 
-    if (!await _zbService.ensureAuthenticated()) return;
+    if (!await _zbService.ensureEditPermission()) return;
 
     for (var user in users) {
       if (!await _zbService.reportTask(grid.pre_classID, _halfTerm,
