@@ -2,6 +2,7 @@ import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_components/material_select/material_dropdown_select.dart';
 import 'package:angular_router/angular_router.dart';
+import 'package:v2/components/jt_grid/jt_grid.dart';
 import 'package:v2/components/jx_task_report/jx_task_report.dart';
 import 'package:v2/components/rxl_task_report/rxl_task_report.dart';
 import 'package:v2/model/class_info.dart';
@@ -14,6 +15,7 @@ import 'package:v2/services/task_record_service.dart';
 @Component(
   selector: 'class-viewer',
   directives: [
+    JtGridComponent,
     JxTaskReportComponent,
     MaterialDropdownSelectComponent,
     NgIf,

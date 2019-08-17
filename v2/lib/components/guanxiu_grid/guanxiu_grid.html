@@ -1,4 +1,4 @@
-<table border="1" *ngIf="lessons != null">
+<table border="1" *ngIf="lessons != null && lessons.isNotEmpty">
   <tr>
     <td rowspan="2">
         <material-checkbox [checked]="allSelected"

@@ -1,0 +1,74 @@
+<schedule-grid [grid]="grid" [halfTerm]="halfTerm">
+</schedule-grid>
+<ng-container *ngIf="grid != null">
+  <div>佛号(单位:个) & 出勤 & 限制性课程</div>
+  <table border="1">
+    <tr>
+      <td rowspan="2">
+        <material-checkbox [checked]="allSelected"
+            [indeterminate]="selection.isNotEmpty && !allSelected"
+            (change)="toggleSelectAll($event)">
+        </material-checkbox>
+      </td>
+      <td rowspan="2">序号</td>
+      <td rowspan="2">姓名</td>
+      <td rowspan="2">数据源</td>
+      <td rowspan="2">出勤</td>
+      <td colspan="3" *ngIf="halfTerm > 2">佛号</td>
+      <td>同步</td>
+    </tr>
+    <tr>
+      <ng-container *ngIf="halfTerm > 2">
+        <td>类型</td>
+        <td>数量</td>
+        <td>总计</td>
+      </ng-container>
+      <td>
+        <material-button icon (trigger)="report()"
+            title="上报所有选中的用户数据">
+          <material-icon icon="backup"></material-icon>
+        </material-button>
+      </td>
+    </tr>
+    <ng-container *ngFor="let user of users; let index = index">
+      <tr>
+        <td rowspan="2">
+          <material-checkbox [checked]="selection.isSelected(user)"
+              (checkedChange)="toggleSelection(user, $event)"
+              title="是否上报zhibei.info"
+              [disabled]="!user.reportable">
+          </material-checkbox>  
+        </td>
+        <td rowspan="2">{{index + 1}}</td>
+        <td rowspan="2" [class.pass]="user.passed"
+            [class.warning]="user.audited == AuditState.PARTIAL_PASS"
+            [class.error]="user.failed">
+          {{user.name}}
+        </td>
+        <td>zhibei.info</td>
+        <td>{{user.zhibeiData?.att}}</td>
+        <ng-container *ngIf="halfTerm > 2">
+          <td>{{user.zhibeiData?.fohao_type}}</td>
+          <td>{{user.zhibeiData?.fohao_count}}</td>
+          <td>{{user.zhibeiData?.fohao_total}}</td>
+        </ng-container>
+        <td rowspan="2" class="selectable">
+          <material-button icon (trigger)="report(user: user)"
+              title="上报" class="hover-button"
+              *ngIf="user.reportable">
+            <material-icon icon="backup"></material-icon>
+          </material-button>
+        </td>
+      </tr>
+      <tr>
+        <td>bicw</td>
+        <td>{{user.bicwData?.att}}</td>
+        <ng-container *ngIf="halfTerm > 2">
+          <td>{{user.bicwData?.fohao_type}}</td>
+          <td>{{user.bicwData?.fohao_count}}</td>
+          <td>{{user.bicwData?.fohao_total}}</td>
+        </ng-container>
+      </tr>
+    </ng-container>
+  </table>
+</ng-container>

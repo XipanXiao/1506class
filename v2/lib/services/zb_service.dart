@@ -3,6 +3,7 @@ import 'package:v2/model/guanxiu_record.dart';
 import 'package:v2/model/lesson.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/schedule_task_data.dart';
+import 'package:v2/model/zb_jt_task_data.dart';
 import 'package:v2/model/zb_task_data.dart';
 import 'package:v2/services/dialog_service.dart';
 import 'package:v2/services/progress_service.dart';
@@ -261,6 +262,22 @@ class ZBService {
     var records =
         list.map<GuanxiuRecord>((map) => GuanxiuRecord.fromJson(map, lessons));
     return Map<int, GuanxiuRecord>.fromIterable(records,
+        key: (record) => record.userID);
+  }
+
+  Future<Map<int, JtTaskData>> getJtTaskData(
+      int pre_classID, int halfTerm) async {
+    var taskDataQuery =
+        'type=fohao_att_limit_grid&pre_classID=$pre_classID&half_term=$halfTerm';
+    var url = '$_serviceUrl$_file?${taskDataQuery}';
+    var map = await utils.httpGetObject(_getProxiedUrl(url));
+    List list = map['data'] ?? [];
+    var records = list.map<JtTaskData>((map) {
+      var record = JtTaskData.fromJson(map);
+      var scheduleRecord = _parseScheduleRecord(halfTerm, map);
+      return record..scheduleRecords.addAll(scheduleRecord.scheduleRecords);
+    });
+    return Map<int, JtTaskData>.fromIterable(records,
         key: (record) => record.userID);
   }
 }

@@ -18,3 +18,6 @@
 <rxl-task-report [classInfo]="classInfo" [halfTerm]="halfTerm"
     *ngIf="classInfo?.department_id == Department.RUXINGLUN_DEPARTMENT">
 </rxl-task-report>
+<jt-grid [classInfo]="classInfo" [halfTerm]="halfTerm"
+    *ngIf="classInfo?.department_id == Department.JINGTU_DEPARTMENT">
+</jt-grid>
