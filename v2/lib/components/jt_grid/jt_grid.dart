@@ -69,6 +69,7 @@ class JtGridComponent extends HasSelectable<TaskDataPair<JtTaskData>> {
       var taskData =
           await _taskService.getTaskDataStats(_classInfo.id, createTaskData);
       grid.setTaskData(taskData);
+      grid.computeTotals();
     }
 
     if (await _zbService.ensureAuthenticated()) {
