@@ -21,7 +21,6 @@ import 'package:v2/services/zb_service.dart';
     MaterialIconComponent,
   ],
   templateUrl: 'schedule_grid.html',
-  styleUrls: ['schedule_grid.css'],
   exports: [AuditState],
 )
 class ScheduleGridComponent

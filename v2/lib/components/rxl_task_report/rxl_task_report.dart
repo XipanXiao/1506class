@@ -9,7 +9,7 @@ import 'package:v2/model/lesson.dart';
 import 'package:v2/model/report_grid.dart';
 import 'package:v2/model/rxl_report_grid.dart';
 import 'package:v2/model/schedule_record.dart';
-import 'package:v2/model/schedule_task_data_pair.dart';
+import 'package:v2/model/task_data_pair.dart';
 import 'package:v2/model/zb_rxl_task_data.dart';
 import 'package:v2/services/task_record_service.dart';
 import 'package:v2/services/zb_service.dart';
@@ -66,12 +66,18 @@ class RxlTaskReportComponent extends AbstractTaskReportComponent<RxlTaskData> {
     grid.setTaskData({halfTerm: zbData}, zhibei: true);
   }
 
-  ScheduleRecord getRecord(int id, int lesson_id, {bool zhibei = false}) {
+  ScheduleRecord getRecord(TaskDataPair<RxlTaskData> user, int lesson_id,
+      {bool zhibei = false}) {
     if (grid == null) return null;
-    var record = grid.scheduleRecords[id];
-    if (record == null) return null;
-    var schedules = zhibei ? record.zhibeiData : record.bicwData;
-    if (schedules == null) return null;
-    return schedules.scheduleRecords[lesson_id];
+    if (zhibei) {
+      return user.zhibeiData == null
+          ? null
+          : user.zhibeiData.scheduleRecords[lesson_id];
+    } else {
+      var records = grid.scheduleRecords[user.id];
+      return records == null
+          ? null
+          : records.bicwData.scheduleRecords[lesson_id];
+    }
   }
 }

@@ -70,3 +70,7 @@ table {
 table {
   margin: 16px;
 }
+
+.done {
+  background-color: darkcyan;
+}

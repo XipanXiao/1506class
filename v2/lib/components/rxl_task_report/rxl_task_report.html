@@ -56,9 +56,9 @@
             <td>{{user.zhibeiData?.mantra_count}}</td>
             <td>{{user.zhibeiData?.mantra_total}}</td>
             <ng-container *ngFor="let lesson of lessons">
-              <td [class.done]="getRecord(user.id, lesson.lesson_id, zhibei: true)?.text == true">
+              <td [class.done]="getRecord(user, lesson.lesson_id, zhibei: true)?.text == true">
               </td>
-              <td [class.done]="getRecord(user.id, lesson.lesson_id, zhibei: true)?.video == true">
+              <td [class.done]="getRecord(user, lesson.lesson_id, zhibei: true)?.video == true">
               </td>
             </ng-container>
             <td rowspan="2" class="selectable">
@@ -77,9 +77,9 @@
           <td>{{user.bicwData?.mantra_count}}</td>
           <td>{{user.bicwData?.mantra_total}}</td>
           <ng-container *ngFor="let lesson of lessons">
-            <td [class.done]="getRecord(user.id, lesson.lesson_id)?.text == true">
+            <td [class.done]="getRecord(user, lesson.lesson_id)?.text == true">
             </td>
-            <td [class.done]="getRecord(user.id, lesson.lesson_id)?.video == true">
+            <td [class.done]="getRecord(user, lesson.lesson_id)?.video == true">
             </td>
           </ng-container>      
         </tr>
