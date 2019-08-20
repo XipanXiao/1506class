@@ -4,7 +4,7 @@ import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/schedule_task_data.dart';
 import 'package:v2/model/task_data_pair.dart';
 
-class ScheduleTaskDataPair extends TaskDataPair<ScheduleTaskData> {
+class ScheduleTaskDataPair<T extends ScheduleTaskData> extends TaskDataPair<T> {
   bool limited;
   List<Lesson> lessons;
 

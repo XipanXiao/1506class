@@ -8,6 +8,7 @@ import 'package:v2/components/abstract_task_report/schedule_records_loader.dart'
 import 'package:v2/model/auditable.dart';
 import 'package:v2/model/lesson.dart';
 import 'package:v2/model/report_grid.dart';
+import 'package:v2/model/schedule_task_data.dart';
 import 'package:v2/model/schedule_task_data_pair.dart';
 import 'package:v2/services/zb_service.dart';
 
@@ -23,12 +24,13 @@ import 'package:v2/services/zb_service.dart';
   styleUrls: ['schedule_grid.css'],
   exports: [AuditState],
 )
-class ScheduleGridComponent extends HasSelectable<ScheduleTaskDataPair> {
+class ScheduleGridComponent
+    extends HasSelectable<ScheduleTaskDataPair<ScheduleTaskData>> {
   final ZBService _zbService;
   final ScheduleRecordsLoader _loader;
 
   @override
-  final users = <ScheduleTaskDataPair>[];
+  final users = <ScheduleTaskDataPair<ScheduleTaskData>>[];
 
   @Input()
   bool limited = false;
@@ -63,7 +65,7 @@ class ScheduleGridComponent extends HasSelectable<ScheduleTaskDataPair> {
 
     users.clear();
     for (var pair in _grid.scheduleRecords.values) {
-      pair = (pair.clone() as ScheduleTaskDataPair)
+      pair = (pair.clone() as ScheduleTaskDataPair<ScheduleTaskData>)
         ..lessons = lessons
         ..limited = limited
         ..audit();
@@ -76,7 +78,7 @@ class ScheduleGridComponent extends HasSelectable<ScheduleTaskDataPair> {
 
   /// Reports task data from bicw to zhibei.info, for all
   /// selected users.
-  void report({ScheduleTaskDataPair user}) async {
+  void report({ScheduleTaskDataPair<ScheduleTaskData> user}) async {
     var users = user == null ? selection.selectedValues : [user];
     if (users.isEmpty) return;
 
