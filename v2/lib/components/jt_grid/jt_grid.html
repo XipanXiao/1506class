@@ -15,6 +15,7 @@
       <td rowspan="2">数据源</td>
       <td rowspan="2">出勤</td>
       <td colspan="3" *ngIf="halfTerm > 2">佛号</td>
+      <td colspan="2" *ngFor="let lesson of lessons">{{lesson.name}}</td>
       <td>同步</td>
     </tr>
     <tr>
@@ -22,6 +23,10 @@
         <td>类型</td>
         <td>数量</td>
         <td>总计</td>
+      </ng-container>
+      <ng-container *ngFor="let lesson of lessons">
+        <td>法本</td>
+        <td>传承</td>
       </ng-container>
       <td>
         <material-button icon (trigger)="report()"
@@ -52,6 +57,12 @@
           <td>{{user.zhibeiData?.fohao_count}}</td>
           <td>{{user.zhibeiData?.fohao_total}}</td>
         </ng-container>
+        <ng-container *ngFor="let lesson of lessons">
+          <td [class.done]="getRecord(user, lesson.lesson_id, zhibei: true)?.text == true">
+          </td>
+          <td [class.done]="getRecord(user, lesson.lesson_id, zhibei: true)?.video == true">
+          </td>
+        </ng-container>
         <td rowspan="2" class="selectable">
           <material-button icon (trigger)="report(user: user)"
               title="上报" class="hover-button"
@@ -67,6 +78,12 @@
           <td>{{user.bicwData?.fohao_type}}</td>
           <td>{{user.bicwData?.fohao_count}}</td>
           <td>{{user.bicwData?.fohao_total}}</td>
+        </ng-container>
+        <ng-container *ngFor="let lesson of lessons">
+          <td [class.done]="getRecord(user, lesson.lesson_id)?.text == true">
+          </td>
+          <td [class.done]="getRecord(user, lesson.lesson_id)?.video == true">
+          </td>
         </ng-container>
       </tr>
     </ng-container>
