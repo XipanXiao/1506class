@@ -1,6 +1,7 @@
+import 'package:v2/model/schedule_task_data.dart';
 import 'package:v2/model/zb_task_data.dart';
 
-class RxlTaskData extends TaskData {
+class RxlTaskData extends ScheduleTaskData {
   int gx_count;
   double gx_time;
   int mantra_count;

@@ -13,6 +13,7 @@ class TaskDataPair<T extends TaskData> extends Auditable {
     ..audited = audited;
 
   String get name => bicwData?.name ?? zhibeiData?.name;
+  int get id => bicwData?.id;
 
   /// Compares bicw and zhibei.info data.
   @override
