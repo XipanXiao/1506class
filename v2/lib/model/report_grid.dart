@@ -140,7 +140,7 @@ abstract class ReportGrid<T extends TaskData> {
 
   /// Stores the [ScheduleTaskData] from zhibei.info here.
   ///
-  /// The records are keyed by zhibei user ID. For each user,
+  /// The input [data] are keyed by zhibei user ID. For each user,
   /// the map is keyed by zhibei lesson id.
   void setZBScheduleRecords(int halfTerm, Map<int, ScheduleTaskData> data,
       {bool limit = false}) {

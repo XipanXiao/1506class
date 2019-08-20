@@ -4,6 +4,7 @@ import 'package:v2/model/lesson.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/schedule_task_data.dart';
 import 'package:v2/model/zb_jt_task_data.dart';
+import 'package:v2/model/zb_rxl_task_data.dart';
 import 'package:v2/model/zb_task_data.dart';
 import 'package:v2/services/dialog_service.dart';
 import 'package:v2/services/progress_service.dart';
@@ -265,19 +266,27 @@ class ZBService {
         key: (record) => record.userID);
   }
 
-  Future<Map<int, JtTaskData>> getJtTaskData(
-      int pre_classID, int halfTerm) async {
+  /// Fetches task data and att/limit records.
+  Future<Map<int, T>> getLimitTaskData<T extends ScheduleTaskData>(String grid,
+      int pre_classID, int halfTerm, TaskDataFromJson<T> creator) async {
     var taskDataQuery =
-        'type=fohao_att_limit_grid&pre_classID=$pre_classID&half_term=$halfTerm';
+        'type=$grid&pre_classID=$pre_classID&half_term=$halfTerm';
     var url = '$_serviceUrl$_file?${taskDataQuery}';
     var map = await utils.httpGetObject(_getProxiedUrl(url));
     List list = map['data'] ?? [];
-    var records = list.map<JtTaskData>((map) {
-      var record = JtTaskData.fromJson(map);
+    var records = list.map<T>((map) {
+      var record = creator(map);
       var scheduleRecord = _parseScheduleRecord(halfTerm, map);
       return record..scheduleRecords.addAll(scheduleRecord.scheduleRecords);
     });
-    return Map<int, JtTaskData>.fromIterable(records,
-        key: (record) => record.userID);
+    return Map<int, T>.fromIterable(records, key: (record) => record.userID);
   }
+
+  Future<Map<int, JtTaskData>> getJtTaskData(int pre_classID, int halfTerm) =>
+      getLimitTaskData<JtTaskData>('fohao_att_limit_grid', pre_classID,
+          halfTerm, (json) => JtTaskData.fromJson(json));
+
+  Future<Map<int, RxlTaskData>> getRxlTaskData(int pre_classID, int halfTerm) =>
+      getLimitTaskData<RxlTaskData>('rxl_work_grid', pre_classID, halfTerm,
+          (json) => RxlTaskData.fromJson(json));
 }
