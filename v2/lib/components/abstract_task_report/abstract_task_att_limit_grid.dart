@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:v2/components/abstract_task_report/abstract_task_report.dart';
 import 'package:v2/components/abstract_task_report/schedule_records_loader.dart';
 import 'package:v2/model/lesson.dart';
@@ -54,5 +56,25 @@ abstract class TaskAttLImitGridComponent<T extends ScheduleTaskData>
           ? null
           : records.bicwData.scheduleRecords[lesson_id];
     }
+  }
+
+  /// Reports task data from bicw to zhibei.info, for all
+  /// selected users.
+  @override
+  void report({TaskDataPair<T> user}) async {
+    var users = user == null ? selection.selectedValues : [user];
+    if (users.isEmpty) return;
+
+    if (!await _zbService.ensureEditPermission()) return;
+
+    for (var user in users) {
+      if (!await _zbService.reportScheduleTask(grid.gridTypes.workGrid,
+          grid.pre_classID, halfTerm, user.bicwData, lessons)) {
+        window.alert('Failed to report for ${user.bicwData.name}');
+      }
+    }
+
+    grid.clearCache(halfTerm);
+    await loadTaskDataForTerm(grid, halfTerm);
   }
 }

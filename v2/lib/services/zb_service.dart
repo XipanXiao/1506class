@@ -229,14 +229,11 @@ class ZBService {
     _progressService.showProgress('Reporting for ${user.name}');
     var data = <String, dynamic>{
       'url': '$_serviceUrl/pre/report_ajax',
-      'userID': user.userID,
       'pre_classID': pre_classID,
       'type': gridType,
       'half_term': half_term,
     };
-    if (limited) {
-      data['att'] = user.att;
-    }
+    data.addAll(user.toMap());
     var entries = data.entries.toList()
       ..addAll(_getBookRecords(lessons, user)
           .map((value) => MapEntry('book[]', value)))
