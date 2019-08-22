@@ -46,6 +46,13 @@ class JxTaskReportComponent extends AbstractTaskReportComponent<JxTaskData> {
     await super.reload(halfTerm);
     await _loadAllTaskData();
     (grid as JxTaskGrid).setColumns(halfTerm);
+    _audit();
+  }
+
+  void _audit() {
+    users.forEach((user) => user.audit());
+    selection.clear();
+    users.where((user) => user.failed).forEach(selection.select);
   }
 
   /// Fetches zhibei task data for all terms.

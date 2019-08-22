@@ -4,6 +4,7 @@ import 'package:v2/components/abstract_task_report/abstract_task_report.dart';
 import 'package:v2/components/abstract_task_report/schedule_records_loader.dart';
 import 'package:v2/model/lesson.dart';
 import 'package:v2/model/report_grid.dart';
+import 'package:v2/model/schedule_auditor.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/schedule_task_data.dart';
 import 'package:v2/model/task_data_pair.dart';
@@ -27,6 +28,7 @@ abstract class TaskAttLImitGridComponent<T extends ScheduleTaskData>
     await super.reload(halfTerm);
     grid.computeTotals();
     await _loadAttendences(halfTerm);
+    _audit();
   }
 
   Future<void> _loadAttendences(int halfTerm) {
@@ -46,16 +48,9 @@ abstract class TaskAttLImitGridComponent<T extends ScheduleTaskData>
   ScheduleRecord getRecord(TaskDataPair<T> user, int lesson_id,
       {bool zhibei = false}) {
     if (grid == null) return null;
-    if (zhibei) {
-      return user.zhibeiData == null
-          ? null
-          : user.zhibeiData.scheduleRecords[lesson_id];
-    } else {
-      var records = grid.scheduleRecords[user.id];
-      return records == null
-          ? null
-          : records.bicwData.scheduleRecords[lesson_id];
-    }
+    var data = zhibei ? user.zhibeiData : user.bicwData;
+    if (data == null) return null;
+    return data == null ? null : data.scheduleRecords[lesson_id];
   }
 
   /// Reports task data from bicw to zhibei.info, for all
@@ -76,5 +71,27 @@ abstract class TaskAttLImitGridComponent<T extends ScheduleTaskData>
 
     grid.clearCache(halfTerm);
     await loadTaskDataForTerm(grid, halfTerm);
+  }
+
+  void _copyScheduleData(T user) {
+    var records = grid.scheduleRecords[user.id];
+    if (records == null) return;
+
+    for (var lesson in lessons) {
+      var record = records.bicwData.scheduleRecords[lesson.lesson_id];
+      user.scheduleRecords[lesson.lesson_id] = record;
+    }
+  }
+
+  void _audit() {
+    var emptyRecord = ScheduleRecord.fromJson({});
+    for (var user in users) {
+      _copyScheduleData(user.bicwData);
+      user.audited = ScheduleRecordsAuditor.audit(
+          lessons, user.bicwData, user.zhibeiData, emptyRecord,
+          limited: true);
+    }
+    selection.clear();
+    users.where((user) => user.failed).forEach(selection.select);
   }
 }

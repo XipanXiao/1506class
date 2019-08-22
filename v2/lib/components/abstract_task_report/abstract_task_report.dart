@@ -80,16 +80,14 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
     // Initialize the grid object and _halfTerm after everything is loaded.
     this.grid = grid;
     this._halfTerm = halfTerm;
-    _initSelection();
+    _initUsers();
   }
 
-  void _initSelection() {
+  void _initUsers() {
     users.clear();
     var halfTermData = grid.taskData[_halfTerm];
     if (halfTermData != null) {
       users.addAll(halfTermData.values);
-      selection.clear();
-      users.where((user) => user.failed).forEach(selection.select);
     }
   }
 

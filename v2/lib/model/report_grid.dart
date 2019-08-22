@@ -95,7 +95,6 @@ abstract class ReportGrid<T extends TaskData> {
         var destUser = dest.putIfAbsent(id, () => TaskDataPair<T>());
         if (zhibei) {
           destUser.zhibeiData = user;
-          destUser.audit();
         } else {
           destUser.bicwData = user;
           userIdMap[user.userID] = user.id;
