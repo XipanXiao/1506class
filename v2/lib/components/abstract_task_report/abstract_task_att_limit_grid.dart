@@ -86,6 +86,7 @@ abstract class TaskAttLImitGridComponent<T extends ScheduleTaskData>
   void _audit() {
     var emptyRecord = ScheduleRecord.fromJson({});
     for (var user in users) {
+      if (user.bicwData == null) continue;
       _copyScheduleData(user.bicwData);
       user.audited = ScheduleRecordsAuditor.audit(
           lessons, user.bicwData, user.zhibeiData, emptyRecord,

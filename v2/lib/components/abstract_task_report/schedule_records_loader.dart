@@ -71,6 +71,7 @@ class ScheduleRecordsLoader {
         grid.schedules, bicwScheduleRecords, grid.getLessons(halfTerm));
 
     for (var user in users) {
+      if (user == null) continue;
       user.att = attendances[user.id]?.att;
     }
   }

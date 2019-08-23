@@ -27,7 +27,8 @@ class JxTaskGrid extends ReportGrid<JxTaskData> {
     var users = <int, JxTaskData>{};
     for (var halfTerm in taskData.values) {
       for (var user in halfTerm.values) {
-        users[user.bicwData?.id] = user.bicwData;
+        if (user.bicwData == null) continue;
+        users[user.bicwData.id] = user.bicwData;
       }
     }
 

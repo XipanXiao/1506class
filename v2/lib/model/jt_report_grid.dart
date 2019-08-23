@@ -13,13 +13,16 @@ class JtTaskGrid extends ReportGrid<JtTaskData> {
     var users = <int, JtTaskData>{};
     for (var halfTerm in taskData.values) {
       for (var user in halfTerm.values) {
-        users[user.bicwData?.id] = user.bicwData;
+        if (user.bicwData == null) continue;
+        users[user.bicwData.id] = user.bicwData;
       }
     }
 
     for (var halfTerm in taskData.values) {
       for (var pair in halfTerm.values) {
         var user = pair.bicwData;
+        if (user == null) continue;
+
         var last = users[user.id];
 
         userIdMap[user.userID] = user.id;
@@ -31,6 +34,7 @@ class JtTaskGrid extends ReportGrid<JtTaskData> {
     for (var halfTerm in taskData.values) {
       for (var pair in halfTerm.values) {
         var user = pair.bicwData;
+        if (user == null) continue;
         user.fohao_total = users[user.id].fohao_total;
       }
     }

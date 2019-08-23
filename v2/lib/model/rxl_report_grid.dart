@@ -13,13 +13,15 @@ class RxlTaskGrid extends ReportGrid<RxlTaskData> {
     var users = <int, RxlTaskData>{};
     for (var halfTerm in taskData.values) {
       for (var user in halfTerm.values) {
-        users[user.bicwData?.id] = user.bicwData;
+        if (user.bicwData == null) continue;
+        users[user.bicwData.id] = user.bicwData;
       }
     }
 
     for (var halfTerm in taskData.values) {
       for (var pair in halfTerm.values) {
         var user = pair.bicwData;
+        if (user == null) continue;
         var last = users[user.id];
 
         userIdMap[user.userID] = user.id;
@@ -31,6 +33,7 @@ class RxlTaskGrid extends ReportGrid<RxlTaskData> {
     for (var halfTerm in taskData.values) {
       for (var pair in halfTerm.values) {
         var user = pair.bicwData;
+        if (user == null) continue;
         user.mantra_total = users[user.id].mantra_total;
       }
     }
