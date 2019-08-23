@@ -70,7 +70,7 @@ abstract class TaskAttLImitGridComponent<T extends ScheduleTaskData>
     }
 
     grid.clearCache(halfTerm);
-    await loadTaskDataForTerm(grid, halfTerm);
+    await reload(halfTerm);
   }
 
   void _copyScheduleData(T user) {
