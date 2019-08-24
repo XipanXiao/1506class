@@ -46,6 +46,9 @@ class JtTaskData extends ScheduleTaskData {
       fohao_count == null || fohao_count == 0;
 
   @override
+  bool get isNotEmpty => !isEmpty;
+
+  @override
   void initTotal() {
     fohao_total ??= 0;
   }

@@ -18,6 +18,7 @@ class ScheduleRecord implements AbstractScheduleRecord {
         video = int.parse(map['video'] ?? '0') == 1,
         text = int.parse(map['text'] ?? '0') == 1;
 
+  bool get isEmpty => video != true && text != true;
   bool get isNotEmpty => video == true || text == true;
 
   @override

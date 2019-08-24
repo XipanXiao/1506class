@@ -100,6 +100,9 @@ class JxTaskData extends TaskData {
       (manza_count == null || manza_count == 0);
 
   @override
+  bool get isNotEmpty => !isEmpty;
+
+  @override
   void initTotal() {
     baiziming_total ??= 0;
     dingli_total ??= 0;

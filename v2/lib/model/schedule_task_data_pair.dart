@@ -1,5 +1,4 @@
 import 'package:v2/model/lesson.dart';
-import 'package:v2/model/schedule_auditor.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/schedule_task_data.dart';
 import 'package:v2/model/task_data_pair.dart';
@@ -15,10 +14,10 @@ class ScheduleTaskDataPair<T extends ScheduleTaskData> extends TaskDataPair<T> {
     ..audited = audited;
 
   @override
-  void audit() {
-    audited = ScheduleRecordsAuditor.audit(
-        lessons, bicwData, zhibeiData, ScheduleRecord.fromJson({}),
-        limited: limited);
+  void audit({bool compareAtt = false}) {
+    bicwData?.lessons = lessons;
+    zhibeiData?.lessons = lessons;
+    super.audit(compareAtt: compareAtt);
   }
 
   /// Returns the [ScheduleRecord] for the [Lesson] identified by [lesson_id].

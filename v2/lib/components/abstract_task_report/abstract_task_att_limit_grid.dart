@@ -4,7 +4,6 @@ import 'package:v2/components/abstract_task_report/abstract_task_report.dart';
 import 'package:v2/components/abstract_task_report/schedule_records_loader.dart';
 import 'package:v2/model/lesson.dart';
 import 'package:v2/model/report_grid.dart';
-import 'package:v2/model/schedule_auditor.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/schedule_task_data.dart';
 import 'package:v2/model/task_data_pair.dart';
@@ -84,13 +83,12 @@ abstract class TaskAttLImitGridComponent<T extends ScheduleTaskData>
   }
 
   void _audit() {
-    var emptyRecord = ScheduleRecord.fromJson({});
     for (var user in users) {
       if (user.bicwData == null) continue;
       _copyScheduleData(user.bicwData);
-      user.audited = ScheduleRecordsAuditor.audit(
-          lessons, user.bicwData, user.zhibeiData, emptyRecord,
-          limited: true);
+      user.bicwData.lessons = lessons;
+      user.zhibeiData?.lessons = lessons;
+      user.audit();
     }
     selection.clear();
     users.where((user) => user.failed).forEach(selection.select);

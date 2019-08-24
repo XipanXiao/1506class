@@ -17,16 +17,19 @@ class TaskDataPair<T extends TaskData> extends Auditable {
 
   /// Compares bicw and zhibei.info data.
   @override
-  void audit() {
+  void audit({bool compareAtt = false}) {
     if (bicwData == null && zhibeiData == null) return;
 
-    var hasLocalData = bicwData?.isNotEmpty == true;
-    var hasRemoteData = zhibeiData?.isNotEmpty == true;
+    var hasLocalData =
+        compareAtt && (bicwData?.att ?? 0) != 0 || bicwData?.isNotEmpty == true;
+    var hasRemoteData = compareAtt && (zhibeiData?.att ?? 0) != 0 ||
+        zhibeiData?.isNotEmpty == true;
     var sameTotal =
         zhibeiData != null && bicwData?.sameTotal(zhibeiData) == true;
 
     if (hasLocalData && hasRemoteData) {
-      if (bicwData == zhibeiData) {
+      if ((!compareAtt || (bicwData?.att ?? 0) == (zhibeiData?.att ?? 0)) &&
+          bicwData == zhibeiData) {
         audited = AuditState.PASS;
       } else if (sameTotal) {
         audited = AuditState.PARTIAL_PASS;

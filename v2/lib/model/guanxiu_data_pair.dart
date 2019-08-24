@@ -1,6 +1,5 @@
 import 'package:v2/model/guanxiu_record.dart';
 import 'package:v2/model/lesson.dart';
-import 'package:v2/model/schedule_auditor.dart';
 import 'package:v2/model/task_data_pair.dart';
 
 class GuanxiuDataPair extends TaskDataPair<GuanxiuRecord> {
@@ -13,9 +12,10 @@ class GuanxiuDataPair extends TaskDataPair<GuanxiuRecord> {
     ..audited = audited;
 
   @override
-  void audit() {
-    audited = ScheduleRecordsAuditor.audit(
-        lessons, bicwData, zhibeiData, GuanxiuData.empty());
+  void audit({bool compareAtt = false}) {
+    bicwData?.lessons = lessons;
+    zhibeiData?.lessons = lessons;
+    super.audit();
   }
 
   /// Returns the [GuanxiuData] for the [Lesson] identified by [lesson_id].

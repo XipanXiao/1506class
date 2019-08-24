@@ -1,4 +1,5 @@
-<schedule-grid [grid]="grid" [halfTerm]="halfTerm">
+<schedule-grid [grid]="grid" [halfTerm]="halfTerm"
+    [label]="halfTerm == 2 ? '正式学修课程' : '前行广释'">
 </schedule-grid>
 <ng-container *ngIf="grid != null && grid.columns.isNotEmpty">
   <div>五加行 (单位:个)</div>
@@ -137,7 +138,8 @@
     </ng-container>
   </table>
 </ng-container>
-<schedule-grid [grid]="grid" [halfTerm]="halfTerm" [limited]="true">
+<schedule-grid [grid]="grid" [halfTerm]="halfTerm" [limited]="true"
+    label="出勤 & 限制性课程">
 </schedule-grid>
 <guanxiu-grid [grid]="grid" [halfTerm]="halfTerm">
 </guanxiu-grid>

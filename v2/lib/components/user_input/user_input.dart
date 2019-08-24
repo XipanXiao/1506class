@@ -81,7 +81,6 @@ class UserInputComponent implements OnDestroy {
     }
     if (cached != null) {
       _user.value = cached.id;
-      print('===user id assigned to ${cached.id}');
     }
   }
 

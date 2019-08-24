@@ -16,6 +16,8 @@ class RxlTaskData extends ScheduleTaskData {
 
   @override
   bool operator ==(that) {
+  if (!(super == that)) return false;
+  
     if (that is! RxlTaskData) return false;
     var data = that as RxlTaskData;
     return (att ?? 0) == (data.att ?? 0) &&
@@ -37,7 +39,11 @@ class RxlTaskData extends ScheduleTaskData {
   @override
   bool get isEmpty =>
       (gx_count == null || gx_count == 0) &&
-      (mantra_count == null || mantra_count == 0);
+      (mantra_count == null || mantra_count == 0) &&
+      super.isEmpty;
+
+  @override
+  bool get isNotEmpty => !isEmpty;
 
   @override
   void initTotal() {

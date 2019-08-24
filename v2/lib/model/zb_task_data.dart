@@ -41,6 +41,12 @@ class TaskData implements BaseEntity {
   int get hashCode => id.hashCode;
 
   @override
+  bool operator==(that) {
+    if (that is! TaskData) return false;
+    return (att ?? 0) == ((that as TaskData).att ?? 0);
+  }
+
+  @override
   Map<String, String> toMap() {
     return {
       'userID': userID.toString(),
@@ -49,8 +55,8 @@ class TaskData implements BaseEntity {
   }
 
   /// Whether there is any meaningful data.
-  bool get isEmpty => true;
-  bool get isNotEmpty => !isEmpty;
+  bool get isEmpty => (att ?? 0) == 0;
+  bool get isNotEmpty => (att ?? 0) != 0;
 
   /// Initializes all members whose name end with '_total' to 0.
   void initTotal() {}

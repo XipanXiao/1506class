@@ -48,6 +48,9 @@ class ScheduleGridComponent
     _reload();
   }
 
+  @Input()
+  String label;
+
   int _halfTerm;
   ReportGrid _grid;
 
@@ -67,7 +70,7 @@ class ScheduleGridComponent
       pair = (pair.clone() as ScheduleTaskDataPair<ScheduleTaskData>)
         ..lessons = lessons
         ..limited = limited
-        ..audit();
+        ..audit(compareAtt: limited);
       users.add(pair);
       if (pair.failed) {
         selection.select(pair);

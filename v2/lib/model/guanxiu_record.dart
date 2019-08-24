@@ -1,11 +1,10 @@
+import 'package:collection/collection.dart';
+
 import 'package:v2/model/has_schedule_records.dart';
 import 'package:v2/model/lesson.dart';
-import 'package:v2/model/schedule_auditor.dart';
-import 'package:v2/model/task_data_pair.dart';
-import 'package:v2/model/zb_task_data.dart';
 
 /// Model class for the 'schedule_records' database table.
-class GuanxiuRecord extends TaskData implements HasScheduleRecords {
+class GuanxiuRecord extends TaskDataWithLessons {
   /// Map from zhibei [Lesson] id to [GuanxiuData], for
   /// a certain user of a certain half term.
   final Map<int, GuanxiuData> guanxiu;
@@ -26,6 +25,33 @@ class GuanxiuRecord extends TaskData implements HasScheduleRecords {
 
   @override
   Map<int, AbstractScheduleRecord> get records => guanxiu;
+
+  @override
+  bool operator ==(that) {
+    if (that is! GuanxiuRecord) return false;
+
+    var obj = that as GuanxiuRecord;
+    var emptyRecord = GuanxiuData.empty();
+    var records = lessons
+        .map((lesson) => guanxiu[lesson.lesson_id] ?? emptyRecord)
+        .toList();
+    var otherRecords = lessons
+        .map((lesson) => obj.guanxiu[lesson.lesson_id] ?? emptyRecord)
+        .toList();
+    return ListEquality().equals(records, otherRecords);
+  }
+
+  @override
+  bool get isEmpty {
+    var records = lessons.map((lesson) => guanxiu[lesson.lesson_id]);
+    return records.every((record) => record == null || record.isEmpty);
+  }
+
+  @override
+  bool get isNotEmpty {
+    var records = lessons.map((lesson) => guanxiu[lesson.lesson_id]);
+    return records.any((record) => record != null && record.isNotEmpty);
+  }
 }
 
 class GuanxiuData implements AbstractScheduleRecord {
@@ -43,8 +69,10 @@ class GuanxiuData implements AbstractScheduleRecord {
         student_id = int.parse(map['student_id']),
         lesson_id = int.parse(map['sub_index']) + 1;
 
+  bool get isEmpty => (count ?? 0) == 0 && (time ?? 0.0) == 0.0;
+
   @override
-  bool get isNotEmpty => (count ?? 0) > 0 || (time ?? 0.0) > 0.0;
+  bool get isNotEmpty => !isEmpty;
 
   @override
   int get hashCode => count * 1000 + time.round();
@@ -52,22 +80,6 @@ class GuanxiuData implements AbstractScheduleRecord {
   @override
   bool operator ==(that) {
     if (that is! GuanxiuData) return false;
-    return count == that.count && time == that.time;
-  }
-}
-
-class GuanxiuTaskDataPair extends TaskDataPair<GuanxiuRecord> {
-  List<Lesson> lessons;
-
-  @override
-  TaskDataPair clone() => GuanxiuTaskDataPair()
-    ..bicwData = bicwData
-    ..zhibeiData = zhibeiData
-    ..audited = audited;
-
-  @override
-  void audit() {
-    audited = ScheduleRecordsAuditor.audit(
-        lessons, bicwData, zhibeiData, GuanxiuData.empty());
+    return (count ?? 0) == (that.count ?? 0) && (time ?? 0) == (that.time ?? 0);
   }
 }

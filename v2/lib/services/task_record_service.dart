@@ -161,7 +161,7 @@ class TaskRecordService {
   }
 
   Map<String, dynamic> _convertGuanxiuRecord(Map<String, dynamic> map) {
-    map['duration'] = _toGuanxiuHour(int.parse(map['duration']));
+    map['duration'] = _toGuanxiuHour(int.parse(map['duration'] ?? '0'));
     return map;
   }
 
