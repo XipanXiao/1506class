@@ -191,8 +191,9 @@ class ZBService {
   }
 
   Future<bool> reportTask(
-      int pre_classID, int halfTerm, String gridType, TaskData data) async {
-    _progressService.showProgress('Reporting task for ${data.name}');
+      int pre_classID, int halfTerm, String gridType, dynamic data) async {
+    var name = (data is TaskData) ? data.name : data['name'];
+    _progressService.showProgress('Reporting task for $name');
 
     var extraData = {
       'pre_classID': '$pre_classID',

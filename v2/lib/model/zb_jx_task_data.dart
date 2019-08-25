@@ -76,18 +76,34 @@ class JxTaskData extends TaskData {
   }
 
   @override
-  Map<String, String> toMap() {
-    var map = <String, String>{
+  Map<String, String> toMap() => _toMap()..addAll(super.toMap());
+
+  Map<String, String> _toMap() {
+    return <String, String>{
       'baiziming_count': baiziming_count?.toString(),
       'dingli_count': dingli_count?.toString(),
-      'dingli_type': dingli_type,
+      'dingli_type': dingli_type ?? '0',
       'faxin_count': faxin_count?.toString(),
       'guiyi_count': guiyi_count?.toString(),
       'lianshi_count': lianshi_count?.toString(),
       'manza_count': manza_count?.toString(),
       'manza_type': manza_type,
     };
-    return map..addAll(super.toMap());
+  }
+
+  /// Returns a map with keys in [columns] representing this [TaskData].
+  Map<String, String> toMapWithKeys(Iterable<String> columns) {
+    var map = _toMap();
+    bool containsKey(String key) {
+      for (var column in columns) {
+        if (key.startsWith('${column}_')) return true;
+      }
+      return false;
+    }
+
+    return map
+      ..removeWhere((key, value) => !containsKey(key))
+      ..addAll(super.toMap());
   }
 
   @override

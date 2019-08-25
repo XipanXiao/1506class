@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:angular/angular.dart';
 import 'package:v2/components/abstract_task_report/schedule_records_loader.dart';
 import 'package:v2/model/class_info.dart';
@@ -93,22 +91,7 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
 
   /// Reports task data from bicw to zhibei.info, for all
   /// selected users.
-  void report({TaskDataPair<T> user}) async {
-    var users = user == null ? selection.selectedValues : [user];
-    if (users.isEmpty) return;
-
-    if (!await _zbService.ensureEditPermission()) return;
-
-    for (var user in users) {
-      if (!await _zbService.reportTask(grid.pre_classID, _halfTerm,
-          grid.gridTypes.workGrid, user.bicwData)) {
-        window.alert('Failed to report for ${user.bicwData.name}');
-      }
-    }
-
-    grid.clearCache(_halfTerm);
-    await loadTaskDataForTerm(grid, _halfTerm);
-  }
+  void report({TaskDataPair<T> user});
 
   /// Fetches zhibei task data for [halfTerm].
   Future<void> loadTaskDataForTerm(ReportGrid<T> grid, int halfTerm) async {

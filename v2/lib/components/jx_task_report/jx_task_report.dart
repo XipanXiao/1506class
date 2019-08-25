@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
@@ -8,6 +10,7 @@ import 'package:v2/components/schedule_grid/schedule_grid.dart';
 import 'package:v2/model/auditable.dart';
 import 'package:v2/model/jx_report_grid.dart';
 import 'package:v2/model/report_grid.dart';
+import 'package:v2/model/task_data_pair.dart';
 import 'package:v2/model/zb_jx_task_data.dart';
 import 'package:v2/services/task_record_service.dart';
 import 'package:v2/services/zb_service.dart';
@@ -26,9 +29,11 @@ import 'package:v2/services/zb_service.dart';
   exports: [AuditState],
 )
 class JxTaskReportComponent extends AbstractTaskReportComponent<JxTaskData> {
-  JxTaskReportComponent(ZBService zbService,
-      TaskRecordService taskService, ScheduleRecordsLoader loader)
-      : super(zbService, taskService, loader);
+  final ZBService _zbService;
+
+  JxTaskReportComponent(this._zbService, TaskRecordService taskService,
+      ScheduleRecordsLoader loader)
+      : super(_zbService, taskService, loader);
 
   @override
   bool get loadLimitRecords => true;
@@ -69,5 +74,24 @@ class JxTaskReportComponent extends AbstractTaskReportComponent<JxTaskData> {
       grid.moveBicwData(halfTerm);
     }
     grid.computeTotals();
+  }
+
+  /// Reports task data from bicw to zhibei.info, for all
+  /// selected users.
+  void report({TaskDataPair<JxTaskData> user}) async {
+    var users = user == null ? selection.selectedValues : [user];
+    if (users.isEmpty) return;
+
+    if (!await _zbService.ensureEditPermission()) return;
+
+    for (var user in users) {
+      if (!await _zbService.reportTask(grid.pre_classID, halfTerm,
+          grid.gridTypes.workGrid, user.bicwData.toMapWithKeys(grid.columns))) {
+        window.alert('Failed to report for ${user.bicwData.name}');
+      }
+    }
+
+    grid.clearCache(halfTerm);
+    await loadTaskDataForTerm(grid, halfTerm);
   }
 }
