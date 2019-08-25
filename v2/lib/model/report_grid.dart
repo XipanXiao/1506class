@@ -209,7 +209,6 @@ abstract class ReportGrid<T extends TaskData> {
 
     for (var user in term.values) {
       user.bicwData?.moveToFirstReportableTerm(taskData, halfTerm);
-      user.audit();
     }
   }
 
