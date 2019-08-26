@@ -58,8 +58,6 @@ class ScheduleTaskData extends TaskDataWithLessons {
 
   @override
   bool get isEmpty {
-    if (super.isNotEmpty) return false;
-
     var records = lessons.map((lesson) => scheduleRecords[lesson.lesson_id]);
     return records.every((record) => record == null || record.isEmpty);
   }
