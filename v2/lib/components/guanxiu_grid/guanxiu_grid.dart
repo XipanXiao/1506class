@@ -109,6 +109,7 @@ class GuanxiuGridComponent extends HasSelectable<GuanxiuDataPair> {
     if (!await _zbService.ensureEditPermission()) return;
 
     for (var user in users) {
+      user.bicwData.lessons = lessons;
       if (!await _zbService.reportScheduleTask(grid.gridTypes.guanxiuGrid,
           grid.pre_classID, _halfTerm, user.bicwData)) {
         window.alert('Failed to report for ${user.name}');
