@@ -52,6 +52,46 @@ class GuanxiuRecord extends TaskDataWithLessons {
     var records = lessons.map((lesson) => guanxiu[lesson.lesson_id]);
     return records.any((record) => record != null && record.isNotEmpty);
   }
+
+  /// Returns a [List] of [MapEntry]'s that will be post
+  /// to zhibei.info for reporting purpose.
+  ///   userID: 123623
+  ///   pre_classID: 7685
+  ///   type: guanxiu_grid
+  ///   half_term: 13
+  ///   count[]: 4
+  ///   count[]: 4
+  ///   count[]: 4
+  ///   count[]: 4
+  ///   count[]: 6
+  ///   count[]: 5
+  ///   count[]: 6
+  ///   count[]: 5
+  ///   count[]: 5
+  ///   time[]: 2.5
+  ///   time[]: 2
+  ///   time[]: 2
+  ///   time[]: 2
+  ///   time[]: 3
+  ///   time[]: 2.5
+  ///   time[]: 3
+  ///   time[]: 2.5
+  ///   time[]: 2.5
+  @override
+  List<MapEntry<String, dynamic>> toFormData() {
+    return <String, dynamic>{}.entries.toList()
+      ..addAll(toMap().entries)
+      ..addAll(_getCountRecords())
+      ..addAll(_getTimeRecords());
+  }
+
+  Iterable<MapEntry<String, int>> _getCountRecords() =>
+      lessons.map((lesson) => MapEntry(
+          'count[]', guanxiu[lesson.lesson_id]?.count ?? 0));
+
+  Iterable<MapEntry<String, double>> _getTimeRecords() =>
+      lessons.map((lesson) => MapEntry(
+          'time[]', guanxiu[lesson.lesson_id]?.time ?? 0.0));
 }
 
 class GuanxiuData implements AbstractScheduleRecord {

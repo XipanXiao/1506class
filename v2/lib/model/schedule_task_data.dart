@@ -66,4 +66,44 @@ class ScheduleTaskData extends TaskDataWithLessons {
 
   @override
   bool get isNotEmpty => !isEmpty;
+
+  /// Returns a [List] of [MapEntry]'s that will be post
+  /// to zhibei.info for reporting purpose.
+  ///   userID: 123623
+  ///   pre_classID: 7685
+  ///   type: 'jx_grid'
+  ///   half_term: 13
+  ///   book[]: 1
+  ///   book[]: 1
+  ///   book[]: 0
+  ///   book[]: 0
+  ///   book[]: 0
+  ///   book[]: 1
+  ///   book[]: 1
+  ///   book[]: 1
+  ///   book[]: 1
+  ///   audio[]: 0
+  ///   audio[]: 0
+  ///   audio[]: 0
+  ///   audio[]: 0
+  ///   audio[]: 1
+  ///   audio[]: 0
+  ///   audio[]: 1
+  ///   audio[]: 0
+  ///   audio[]: 1
+  @override
+  List<MapEntry<String, dynamic>> toFormData() {
+    return <String, dynamic>{}.entries.toList()
+      ..addAll(toMap().entries)
+      ..addAll(_getBookRecords())
+      ..addAll(_getAudioRecords());
+  }
+
+  Iterable<MapEntry<String, int>> _getBookRecords() =>
+      lessons.map((lesson) => MapEntry(
+          'book[]', scheduleRecords[lesson.lesson_id]?.text == true ? 1 : 0));
+
+  Iterable<MapEntry<String, int>> _getAudioRecords() =>
+      lessons.map((lesson) => MapEntry(
+          'audio[]', scheduleRecords[lesson.lesson_id]?.video == true ? 1 : 0));
 }

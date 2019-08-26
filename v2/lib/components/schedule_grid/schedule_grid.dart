@@ -90,12 +90,7 @@ class ScheduleGridComponent
         limited ? grid.gridTypes.attLimitGrid : grid.gridTypes.report_main_grid;
     for (var user in users) {
       if (!await _zbService.reportScheduleTask(
-          gridType,
-          grid.pre_classID,
-          _halfTerm,
-          user.bicwData,
-          grid.getLessons(_halfTerm, limited: limited),
-          limited: limited)) {
+          gridType, grid.pre_classID, _halfTerm, user.bicwData)) {
         window.alert('Failed to report for ${user.name}');
       }
     }

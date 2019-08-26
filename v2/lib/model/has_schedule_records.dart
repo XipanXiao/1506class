@@ -16,4 +16,6 @@ abstract class TaskDataWithLessons extends TaskData
   List<Lesson> lessons;
 
   TaskDataWithLessons.fromJson(Map<String, dynamic> map) : super.fromJson(map);
+
+  List<MapEntry<String, dynamic>> toFormData();
 }

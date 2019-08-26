@@ -1,5 +1,6 @@
 import 'package:angular/angular.dart';
 import 'package:v2/model/guanxiu_record.dart';
+import 'package:v2/model/has_schedule_records.dart';
 import 'package:v2/model/lesson.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/schedule_task_data.dart';
@@ -210,22 +211,8 @@ class ZBService {
     }
   }
 
-  List<int> _getBookRecords(List<Lesson> lessons, ScheduleTaskData user) =>
-      lessons
-          .map<int>((lesson) =>
-              user.scheduleRecords[lesson.lesson_id]?.text == true ? 1 : 0)
-          .toList();
-
-  List<int> _getAudioRecords(
-          List<Lesson> lessons, ScheduleTaskData user) =>
-      lessons
-          .map<int>((lesson) =>
-              user.scheduleRecords[lesson.lesson_id]?.video == true ? 1 : 0)
-          .toList();
-
   Future<bool> reportScheduleTask(String gridType, int pre_classID,
-      int half_term, ScheduleTaskData user, List<Lesson> lessons,
-      {bool limited = false}) async {
+      int half_term, TaskDataWithLessons user) async {
     _progressService.showProgress('Reporting for ${user.name}');
     var data = <String, dynamic>{
       'url': '$_serviceUrl/pre/report_ajax',
@@ -233,12 +220,7 @@ class ZBService {
       'type': gridType,
       'half_term': half_term,
     };
-    data.addAll(user.toMap());
-    var entries = data.entries.toList()
-      ..addAll(_getBookRecords(lessons, user)
-          .map((value) => MapEntry('book[]', value)))
-      ..addAll(_getAudioRecords(lessons, user)
-          .map((value) => MapEntry('audio[]', value)));
+    var entries = data.entries.toList()..addAll(user.toFormData());
 
     try {
       var response = await utils.httpPostFormData(_proxyUrl, entries);

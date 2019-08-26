@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:angular/angular.dart';
 import 'package:angular_components/angular_components.dart';
 import 'package:angular_components/material_icon/material_icon.dart';
@@ -68,14 +70,14 @@ class GuanxiuGridComponent extends HasSelectable<GuanxiuDataPair> {
         records[userID] = pair;
       }
 
-      var guanxiuRecords = await _zbService.getGuanxiuRecords(
-          _grid.pre_classID, _halfTerm, lessons);
-      for (var userID in guanxiuRecords.keys) {
-        var pair = records.putIfAbsent(userID, () => GuanxiuDataPair());
-        pair.zhibeiData = guanxiuRecords[userID];
-      }
+      await _loadZBData(_halfTerm);
     }
 
+    _audit();
+  }
+
+  void _audit() {
+    var records = _grid.guanxiuRecords[_halfTerm];
     users.clear();
     for (var pair in records.values) {
       pair = (pair.clone() as GuanxiuDataPair)
@@ -88,7 +90,32 @@ class GuanxiuGridComponent extends HasSelectable<GuanxiuDataPair> {
     }
   }
 
+  Future<void> _loadZBData(int halfTerm) async {
+    var records = _grid.guanxiuRecords[halfTerm];
+    var guanxiuRecords = await _zbService.getGuanxiuRecords(
+        _grid.pre_classID, halfTerm, lessons);
+    for (var userID in guanxiuRecords.keys) {
+      var pair = records.putIfAbsent(userID, () => GuanxiuDataPair());
+      pair.zhibeiData = guanxiuRecords[userID];
+    }
+  }
+
   /// Reports task data from bicw to zhibei.info, for all
   /// selected users.
-  void report({GuanxiuDataPair user}) async {}
+  void report({GuanxiuDataPair user}) async {
+    var users = user == null ? selection.selectedValues : [user];
+    if (users.isEmpty) return;
+
+    if (!await _zbService.ensureEditPermission()) return;
+
+    for (var user in users) {
+      if (!await _zbService.reportScheduleTask(grid.gridTypes.guanxiuGrid,
+          grid.pre_classID, _halfTerm, user.bicwData)) {
+        window.alert('Failed to report for ${user.name}');
+      }
+    }
+
+    await _loadZBData(_halfTerm);
+    _audit();
+  }
 }
