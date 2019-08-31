@@ -16,8 +16,8 @@ class ScheduleRecordsLoader {
   Future<void> load(ReportGrid grid, int halfTerm,
       {bool loadLimitRecords = false}) async {
     // Load all bicw courses.
-    if (grid.courses.isEmpty) {
-      grid.courses.addAll(await _courseService.getCourses());
+    if (ReportGrid.courses.isEmpty) {
+      ReportGrid.courses.addAll(await _courseService.getCourses());
     }
 
     // Load all bicw schedule records for this class.

@@ -31,6 +31,9 @@ abstract class ReportGrid<T extends TaskData> {
   static const guanxiuCoruseId = 4;
   static const limitedCoruseId = 10;
 
+  /// bicw course map, keyed by bicw course id.
+  static final courses = <int, Course>{};
+
   /// All possible half terms.
   static final halfTerms = List<int>.generate(17, (index) => index + 1)
     ..remove(1)
@@ -44,9 +47,6 @@ abstract class ReportGrid<T extends TaskData> {
 
   /// zhibei.info limited course lessons list, keyed by half term.
   final limitedLessons = <int, List<Lesson>>{};
-
-  /// bicw course map, keyed by bicw course id.
-  final courses = <int, Course>{};
 
   /// schedule records (both bicw and zhibei), keyed by bicw user id.
   final scheduleRecords = <int, ScheduleTaskDataPair>{};
