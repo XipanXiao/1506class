@@ -33,8 +33,11 @@ class TaskRecordService {
       var halfTermData = rawRecords.putIfAbsent(half_term, () {
         return Map<int, Map<String, dynamic>>.fromIterables(
             users.keys,
-            users.values.map((user) =>
-                {'id': user.id, 'name': user.name, 'userID': user.zb_id}));
+            users.values.map((user) => {
+                  'id': user.id,
+                  'name': user.name,
+                  'userID': user.zb_id?.toString()
+                }));
       });
 
       var task = tasks[taskRecord.task_id];

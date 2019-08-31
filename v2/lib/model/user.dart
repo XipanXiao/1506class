@@ -1,10 +1,13 @@
 import 'package:angular_components/model/date/date.dart';
 import 'package:v2/model/base_entity.dart';
+import 'package:v2/model/zb_task_data.dart';
 
 import 'class_info.dart';
 
-class User implements BaseEntity {
+class User extends TaskData {
+  @override
   String name;
+
   String email;
 
   String nickName;
@@ -13,23 +16,29 @@ class User implements BaseEntity {
 
   int education;
   int id;
-  final zb_id;
+  final int zb_id;
 
   final ClassInfo classInfo;
   StaffInfo staff;
 
-  User({this.classInfo, this.zb_id});
+  User({this.classInfo, this.zb_id}): super.fromJson({
+    'userID': zb_id?.toString(),
+  });
 
   User.fromJson(Map<String, dynamic> map)
       : name = map['name'],
         id = int.parse(map['id']),
-        zb_id = map['zb_id'],
+        zb_id = int.tryParse(map['zb_id']?.toString() ?? ''),
         email = map['email'],
         nickName = map['nickname'],
         education = map['education'],
         occupation = map['occupation'],
         skills = map['skills'],
-        classInfo = ClassInfo.fromJson(map['classInfo'] ?? {});
+        classInfo = ClassInfo.fromJson(map['classInfo'] ?? {}),
+        super.fromJson({});
+  
+  @override
+  int get userID => zb_id;
 
   String get displayLabel => nickName?.isNotEmpty == true
       ? '$name($nickName) - $email'
