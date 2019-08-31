@@ -4,6 +4,7 @@ import 'package:v2/model/has_schedule_records.dart';
 import 'package:v2/model/lesson.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/schedule_task_data.dart';
+import 'package:v2/model/user.dart';
 import 'package:v2/model/zb_jt_task_data.dart';
 import 'package:v2/model/zb_rxl_task_data.dart';
 import 'package:v2/model/zb_task_data.dart';
@@ -268,4 +269,12 @@ class ZBService {
   Future<Map<int, RxlTaskData>> getRxlTaskData(int pre_classID, int halfTerm) =>
       getLimitTaskData<RxlTaskData>('rxl_work_grid', pre_classID, halfTerm,
           (json) => RxlTaskData.fromJson(json));
+
+  Future<Iterable<User>> getUsers(int pre_classID) async {
+    var url = '$_serviceUrl/pre/classinfo_ajax?&type=pre_class_user_list'
+        '&pre_classID=$pre_classID';
+    var map = await utils.httpGetObject(_getProxiedUrl(url));
+    List list = map['data'] ?? [];
+    return list.map<User>((map) => User.fromJson(map));
+  }
 }

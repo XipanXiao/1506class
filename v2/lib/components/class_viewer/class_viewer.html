@@ -12,6 +12,7 @@
   <div class="legend"><div class="yellow box"></div>总数一致，本学期数据不一致</div>
   <div class="legend"><div class="red box"></div>数据不一致</div>
 </div>
+<user-grid [classInfo]="classInfo"></user-grid>
 <jx-task-report [classInfo]="classInfo" [halfTerm]="halfTerm"
     *ngIf="classInfo?.department_id == Department.JIAXING_DEPARTMENT">
 </jx-task-report>

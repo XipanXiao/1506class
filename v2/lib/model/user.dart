@@ -17,28 +17,51 @@ class User extends TaskData {
   int education;
   int id;
   final int zb_id;
+  final int status;
+  final int birth_year;
+
+  final String sn;
 
   final ClassInfo classInfo;
   StaffInfo staff;
 
-  User({this.classInfo, this.zb_id}): super.fromJson({
-    'userID': zb_id?.toString(),
-  });
+  User({this.classInfo, this.zb_id, this.status = 0, this.sn, this.birth_year})
+      : super.fromJson({
+          'userID': zb_id?.toString(),
+        });
 
   User.fromJson(Map<String, dynamic> map)
       : name = map['name'],
-        id = int.parse(map['id']),
-        zb_id = int.tryParse(map['zb_id']?.toString() ?? ''),
+        id = map['id'] == null ? null : int.parse(map['id']),
+        zb_id = int.tryParse(map['zb_id']?.toString() ?? map['userID'] ?? ''),
         email = map['email'],
         nickName = map['nickname'],
-        education = map['education'],
+        education = int.tryParse(map['education']?.toString() ?? ''),
         occupation = map['occupation'],
         skills = map['skills'],
+        sn = map['sn'] ?? map['internal_id'],
+        birth_year = int.tryParse(
+            map['birth_year'] ?? map['birthyear']?.toString() ?? ''),
+        status = int.parse(map['status'] ?? '0'),
         classInfo = ClassInfo.fromJson(map['classInfo'] ?? {}),
         super.fromJson({});
-  
+
   @override
   int get userID => zb_id;
+
+  bool get isActive => status == 0;
+
+  @override
+  bool get isEmpty => (sn == null || sn.isEmpty) && birth_year == null;
+
+  @override
+  bool get isNotEmpty => !isEmpty;
+
+  @override
+  bool operator ==(that) {
+    if (that is! User) return false;
+    return sn == that.sn && birth_year == that.birth_year;
+  }
 
   String get displayLabel => nickName?.isNotEmpty == true
       ? '$name($nickName) - $email'

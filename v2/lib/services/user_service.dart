@@ -55,4 +55,11 @@ class UserService {
       await utils.httpPostObject('php/organization.php?rid=staff', user.staff);
     }
   }
+
+  /// Returns a [Iterable] of [User]s from bicw server.
+  Future<Iterable<User>> getUsers(int classId) async {
+    var url = '$_serviceUrl?rid=users&classId=$classId';
+    var obj = await utils.httpGetObject(url);
+    return obj.values.map<User>((map) => User.fromJson(map));
+  }
 }

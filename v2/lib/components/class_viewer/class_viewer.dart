@@ -5,6 +5,7 @@ import 'package:angular_router/angular_router.dart';
 import 'package:v2/components/jt_grid/jt_grid.dart';
 import 'package:v2/components/jx_task_report/jx_task_report.dart';
 import 'package:v2/components/rxl_task_report/rxl_task_report.dart';
+import 'package:v2/components/user_grid/user_grid.dart';
 import 'package:v2/model/class_info.dart';
 import 'package:v2/model/departments.dart';
 import 'package:v2/model/report_grid.dart';
@@ -20,6 +21,7 @@ import 'package:v2/services/task_record_service.dart';
     MaterialDropdownSelectComponent,
     NgIf,
     RxlTaskReportComponent,
+    UserGridComponent,
   ],
   providers: [
     materialProviders,

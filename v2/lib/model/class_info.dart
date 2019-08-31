@@ -1,4 +1,6 @@
 import 'package:v2/model/report_grid.dart';
+import 'package:v2/model/task_data_pair.dart';
+import 'package:v2/model/user.dart';
 
 class ClassInfo {
   final int id;
@@ -11,6 +13,9 @@ class ClassInfo {
 
   /// Cached task data.
   ReportGrid taskGrid;
+
+  /// A list of pair of [User]s.
+  final users = <TaskDataPair<User>>[];
 
   ClassInfo.fromJson(Map<String, dynamic> map)
       : id = map['id'],

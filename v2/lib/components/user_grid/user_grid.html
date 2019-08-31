@@ -1,0 +1,57 @@
+<ng-container *ngIf="users != null && users.isNotEmpty">
+  <div>学员列表</div>
+  <table border="1">
+    <tr>
+      <td>
+        <material-checkbox [checked]="allSelected"
+            [indeterminate]="selection.isNotEmpty && !allSelected"
+            (change)="toggleSelectAll($event)">
+        </material-checkbox>
+      </td>
+      <td>序号</td>
+      <td>姓名</td>
+      <td>数据源</td>
+      <td>学号</td>
+      <td>出生年份</td>
+      <td>同步
+        <material-button icon (trigger)="report()"
+            title="上报所有选中的用户数据">
+          <material-icon icon="backup"></material-icon>
+        </material-button>
+      </td>
+    </tr>
+    <ng-container *ngFor="let user of users; let index = index">
+      <tr>
+        <td rowspan="2">
+          <material-checkbox [checked]="selection.isSelected(user)"
+              (checkedChange)="toggleSelection(user, $event)"
+              title="是否上报zhibei.info"
+              [disabled]="!user.reportable">
+          </material-checkbox>  
+        </td>
+        <td rowspan="2">{{index + 1}}</td>
+        <td rowspan="2"
+            [class.pass]="user.passed"
+            [class.warning]="user.audited == AuditState.PARTIAL_PASS"
+            [class.error]="user.failed">
+          {{user.name}}
+        </td>
+        <td>zhibei.info</td>
+        <td>{{user.zhibeiData?.sn}}</td>
+        <td>{{user.zhibeiData?.birth_year}}</td>
+        <td rowspan="2" class="selectable">
+          <material-button icon (trigger)="report(user: user)"
+              title="上报" class="hover-button"
+              *ngIf="user.reportable">
+            <material-icon icon="backup"></material-icon>
+          </material-button>
+        </td>
+      </tr>
+      <tr>
+        <td>bicw</td>
+        <td>{{user.bicwData?.sn}}</td>
+        <td>{{user.bicwData?.birth_year}}</td>
+      </tr>
+    </ng-container>
+  </table>
+</ng-container>
