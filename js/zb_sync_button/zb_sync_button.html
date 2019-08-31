@@ -4,7 +4,7 @@
 <iron-icon class="clickable small-icon"
     icon="event-seat"
     ng-click="sync_guanxiu()"
-    ng-show="isJiaXing()"
+    ng-show="false"
     title="只上报观修数据..."
     ng-class="{'in-progress': inprogress}">
 </iron-icon>
@@ -18,7 +18,7 @@
     ng-click="resetReportTime()"
     ng-show="false && isSysAdmin() && endTimeLabel()">
 </iron-icon>
-<label>
+<label ng-show="false">
   覆盖全部数据 <input type="checkbox" ng-model="options.overwriteWithZero"
       ng-click="showOverwriteMessage()">
 </label>

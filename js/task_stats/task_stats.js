@@ -286,7 +286,7 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
           };
           scope.currentPage = 0;
         },
-        templateUrl: 'js/task_stats/task_stats.html?tag=201905172201'
+        templateUrl: 'js/task_stats/task_stats.html?tag=201909172201'
       };
     });
 });

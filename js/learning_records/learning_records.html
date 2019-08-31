@@ -41,7 +41,7 @@
           第{{group.term}}学期交叉合并.txt
         </a>
         &nbsp;&nbsp;
-        <iron-icon class="clickable small-icon"
+        <iron-icon ng-show="false" class="clickable small-icon"
             icon="editor:border-all"
             ng-click="sync_courses()"
             title="只上报传承法本数据..."
@@ -51,7 +51,7 @@
             schedule-group="group" title="学修记录上报学院"
             options="options">
         </zb-sync-button>
-        <label>
+        <label ng-show="false">
           同时显示zhibei.info数据(需要登录)
           <input type="checkbox" ng-model="showZBdata" ng-change="getZbData()"
               id="show-zb-data-option">

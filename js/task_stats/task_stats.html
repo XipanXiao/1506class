@@ -4,7 +4,7 @@
     <select ng-options="value.name for value in tasks" ng-model="selectedTask">
     </select>
   </label>
-  <label>
+  <label ng-show="false">
 		同时显示zhibei.info数据(需要登录)
 		<input type="checkbox" ng-model="options.showZBdata" ng-change="getZbData()">
 	</label>

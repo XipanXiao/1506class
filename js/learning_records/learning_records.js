@@ -529,7 +529,7 @@ define('learning_records/learning_records', [
                 utils.requestOneByOne(requests).then(done);
               };
             },
-            templateUrl : 'js/learning_records/learning_records.html?tag=201907152208'
+            templateUrl : 'js/learning_records/learning_records.html?tag=201909152208'
           };
         });
 });
