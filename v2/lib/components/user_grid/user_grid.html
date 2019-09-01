@@ -11,8 +11,12 @@
       <td>序号</td>
       <td>姓名</td>
       <td>数据源</td>
+      <td>性别</td>
       <td>学号</td>
       <td>出生年份</td>
+      <td>国家</td>
+      <td>地区</td>
+      <td>职位</td>
       <td>同步
         <material-button icon (trigger)="report()"
             title="上报所有选中的用户数据">
@@ -37,8 +41,12 @@
           {{user.name}}
         </td>
         <td>zhibei.info</td>
+        <td>{{getGenderLabel(user.zhibeiData)}}</td>
         <td>{{user.zhibeiData?.sn}}</td>
         <td>{{user.zhibeiData?.birth_year}}</td>
+        <td>{{user.zhibeiData?.district1}}</td>
+        <td>{{user.zhibeiData?.district2}}</td>
+        <td>{{user.zhibeiData?.job}}</td>
         <td rowspan="2" class="selectable">
           <material-button icon (trigger)="report(user: user)"
               title="上报" class="hover-button"
@@ -49,8 +57,12 @@
       </tr>
       <tr>
         <td>bicw</td>
+        <td>{{getGenderLabel(user.bicwData)}}</td>
         <td>{{user.bicwData?.sn}}</td>
         <td>{{user.bicwData?.birth_year}}</td>
+        <td>{{user.bicwData?.district1}}</td>
+        <td>{{user.bicwData?.district2}}</td>
+        <td>{{user.bicwData?.job}}</td>
       </tr>
     </ng-container>
   </table>

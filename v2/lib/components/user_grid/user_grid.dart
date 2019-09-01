@@ -80,6 +80,8 @@ class UserGridComponent extends HasSelectable<TaskDataPair<User>> {
     }
   }
 
+  String getGenderLabel(User user) => {0: '男', 1: '女'}[user?.gender];
+
   /// Reports task data from bicw to zhibei.info, for all
   /// selected users.
   void report({TaskDataPair<User> user}) {}
