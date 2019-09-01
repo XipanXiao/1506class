@@ -11,9 +11,11 @@ import 'package:html/parser.dart';
 class ZBGroup {
   final String id;
   final String html;
+  final String groupId;
 
   ZBGroup.fromJson(Map<String, dynamic> map)
       : id = map['id'],
+        groupId = map['groupId'],
         html = _getHtmlText(map['html']);
 
   static String _getHtmlText(String html) {

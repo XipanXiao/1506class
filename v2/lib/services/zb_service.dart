@@ -1,4 +1,5 @@
 import 'package:angular/angular.dart';
+import 'package:v2/model/base_entity.dart';
 import 'package:v2/model/guanxiu_record.dart';
 import 'package:v2/model/has_schedule_records.dart';
 import 'package:v2/model/lesson.dart';
@@ -288,5 +289,39 @@ class ZBService {
     var url = '$_serviceUrl/pre/classselect_ajax?type=init_root_tree';
     var map = await utils.httpGetObject(_getProxiedUrl(url));
     return (map['data'] ?? []).map<ZBGroup>((group) => ZBGroup.fromJson(group));
+  }
+
+  /// Creates a new pre class under the parent group identified by
+  /// [groupId], with department id [courseId].
+  ///
+  /// [localID] is the basically the index in the same department.
+  ///  For example for a class named, '19届美国加行2组':
+  ///  startdate: 2019
+  ///  courseId: 3 (Jia xing)
+  ///  district1: 美国
+  ///  localID: 2
+  Future<int> createClass(String groupId, int courseId, String startdate,
+      String district1, int localID) async {
+    var data = <String, String>{
+      'url': '$_serviceUrl/pre/classselect_ajax',
+      'pre_groupID': groupId,
+      'type': 'add_pre_class',
+      'district1': district1,
+      'district2': '',
+      'courseID': '$courseId',
+      'startDate': startdate,
+      'localID': '$localID',
+      'study_style': '2',
+      'note': ''
+    };
+    _progressService.showProgress('Creating new class');
+
+    try {
+      var response =
+          await utils.httpPostObject(_proxyUrl, BaseEntity(), extraData: data);
+      return response['returnValue'];
+    } finally {
+      _progressService.done();
+    }
   }
 }

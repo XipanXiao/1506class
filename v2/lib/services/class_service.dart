@@ -32,4 +32,9 @@ class ClassService {
     }
     return _cache[id];
   }
+
+  Future<bool> updateClass(ClassInfo info) async {
+    var response = await utils.httpPostObject('$_serviceUrl?rid=classes', info);
+    return int.tryParse(response['updated'] ?? '0') > 0;
+  }
 }

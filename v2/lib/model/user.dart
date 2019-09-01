@@ -59,13 +59,7 @@ class User extends TaskData {
   bool get isActive => status == 0;
 
   @override
-  bool get isEmpty =>
-      (sn == null || sn.isEmpty) &&
-      birth_year == null &&
-      gender == null &&
-      district1 == null &&
-      district2 == null &&
-      job == null;
+  bool get isEmpty => false;
 
   @override
   bool get isNotEmpty => !isEmpty;
