@@ -7,6 +7,7 @@ import 'package:v2/model/auditable.dart';
 import 'package:v2/model/class_info.dart';
 import 'package:v2/model/task_data_pair.dart';
 import 'package:v2/model/user.dart';
+import 'package:v2/services/dialog_service.dart';
 import 'package:v2/services/user_service.dart';
 import 'package:v2/services/zb_service.dart';
 
@@ -22,6 +23,7 @@ import 'package:v2/services/zb_service.dart';
   exports: [AuditState],
 )
 class UserGridComponent extends HasSelectable<TaskDataPair<User>> {
+  final DialogService _dialogService;
   final UserService _userService;
   final ZBService _zbService;
 
@@ -37,7 +39,7 @@ class UserGridComponent extends HasSelectable<TaskDataPair<User>> {
 
   ClassInfo _classInfo;
 
-  UserGridComponent(this._zbService, this._userService);
+  UserGridComponent(this._zbService, this._userService, this._dialogService);
 
   Future<void> _reload() async {
     if (_classInfo.users.isEmpty) {
@@ -84,5 +86,9 @@ class UserGridComponent extends HasSelectable<TaskDataPair<User>> {
 
   /// Reports task data from bicw to zhibei.info, for all
   /// selected users.
-  void report({TaskDataPair<User> user}) {}
+  void report({TaskDataPair<User> user}) async {
+    if (user == null) {
+      await _dialogService.showZBChooseRootDialog(_classInfo);
+    }
+  }
 }

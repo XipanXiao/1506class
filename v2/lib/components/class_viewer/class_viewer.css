@@ -3,6 +3,7 @@
   margin: auto;
   overflow: auto;
   padding: 16px;
+  width: 100%;
 }
 
 ::ng-deep .material-popup-content {

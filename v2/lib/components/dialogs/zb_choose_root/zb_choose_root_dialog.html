@@ -1,0 +1,17 @@
+<modal [(visible)]="show">
+  <material-dialog>
+    <h1 header>创建班级，请选择一个大组</h1>
+    <div class="dialog-content">
+      <material-dropdown-select [options]="zbGroups"
+        [buttonText]="selection.isEmpty ? '请选择一个大组' : selection.selectedValues.first.html"
+        class="root-chooser"
+        [selection]="selection"
+        [itemRenderer]="getGroupLabel">
+      </material-dropdown-select>
+    </div>
+    <div footer>
+      <material-button (trigger)="close(false)">Close</material-button>
+      <material-button (trigger)="create()">确定</material-button>
+    </div>
+  </material-dialog>
+</modal>

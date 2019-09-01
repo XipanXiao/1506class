@@ -5,6 +5,7 @@ import 'package:v2/model/lesson.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/schedule_task_data.dart';
 import 'package:v2/model/user.dart';
+import 'package:v2/model/zb_group.dart';
 import 'package:v2/model/zb_jt_task_data.dart';
 import 'package:v2/model/zb_rxl_task_data.dart';
 import 'package:v2/model/zb_task_data.dart';
@@ -281,5 +282,11 @@ class ZBService {
       print('Failed to get users for $pre_classID: $exception');
       return [];
     }
+  }
+
+  Future<Iterable<ZBGroup>> getRootGroups() async {
+    var url = '$_serviceUrl/pre/classselect_ajax?type=init_root_tree';
+    var map = await utils.httpGetObject(_getProxiedUrl(url));
+    return (map['data'] ?? []).map<ZBGroup>((group) => ZBGroup.fromJson(group));
   }
 }
