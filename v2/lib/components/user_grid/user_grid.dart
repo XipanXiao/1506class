@@ -47,11 +47,14 @@ class UserGridComponent extends HasSelectable<TaskDataPair<User>> {
       }
     }
 
-    // Build a map from zb_id to bicw User.
-    var userMap = Map<int, TaskDataPair<User>>.fromIterable(_classInfo.users,
-        key: (user) => user.bicwData.userID);
-    if (await _zbService.ensureAuthenticated()) {
+    if (_classInfo.zb_id != null &&
+        _classInfo.zb_id > 0 &&
+        await _zbService.ensureAuthenticated()) {
       var zbUsers = await _zbService.getUsers(_classInfo.zb_id);
+      // Build a map from zb_id to bicw User.
+      var userMap = Map<int, TaskDataPair<User>>.fromIterable(_classInfo.users,
+          key: (user) => user.bicwData.userID);
+
       for (var zbUser in zbUsers) {
         if (!zbUser.isActive) continue;
 
@@ -71,6 +74,9 @@ class UserGridComponent extends HasSelectable<TaskDataPair<User>> {
   void _audit() {
     for (var pair in users) {
       pair.audit();
+      if (pair.reportable) {
+        selection.select(pair);
+      }
     }
   }
 

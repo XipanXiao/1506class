@@ -273,8 +273,13 @@ class ZBService {
   Future<Iterable<User>> getUsers(int pre_classID) async {
     var url = '$_serviceUrl/pre/classinfo_ajax?&type=pre_class_user_list'
         '&pre_classID=$pre_classID';
-    var map = await utils.httpGetObject(_getProxiedUrl(url));
-    List list = map['data'] ?? [];
-    return list.map<User>((map) => User.fromJson(map));
+    try {
+      var map = await utils.httpGetObject(_getProxiedUrl(url));
+      List list = map['data'] ?? [];
+      return list.map<User>((map) => User.fromJson(map));
+    } on FormatException catch (exception) {
+      print('Failed to get users for $pre_classID: $exception');
+      return [];
+    }
   }
 }
