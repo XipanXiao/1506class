@@ -324,4 +324,38 @@ class ZBService {
       _progressService.done();
     }
   }
+
+  Future<bool> createUser(int pre_classID, User user) async {
+    var data = <String, String>{
+      'url': '$_serviceUrl/pre/classinfo_ajax',
+      'type': 'add_user',
+      'pre_classID': '$pre_classID',
+    };
+
+    _progressService.showProgress('Creating new user for ${user.name}');
+
+    try {
+      var response =
+          await utils.httpPostObject(_proxyUrl, user, extraData: data);
+      return response['returnValue'];
+    } finally {
+      _progressService.done();
+    }
+  }
+
+  Future<bool> updateUser(User user) async {
+    var data = <String, String>{
+      'url': '$_serviceUrl/user/basic_ajax',
+    };
+
+    _progressService.showProgress('Updating user for ${user.name}');
+
+    try {
+      var response =
+          await utils.httpPostObject(_proxyUrl, user, extraData: data);
+      return response['returnValue'];
+    } finally {
+      _progressService.done();
+    }
+  }
 }

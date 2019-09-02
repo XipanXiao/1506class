@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:angular/angular.dart';
 import 'package:angular_components/material_button/material_button.dart';
 import 'package:angular_components/material_checkbox/material_checkbox.dart';
@@ -87,8 +89,27 @@ class UserGridComponent extends HasSelectable<TaskDataPair<User>> {
   /// Reports task data from bicw to zhibei.info, for all
   /// selected users.
   void report({TaskDataPair<User> user}) async {
-    if (user == null) {
-      await _dialogService.showZBChooseRootDialog(_classInfo);
+    var users = user == null ? selection.selectedValues : [user];
+    if (users.isEmpty) return;
+
+    if (_classInfo.zb_id == null || _classInfo.zb_id == 0) {
+      if (!await _dialogService.showZBChooseRootDialog(_classInfo)) {
+        return;
+      }
+    } else if (!await _zbService.ensureEditPermission()) {
+      return;
     }
+
+    for (var user in users) {
+      if (user.bicwData.zb_id == null &&
+          !await _zbService.createUser(_classInfo.zb_id, user.bicwData)) {
+        window.alert('Failed to create user for ${user.bicwData.name}');
+      } else if (user.bicwData.zb_id != null &&
+          !await _zbService.updateUser(user.bicwData)) {
+        window.alert('Failed to report for ${user.bicwData.name}');
+      }
+    }
+
+    await _reload();
   }
 }
