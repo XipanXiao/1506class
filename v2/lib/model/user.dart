@@ -94,7 +94,8 @@ class User extends TaskData {
     };
   }
 
-  static String _getCountryLabel(String code) => {'US': 'United States'}[code];
+  static String _getCountryLabel(String code) =>
+      code == null ? null : {'US': 'United States'}[code];
 
   static int _getGenderCode(String label) => {'男': 0, '女': 1}[label];
 }
@@ -133,8 +134,12 @@ class StaffInfo implements BaseEntity {
 }
 
 class _DistrictUtil {
-  static const _states =
-      'Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|District of Columbia|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New Hampshire|New Jersey|New Mexico|New York|North Carolina|North Dakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode Island|South Carolina|South Dakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West Virginia|Wisconsin|Wyoming';
+  static final _states = _buildStateList();
+
+  static List<String> _buildStateList() {
+    return 'Alabama|Alaska|Arizona|Arkansas|California|Colorado|Connecticut|Delaware|District of Columbia|Florida|Georgia|Hawaii|Idaho|Illinois|Indiana|Iowa|Kansas|Kentucky|Louisiana|Maine|Maryland|Massachusetts|Michigan|Minnesota|Mississippi|Missouri|Montana|Nebraska|Nevada|New Hampshire|New Jersey|New Mexico|New York|North Carolina|North Dakota|Ohio|Oklahoma|Oregon|Pennsylvania|Rhode Island|South Carolina|South Dakota|Tennessee|Texas|Utah|Vermont|Virginia|Washington|West Virginia|Wisconsin|Wyoming'
+        .split('|');
+  }
 
   static final _labelToCode = _buildStateMap();
 
@@ -203,7 +208,7 @@ class _DistrictUtil {
     return Map.fromIterable(codeToLabel.keys, key: (code) => codeToLabel[code]);
   }
 
-  static String _getStateLabel(int index) => _states.split('|')[index];
+  static String _getStateLabel(int index) => _states[index];
 
   static String _getStateCode(int index) {
     var state = _getStateLabel(index);
@@ -211,5 +216,5 @@ class _DistrictUtil {
   }
 
   static getStateCityLabel(int stateIndex, String city) =>
-      '${_getStateCode(stateIndex)}-$city';
+      stateIndex == null ? null : '${_getStateCode(stateIndex)}-$city';
 }

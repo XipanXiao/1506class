@@ -59,7 +59,7 @@ class UserGridComponent extends HasSelectable<TaskDataPair<User>> {
       var idMap = Map<int, TaskDataPair<User>>.fromIterable(_classInfo.users,
           key: (user) => user.bicwData.userID);
       // Another map from name to User pair.
-      var nameMap = Map<int, TaskDataPair<User>>.fromIterable(_classInfo.users,
+      var nameMap = Map<String, TaskDataPair<User>>.fromIterable(_classInfo.users,
           key: (user) => user.name);
 
       for (var zbUser in zbUsers) {
