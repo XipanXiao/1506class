@@ -18,6 +18,13 @@
 
 <app-bar user="user"></app-bar>
 
+<style is="custom-style">
+  .link {
+    @apply(--layout-horizontal);
+    @apply(--layout-center-center);
+  }
+</style>
+
 <div class="center page-container">
   <paper-tabs noink selected="0">
     <paper-tab>浏览所有法本</paper-tab>
@@ -29,6 +36,7 @@
       </div>
     </paper-tab>
     <paper-tab>我的订单<span>(付款)</span></paper-tab>
+    <paper-tab link> <a href="https://www.paypal.me/BICWUSA" class="link">捐赠</a></paper-tab>
   </paper-tabs>
 
   <iron-pages selected="0">
