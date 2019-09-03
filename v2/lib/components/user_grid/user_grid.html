@@ -40,7 +40,7 @@
             [class.error]="user.failed">
           {{user.name}}
         </td>
-        <td>zhibei.info</td>
+        <td>{{user.passed ? '' : 'zhibei.info'}}</td>
         <td>{{getGenderLabel(user.zhibeiData)}}</td>
         <td>{{user.zhibeiData?.sn}}</td>
         <td>{{user.zhibeiData?.birth_year}}</td>
@@ -56,13 +56,15 @@
         </td>
       </tr>
       <tr>
-        <td>bicw</td>
-        <td>{{getGenderLabel(user.bicwData)}}</td>
-        <td>{{user.bicwData?.sn}}</td>
-        <td>{{user.bicwData?.birth_year}}</td>
-        <td>{{user.bicwData?.district1}}</td>
-        <td>{{user.bicwData?.district2}}</td>
-        <td>{{user.bicwData?.job}}</td>
+        <ng-container *ngIf="!user.passed">
+          <td>bicw</td>
+          <td>{{getGenderLabel(user.bicwData)}}</td>
+          <td>{{user.bicwData?.sn}}</td>
+          <td>{{user.bicwData?.birth_year}}</td>
+          <td>{{user.bicwData?.district1}}</td>
+          <td>{{user.bicwData?.district2}}</td>
+          <td>{{user.bicwData?.job}}</td>
+        </ng-container>
       </tr>
     </ng-container>
   </table>

@@ -88,7 +88,7 @@ abstract class TaskAttLImitGridComponent<T extends ScheduleTaskData>
       _copyScheduleData(user.bicwData);
       user.bicwData.lessons = lessons;
       user.zhibeiData?.lessons = lessons;
-      user.audit();
+      user.audit(compareAtt: true);
     }
     selection.clear();
     users.where((user) => user.failed).forEach(selection.select);

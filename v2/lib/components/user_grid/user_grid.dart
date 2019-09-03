@@ -59,7 +59,8 @@ class UserGridComponent extends HasSelectable<TaskDataPair<User>> {
       var idMap = Map<int, TaskDataPair<User>>.fromIterable(_classInfo.users,
           key: (user) => user.bicwData.userID);
       // Another map from name to User pair.
-      var nameMap = Map<String, TaskDataPair<User>>.fromIterable(_classInfo.users,
+      var nameMap = Map<String, TaskDataPair<User>>.fromIterable(
+          _classInfo.users,
           key: (user) => user.name);
 
       for (var zbUser in zbUsers) {
@@ -116,6 +117,10 @@ class UserGridComponent extends HasSelectable<TaskDataPair<User>> {
             await _zbService.getUserClassInfo(user.bicwData.userID);
         if (userClassInfo.status == 11) {
           // If the user is deleted in zhibei.info, recover the user.
+          if (!window.confirm('用户${user.name}在zhibei.info已经删除。'
+              '请确认恢复。或者选择取消，仔细核对之后再手工恢复。')) {
+            continue;
+          }
           await _zbService.recoverUser(
               userClassInfo.pre_classID, user.bicwData.userID, user.name);
         }
