@@ -117,8 +117,8 @@ class UserGridComponent extends HasSelectable<TaskDataPair<User>> {
             await _zbService.getUserClassInfo(user.bicwData.userID);
         if (userClassInfo.status == 11) {
           // If the user is deleted in zhibei.info, recover the user.
-          if (!window.confirm('用户${user.name}在zhibei.info已经删除。'
-              '请确认恢复。或者选择取消，仔细核对之后再手工恢复。')) {
+          if (!window.confirm('用户${user.name}在zhibei.info已经退出。'
+              '选择确认将恢复学员身份。或者选择取消，仔细核对之后再手工恢复。')) {
             continue;
           }
           await _zbService.recoverUser(
