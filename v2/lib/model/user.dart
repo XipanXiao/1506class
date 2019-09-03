@@ -16,7 +16,7 @@ class User extends TaskData {
 
   int education;
   int id;
-  final int zb_id;
+  int zb_id;
   final int status;
   final int birth_year;
   final int gender;
@@ -55,6 +55,7 @@ class User extends TaskData {
 
   @override
   int get userID => zb_id;
+  set userID(int userID) => zb_id = userID;
 
   bool get isActive => status == 0;
 

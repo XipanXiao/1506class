@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:angular/angular.dart';
 import 'package:v2/model/base_entity.dart';
 import 'package:v2/model/guanxiu_record.dart';
@@ -10,6 +12,7 @@ import 'package:v2/model/zb_group.dart';
 import 'package:v2/model/zb_jt_task_data.dart';
 import 'package:v2/model/zb_rxl_task_data.dart';
 import 'package:v2/model/zb_task_data.dart';
+import 'package:v2/model/zb_user_class_info.dart';
 import 'package:v2/services/dialog_service.dart';
 import 'package:v2/services/progress_service.dart';
 import 'package:v2/utils.dart' as utils;
@@ -332,28 +335,59 @@ class ZBService {
       'pre_classID': '$pre_classID',
     };
 
-    _progressService.showProgress('Creating new user for ${user.name}');
-
-    try {
-      var response =
-          await utils.httpPostObject(_proxyUrl, user, extraData: data);
-      return response['returnValue'];
-    } finally {
-      _progressService.done();
-    }
+    return await _post(user, data, 'Creating new user for ${user.name}');
   }
 
   Future<bool> updateUser(User user) async {
     var data = <String, String>{
       'url': '$_serviceUrl/user/basic_ajax',
     };
+    return await _post(user, data, 'Updating user for ${user.name}');
+  }
 
-    _progressService.showProgress('Updating user for ${user.name}');
+  Future<ZBUserClassInfo> getUserClassInfo(int userID) async {
+    var url = '$_serviceUrl/user/basic?userID=$userID';
+    var response = await utils.httpGetObject(_getProxiedUrl(url));
+    var html = response['data'];
+    var m = RegExp(r'var history_classes_json = (\[.+\]);').firstMatch(html);
+    if (m == null) return null;
+
+    var histories = jsonDecode(m.group(1));
+    // The first entry of the histories list has the most updated class info.
+    return histories.first;
+  }
+
+  Future<bool> recoverUser(int pre_classID, int userID, String name) async {
+    var data = <String, dynamic>{
+      'url': '$_serviceUrl/pre/classinfo_ajax',
+      'type': 'recover_users',
+      'pre_classID': '$pre_classID',
+      'userIDs': '${[userID]}',
+    };
+    return await _post(BaseEntity(), data, 'Recovering deleted user for $name');
+  }
+
+  Future<bool> transferUser(
+      int userID, int fromID, int toID, String reason) async {
+    var data = <String, String>{
+      'url': '$_serviceUrl/pre/classinfo_ajax',
+      'type': 'transfer_users',
+      'userIDs': '${[userID]}',
+      'pre_classID': '$fromID',
+      'dst_pre_classID': '$toID',
+      'reason': reason,
+    };
+    return await _post(BaseEntity(), data, 'Transfer user $userID to $toID');
+  }
+
+  Future<bool> _post(
+      BaseEntity data, Map<String, String> extraData, String status) async {
+    _progressService.showProgress(status);
 
     try {
       var response =
-          await utils.httpPostObject(_proxyUrl, user, extraData: data);
-      return response['returnValue'];
+          await utils.httpPostObject(_proxyUrl, data, extraData: extraData);
+      return response['returnValue'] == 'true';
     } finally {
       _progressService.done();
     }
