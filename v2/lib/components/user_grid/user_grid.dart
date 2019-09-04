@@ -55,30 +55,8 @@ class UserGridComponent extends HasSelectable<TaskDataPair<User>> {
         _classInfo.zb_id > 0 &&
         await _zbService.ensureAuthenticated()) {
       var zbUsers = await _zbService.getUsers(_classInfo.zb_id);
-      // Build a map from zb_id to User pair.
-      var idMap = Map<int, TaskDataPair<User>>.fromIterable(_classInfo.users,
-          key: (user) => user.bicwData.userID);
-      // Another map from name to User pair.
-      var nameMap = Map<String, TaskDataPair<User>>.fromIterable(
-          _classInfo.users,
-          key: (user) => user.name);
-
-      for (var zbUser in zbUsers) {
-        if (!zbUser.isActive) continue;
-
-        var pair = idMap[zbUser.userID] ?? nameMap[zbUser.name];
-        if (pair == null) {
-          // A user only exists from zhibei.info.
-          _classInfo.users.add(TaskDataPair<User>()..zhibeiData = zbUser);
-        } else {
-          if (pair.bicwData.userID == null) {
-            // A user exists in both systems but not linked.
-            pair.bicwData.userID = zbUser.userID;
-            await _userService.updateUser(pair.bicwData);
-          }
-          pair.zhibeiData = zbUser;
-        }
-      }
+      await _classInfo.setZBUsers(
+          zbUsers, _userService.updateUser, _zbService.findUser);
     }
 
     _audit();
@@ -89,7 +67,22 @@ class UserGridComponent extends HasSelectable<TaskDataPair<User>> {
       pair.audit();
       if (pair.reportable) {
         selection.select(pair);
+        _setReportAction(pair);
       }
+    }
+  }
+
+  void _setReportAction(TaskDataPair<User> pair) {
+    if (pair.bicwData != null && pair.zhibeiData != null) {
+      if (!pair.zhibeiData.isActive) {
+        pair.action = '激活';
+      } else if (pair.bicwData.pre_classID != pair.zhibeiData.pre_classID) {
+        pair.action = '转班';
+      } else {
+        pair.action = '更新';
+      }
+    } else if (pair.bicwData != null && pair.zhibeiData == null) {
+      pair.action = '新建';
     }
   }
 
@@ -110,22 +103,15 @@ class UserGridComponent extends HasSelectable<TaskDataPair<User>> {
     }
 
     for (var user in users) {
-      if (user.bicwData.userID != null && user.zhibeiData == null) {
+      if (user.zhibeiData != null && !user.zhibeiData.isActive) {
+        // If the user is deleted in zhibei.info, recover the user.
+        await _recover(user.zhibeiData);
+      } else if (user.bicwData != null &&
+          user.zhibeiData != null &&
+          user.bicwData.pre_classID != user.zhibeiData.pre_classID) {
         // A user is in zhibei.info but not in this pre class,
         // transfer to this class.
-        var userClassInfo =
-            await _zbService.getUserClassInfo(user.bicwData.userID);
-        if (userClassInfo.status == 11) {
-          // If the user is deleted in zhibei.info, recover the user.
-          if (!window.confirm('用户${user.name}在zhibei.info已经退出。'
-              '选择确认将恢复学员身份。或者选择取消，仔细核对之后再手工恢复。')) {
-            continue;
-          }
-          await _zbService.recoverUser(
-              userClassInfo.pre_classID, user.bicwData.userID, user.name);
-        }
-        await _zbService.transferUser(user.bicwData.userID,
-            userClassInfo.pre_classID, _classInfo.zb_id, 'bicw auto sync');
+        await _transfer(user.zhibeiData);
       } else if (user.bicwData.zb_id == null &&
           !await _zbService.createUser(_classInfo.zb_id, user.bicwData)) {
         window.alert('Failed to create user for ${user.bicwData.name}');
@@ -136,5 +122,23 @@ class UserGridComponent extends HasSelectable<TaskDataPair<User>> {
     }
 
     await _reload();
+  }
+
+  /// Revives quit [user] from zhibei.info.
+  Future<void> _recover(User user) async {
+    if (window.confirm('用户${user.name}在zhibei.info已经退出。'
+        '选择确认将恢复学员身份。或者选择取消，仔细核对之后再手工恢复。')) {
+      await _zbService.recoverUser(_classInfo.zb_id, user.userID, user.name);
+    }
+  }
+
+  /// Transfers [user] from her current class to the
+  /// zhibei class identified by [_classInfo].zb_id.
+  Future<void> _transfer(User user) async {
+    if (window.confirm('用户${user.name}在zhibei.info另一个班级中。'
+        '选择确认将转入本班。或者选择取消，仔细核对之后再手工转班。')) {
+      await _zbService.transferUser(
+          user.userID, user.pre_classID, _classInfo.zb_id, 'bicw auto sync');
+    }
   }
 }

@@ -6,6 +6,13 @@ class TaskDataPair<T extends TaskData> extends Auditable {
   T bicwData;
   T zhibeiData;
 
+  /// The action to be excuted after audtion.
+  /// 
+  /// Different actions will be performed for different audtion
+  /// results. For example, a user will be created or updated
+  /// based on whether the user exists in zhibei.info or not.
+  String action;
+
   @override
   TaskDataPair clone() => TaskDataPair()
     ..bicwData = bicwData
@@ -18,6 +25,7 @@ class TaskDataPair<T extends TaskData> extends Auditable {
   /// Compares bicw and zhibei.info data.
   @override
   void audit({bool compareAtt = false}) {
+    action = null;
     if (bicwData == null && zhibeiData == null) return;
 
     var hasLocalData =
@@ -42,6 +50,9 @@ class TaskDataPair<T extends TaskData> extends Auditable {
       audited = AuditState.REMOTE_ONLY;
     } else if (bicwData != null && sameTotal) {
       audited = AuditState.PASS;
+    }
+    if (reportable) {
+      action = '上报';
     }
   }
 

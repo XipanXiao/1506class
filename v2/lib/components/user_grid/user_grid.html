@@ -19,6 +19,7 @@
       <td>职位</td>
       <td>上报
         <material-button icon (trigger)="report()"
+            class="link"
             title="上报所有选中的用户数据">
           <material-icon icon="backup"></material-icon>
         </material-button>
@@ -48,10 +49,11 @@
         <td>{{user.zhibeiData?.district2}}</td>
         <td>{{user.zhibeiData?.job}}</td>
         <td rowspan="2" class="selectable">
-          <material-button icon (trigger)="report(user: user)"
-              title="上报" class="hover-button"
+          <material-button (trigger)="report(user: user)"
+              class="link"
+              title="上报"
               *ngIf="user.reportable">
-            <material-icon icon="backup"></material-icon>
+              {{user.action}}
           </material-button>
         </td>
       </tr>

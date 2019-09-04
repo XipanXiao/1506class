@@ -37,4 +37,43 @@ class ClassInfo extends BaseEntity {
       'class_root': class_room,
     };
   }
+
+  /// Merges information from [zbUsers] to the [users] list.
+  Future<void> setZBUsers(
+      Iterable<User> zbUsers,
+      Future<void> Function(User) _updateBicwUser,
+      Future<User> Function(int) _findZBUser) async {
+    // Build a map from zb_id to User pair.
+    var idMap = Map<int, TaskDataPair<User>>.fromIterable(users,
+        key: (user) => user.bicwData.userID);
+    // Another map from name to User pair.
+    var nameMap = Map<String, TaskDataPair<User>>.fromIterable(users,
+        key: (user) => user.name);
+
+    for (var zbUser in zbUsers) {
+      var pair = idMap[zbUser.userID] ?? nameMap[zbUser.name];
+      if (pair == null) {
+        // A user only exists from zhibei.info.
+        if (zbUser.isActive) {
+          users.add(TaskDataPair<User>()..zhibeiData = zbUser);
+        }
+      } else {
+        if (pair.bicwData.userID == null) {
+          // A user exists in both systems but not linked.
+          pair.bicwData.userID = zbUser.userID;
+          await _updateBicwUser(pair.bicwData);
+        }
+        pair.zhibeiData = zbUser;
+      }
+    }
+
+    for (var pair in users) {
+      if (pair.bicwData?.userID != null && pair.zhibeiData == null) {
+        var userID = pair.bicwData.userID;
+        // A user has a zhibei id, but might be in a different zhibei class.
+        pair.zhibeiData = await _findZBUser(userID);
+        pair.bicwData.pre_classID = zb_id;
+      }
+    }
+  }
 }

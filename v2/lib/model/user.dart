@@ -31,6 +31,13 @@ class User extends TaskData {
   final ClassInfo classInfo;
   StaffInfo staff;
 
+  /// Class ID in zhibei.info.
+  /// 
+  /// This might be different from zb_id of [classInfo] since
+  /// a user might exist in zhibei.info but in a different class,
+  /// and needs to sync up.
+  int pre_classID;
+
   User.fromJson(Map<String, dynamic> map)
       : name = map['name'],
         id = map['id'] == null ? null : int.parse(map['id']),

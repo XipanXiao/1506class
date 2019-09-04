@@ -380,6 +380,21 @@ class ZBService {
     return await _post(BaseEntity(), data, 'Transfer user $userID to $toID');
   }
 
+  /// Given [userID], find the [User] from zhibei.info.
+  ///
+  /// Suppose a bicw user has a zb_id, but from some reason its remote
+  /// copy from zhibei.info is not in the specified zhibei class,
+  /// then listing users of this class won't include this user, we need
+  /// to find her from another class.
+  Future<User> findUser(int userID) async {
+    var userClassInfo = await getUserClassInfo(userID);
+    if (userClassInfo == null) return null;
+    var usersInAnotherClass =
+        await getUsers(userClassInfo.pre_classID);
+    var user = usersInAnotherClass.firstWhere((user) => user.userID == userID);
+    return user..pre_classID = userClassInfo.pre_classID;
+  }
+
   Future<bool> _post(
       BaseEntity data, Map<String, String> extraData, String status) async {
     _progressService.showProgress(status);

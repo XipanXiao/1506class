@@ -10,6 +10,10 @@ material-button[affirmative] {
   color: #FFF;
 }
 
+material-button.link {
+  color: #1a73e8;
+}
+
 .main {
   bottom: 0;
   left: 0;
