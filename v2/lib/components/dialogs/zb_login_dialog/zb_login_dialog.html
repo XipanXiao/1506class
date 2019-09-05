@@ -7,7 +7,7 @@
             [(ngModel)]="editPassword">
         </material-input>
       </div>
-      <ng-container *ngIf="!edit">
+      <ng-container *ngIf="showLogin">
         <div class="field">
           <material-input [floatingLabel]="true" label="用户名" [(ngModel)]="username">
           </material-input>

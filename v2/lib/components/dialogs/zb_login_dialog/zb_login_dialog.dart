@@ -37,6 +37,8 @@ class ZBLoginDialogComponent extends AbstractDialog {
     close(await _zbService.login(username, password, editPassword));
   }
 
+  bool get showLogin =>
+      (data is ZBLoginDialogData) && (data as ZBLoginDialogData).login;
   bool get edit =>
       (data is ZBLoginDialogData) && (data as ZBLoginDialogData).edit;
 }

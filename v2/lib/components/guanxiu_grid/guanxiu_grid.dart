@@ -57,7 +57,7 @@ class GuanxiuGridComponent extends HasSelectable<GuanxiuDataPair> {
     if (_grid == null || _halfTerm == null) return;
 
     var records = _grid.guanxiuRecords[_halfTerm];
-    if (records == null) {
+    if (records == null && ZBService.authenticated) {
       var lessons = await _zbService.getLessons(
           _grid.pre_classID, ReportGrid.guanxiuCoruseId, _halfTerm);
       _grid.guanxiuLessons[_halfTerm] = lessons;
@@ -73,7 +73,9 @@ class GuanxiuGridComponent extends HasSelectable<GuanxiuDataPair> {
       await _loadZBData(_halfTerm);
     }
 
-    _audit();
+    if (ZBService.authenticated) {
+      _audit();
+    }
   }
 
   void _audit() {

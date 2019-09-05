@@ -26,6 +26,13 @@ class ZBService {
   static String _getProxiedUrl(String url) =>
       '$_proxyUrl?url=${Uri.encodeComponent(url)}';
 
+  /// Whether the current user has edit permission.
+  /// null: not signed in yet.
+  /// false: signed in but has no edit permission.
+  /// true: has edit permission.
+  static bool editable;
+  static bool get authenticated => editable != null;
+
   final DialogService _dialogService;
   final ProgressService _progressService;
 
@@ -55,9 +62,9 @@ class ZBService {
         '?type=get_edit_permission';
     try {
       var response = await utils.httpGetObject(_getProxiedUrl(url));
-      return response['edit_permission'] == '1';
+      return editable = (response['edit_permission'] == '1');
     } catch (err) {
-      return null;
+      return editable = null;
     } finally {
       _progressService.done();
     }
@@ -70,7 +77,8 @@ class ZBService {
 
   Future<bool> ensureEditPermission() async {
     if (await canEdit() == true) return true;
-    return await _dialogService.showZbLoginDialog(edit: true);
+    return await _dialogService.showZbLoginDialog(
+        login: !authenticated, edit: true);
   }
 
   /// Enters editing mode with the [editPassword].
@@ -81,15 +89,17 @@ class ZBService {
     _progressService.showProgress('Gaining edit permission from zhibei.info');
     try {
       var response = await utils.httpGetObject(_getProxiedUrl(url));
-      return response['returnValue'] == 'true';
+      return editable = response['returnValue'] == 'true';
     } finally {
       _progressService.done();
     }
   }
 
   Future<bool> login(String user, String password, String editPassword) async {
-    if (editPassword != null) {
+    if (authenticated && !editable && editPassword != null) {
       return await edit(editPassword);
+    } else if (user == null || password == null) {
+      return false;
     }
 
     _progressService.showProgress('Signing into zhibei.info');
@@ -97,7 +107,9 @@ class ZBService {
         '&password=$password';
     try {
       var response = await utils.httpGetObject(_getProxiedUrl(url));
-      return response['returnValue'] == 'true';
+      var signed = response['returnValue'] == 'true';
+      editable = signed ? false : null;
+      return signed;
     } finally {
       _progressService.done();
     }
@@ -389,8 +401,7 @@ class ZBService {
   Future<User> findUser(int userID) async {
     var userClassInfo = await getUserClassInfo(userID);
     if (userClassInfo == null) return null;
-    var usersInAnotherClass =
-        await getUsers(userClassInfo.pre_classID);
+    var usersInAnotherClass = await getUsers(userClassInfo.pre_classID);
     var user = usersInAnotherClass.firstWhere((user) => user.userID == userID);
     return user..pre_classID = userClassInfo.pre_classID;
   }

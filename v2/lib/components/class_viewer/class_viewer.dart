@@ -12,6 +12,7 @@ import 'package:v2/model/report_grid.dart';
 import 'package:v2/routing.dart';
 import 'package:v2/services/class_service.dart';
 import 'package:v2/services/task_record_service.dart';
+import 'package:v2/services/zb_service.dart';
 
 @Component(
   selector: 'class-viewer',
@@ -82,4 +83,6 @@ class ClassViewerComponent implements OnActivate, CanReuse {
     if (classInfo == null) return;
     _redirect(classInfo.id, halfTerm);
   }
+
+  bool get authenticated => ZBService.authenticated;
 }

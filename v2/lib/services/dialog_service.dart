@@ -7,7 +7,6 @@ import 'package:v2/model/zb_login_dialog_data.dart';
 
 @Injectable()
 class DialogService {
-
   final _invoke = ObservableReference<DialogData>(null);
 
   Stream<DialogData> get requests => _invoke.stream;
@@ -17,8 +16,9 @@ class DialogService {
     return data.completer.future;
   }
 
-  Future<bool> showZbLoginDialog({bool edit = false}) async {
-    var result = await _invokeDialog(ZBLoginDialogData(edit));
+  Future<bool> showZbLoginDialog({bool login = true, bool edit = false}) async {
+    var result =
+        await _invokeDialog(ZBLoginDialogData(login: login, edit: edit));
     return result == true;
   }
 

@@ -14,11 +14,11 @@
 </div>
 <user-grid [classInfo]="classInfo"></user-grid>
 <jx-task-report [classInfo]="classInfo" [halfTerm]="halfTerm"
-    *ngIf="classInfo?.department_id == Department.JIAXING_DEPARTMENT">
+    *ngIf="authenticated && classInfo?.department_id == Department.JIAXING_DEPARTMENT">
 </jx-task-report>
 <rxl-task-report [classInfo]="classInfo" [halfTerm]="halfTerm"
-    *ngIf="classInfo?.department_id == Department.RUXINGLUN_DEPARTMENT">
+    *ngIf="authenticated && classInfo?.department_id == Department.RUXINGLUN_DEPARTMENT">
 </rxl-task-report>
 <jt-grid [classInfo]="classInfo" [halfTerm]="halfTerm"
-    *ngIf="classInfo?.department_id == Department.JINGTU_DEPARTMENT">
+    *ngIf="authenticated && classInfo?.department_id == Department.JINGTU_DEPARTMENT">
 </jt-grid>

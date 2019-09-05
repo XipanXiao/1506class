@@ -26,8 +26,10 @@ abstract class TaskAttLImitGridComponent<T extends ScheduleTaskData>
   Future<void> reload(int halfTerm) async {
     await super.reload(halfTerm);
     grid.computeTotals();
-    await _loadAttendences(halfTerm);
-    _audit();
+    if (ZBService.authenticated) {
+      await _loadAttendences(halfTerm);
+      _audit();
+    }
   }
 
   Future<void> _loadAttendences(int halfTerm) {
@@ -83,6 +85,8 @@ abstract class TaskAttLImitGridComponent<T extends ScheduleTaskData>
   }
 
   void _audit() {
+    if (lessons == null) return;
+
     for (var user in users) {
       if (user.bicwData == null) continue;
       _copyScheduleData(user.bicwData);

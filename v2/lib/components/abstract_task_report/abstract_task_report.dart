@@ -69,7 +69,7 @@ abstract class AbstractTaskReportComponent<T extends TaskData>
       grid.setTaskData(taskData);
     }
 
-    if (await _zbService.ensureAuthenticated()) {
+    if (ZBService.authenticated) {
       await loadTaskDataForTerm(grid, halfTerm);
       await _scheduleLoader.load(grid, halfTerm,
           loadLimitRecords: loadLimitRecords);

@@ -30,20 +30,17 @@ class ScheduleRecordsLoader {
     // Load zhibei [Lesson]s. This will re-map the bicw schedule records,
     // so make sure they are loaded after bicw schedule records are loaded.
     var lessons = grid.getLessons(halfTerm);
-    if (lessons == null) {
-      var authenticated = await _zbService.ensureAuthenticated();
-      if (authenticated) {
-        var lessons = await _zbService.getLessons(
-            grid.pre_classID, grid.courseID, halfTerm);
-        grid.setLessons(halfTerm, lessons);
-        var limited = await _zbService.getLessons(
-            grid.pre_classID, ReportGrid.limitedCoruseId, halfTerm);
-        grid.setLessons(halfTerm, limited, limited: true);
-      }
+    if (lessons == null && ZBService.authenticated) {
+      var lessons = await _zbService.getLessons(
+          grid.pre_classID, grid.courseID, halfTerm);
+      grid.setLessons(halfTerm, lessons);
+      var limited = await _zbService.getLessons(
+          grid.pre_classID, ReportGrid.limitedCoruseId, halfTerm);
+      grid.setLessons(halfTerm, limited, limited: true);
     }
 
     // Load zhibei schedule records for [halfTerm].
-    if (!grid.isScheduleLoaded(halfTerm)) {
+    if (!grid.isScheduleLoaded(halfTerm) && ZBService.authenticated) {
       var scheduleRecords = await _zbService.getScheduleRecords(
           grid.pre_classID, halfTerm,
           grid: grid.gridTypes.main_course_grid);

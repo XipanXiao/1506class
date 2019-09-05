@@ -49,6 +49,8 @@ class JxTaskReportComponent extends AbstractTaskReportComponent<JxTaskData> {
   @override
   Future<void> reload(int halfTerm) async {
     await super.reload(halfTerm);
+    if (!ZBService.authenticated) return;
+
     await _loadAllTaskData();
     (grid as JxTaskGrid).setColumns(halfTerm);
     _audit();

@@ -57,9 +57,8 @@ class UserGridComponent extends HasSelectable<TaskDataPair<User>> {
       var zbUsers = await _zbService.getUsers(_classInfo.zb_id);
       await _classInfo.setZBUsers(
           zbUsers, _userService.updateUser, _zbService.findUser);
+      _audit();
     }
-
-    _audit();
   }
 
   void _audit() {
@@ -92,13 +91,10 @@ class UserGridComponent extends HasSelectable<TaskDataPair<User>> {
   /// selected users.
   void report({TaskDataPair<User> user}) async {
     var users = user == null ? selection.selectedValues : [user];
-    if (users.isEmpty) return;
+    if (users.isEmpty || !await _zbService.ensureEditPermission()) return;
 
-    if (_classInfo.zb_id == null || _classInfo.zb_id == 0) {
-      if (!await _dialogService.showZBChooseRootDialog(_classInfo)) {
-        return;
-      }
-    } else if (!await _zbService.ensureEditPermission()) {
+    if ((_classInfo.zb_id == null || _classInfo.zb_id == 0) &&
+        !await _dialogService.showZBChooseRootDialog(_classInfo)) {
       return;
     }
 

@@ -4,5 +4,7 @@ class ZBLoginDialogData extends DialogData {
   static const zbLoginDialog = 'zb-login-dialog';
 
   final bool edit;
-  ZBLoginDialogData(this.edit): super(zbLoginDialog);
+  final bool login;
+  ZBLoginDialogData({this.login = true, this.edit = false})
+      : super(zbLoginDialog);
 }

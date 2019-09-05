@@ -40,9 +40,7 @@ class ZBChooseRootDialogComponent extends AbstractDialog {
   ZBChooseRootDialogComponent(this._zbService, this._classService);
 
   void create() async {
-    if (selection.isEmpty || !await _zbService.ensureEditPermission()) {
-      return;
-    }
+    if (selection.isEmpty) return;
 
     var info = (data as ZBChooseRootDialogData).classInfo;
     var count = await _getClassCount(info);
@@ -59,8 +57,6 @@ class ZBChooseRootDialogComponent extends AbstractDialog {
 
   @override
   void open(DialogData data) async {
-    if (!await _zbService.ensureAuthenticated()) return;
-
     super.open(data);
     var groups = await _zbService.getRootGroups();
     zbGroups.optionGroups = [
