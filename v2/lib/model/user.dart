@@ -79,8 +79,8 @@ class User extends TaskData {
     return sn == another.sn &&
         birth_year == another.birth_year &&
         gender == another.gender &&
-        district1 == another.district1 &&
-        district2 == another.district2 &&
+//        district1 == another.district1 &&
+//        district2 == another.district2 &&
         job == another.job;
   }
 
@@ -96,8 +96,13 @@ class User extends TaskData {
       'email': email,
       'nickname': nickName,
       'education': education?.toString(),
+      'job': job,
       'occupation': occupation,
       'skills': skills,
+      'sn': sn,
+      'internal_id': sn,
+      'gender': gender?.toString(),
+      'sex': '${1 - (gender ?? 0)}',
     };
   }
 
