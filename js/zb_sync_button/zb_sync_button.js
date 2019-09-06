@@ -1316,7 +1316,7 @@ define('zb_sync_button/zb_sync_button',
           scope.finished = 0;
           scope.results = {};
         },
-        templateUrl: 'js/zb_sync_button/zb_sync_button.html?tag=201909102109'
+        templateUrl: 'js/zb_sync_button/zb_sync_button.html?tag=201909052109'
       };
     });
 });
