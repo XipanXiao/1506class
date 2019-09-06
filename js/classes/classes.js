@@ -6,8 +6,7 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
       return {
         scope: {
           classId: '=',
-          listType: '@',
-          permission: '@'
+          listType: '@'
         },
         link: function($scope) {
           $scope.currentClass = {};
@@ -16,6 +15,18 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
             return rpc.get_user().then(function(user) {
               return perm.user = user;
             });
+          };
+
+          $scope.yearChanged = function() {
+            $scope.classes = $scope.alumnis[$scope.currentClass.year];
+
+            // Classes without a 'start_year' field are pinned for all years.
+            for (var id in window.classInfos) {
+              var info = window.classInfos[id];
+              if (!info.start_year) { $scope.classes[id] = info; }
+            }
+
+            $scope.classIds = utils.map(utils.keys($scope.classes), parseInt);
           };
 
           $scope.reload = function() {
@@ -34,18 +45,6 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
                   year: parseInt(classInfo.start_year),
                   id: $scope.classId
               };
-              
-              $scope.yearChanged = function() {
-                $scope.classes = $scope.alumnis[$scope.currentClass.year];
-
-                // Classes without a 'start_year' field are pinned for all years.
-                for (var id in response.data) {
-                  var info = response.data[id];
-                  if (!info.start_year) { $scope.classes[id] = info; }
-                }
-
-                $scope.classIds = utils.map(utils.keys($scope.classes), parseInt);
-              };
   
               $scope.yearChanged();
               return true;
@@ -63,6 +62,11 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
           $scope.$watch("classId", function(classId) {
             if (!classId) return;
             $scope.currentClass.id = classId;
+            var classInfo = window.classInfos[classId];
+            if (classInfo) {
+              $scope.currentClass.year = classInfo.start_year;
+              $scope.yearChanged();
+            }
           });
           
           $scope.locateClass = function (classInfo) {

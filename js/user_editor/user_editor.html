@@ -334,8 +334,7 @@
         </select>
         <input ng-switch-when="email" ng-model="user.email" type="email" autofocus>
         <input ng-switch-when="internal_id" ng-model="user.internal_id" type="text" autofocus>
-        <classes ng-switch-when="classId" class-id="user.classId" permission="{{user.permission}}">
-        </classes>
+        <classes ng-switch-when="classId" class-id="user.classId"></classes>
         <permission-editor ng-switch-when="permission" user="user" editable="true">
         </permission-editor>
         <input ng-switch-when="phone" ng-model="user.phone" type="tel" autofocus>

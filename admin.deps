@@ -18,6 +18,7 @@ js/departments/departments.js
 js/bit_editor/bit_editor.js
 js/editable_label/editable_label.js
 js/email_group_chip/email_group_chip.js
+js/choose_class_term/choose_class_term.js
 js/email_dialog/email_dialog.js
 js/department_editor_dialog/department_editor_dialog.js
 js/permission_editor/permission_editor.js

@@ -710,6 +710,17 @@ define('utils', [], function() {
         var scope = angular.element(dialog).scope();
         scope.classInfo = classInfo;
       },
+      showChooseClassTermDialog: function(classId, term) {
+        var dialog = document.getElementById('choose-class-term');
+        dialog.open();
+        var scope = angular.element(dialog).scope();
+        scope.selection = {
+          classId: classId,
+          term: term
+        };
+        scope.deferred = $q.defer();
+        return scope.deferred.promise;
+      },
       addressFields: ['name', 'street', 'city', 'state',
           'country', 'zip', 'phone', 'email'],
       getDistrictAddress: function(rpc, district) {

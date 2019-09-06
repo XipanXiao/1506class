@@ -1,0 +1,15 @@
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+<paper-dialog id="choose-class-term">
+  <h2>选择班级和学期</h2>
+  <div>班级: 
+    <classes class-id="selection.classId"></classes>
+  </div>
+  <div>学期: 
+    <select ng-model="selection.term" ng-options="value for value in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]">
+    </select>
+  </div>
+  <paper-button dialog-dismiss raised autofocus>Cancel</paper-button>
+  <paper-button dialog-confirm raised autofocus ng-click="deferred.resolve(selection)">
+    OK
+  </paper-button>
+</paper-dialog>

@@ -103,6 +103,27 @@ function remove_schedule_group($id) {
   return $medoo->delete("schedule_groups", ["id" => $id]);
 }
 
+function copy_schedule_group($classId, $term, $toClassId, $toTerm) {
+  $groups = get_schedules($classId, $term, "none", null)["groups"];
+  if (empty($groups)) return 0;
+
+  global $medoo;
+  $oldGroups = $medoo->select("schedule_groups", "id",
+      ["AND" => ["classId" => $toClassId, "term" => $toTerm]]);
+  foreach ($oldGroups as $id) {
+    remove_schedule_group($id);
+  }
+
+  $updated = 0;
+  foreach ($groups as $group) {
+    $group["id"] = 0;
+    $group["classId"] = $toClassId;
+    $group["term"] = $toTerm;
+    $updated += update_schedule_group($group);
+  }
+  return $updated;
+}
+
 function remove_class($id) {
   global $medoo;
  

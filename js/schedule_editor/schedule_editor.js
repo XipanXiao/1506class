@@ -387,8 +387,24 @@ define('schedule_editor/schedule_editor',
                     (perm.canWrite($scope.classInfo) ||
                         perm.isMasterTeacherOf($scope.classInfo));
               };
+
+              $scope.copy = function(term) {
+                var group = utils.first($scope.schedule_groups);
+                if (group && group.id &&
+                      !confirm('这会覆盖本学期原有的学修安排，您确定要继续？')) {
+                  return;
+                }
+                utils.showChooseClassTermDialog($scope.classId, term).then(function(selection) {
+                  rpc.copy_schedule_group(selection.classId, selection.term,
+                        $scope.classId, term).then(function(response) {
+                    if (parseInt(response.data.updated)) {
+                      $scope.loadSchedules();
+                    }
+                  });
+                });
+              };
             },
-            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201906132216'
+            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201909132216'
           };
         });
 });

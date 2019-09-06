@@ -8,7 +8,9 @@ define('admin_app',
     'zb_choose_root_dialog/zb_choose_root_dialog'],
     function() {
 
-  angular.module('AppModule', ['AppBarModule', 'ClassesModule',
+  angular.module('AppModule', ['AppBarModule',
+      'ChooseClassTermDialogModule',
+      'ClassesModule',
       'ClassInfoModule',
       'ConfirmGraduateDialogModule',
       'EmailDialogModule',

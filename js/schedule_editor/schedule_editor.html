@@ -36,7 +36,10 @@
   <paper-button ng-click="saveGroup(group)" ng-disabled="!group.dirty" raised affirmative>
     Save
   </paper-button>
-<div class="css-table odd-even schedule-tasks" ng-class="{'busy': sending}">
+  <paper-button ng-click="copy(term)" raised dismissive>
+    Copy from another class...
+  </paper-button>
+  <div class="css-table odd-even schedule-tasks" ng-class="{'busy': sending}">
     <div class="css-table-row header">
       <div class="css-table-cell">
         <iron-icon icon="add-circle" class="clickable" ng-click="append(group)"

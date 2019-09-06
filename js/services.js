@@ -104,6 +104,17 @@ define('services', ['utils'], function() {
             return http_form_post($http, $httpParamSerializerJQLike(group));
           },
 
+          copy_schedule_group: function(classId, term, toClassId, toTerm) {
+            var data = {
+              rid: 'copy_schedule_group',
+              class_id: classId,
+              term: term,
+              to_class_id: toClassId,
+              to_term: toTerm
+            };
+            return http_form_post($http, $httpParamSerializerJQLike(data));
+          },
+
           get_tasks: function(department_id) {
             var url = '{0}?rid=tasks&department_id={1}'.format(
                 serviceUrl, department_id || '');

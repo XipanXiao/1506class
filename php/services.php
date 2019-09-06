@@ -230,7 +230,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $response = isAdmin($user) 
       ? ["updated" => update_schedule($_POST)] 
       : permission_denied_error();
-  }  elseif ($resource_id == "schedule_group") {
+  } elseif ($resource_id == "schedule_group") {
     error_log($user->email. " UPDATES ". $resource_id. ":". 
         (empty($_POST["id"]) ? "" : $_POST["id"]));
     $classId = $_POST["classId"];
@@ -313,6 +313,12 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         ? ["updated" => clone_user($_POST["user_id"], $_POST["new_email"],
             $_POST["new_class_id"])] 
         : permission_denied_error();
+  } elseif ($resource_id == "copy_schedule_group") {
+    $toClassId = $_POST["to_class_id"];
+    $classInfo = get_class_info($toClassId);
+    $response = canWrite($user, $classInfo) ?
+      ["updated" => copy_schedule_group($_POST["class_id"], 
+          $_POST["term"], $_POST["to_class_id"], $_POST["to_term"])] : permission_denied_error();
   }
 } elseif ($_SERVER ["REQUEST_METHOD"] == "DELETE" &&
     isset ( $_REQUEST["rid"] )) {
