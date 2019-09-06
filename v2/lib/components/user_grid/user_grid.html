@@ -19,7 +19,6 @@
       <td>职位</td>
       <td>上报
         <material-button icon (trigger)="report()"
-            class="link"
             title="上报所有选中的用户数据">
           <material-icon icon="backup"></material-icon>
         </material-button>
@@ -41,7 +40,7 @@
             [class.error]="user.failed">
           {{user.name}}
         </td>
-        <td>{{user.passed ? '' : 'zhibei.info'}}</td>
+        <td>zhibei</td>
         <td>{{getGenderLabel(user.zhibeiData)}}</td>
         <td>{{user.zhibeiData?.sn}}</td>
         <td>{{user.zhibeiData?.birth_year}}</td>
@@ -58,15 +57,13 @@
         </td>
       </tr>
       <tr>
-        <ng-container *ngIf="!user.passed">
-          <td>bicw</td>
-          <td>{{getGenderLabel(user.bicwData)}}</td>
-          <td>{{user.bicwData?.sn}}</td>
-          <td>{{user.bicwData?.birth_year}}</td>
-          <td>{{user.bicwData?.district1}}</td>
-          <td>{{user.bicwData?.district2}}</td>
-          <td>{{user.bicwData?.job}}</td>
-        </ng-container>
+        <td>bicw</td>
+        <td>{{getGenderLabel(user.bicwData)}}</td>
+        <td>{{user.bicwData?.sn}}</td>
+        <td>{{user.bicwData?.birth_year}}</td>
+        <td>{{user.bicwData?.district1}}</td>
+        <td>{{user.bicwData?.district2}}</td>
+        <td>{{user.bicwData?.job}}</td>
       </tr>
     </ng-container>
   </table>

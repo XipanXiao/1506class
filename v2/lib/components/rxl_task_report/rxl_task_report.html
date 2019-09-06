@@ -37,52 +37,53 @@
     </tr>
     <ng-container *ngFor="let user of users; let index = index">
       <tr>
-          <td rowspan="2">
-            <material-checkbox [checked]="selection.isSelected(user)"
-                (checkedChange)="toggleSelection(user, $event)"
-                title="是否上报zhibei.info"
-                [disabled]="!user.reportable">
-            </material-checkbox>  
+        <td rowspan="2">
+          <material-checkbox [checked]="selection.isSelected(user)"
+              (checkedChange)="toggleSelection(user, $event)"
+              title="是否上报zhibei.info"
+              [disabled]="!user.reportable">
+          </material-checkbox>  
+        </td>
+        <td rowspan="2">{{index + 1}}</td>
+        <td rowspan="2" [class.pass]="user.passed"
+            [class.warning]="user.audited == AuditState.PARTIAL_PASS"
+            [class.error]="user.failed">
+          {{user.name}}
+        </td>
+        <td>zhibei</td>
+        <td>{{user.zhibeiData?.att}}</td>
+        <td>{{user.zhibeiData?.gx_count}}</td>
+        <td>{{user.zhibeiData?.gx_time}}</td>
+        <td>{{user.zhibeiData?.mantra_count}}</td>
+        <td>{{user.zhibeiData?.mantra_total}}</td>
+        <ng-container *ngFor="let lesson of lessons">
+          <td [class.done]="getRecord(user, lesson.lesson_id, zhibei: true)?.text == true">
           </td>
-          <td rowspan="2">{{index + 1}}</td>
-          <td rowspan="2" [class.pass]="user.passed"
-              [class.warning]="user.audited == AuditState.PARTIAL_PASS"
-              [class.error]="user.failed">
-            {{user.name}}</td>
-            <td>zhibei.info</td>
-            <td>{{user.zhibeiData?.att}}</td>
-            <td>{{user.zhibeiData?.gx_count}}</td>
-            <td>{{user.zhibeiData?.gx_time}}</td>
-            <td>{{user.zhibeiData?.mantra_count}}</td>
-            <td>{{user.zhibeiData?.mantra_total}}</td>
-            <ng-container *ngFor="let lesson of lessons">
-              <td [class.done]="getRecord(user, lesson.lesson_id, zhibei: true)?.text == true">
-              </td>
-              <td [class.done]="getRecord(user, lesson.lesson_id, zhibei: true)?.video == true">
-              </td>
-            </ng-container>
-            <td rowspan="2" class="selectable">
-              <material-button icon (trigger)="report(user: user)"
-                  title="上报" class="hover-button"
-                  *ngIf="user.reportable">
-                <material-icon icon="backup"></material-icon>
-              </material-button>
-            </td>
-        </tr>
+          <td [class.done]="getRecord(user, lesson.lesson_id, zhibei: true)?.video == true">
+          </td>
+        </ng-container>
+        <td rowspan="2" class="selectable">
+          <material-button icon (trigger)="report(user: user)"
+              title="上报" class="hover-button"
+              *ngIf="user.reportable">
+            <material-icon icon="backup"></material-icon>
+          </material-button>
+        </td>
+      </tr>
       <tr>
-          <td>bicw</td>
-          <td>{{user.bicwData?.att}}</td>
-          <td>{{user.bicwData?.gx_count}}</td>
-          <td>{{user.bicwData?.gx_time}}</td>
-          <td>{{user.bicwData?.mantra_count}}</td>
-          <td>{{user.bicwData?.mantra_total}}</td>
-          <ng-container *ngFor="let lesson of lessons">
-            <td [class.done]="getRecord(user, lesson.lesson_id)?.text == true">
-            </td>
-            <td [class.done]="getRecord(user, lesson.lesson_id)?.video == true">
-            </td>
-          </ng-container>      
-        </tr>
+        <td>bicw</td>
+        <td>{{user.bicwData?.att}}</td>
+        <td>{{user.bicwData?.gx_count}}</td>
+        <td>{{user.bicwData?.gx_time}}</td>
+        <td>{{user.bicwData?.mantra_count}}</td>
+        <td>{{user.bicwData?.mantra_total}}</td>
+        <ng-container *ngFor="let lesson of lessons">
+          <td [class.done]="getRecord(user, lesson.lesson_id)?.text == true">
+          </td>
+          <td [class.done]="getRecord(user, lesson.lesson_id)?.video == true">
+          </td>
+        </ng-container>
+      </tr>
     </ng-container>
   </table>
 </ng-container>

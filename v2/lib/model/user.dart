@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:angular_components/model/date/date.dart';
 import 'package:v2/model/base_entity.dart';
 import 'package:v2/model/zb_task_data.dart';
@@ -24,15 +26,13 @@ class User extends TaskData {
   final String district1;
   final String district2;
 
-  final String job;
-
   final String sn;
 
   final ClassInfo classInfo;
   StaffInfo staff;
 
   /// Class ID in zhibei.info.
-  /// 
+  ///
   /// This might be different from zb_id of [classInfo] since
   /// a user might exist in zhibei.info but in a different class,
   /// and needs to sync up.
@@ -45,7 +45,7 @@ class User extends TaskData {
         email = map['email'],
         nickName = map['nickname'],
         education = int.tryParse(map['education']?.toString() ?? ''),
-        occupation = map['occupation'],
+        occupation = map['job'] ?? _truncate(map['occupation'], 16),
         skills = map['skills'],
         sn = map['sn'] ?? map['internal_id'],
         birth_year = int.tryParse(
@@ -56,7 +56,6 @@ class User extends TaskData {
         district1 = map['district1'] ?? _getCountryLabel(map['country']),
         district2 = map['district2'] ??
             _DistrictUtil.getStateCityLabel(map['state'], map['city']),
-        job = map['job'] ?? map['occupation'],
         classInfo = ClassInfo.fromJson(map['classInfo'] ?? {}),
         super.fromJson({});
 
@@ -64,6 +63,7 @@ class User extends TaskData {
   int get userID => zb_id;
   set userID(int userID) => zb_id = userID;
 
+  String get job => occupation;
   bool get isActive => status == 0;
 
   @override
@@ -105,6 +105,9 @@ class User extends TaskData {
       code == null ? null : {'US': 'United States'}[code];
 
   static int _getGenderCode(String label) => {'男': 0, '女': 1}[label];
+
+  static String _truncate(String s, int len) =>
+      s == null ? null : s.substring(0, min(len - 1, s.length));
 }
 
 class StaffInfo implements BaseEntity {
