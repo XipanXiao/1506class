@@ -1,17 +1,25 @@
 <modal [(visible)]="show">
   <material-dialog>
-    <h1 header>创建班级，请选择一个大组</h1>
+    <h1 header>新建</h1>
     <div class="dialog-content">
-      <material-dropdown-select [options]="zbGroups"
-        [buttonText]="selection.isEmpty ? '请选择一个大组' : selection.selectedValues.first.html"
+      <div>欢迎第一次报数，请先选择本班所属的小组。</div>
+      <material-dropdown-select [options]="rootGroups"
+        [buttonText]="root.isEmpty ? '请选择一个大组' : root.selectedValues.first.html"
         class="root-chooser"
-        [selection]="selection"
+        [selection]="root"
+        (selectionChange)="populateGroups()"
         [itemRenderer]="getGroupLabel">
       </material-dropdown-select>
+      <material-radio-group [(ngModel)]="selected">
+        <material-radio *ngFor="let option of groups"
+            [value]="option">
+          {{option.html}}
+        </material-radio>
+      </material-radio-group>
     </div>
     <div footer>
       <material-button (trigger)="close(false)">Close</material-button>
-      <material-button (trigger)="create()">确定</material-button>
+      <material-button (trigger)="create()" affirmative>确定</material-button>
     </div>
   </material-dialog>
 </modal>

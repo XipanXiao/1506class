@@ -5,3 +5,10 @@ material-dialog {
 .root-chooser {
   width: 100%;
 }
+
+material-radio-group {
+  display: flex;
+  flex-direction: column;
+  height: 360px;
+  overflow: auto;
+}

@@ -51,12 +51,15 @@ class UserGridComponent extends HasSelectable<TaskDataPair<User>> {
       }
     }
 
-    if (_classInfo.zb_id != null &&
-        _classInfo.zb_id > 0 &&
-        await _zbService.ensureAuthenticated()) {
+    // Is this class ever reported to zhibei.info?
+    var linked = _classInfo.zb_id != null && _classInfo.zb_id > 0;
+    if (linked && await _zbService.ensureAuthenticated()) {
       var zbUsers = await _zbService.getUsers(_classInfo.zb_id);
       await _classInfo.setZBUsers(
           zbUsers, _userService.updateUser, _zbService.findUser);
+      _audit();
+    } else if (!linked) {
+      // Audit for the first time report.
       _audit();
     }
   }

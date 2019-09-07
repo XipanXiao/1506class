@@ -108,8 +108,9 @@ class ZBService {
     try {
       var response = await utils.httpGetObject(_getProxiedUrl(url));
       var signed = response['returnValue'] == 'true';
-      editable = signed ? false : null;
-      return signed;
+      if (!signed) return false;
+      editable = editPassword == null ? false : (await edit(editPassword));
+      return true;
     } finally {
       _progressService.done();
     }
@@ -304,6 +305,12 @@ class ZBService {
     var url = '$_serviceUrl/pre/classselect_ajax?type=init_root_tree';
     var map = await utils.httpGetObject(_getProxiedUrl(url));
     return (map['data'] ?? []).map<ZBGroup>((group) => ZBGroup.fromJson(group));
+  }
+
+  Future<Iterable<ZBSubGroup>> getSubGroups(String groupId) async {
+    var url = '$_serviceUrl/pre/dashboard_ajax?type=startDates_cmp_treegrid&b2=$groupId';
+    var list = await utils.httpGetObject(_getProxiedUrl(url));
+    return (list ?? []).map<ZBSubGroup>((group) => ZBSubGroup.fromJson(group));
   }
 
   /// Creates a new pre class under the parent group identified by

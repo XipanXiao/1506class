@@ -24,8 +24,10 @@ import 'package:v2/components/dialogs/abstract_dialog.dart';
     coreDirectives,
     MaterialButtonComponent,
     MaterialDialogComponent,
-    ModalComponent,
     MaterialDropdownSelectComponent,
+    MaterialRadioComponent,
+    MaterialRadioGroupComponent,
+    ModalComponent,
   ],
   templateUrl: 'zb_choose_root_dialog.html',
   styleUrls: ['zb_choose_root_dialog.css'],
@@ -34,19 +36,22 @@ class ZBChooseRootDialogComponent extends AbstractDialog {
   final ClassService _classService;
   final ZBService _zbService;
 
-  final zbGroups = SelectionOptions<ZBGroup>.fromList([]);
-  final selection = SelectionModel<ZBGroup>.single();
+  final rootGroups = SelectionOptions<ZBGroup>.fromList([]);
+  final root = SelectionModel<ZBGroup>.single();
+
+  final groups = <ZBGroup>[];
+  ZBGroup selected;
 
   ZBChooseRootDialogComponent(this._zbService, this._classService);
 
   void create() async {
-    if (selection.isEmpty) return;
+    if (selected == null) return;
 
     var info = (data as ZBChooseRootDialogData).classInfo;
     var count = await _getClassCount(info);
     var startdate = '${info.start_year}-06-01';
     info.zb_id = await _zbService.createClass(
-        selection.selectedValues.single.groupId,
+        selected.groupId,
         Department.getZBCourseId(info.department_id),
         startdate,
         '美国',
@@ -58,11 +63,13 @@ class ZBChooseRootDialogComponent extends AbstractDialog {
   @override
   void open(DialogData data) async {
     super.open(data);
-    var groups = await _zbService.getRootGroups();
-    zbGroups.optionGroups = [
+    ZBGroup.setAllGropus(await _zbService.getRootGroups());
+    rootGroups.optionGroups = [
       OptionGroup.withLabel(
-          groups.where((group) => !group.html.contains('Loading')).toList())
+          ZBGroup.roots.toList()..sort((a, b) => a.html.compareTo(b.html)))
     ];
+    root.select(_getDefaultRoot());
+    populateGroups();
   }
 
   /// Returns the number of classes in the department [depId]
@@ -77,4 +84,19 @@ class ZBChooseRootDialogComponent extends AbstractDialog {
   }
 
   String getGroupLabel(group) => group.html;
+
+  /// Fills the [groups] list when [root] changes.
+  void populateGroups() {
+    groups
+      ..clear()
+      ..addAll(root.selectedValues.first.children);
+  }
+
+  ZBGroup _getDefaultRoot() {
+    var info = (data as ZBChooseRootDialogData).classInfo;
+    int year = (info.start_year ?? 0) % 100;
+    return rootGroups.optionsList.firstWhere(
+        (group) => group.html.startsWith('$year'),
+        orElse: () => rootGroups.optionsList.first);
+  }
 }
