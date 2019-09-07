@@ -36,7 +36,7 @@
   <paper-button ng-click="saveGroup(group)" ng-disabled="!group.dirty" raised affirmative>
     Save
   </paper-button>
-  <paper-button ng-click="copy(term)" raised dismissive>
+  <paper-button ng-click="copy(term)" ng-if="!group.id" raised dismissive>
     Copy from another class...
   </paper-button>
   <div class="css-table odd-even schedule-tasks" ng-class="{'busy': sending}">
