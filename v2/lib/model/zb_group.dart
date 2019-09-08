@@ -9,14 +9,16 @@ import 'package:html/parser.dart';
 /// prior_id: ""
 /// value: "2524%15%1234%NULL%"
 class ZBGroup {
-  /// A map from [groupId] to [ZBGroup] of all groups.
-  static final _groupTree = <String, ZBGroup>{};
+  /// Root nodes.
+  static final roots = <ZBGroup>[];
 
   final String id;
   final String html;
   final String groupId;
   final String parentId;
   final String value;
+
+  final children = <ZBGroup>[];
 
   ZBGroup.fromJson(Map<String, dynamic> map)
       : id = map['id'],
@@ -25,12 +27,21 @@ class ZBGroup {
         value = map['value'],
         html = _getHtmlText(map['html']);
 
+  ZBGroup.fromSubGroup(this.parentId, ZBSubGroup subGroup)
+      : id = 'g${subGroup.id}',
+        groupId = subGroup.id,
+        value = subGroup.name,
+        html = '${subGroup.name}(${subGroup.role})';
+
   static void setAllGropus(Iterable<ZBGroup> groups) {
+    groups = groups.where((group) => !group.isEmpty).toList();
     for (var group in groups) {
-      if (!group.isEmpty) {
-        _groupTree[group.id] = group;
-      }
+      group.children
+          .addAll(groups.where((child) => child.parentId == group.id));
     }
+    roots
+      ..clear()
+      ..addAll(groups.where((group) => group._hasChildren));
   }
 
   static String _getHtmlText(String html) {
@@ -39,15 +50,9 @@ class ZBGroup {
   }
 
   bool get _hasChildren =>
-      _groupTree.values.any((group) => group.parentId == id);
+      children.isNotEmpty || html.contains('大组长') || html.contains('中组长');
 
   bool get isEmpty => value.isEmpty;
-
-  static Iterable<ZBGroup> get roots =>
-      _groupTree.values.where((group) => group._hasChildren);
-
-  Iterable<ZBGroup> get children =>
-      _groupTree.values.where((group) => group.parentId == id);
 }
 
 class ZBSubGroup {
@@ -60,6 +65,5 @@ class ZBSubGroup {
         name = map['name'],
         role = map['role'];
 
-  @override
-  String toString() => '$name($role)';
+  bool get isGroup => role == '小组长';
 }

@@ -71,7 +71,6 @@ class ZBChooseRootDialogComponent extends AbstractDialog {
           ZBGroup.roots.toList()..sort((a, b) => a.html.compareTo(b.html)))
     ];
     root.select(_getDefaultRoot());
-    populateGroups();
   }
 
   /// Returns the number of classes in the department [depId]
@@ -88,10 +87,17 @@ class ZBChooseRootDialogComponent extends AbstractDialog {
   String getGroupLabel(group) => group.html;
 
   /// Fills the [groups] list when [root] changes.
-  void populateGroups() {
+  Future<void> populateGroups() async {
+    var group = root.selectedValues.first;
+    if (group.children.isEmpty) {
+      var subgroups = await _zbService.getSubGroups(group.groupId);
+      group.children.addAll(subgroups
+          .where((subGroup) => subGroup.isGroup)
+          .map((subGroup) => ZBGroup.fromSubGroup(group.groupId, subGroup)));
+    }
     groups
       ..clear()
-      ..addAll(root.selectedValues.first.children);
+      ..addAll(group.children);
   }
 
   ZBGroup _getDefaultRoot() {
