@@ -5,7 +5,7 @@ html, body {
   padding: 0;
 }
 
-material-button[affirmative] {
+material-button:not([disabled])[affirmative] {
   background-color: #1a73e8;
   color: #FFF;
 }

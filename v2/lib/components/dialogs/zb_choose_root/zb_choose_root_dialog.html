@@ -11,15 +11,18 @@
         [itemRenderer]="getGroupLabel">
       </material-dropdown-select>
       <material-radio-group [(ngModel)]="selected">
-        <material-radio *ngFor="let option of groups"
-            [value]="option">
+        <material-radio *ngFor="let option of groups" [value]="option">
           {{option.html}}
         </material-radio>
       </material-radio-group>
     </div>
     <div footer>
       <material-button (trigger)="close(false)">Close</material-button>
-      <material-button (trigger)="create()" affirmative>确定</material-button>
+      <material-button (trigger)="create()"
+          [disabled]="selected == null" 
+          affirmative>
+        确定
+      </material-button>
     </div>
   </material-dialog>
 </modal>

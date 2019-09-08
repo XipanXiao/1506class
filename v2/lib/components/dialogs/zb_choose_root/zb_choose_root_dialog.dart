@@ -4,6 +4,7 @@ import 'package:angular_components/laminate/components/modal/modal.dart';
 import 'package:angular_components/laminate/overlay/module.dart';
 import 'package:angular_components/material_button/material_button.dart';
 import 'package:angular_components/material_dialog/material_dialog.dart';
+import 'package:angular_forms/angular_forms.dart';
 import 'package:v2/model/class_info.dart';
 import 'package:v2/model/departments.dart';
 import 'package:v2/model/dialog_data.dart';
@@ -28,6 +29,7 @@ import 'package:v2/components/dialogs/abstract_dialog.dart';
     MaterialRadioComponent,
     MaterialRadioGroupComponent,
     ModalComponent,
+    formDirectives,
   ],
   templateUrl: 'zb_choose_root_dialog.html',
   styleUrls: ['zb_choose_root_dialog.css'],
