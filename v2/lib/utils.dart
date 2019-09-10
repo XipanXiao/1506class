@@ -16,8 +16,12 @@ Future<dynamic> httpGetObject(String url) async =>
     jsonDecode(await httpGetString(url));
 
 void login() {
-  var index = window.location.pathname.lastIndexOf("/") + 1;
+  var index = window.location.pathname.lastIndexOf('/') + 1;
   var filename = window.location.pathname.substring(index);
+  if (filename.isEmpty) {
+    index = window.location.pathname.lastIndexOf('/', index - 2) + 1;
+    filename = window.location.pathname.substring(index);
+  }
   var url = 'login.html?redirect=$filename${window.location.search}&tag=2019';
   window.open(Uri.encodeFull(getPHPUrl(url)), '_self');
 }

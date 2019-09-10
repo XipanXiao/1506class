@@ -275,13 +275,17 @@ define('utils', [], function() {
         window.location.href = url;
       },
       getBaseUrl: function() {
-        var index = location.pathname.lastIndexOf("/") + 1;
+        var index = location.pathname.lastIndexOf('/') + 1;
         var filename = location.pathname.substr(index);
         return location.href.substr(0, location.href.indexOf(filename));
       },
       login: function() {
-        var index = location.pathname.lastIndexOf("/") + 1;
+        var index = location.pathname.lastIndexOf('/') + 1;
         var filename = location.pathname.substr(index);
+        if (!filename) {
+          index = location.pathname.lastIndexOf('/', index - 2) + 1;
+          filename = location.pathname.substr(index);
+        }
         location.href = 'login.html?redirect=' + filename +
             encodeURIComponent(location.search) + '&tag=20181023';
       },
