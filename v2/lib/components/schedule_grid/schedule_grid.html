@@ -52,10 +52,10 @@
         </td>
       </ng-container>
       <td rowspan="2" class="selectable">
-        <material-button icon (trigger)="report(user: user)"
-            title="上报" class="hover-button"
+        <material-button (trigger)="report(user: user)"
+            title="上报" class="link"
             *ngIf="user.reportable">
-          <material-icon icon="backup"></material-icon>
+          上报
         </material-button>
       </td>
     </tr>
