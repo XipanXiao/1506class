@@ -1,3 +1,4 @@
+import 'package:v2/model/base_entity.dart';
 import 'package:v2/model/class_task_data.dart';
 import 'package:v2/model/zb_task_data.dart';
 
@@ -76,18 +77,19 @@ class JxTaskData extends TaskData {
   }
 
   @override
-  Map<String, String> toMap() {
+  Map<String, String> toMap({BaseEntity remote}) {
+    var that = remote as JxTaskData;
     var map = <String, String>{
-      'baiziming_count': baiziming_count?.toString(),
-      'dingli_count': dingli_count?.toString(),
-      'dingli_type': dingli_type ?? '0',
-      'faxin_count': faxin_count?.toString(),
-      'guiyi_count': guiyi_count?.toString(),
-      'lianshi_count': lianshi_count?.toString(),
-      'manza_count': manza_count?.toString(),
-      'manza_type': manza_type,
+      'baiziming_count': or(baiziming_count, that?.baiziming_count),
+      'dingli_count': or(dingli_count, that?.dingli_count),
+      'dingli_type': dingli_type ?? that?.dingli_type ?? '0',
+      'faxin_count': or(faxin_count, that?.faxin_count),
+      'guiyi_count': or(guiyi_count, that?.guiyi_count),
+      'lianshi_count': or(lianshi_count, that?.lianshi_count),
+      'manza_count': or(manza_count, that?.manza_count),
+      'manza_type': manza_type ?? that?.manza_type ?? '0',
     };
-    return map..addAll(super.toMap());
+    return map..addAll(super.toMap(remote: remote));
   }
 
   JxTaskData _cloneUser() => JxTaskData.fromJson({

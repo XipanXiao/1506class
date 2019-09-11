@@ -42,7 +42,12 @@
             [class.error]="user.failed">
           {{user.name}}
         </td>
-        <td>zhibei</td>
+        <td [ngSwitch]="user.zhibeiData == null">
+          <ng-container *ngSwitchCase="true">zhibei</ng-container>
+          <a *ngSwitchDefault
+              href="http://zhibei.info/zb/user/basic?userID={{user.zhibeiData.userID}}"
+              target="_blank">zhibei</a>
+        </td>
         <td>{{getGenderLabel(user.zhibeiData)}}</td>
         <td>{{user.zhibeiData?.sn}}</td>
         <td>{{user.zhibeiData?.birth_year}}</td>

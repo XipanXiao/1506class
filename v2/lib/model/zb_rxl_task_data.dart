@@ -1,3 +1,4 @@
+import 'package:v2/model/base_entity.dart';
 import 'package:v2/model/schedule_task_data.dart';
 import 'package:v2/model/zb_task_data.dart';
 
@@ -16,8 +17,8 @@ class RxlTaskData extends ScheduleTaskData {
 
   @override
   bool operator ==(that) {
-  if (!(super == that)) return false;
-  
+    if (!(super == that)) return false;
+
     if (that is! RxlTaskData) return false;
     var data = that as RxlTaskData;
     return (att ?? 0) == (data.att ?? 0) &&
@@ -27,13 +28,14 @@ class RxlTaskData extends ScheduleTaskData {
   }
 
   @override
-  Map<String, String> toMap() {
+  Map<String, String> toMap({BaseEntity remote}) {
+    var that = remote as RxlTaskData;
     var map = <String, String>{
-      'gx_count': gx_count?.toString(),
-      'gx_time': gx_time?.toString(),
-      'mantra_count': mantra_count?.toString(),
+      'gx_count': or(gx_count, that?.gx_count),
+      'gx_time': or(gx_time, that?.gx_time),
+      'mantra_count': or(mantra_count, that?.mantra_count),
     };
-    return map..addAll(super.toMap());
+    return map..addAll(super.toMap(remote: remote));
   }
 
   @override

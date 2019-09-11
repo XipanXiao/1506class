@@ -1,3 +1,4 @@
+import 'package:v2/model/base_entity.dart';
 import 'package:v2/model/schedule_task_data.dart';
 import 'package:v2/model/zb_task_data.dart';
 
@@ -33,17 +34,17 @@ class JtTaskData extends ScheduleTaskData {
   }
 
   @override
-  Map<String, String> toMap() {
+  Map<String, String> toMap({BaseEntity remote}) {
+    var that = remote as JtTaskData;
     var map = <String, String>{
-      'fohao_count': fohao_count?.toString(),
-      'fohao_type': fohao_type?.toString(),
+      'fohao_count': or(fohao_count, that?.fohao_count),
+      'fohao_type': or(fohao_type, that?.fohao_type),
     };
-    return map..addAll(super.toMap());
+    return map..addAll(super.toMap(remote: remote));
   }
 
   @override
-  bool get isEmpty =>
-      fohao_count == null || fohao_count == 0;
+  bool get isEmpty => fohao_count == null || fohao_count == 0;
 
   @override
   bool get isNotEmpty => !isEmpty;

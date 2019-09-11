@@ -27,7 +27,7 @@ class ClassInfo extends BaseEntity {
         start_year = map['start_year'];
 
   @override
-  Map<String, String> toMap() {
+  Map<String, String> toMap({BaseEntity remote}) {
     return {
       'id': id?.toString(),
       'zb_id': zb_id?.toString(),

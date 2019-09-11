@@ -88,7 +88,7 @@ class JxTaskReportComponent extends AbstractTaskReportComponent<JxTaskData> {
 
     for (var user in users) {
       if (!await _zbService.reportTask(grid.pre_classID, halfTerm,
-          grid.gridTypes.workGrid, user.bicwData)) {
+          grid.gridTypes.workGrid, user)) {
         window.alert('Failed to report for ${user.bicwData.name}');
       }
     }

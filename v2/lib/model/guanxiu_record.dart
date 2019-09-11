@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:v2/model/base_entity.dart';
 
 import 'package:v2/model/has_schedule_records.dart';
 import 'package:v2/model/lesson.dart';
@@ -78,20 +79,34 @@ class GuanxiuRecord extends TaskDataWithLessons {
   ///   time[]: 2.5
   ///   time[]: 2.5
   @override
-  List<MapEntry<String, dynamic>> toFormData() {
+  List<MapEntry<String, dynamic>> toFormData({BaseEntity remote}) {
     return <String, dynamic>{}.entries.toList()
-      ..addAll(toMap().entries)
-      ..addAll(_getCountRecords())
-      ..addAll(_getTimeRecords());
+      ..addAll(toMap(remote: remote).entries)
+      ..addAll(_getCountRecords(remote))
+      ..addAll(_getTimeRecords(remote));
   }
 
-  Iterable<MapEntry<String, int>> _getCountRecords() =>
-      lessons.map((lesson) => MapEntry(
-          'count[]', guanxiu[lesson.lesson_id]?.count ?? 0));
+  static T _or<T>(T a, T b) => (a ?? 0) == 0 ? (b ?? 0) : (a ?? 0);
 
-  Iterable<MapEntry<String, double>> _getTimeRecords() =>
-      lessons.map((lesson) => MapEntry(
-          'time[]', guanxiu[lesson.lesson_id]?.time ?? 0.0));
+  int _countOr(GuanxiuRecord remote, int lesson_id) {
+    return _or(guanxiu[lesson_id]?.count,
+        remote == null ? null : remote.guanxiu[lesson_id]?.count);
+  }
+
+  double _timeOr(GuanxiuRecord remote, int lesson_id) {
+    return _or(guanxiu[lesson_id]?.time,
+        remote == null ? null : remote.guanxiu[lesson_id]?.time);
+  }
+
+  Iterable<MapEntry<String, int>> _getCountRecords(
+          TaskDataWithLessons remote) =>
+      lessons.map(
+          (lesson) => MapEntry('count[]', _countOr(remote, lesson.lesson_id)));
+
+  Iterable<MapEntry<String, double>> _getTimeRecords(
+          TaskDataWithLessons remote) =>
+      lessons.map(
+          (lesson) => MapEntry('time[]', _timeOr(remote, lesson.lesson_id)));
 }
 
 class GuanxiuData implements AbstractScheduleRecord {

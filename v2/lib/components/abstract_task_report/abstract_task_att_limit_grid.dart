@@ -65,7 +65,7 @@ abstract class TaskAttLImitGridComponent<T extends ScheduleTaskData>
 
     for (var user in users) {
       if (!await _zbService.reportScheduleTask(
-          grid.gridTypes.workGrid, grid.pre_classID, halfTerm, user.bicwData)) {
+          grid.gridTypes.workGrid, grid.pre_classID, halfTerm, user)) {
         window.alert('Failed to report for ${user.bicwData.name}');
       }
     }

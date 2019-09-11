@@ -1,8 +1,9 @@
+import 'package:v2/model/base_entity.dart';
 import 'package:v2/model/zb_task_data.dart';
 
 import 'auditable.dart';
 
-class TaskDataPair<T extends TaskData> extends Auditable {
+class TaskDataPair<T extends TaskData> extends Auditable implements BaseEntity {
   T bicwData;
   T zhibeiData;
 
@@ -57,4 +58,14 @@ class TaskDataPair<T extends TaskData> extends Auditable {
   }
 
   void moveToFirstReportTerm(Map<int, Map<int, TaskDataPair<T>>> taskData) {}
+
+  @override
+  String or<N extends num>(N a, N b) => null;
+
+  @override
+  Map<String, String> toMap({BaseEntity remote}) =>
+      bicwData.toMap(remote: zhibeiData);
+
+  Iterable<MapEntry<String, dynamic>> toFormData() =>
+      bicwData.toFormData(remote: zhibeiData);
 }

@@ -45,7 +45,7 @@ class User extends TaskData {
         email = map['email'],
         nickName = map['nickname'],
         education = int.tryParse(map['education']?.toString() ?? ''),
-        occupation = map['job'] ?? _truncate(map['occupation'], 16),
+        occupation = map['job'] ?? _truncate(map['occupation'], 16) ?? '无',
         skills = map['skills'],
         sn = map['sn'] ?? map['internal_id'],
         birth_year = int.tryParse(
@@ -77,6 +77,7 @@ class User extends TaskData {
     if (that is! User) return false;
     var another = that as User;
     return sn == another.sn &&
+        name == another.name &&
         birth_year == another.birth_year &&
         gender == another.gender &&
 //        district1 == another.district1 &&
@@ -88,7 +89,7 @@ class User extends TaskData {
       ? '$name($nickName) - $email'
       : '$name-$email';
 
-  Map<String, String> toMap() {
+  Map<String, String> toMap({BaseEntity remote}) {
     return <String, String>{
       'rid': 'user',
       'id': '$id',
@@ -103,6 +104,8 @@ class User extends TaskData {
       'internal_id': sn,
       'gender': gender?.toString(),
       'sex': '${1 - (gender ?? 0)}',
+      'userID': '$userID',
+      'birth_year': birth_year?.toString(),
     };
   }
 
@@ -115,7 +118,7 @@ class User extends TaskData {
       s == null ? null : s.substring(0, min(len - 1, s.length));
 }
 
-class StaffInfo implements BaseEntity {
+class StaffInfo extends BaseEntity {
   int id;
   int organization;
   int title;
@@ -134,7 +137,7 @@ class StaffInfo implements BaseEntity {
         startTime = Date.fromTime(DateTime.tryParse(map['start_time'] ?? '')),
         organization = int.tryParse(map['organization'] ?? '');
 
-  Map<String, String> toMap() {
+  Map<String, String> toMap({BaseEntity remote}) {
     return <String, String>{
       'rid': 'staff',
       'id': id?.toString(),

@@ -91,7 +91,7 @@ class ScheduleGridComponent
     for (var user in users) {
       user.bicwData.lessons = lessons;
       if (!await _zbService.reportScheduleTask(
-          gridType, grid.pre_classID, _halfTerm, user.bicwData)) {
+          gridType, grid.pre_classID, _halfTerm, user)) {
         window.alert('Failed to report for ${user.name}');
       }
     }

@@ -3,7 +3,7 @@ import 'package:v2/model/class_task_data.dart';
 import 'base_entity.dart';
 
 /// Base structure to encode/decode zhibei.info task data.
-class TaskData implements BaseEntity {
+class TaskData extends BaseEntity {
   final int operation;
   final int user_style;
 
@@ -29,25 +29,21 @@ class TaskData implements BaseEntity {
         user_style = int.tryParse(map['user_style'] ?? '');
 
   TaskData clone() {
-    return TaskData.fromJson({
-      'id': id,
-      'userID': userID,
-      'name': name,
-      'att': att
-    });
+    return TaskData.fromJson(
+        {'id': id, 'userID': userID, 'name': name, 'att': att});
   }
 
   @override
   int get hashCode => id.hashCode;
 
   @override
-  bool operator==(that) {
+  bool operator ==(that) {
     if (that is! TaskData) return false;
     return (att ?? 0) == ((that as TaskData).att ?? 0);
   }
 
   @override
-  Map<String, String> toMap() {
+  Map<String, String> toMap({BaseEntity remote}) {
     return {
       'userID': userID.toString(),
       'att': att?.toString(),
@@ -71,6 +67,9 @@ class TaskData implements BaseEntity {
   /// half terms, the `baiziming` field is always null.
   void moveToFirstReportableTerm(
       Map<int, ClassTaskData> taskData, int fromTerm) {}
+
+  Iterable<MapEntry<String, dynamic>> toFormData({BaseEntity remote}) =>
+      toMap(remote: remote).entries;
 }
 
 typedef T TaskDataFromJson<T>(Map<String, dynamic> json);

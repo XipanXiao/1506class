@@ -132,8 +132,8 @@ abstract class ReportGrid<T extends TaskData> {
   /// Clears zhibei.info schedule data cache for [halfTerm].
   void clearScheduleCache(int halfTerm) {
     for (var user in scheduleRecords.values) {
-      user.zhibeiData.scheduleRecords
-          .removeWhere((_, record) => record.half_term == halfTerm);
+      user.zhibeiData?.scheduleRecords
+          ?.removeWhere((_, record) => record.half_term == halfTerm);
     }
   }
 

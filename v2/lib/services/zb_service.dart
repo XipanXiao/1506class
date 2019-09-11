@@ -7,6 +7,7 @@ import 'package:v2/model/has_schedule_records.dart';
 import 'package:v2/model/lesson.dart';
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/schedule_task_data.dart';
+import 'package:v2/model/task_data_pair.dart';
 import 'package:v2/model/user.dart';
 import 'package:v2/model/zb_group.dart';
 import 'package:v2/model/zb_jt_task_data.dart';
@@ -211,7 +212,7 @@ class ZBService {
   }
 
   Future<bool> reportTask(
-      int pre_classID, int halfTerm, String gridType, TaskData data) async {
+      int pre_classID, int halfTerm, String gridType, TaskDataPair data) async {
     _progressService.showProgress('Reporting task for ${data.name}');
 
     var extraData = {
@@ -231,7 +232,7 @@ class ZBService {
   }
 
   Future<bool> reportScheduleTask(String gridType, int pre_classID,
-      int half_term, TaskDataWithLessons user) async {
+      int half_term, TaskDataPair<TaskDataWithLessons> user) async {
     _progressService.showProgress('Reporting for ${user.name}');
     var data = <String, dynamic>{
       'url': '$_serviceUrl/pre/report_ajax',
@@ -308,7 +309,8 @@ class ZBService {
   }
 
   Future<Iterable<ZBSubGroup>> getSubGroups(String groupId) async {
-    var url = '$_serviceUrl/pre/dashboard_ajax?type=startDates_cmp_treegrid&b2=$groupId';
+    var url =
+        '$_serviceUrl/pre/dashboard_ajax?type=startDates_cmp_treegrid&b2=$groupId';
     var list = await utils.httpGetObject(_getProxiedUrl(url));
     return (list ?? []).map<ZBSubGroup>((group) => ZBSubGroup.fromJson(group));
   }
@@ -347,21 +349,36 @@ class ZBService {
     }
   }
 
+  bool _isInvalidUserKey(String key, _) {
+    var validKeys = <String>{
+      'name',
+      'sn',
+      'gender',
+      'birth_year',
+      'job',
+      'userID',
+    };
+    return !validKeys.contains(key);
+  }
+
   Future<bool> createUser(int pre_classID, User user) async {
     var data = <String, String>{
       'url': '$_serviceUrl/pre/classinfo_ajax',
       'type': 'add_user',
       'pre_classID': '$pre_classID',
     };
+    data.addAll(user.toMap()..removeWhere(_isInvalidUserKey));
 
-    return await _post(user, data, 'Creating new user for ${user.name}');
+    return await _post(
+        BaseEntity(), data, 'Creating new user for ${user.name}');
   }
 
   Future<bool> updateUser(User user) async {
     var data = <String, String>{
       'url': '$_serviceUrl/user/basic_ajax',
     };
-    return await _post(user, data, 'Updating user for ${user.name}');
+    data.addAll(user.toMap()..removeWhere(_isInvalidUserKey));
+    return await _post(BaseEntity(), data, 'Updating user for ${user.name}');
   }
 
   Future<ZBUserClassInfo> getUserClassInfo(int userID) async {

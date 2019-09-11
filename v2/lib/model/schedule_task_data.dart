@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:v2/model/base_entity.dart';
 
 import 'package:v2/model/schedule_record.dart';
 import 'package:v2/model/zb_task_data.dart';
@@ -90,18 +91,30 @@ class ScheduleTaskData extends TaskDataWithLessons {
   ///   audio[]: 0
   ///   audio[]: 1
   @override
-  List<MapEntry<String, dynamic>> toFormData() {
+  List<MapEntry<String, dynamic>> toFormData({BaseEntity remote}) {
     return <String, dynamic>{}.entries.toList()
-      ..addAll(toMap().entries)
-      ..addAll(_getBookRecords())
-      ..addAll(_getAudioRecords());
+      ..addAll(toMap(remote: remote).entries)
+      ..addAll(_getBookRecords(remote))
+      ..addAll(_getAudioRecords(remote));
   }
 
-  Iterable<MapEntry<String, int>> _getBookRecords() =>
-      lessons.map((lesson) => MapEntry(
-          'book[]', scheduleRecords[lesson.lesson_id]?.text == true ? 1 : 0));
+  int _or(bool a, bool b) => (a == true || b == true) ? 1 : 0;
 
-  Iterable<MapEntry<String, int>> _getAudioRecords() =>
-      lessons.map((lesson) => MapEntry(
-          'audio[]', scheduleRecords[lesson.lesson_id]?.video == true ? 1 : 0));
+  int _bookOr(ScheduleTaskData remote, int lesson_id) {
+    return _or(scheduleRecords[lesson_id]?.text,
+        remote == null ? null : remote.scheduleRecords[lesson_id]?.text);
+  }
+
+  int _audioOr(ScheduleTaskData remote, int lesson_id) {
+    return _or(scheduleRecords[lesson_id]?.video,
+        remote == null ? null : remote.scheduleRecords[lesson_id]?.video);
+  }
+
+  Iterable<MapEntry<String, int>> _getBookRecords(ScheduleTaskData remote) =>
+      lessons.map(
+          (lesson) => MapEntry('book[]', _bookOr(remote, lesson.lesson_id)));
+
+  Iterable<MapEntry<String, int>> _getAudioRecords(ScheduleTaskData remote) =>
+      lessons.map(
+          (lesson) => MapEntry('audio[]', _audioOr(remote, lesson.lesson_id)));
 }
