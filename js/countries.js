@@ -259,6 +259,78 @@ s_a[250] = "Kosovo|Montenegro|Serbia|Vojvodina";
 s_a[251] = "Central|Copperbelt|Eastern|Luapula|Lusaka|North-Western|Northern|Southern|Western";
 s_a[252] = "Bulawayo|Harare|ManicalandMashonaland Central|Mashonaland East|Mashonaland West|Masvingo|Matabeleland North|Matabeleland South|Midlands";
 
+var us_states = {
+  "AL": "Alabama",
+  "AK": "Alaska",
+  "AS": "American Samoa",
+  "AZ": "Arizona",
+  "AR": "Arkansas",
+  "CA": "California",
+  "CO": "Colorado",
+  "CT": "Connecticut",
+  "DE": "Delaware",
+  "DC": "District of Columbia",
+  "FM": "Federated States Of Micronesia",
+  "FL": "Florida",
+  "GA": "Georgia",
+  "GU": "Guam",
+  "HI": "Hawaii",
+  "ID": "Idaho",
+  "IL": "Illinois",
+  "IN": "Indiana",
+  "IA": "Iowa",
+  "KS": "Kansas",
+  "KY": "Kentucky",
+  "LA": "Louisiana",
+  "ME": "Maine",
+  "MH": "Marshall Islands",
+  "MD": "Maryland",
+  "MA": "Massachusetts",
+  "MI": "Michigan",
+  "MN": "Minnesota",
+  "MS": "Mississippi",
+  "MO": "Missouri",
+  "MT": "Montana",
+  "NE": "Nebraska",
+  "NV": "Nevada",
+  "NH": "New Hampshire",
+  "NJ": "New Jersey",
+  "NM": "New Mexico",
+  "NY": "New York",
+  "NC": "North Carolina",
+  "ND": "North Dakota",
+  "MP": "Northern Mariana Islands",
+  "OH": "Ohio",
+  "OK": "Oklahoma",
+  "OR": "Oregon",
+  "PW": "Palau",
+  "PA": "Pennsylvania",
+  "PR": "Puerto Rico",
+  "RI": "Rhode Island",
+  "SC": "South Carolina",
+  "SD": "South Dakota",
+  "TN": "Tennessee",
+  "TX": "Texas",
+  "UT": "Utah",
+  "VT": "Vermont",
+  "VI": "Virgin Islands",
+  "VA": "Virginia",
+  "WA": "Washington",
+  "WV": "West Virginia",
+  "WI": "Wisconsin",
+  "WY": "Wyoming"
+};
+
+var us_state_codes = {};
+for (var code in us_states) {
+  us_state_codes[us_states[code]] = code;
+}
+
+var countryMap = {};
+for (var index = 0;index < country_arr.length; index++) {
+  countryMap[codes[index]] = country_arr[index];
+}
+
   var countryData = {
     countries: country_arr,
     getStates: function(countryIndex) {
@@ -275,15 +347,17 @@ s_a[252] = "Bulawayo|Harare|ManicalandMashonaland Central|Mashonaland East|Masho
     getCountryCode: function(countryIndex) {
       return codes[countryIndex];
     },
+    getCountryLabel: function(code) {
+      return countryMap[code];
+    },
     getCountryIndex: function(code) {
       return codes.indexOf(code);
     },
     getCountryMap: function() {
-      var map = {};
-      for (var index = 0;index < country_arr.length; index++) {
-        map[codes[index]] = country_arr[index];
-      }
-      return map;
+      return countryMap;
+    },
+    getUSStateCode: function(state) {
+      return us_state_codes[state];
     },
     /// Finds address component of the [type] for the [components] list. See
     /// https://maps.googleapis.com/maps/api/geocode/json?address=01827&sensor=true
@@ -342,9 +416,12 @@ s_a[252] = "Bulawayo|Harare|ManicalandMashonaland Central|Mashonaland East|Masho
     }
   };
   
-  if (!window.require) {
-    window.countryData = countryData;
-  }
+  window.countryData = countryData;
+  window.bicw = {
+    getCountryData: function() {
+      return countryData;
+    }
+  };
   
   return countryData;
 })();
