@@ -23,9 +23,13 @@ class User extends TaskData {
   final int status;
   final int birth_year;
   final int gender;
+  final int enroll_tasks;
+  final int yy;
 
   final String district1;
   final String district2;
+  final String note;
+  final String ts;
 
   final String sn;
 
@@ -59,6 +63,10 @@ class User extends TaskData {
         district2 = map['district2'] ??
             _DistrictUtil.getStateCityLabel(
                 map['country'], map['state'], map['city']),
+        enroll_tasks = map['enroll_tasks'] ?? 0,
+        ts = map['ts'],
+        yy = map['yy'],
+        note = map['note'] ?? map['comments'],
         classInfo = ClassInfo.fromJson(map['classInfo'] ?? {}),
         super.fromJson({});
 
@@ -99,7 +107,7 @@ class User extends TaskData {
       'name': name,
       'email': email,
       'nickname': nickName,
-      'education': education?.toString(),
+      'education': (remote == null ? education : _zb_edu)?.toString(),
       'job': job,
       'occupation': occupation,
       'skills': skills,
@@ -109,8 +117,19 @@ class User extends TaskData {
       'sex': '${1 - (gender ?? 0)}',
       'userID': '$userID',
       'birth_year': birth_year?.toString(),
+      'district1': district1,
+      'district2': district2,
+      'lifelong': _EnrollTaskUtil.lifelong(enroll_tasks),
+      'position': '',
+      'is_fdy': '0',
+      'is_ytb': _EnrollTaskUtil.is_ytb(enroll_tasks),
+      'study_style': _EnrollTaskUtil.study_style(enroll_tasks),
+      'onlywensi': _EnrollTaskUtil.onlywensi(enroll_tasks),
+      'note': note,
     };
   }
+
+  int get _zb_edu => education == null ? 0 : education + 3;
 
   static int _getGenderCode(String label) => {'男': 0, '女': 1}[label];
 
@@ -149,6 +168,37 @@ class StaffInfo extends BaseEntity {
       'start_time': startTime?.toString(),
     };
   }
+}
+
+class _EnrollTaskUtil {
+  // Index of bit in the user.enroll_tasks bits.
+  // Indicating whether welcome letter is sent.
+  static const welcomeIndex = 0;
+  // Indicating whether the user joined wechat group.
+  static const wechatIndex = 1;
+  // Indicating whether yy client is installed.
+  static const yyIndex = 2;
+  // Indicating whether yy client is tested.
+  static const yyTestIndex = 3;
+  // Indicating whether book order is placed (or omitted).
+  static const bookOrderIndex = 4;
+  // Indicating whether the student is in the workshop class.
+  static const workshopIndex = 5;
+  // Indicating whether the student is permanent or not.
+  static const permanentIndex = 6;
+  // Indicating whether the student is self learning or not.
+  static const selfLearningIndex = 7;
+  // Indicating whether the student don't practice.
+  static const wensiIndex = 8;
+
+  static String lifelong(int bits) =>
+      (bits & (1 << permanentIndex)) != 0 ? '1' : '0';
+  static String is_ytb(int bits) =>
+      (bits & (1 << workshopIndex)) != 0 ? '1' : '0';
+  static String study_style(int bits) =>
+      (bits & (1 << selfLearningIndex)) != 0 ? '1' : '0';
+  static String onlywensi(int bits) =>
+      (bits & (1 << wensiIndex)) != 0 ? '1' : '0';
 }
 
 class _DistrictUtil {

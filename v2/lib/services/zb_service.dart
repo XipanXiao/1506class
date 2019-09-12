@@ -367,7 +367,7 @@ class ZBService {
       'type': 'add_user',
       'pre_classID': '$pre_classID',
     };
-    data.addAll(user.toMap()..removeWhere(_isInvalidUserKey));
+    data.addAll(user.toMap());
 
     return await _post(
         BaseEntity(), data, 'Creating new user for ${user.name}');
@@ -377,7 +377,7 @@ class ZBService {
     var data = <String, String>{
       'url': '$_serviceUrl/user/basic_ajax',
     };
-    data.addAll(user.toMap()..removeWhere(_isInvalidUserKey));
+    data.addAll(user.toMap());
     return await _post(BaseEntity(), data, 'Updating user for ${user.name}');
   }
 
