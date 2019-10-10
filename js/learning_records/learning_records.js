@@ -100,7 +100,7 @@ define('learning_records/learning_records', [
                   return !$scope.vacation(schedule);
                 };
                 var getCourseId = function(schedule) {
-                  return secondary && schedule.course_id2 || schedule.course_id;
+                  return secondary ? schedule.course_id2 : schedule.course_id;
                 };
                 return utils.map(utils.where(group.schedules, isNotVacation),
                     getCourseId);
@@ -110,8 +110,10 @@ define('learning_records/learning_records', [
                 utils.forEach(group.schedules, function(schedule) {
                   if ($scope.vacation(schedule)) return;
 
-                  result.push(schedule.course_id);
-                  if (schedule.course_id2) {
+                  if(schedule.course_id ) {
+                    result.push(schedule.course_id);
+                  }
+                  if(schedule.course_id2) {
                     result.push(schedule.course_id2);
                   }
                 });
@@ -123,9 +125,9 @@ define('learning_records/learning_records', [
                   $scope.exportedRecords = utils.createDataUrl(
                       $scope.exportCourse(group, course_ids),
                       $scope.exportedRecords);
-                  if (!parseInt(group.course_group2))
-                    return;
                   var course_ids2 = $scope.getCourses(group, true);
+                  if (utils.isEmpty(course_ids2)) return;
+
                   $scope.exportedRecords2 = utils.createDataUrl(
                       $scope.exportCourse(group, course_ids2),
                       $scope.exportedRecords2);
