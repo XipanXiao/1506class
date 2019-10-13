@@ -482,8 +482,10 @@ function get_tasks($department_id) {
 
   $int_fields = ["duration", "max", "sub_tasks", "starting_half_term",
       "report_half_term", "zb_course_id"];
+  $where = ["OR" => 
+      ["department_id" => $department_id, "dep2" => $department_id]];
   $tasks = keyed_by_id($medoo->select("tasks", "*",
-      $department_id ? ["department_id" => $department_id] : null));
+      $department_id ? $where : null));
   foreach ($tasks as $id => $task) {
     $tasks[$id] = convert_int_fields($task, $int_fields);
   }

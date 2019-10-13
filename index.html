@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" type="text/css" href="style.css?tag=201809112203">
+<link rel="stylesheet" type="text/css" href="style.css?tag=201909112203">
 <title>学修记录</title>
 <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js">
 </script>
@@ -27,12 +27,14 @@
   </paper-tabs>
 
   <iron-pages selected="0">
-    <div>
+    <div class="flex">
       <!-- Don't use ng-switch here, it breaks the iron page for FireFox, Safari, etc. -->
-      <setup-tasks ng-show="isFirstClass()" user="user" class="left">
-      </setup-tasks>
-      <tasks ng-hide="isFirstClass()" class-info="user.classInfo" class="left">
-      </tasks>
+      <div class="tasks-container">
+        <setup-tasks ng-show="isFirstClass()" user="user">
+        </setup-tasks>
+        <tasks class-info="user.classInfo">
+        </tasks>
+      </div>
       <schedule-tasks class="left" user="user"></schedule-tasks>
     </div>
     <div>

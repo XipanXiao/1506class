@@ -14,7 +14,7 @@ if (empty($_SESSION["user"])) {
   exit();
 } else {
   $user = unserialize($_SESSION["user"]);
-  if (!isSysAdmin($user)) exit();
+  if (!isCountryAdmin($user)) exit();
 }
 
 $medoo = get_medoo();
@@ -283,6 +283,23 @@ function add_classes_district($medoo) {
   echo $medoo->last_query(). "<br>\n";
 }
 
+function add_task_dep2($medoo) {
+  if (column_exists($medoo, "tasks", "dep2")) {
+    return;
+  }
+
+  $sql = "ALTER TABLE tasks
+      ADD COLUMN dep2 TINYINT,
+      ADD FOREIGN KEY fk_dep2(dep2)
+          REFERENCES departments(id);";
+
+  $medoo->query($sql);
+  echo get_db_error2($medoo);
+  echo $medoo->last_query(). "<br>\n";
+
+  $medoo->update("tasks", ["dep2" => 1], ["id" => 3]);
+}
+
 add_district_cfo($medoo);
 add_teacher_for_schedules($medoo);
 add_shipping_donation_for_orders($medoo);
@@ -295,5 +312,6 @@ change_task_records_timestamp($medoo);
 add_schedule_records_half_term($medoo);
 change_schedule_records_timestamp($medoo);
 add_classes_district($medoo);
+add_task_dep2($medoo);
 ?>
 </html>

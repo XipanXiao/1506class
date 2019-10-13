@@ -50,7 +50,10 @@ div.login-page {
 setup-tasks,
 tasks {
   padding-top: 40px;
-  width: 220px;  
+}
+
+.tasks-container {
+  width: 252px;
 }
 
 .white {
