@@ -45,14 +45,14 @@ class ClassInfo extends BaseEntity {
       Future<User> Function(int) _findZBUser) async {
     // Build a map from zb_id to User pair.
     var idMap = Map<int, TaskDataPair<User>>.fromIterable(users,
-        key: (user) => user.bicwData.userID);
+        key: (user) => user.bicwData?.userID);
     // Another map from name to User pair.
     var nameMap = Map<String, TaskDataPair<User>>.fromIterable(users,
         key: (user) => user.name);
 
     for (var zbUser in zbUsers) {
       var pair = idMap[zbUser.userID] ?? nameMap[zbUser.name];
-      if (pair == null) {
+      if (pair?.bicwData == null) {
         // A user only exists from zhibei.info.
         if (zbUser.isActive) {
           users.add(TaskDataPair<User>()..zhibeiData = zbUser);
