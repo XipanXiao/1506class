@@ -58,7 +58,7 @@ class ClassInfo extends BaseEntity {
           users.add(TaskDataPair<User>()..zhibeiData = zbUser);
         }
       } else {
-        if (pair.bicwData.userID == null) {
+        if ((pair.bicwData.userID ?? 0) == 0) {
           // A user exists in both systems but not linked.
           pair.bicwData.userID = zbUser.userID;
           await _updateBicwUser(pair.bicwData);
