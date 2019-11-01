@@ -116,6 +116,7 @@ class User extends TaskData {
       'gender': gender?.toString(),
       'sex': '${1 - (gender ?? 0)}',
       'userID': '$userID',
+      'zb_id': '$userID',
       'birth_year': birth_year?.toString(),
       'district1': district1,
       'district2': district2,

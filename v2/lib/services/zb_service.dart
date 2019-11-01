@@ -437,7 +437,8 @@ class ZBService {
     try {
       var response =
           await utils.httpPostObject(_proxyUrl, data, extraData: extraData);
-      return response['returnValue'] == 'true';
+      var map = Map<String, String>.from(response);
+      return map['returnValue'] == 'success' || map['returnValue'] == 'true';
     } finally {
       _progressService.done();
     }
