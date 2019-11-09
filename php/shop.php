@@ -562,7 +562,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       }
     } else {
       $response = $_GET["student_id"] == $user->id
-      ? get_orders($user->id, $_GET, $_GET["items"], canReadOrderAddress($user))
+      ? get_orders($user->id, $_GET, $_GET["items"], true)
       : permission_denied_error();
     }
   } elseif ($resource_id == "items") {

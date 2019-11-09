@@ -60,6 +60,7 @@ class UserService {
   Future<Iterable<User>> getUsers(int classId) async {
     var url = '$_serviceUrl?rid=users&classId=$classId';
     var obj = await utils.httpGetObject(url);
+    if (obj.isEmpty) return [];
     return obj.values.map<User>((map) => User.fromJson(map));
   }
 }
