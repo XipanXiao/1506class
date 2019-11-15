@@ -341,6 +341,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
             '市/县/区',
             '街道',
             'zip',
+            '地区',
             '个人特长',
             '是否看过招生简章',
             '能否遵守管理规定',
@@ -362,6 +363,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
           ];
           var exportUser = function(user, className) {
             utils.setCountryLabels(user);
+            var districtInfo = window.districts[user.district];
             return '' + (++serialNumber) + delimiter + 
               user.name + delimiter +
               utils.getDisplayLabel(user, 'sex') + delimiter +
@@ -375,6 +377,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
               (user.city || '') + delimiter +
               (user.street || '') + delimiter +
               (user.zip || '') + delimiter +
+              (districtInfo && districtInfo.name || '') + delimiter +
               (user.skills || '') + delimiter +
               '是' + delimiter +
               '是' + delimiter +

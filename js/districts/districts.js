@@ -12,7 +12,7 @@ define('districts/districts',
       },
       link: function(scope) {
         rpc.get_districts().then(function(response) {
-          scope.localGroups = response.data;
+          window.districts = scope.localGroups = response.data;
           scope.localGroupIds = utils.keys(utils.where(scope.localGroups,
               (district) => scope.stock ? parseInt(district.stock) : true));
         });
