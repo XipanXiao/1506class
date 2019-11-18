@@ -47,13 +47,13 @@ class ZBChooseRootDialogComponent extends AbstractDialog {
   ZBChooseRootDialogComponent(this._zbService, this._classService);
 
   void create() async {
-    if (selected == null) return;
+    if (selected == null && root.isEmpty) return;
 
     var info = (data as ZBChooseRootDialogData).classInfo;
     var count = await _getClassCount(info);
     var startdate = '${info.start_year}-06-01';
     info.zb_id = await _zbService.createClass(
-        selected.groupId,
+        selected?.groupId ?? root.selectedValues.first.groupId,
         Department.getZBCourseId(info.department_id),
         startdate,
         '美国',
@@ -88,6 +88,8 @@ class ZBChooseRootDialogComponent extends AbstractDialog {
 
   /// Fills the [groups] list when [root] changes.
   Future<void> populateGroups() async {
+    if (root.isEmpty) return;
+
     var group = root.selectedValues.first;
     if (group.children.isEmpty) {
       var subgroups = await _zbService.getSubGroups(group.groupId);

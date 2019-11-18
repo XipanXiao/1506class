@@ -19,7 +19,7 @@
     <div footer>
       <material-button (trigger)="close(false)">Close</material-button>
       <material-button (trigger)="create()"
-          [disabled]="selected == null" 
+          [disabled]="selected == null && root.isEmpty" 
           affirmative>
         确定
       </material-button>

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:html';
 
 import 'package:angular/angular.dart';
 import 'package:v2/model/base_entity.dart';
@@ -344,6 +345,9 @@ class ZBService {
       var response =
           await utils.httpPostObject(_proxyUrl, BaseEntity(), extraData: data);
       return response['returnValue'];
+    } catch (err) {
+      window.alert('Failed to create new class. $err');
+      return null;
     } finally {
       _progressService.done();
     }
