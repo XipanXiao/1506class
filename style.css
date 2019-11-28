@@ -1014,6 +1014,10 @@ paper-button[disabled].primary-action {
   cursor: auto;
 }
 
+.actions {
+  position: relative;
+}
+
 .vote-actions {
   position: relative;
 }
