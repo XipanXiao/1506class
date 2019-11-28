@@ -5,6 +5,7 @@ define('users/users', ['bit_editor/bit_editor',
     'utils'], function() {
 
   return angular.module('UsersModule', ['BitEditorModule',
+    'ClassesModule',
     'ClassLabelModule',
     'DistrictsModule',
     'ImportersModule',
@@ -27,13 +28,17 @@ define('users/users', ['bit_editor/bit_editor',
           };
           $scope.batchChange = {district: null};
           $scope.$watch('batchChange.district', (district) => {
+            var batchUsers = utils.where($scope.users, function(user) {
+              return user.checked;
+            });
+            var count = utils.keys(batchUsers).length;
             var message = ('您确定要移动{0}位用户的地区吗？' +
-                '该操作不能撤销。').format($scope.userCount());
+                '该操作不能撤销。').format(count);
             if (!district || !confirm(message)) return;
 
             $scope.showActions = false;
             var updated = 0;
-            var requests = utils.map($scope.users, (user) => (() => {
+            var requests = utils.map(batchUsers, (user) => (() => {
               var data = {id: user.id, district: district};
               return rpc.update_user(data).then((response) => {
                 if (response.data.updated) {
@@ -107,8 +112,43 @@ define('users/users', ['bit_editor/bit_editor',
           $scope.showSerialNumberDlg = function() {
             document.querySelector('#serial-number-dlg').open();
           };
+          $scope.toggleSelectAll = function(checked) {
+            utils.forEach($scope.users, function(user) {
+              user.checked = checked;
+            });
+            $scope.toggleActions();
+          };
+          $scope.toggleActions = function() {
+            var hasSelection = utils.any($scope.users, function(user) {
+              return user.checked;
+            });
+            $scope.showMoreActions = hasSelection;
+          };
+
+          $scope.transferClass = {};
+
+          $scope.batchTransfer = function() {
+            $scope.showActions = false;
+
+            if (!$scope.transferClass.id ||
+                $scope.transferClass.id == $scope.classId ||
+                !confirm('您确定将选中的所有用户都转到"{0}"?'.format(
+                    window.classInfos[$scope.transferClass.id].name))) {
+              return;
+            }
+
+            utils.forEach($scope.users, function(user) {
+              if (!user.checked) return;
+              rpc.update_user({id: user.id, 
+                classId: $scope.transferClass.id}).then(function(response) {
+                  if (!parseInt(response.data.updated)) return;
+                  user.classId = $scope.transferClass.id;
+                  delete $scope.users[user.id];
+                });
+            });
+          }
         },
-        templateUrl : 'js/users/users.html?tag=201905032307'
+        templateUrl : 'js/users/users.html?tag=201911032307'
       };
     });
 });

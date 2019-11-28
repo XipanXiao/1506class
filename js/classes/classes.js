@@ -18,6 +18,8 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
           };
 
           $scope.yearChanged = function() {
+            if (!$scope.alumnis) return;
+
             $scope.classes = $scope.alumnis[$scope.currentClass.year];
 
             // Classes without a 'start_year' field are pinned for all years.

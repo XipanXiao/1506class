@@ -914,6 +914,7 @@ payment.in-shopping-cart {
   background: white;
   box-shadow: 1px 1px 1px gray;
   position: absolute;
+  right: 0;
   z-index: 2;
 }
 

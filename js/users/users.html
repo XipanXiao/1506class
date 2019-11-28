@@ -14,11 +14,20 @@
       批量修改地区: 
       <districts editable="true" user="batchChange"></districts>
     </div>
+    <hr>
+    <div class="selectable clickable menu-item" ng-click="">
+      <classes class-id="transferClass.id"></classes>
+      <input type="button" ng-click="batchTransfer()" value="批量转班">
+    </div>
   </div>
 </div>
 <div class="users flex" ng-if="isNotEmpty">
   <div class="css-table section odd-even">
     <div class="css-table-row header">
+      <div class="css-table-cell">
+        <input type="checkbox" ng-change="toggleSelectAll(allSelected)"
+            ng-model="allSelected" title="{{allSelected ? '全不选' : '全选'}}">
+      </div>
       <div class="css-table-cell"><strong>姓名</strong></div>
       <div class="css-table-cell" ng-if="!isNewClass()"><strong>法名</strong></div>
       <div class="css-table-cell"><strong>电子邮件</strong></div>
@@ -38,6 +47,9 @@
     <div ng-repeat="user in users" class="css-table-row selectable users deletable"
         ng-click="showInfo(user, $index)"
         ng-class="{'selected': selected(user), 'admin': isAdmin(user)}">
+      <div class="css-table-cell">
+        <input type="checkbox" ng-model="user.checked" ng-change="toggleActions()">
+      </div>    
       <div class="css-table-cell compact-name-field">{{user.name}}</div>
       <div class="css-table-cell compact-name-field" ng-if="!isNewClass()">{{user.nickname}}</div>
       <div class="css-table-cell email">{{user.email}}</div>
