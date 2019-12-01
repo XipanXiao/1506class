@@ -55,6 +55,7 @@ define('admin_app',
             });
 
             emailjs.init("user_ZAqyLkjaj5MHdbn3alvEx");
+            tabs.selected = 0;
           }
         };
       }).config( ['$compileProvider', function( $compileProvider ) {
