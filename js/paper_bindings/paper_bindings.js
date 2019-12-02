@@ -33,7 +33,7 @@ angular.module('PaperBindingsModule', [
           var tabs = element.closest('paper-tabs');
           if (!tabs) return;
           var children = tabs.querySelectorAll('paper-tab');
-          if (children == null) return;
+          if (!children) return;
           var index = -1;
           for (var i = 0; i < children.length; i++) {
             if (children[i] == element) {
@@ -41,10 +41,20 @@ angular.module('PaperBindingsModule', [
               break;
             }
           }
-          if (index >= 0) {
-            var pages = tabs.parentNode.querySelector('iron-pages');
-            pages && (pages.selected = index);
-          }
+          if (index < 0) return;
+          var pages = tabs.parentNode.querySelector('iron-pages');
+          setTimeout(function() {
+            if (!pages || parseInt(pages.selected) == index) return;
+            var oldPage = pages.children[parseInt(pages.selected)];
+            if (oldPage) {
+              oldPage.classList.remove('iron-selected');
+            }
+            var newPage = pages.children[index];
+            if (newPage) {
+              pages.selected = '' + index;
+              newPage.classList.add('iron-selected');
+            }
+          }, 250);
         }
       });
     }
