@@ -14,6 +14,7 @@ define('order_app', [
       'ItemListModule',
       'ShoppingCartModule',
       'OrdersModule',
+      'PaperBindingsModule',
       'ServicesModule',
       'PermissionModule',
       'UtilsModule',

@@ -10,6 +10,7 @@ define('student_app', ['app_bar/app_bar', 'setup_tasks/setup_tasks',
       'ScoreModule',
       'TaskHistoryModule',
       'UserEditorModule',
+      'PaperBindingsModule',
       'PermissionModule', 'ServicesModule'])
       .directive('body', function(perm, rpc) {
         return {
