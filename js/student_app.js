@@ -16,6 +16,10 @@ define('student_app', ['app_bar/app_bar', 'setup_tasks/setup_tasks',
         return {
           link: function($scope) {
             $scope.pageLoaded = [];
+            var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+            if (isFirefox) {
+              $scope.pageLoaded = [true, true, true, true, true, true, true];
+            }
 
             rpc.get_user().then(function(user) {
               $scope.user = user;

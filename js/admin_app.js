@@ -28,6 +28,11 @@ define('admin_app',
         return {
           link: function($scope) {
             $scope.pageLoaded = [true];
+            var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+            if (isFirefox) {
+              $scope.pageLoaded = [true, true, true, true, true, true, true];
+            }
+
             rpc.get_user().then(function(user) {
               perm.user = user;
               $scope.user = user;

@@ -39,6 +39,10 @@ define('order_admin_app', [
 
             scope.year = new Date().getFullYear();
             scope.pageLoaded = [];
+            var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+            if (isFirefox) {
+              $scope.pageLoaded = [true, true, true, true, true, true, true];
+            }
 
             var pages = document.querySelector('iron-pages');
             var tabs = document.querySelector('paper-tabs');

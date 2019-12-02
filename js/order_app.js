@@ -23,6 +23,10 @@ define('order_app', [
         return {
           link: function(scope) {
             scope.pageLoaded = [];
+            var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+            if (isFirefox) {
+              $scope.pageLoaded = [true, true, true, true, true, true, true];
+            }
 
             scope.cart = new Cart({rpc: rpc, utils: utils, scope: scope});
 
