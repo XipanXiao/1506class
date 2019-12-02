@@ -340,10 +340,11 @@ define('schedule_editor/schedule_editor',
                     var course = response.data[parseInt(query)];
                     return course && course.name;
                   }
-                  return utils.map(response.data || [], function(course) {
+                  return utils.sortBy(utils.dedupe(
+                        utils.map(response.data || [], function(course) {
                     course.label = course.name;
                     return course;
-                  });
+                  }), 'name'), 'name');
                 });
               };
               $scope.append = function(group) {

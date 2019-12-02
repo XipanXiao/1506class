@@ -180,6 +180,23 @@ define('utils', [], function() {
           }
         }
       },
+      /// Removes duplicated values associated to [key] in [map].
+      dedupe: function(map, key) {
+        var m = {};
+        var results = [];
+        utils.forEach(map, function(o) {
+          if (m[o[key]]) return;
+          results.push(m[o[key]] = o);
+        });
+        return results;
+      },
+      /// Sorts [list] by [key].
+      sortBy: function(list, key) {
+        list.sort(function(a, b) {
+          return a[key] < b[key] ? -1 : 1;
+        });
+        return list;
+      },
       count: function(list, test) {
         var total = 0;
         for (var key in list) {
