@@ -124,7 +124,7 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
                 });
           };
         },
-        templateUrl : 'js/classes/classes.html'
+        templateUrl : 'js/classes/classes.html?tag=2019'
       };
     });
 });

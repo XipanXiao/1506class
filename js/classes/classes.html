@@ -5,13 +5,18 @@
           ng-change="yearChanged()">
       </select>
     </div>
-    <div ng-repeat="classInfo in classes" class="selectable">
+    <div ng-repeat="classInfo in classes" class="selectable"
+        ng-if="!classInfo.graduated || showGraduatedClasses">
       <div ng-click="select(classInfo.id)" class="padded-element class-name"
           ng-class="{'selected': currentClass.id == classInfo.id}">
         {{classInfo.name}}
       </div>
     </div>
-    
+    <label>
+      <input type="checkbox" ng-model="showGraduatedClasses">
+      显示已经毕业班级
+    </label>
+  
     <div class="padded-element" ng-if="isSysAdmin()">
       <input type="button" value="开新班" ng-click="createNewClass()">
     </div>
