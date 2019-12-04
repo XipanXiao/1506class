@@ -328,7 +328,9 @@ function get_users($email, $classId = null, $user_id = null, $sn = null) {
       get_classes(["id" => $result[0]["classId"]]) : null;
   $users = array();
 
+	$staff = keyed_by_id($medoo->select("staff", "*"), "user");
   foreach ($result as $index => $row) {
+		$row["staff"] = isset($staff[$row["id"]]) ? $staff[$row["id"]] : null;
     $user = new User($row);
     $user->password = null;
     $user->classInfo = $classes ? $classes[$user->classId] : null;

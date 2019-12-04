@@ -357,8 +357,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
             '学号',
             '法名',
             '微信',
-            'YY',
-            '是否愿意发心工作',
+            '是否发心人员',
             '注册时间'
           ];
           var exportUser = function(user, className) {
@@ -395,8 +394,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
               (user.internal_id || '') + delimiter +
               (user.nickname || '') + delimiter +
               (user.im || '') + delimiter +
-              (user.yy || '') + delimiter +
-              utils.getDisplayLabel(user, 'volunteer') + delimiter +
+              (user.staff ? '是' : '否') + delimiter +
               user.ts
           };
           
