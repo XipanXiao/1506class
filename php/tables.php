@@ -797,12 +797,18 @@ function update_schedule_group($group) {
   $schedules = $group["schedules"];
 
   ksort($schedules);
-  $medoo->delete("schedules", ["group_id" => $id]);
-  foreach ($schedules as $schedule) {
-    $schedule["group_id"] = $id;
-    unset($schedule["id"]);
-    update_schedule($schedule);
-  }
+
+  $medoo->action(function($medoo) use ($id, &$schedules) {
+    $medoo->delete("schedules", ["group_id" => $id]);
+    foreach ($schedules as $schedule) {
+      $schedule["group_id"] = $id;
+      unset($schedule["id"]);
+      if (!update_schedule($schedule)) {
+        return false;
+      }
+    }
+    return true;
+  });
 
   return $id;
 }
