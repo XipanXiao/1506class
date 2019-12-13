@@ -731,7 +731,8 @@ function update_schedule($schedule) {
       "teacher_planned", "teacher"];
   foreach ($int_fields as $field) {
     if (isset($schedule[$field])) {
-      $datas[$field] = intval($schedule[$field]);
+      $value = intval($schedule[$field]);
+      $datas[$field] = $value ? $value : null;
     }
   }
   if (isset($schedule["notes"])) {
