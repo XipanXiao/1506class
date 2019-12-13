@@ -39,6 +39,7 @@
   <paper-button ng-click="copy(term)" ng-if="!group.id" raised dismissive>
     Copy from another class...
   </paper-button>
+  <span ng-if="isSafari">(暂不支持Safari，请使用Chrome编辑学修记录)</span>
   <div class="css-table odd-even schedule-tasks" ng-class="{'busy': sending}">
     <div class="css-table-row header">
       <div class="css-table-cell">

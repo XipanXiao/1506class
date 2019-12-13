@@ -24,6 +24,7 @@ define('schedule_editor/schedule_editor',
             },
             link: function($scope) {
               $scope.week = 1000*3600*24*7;
+              $scope.isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
               
               $scope.getWeeklyTime = function(group, index) {
                 return utils.getWeeklyTime(group.start_time, index);
@@ -405,7 +406,7 @@ define('schedule_editor/schedule_editor',
                 });
               };
             },
-            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201909072216'
+            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201912072216'
           };
         });
 });
