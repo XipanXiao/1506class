@@ -306,6 +306,14 @@ function update_disctrict_inspector_perm($medoo) {
   echo "updated: ". $updated. ":". $medoo->last_query(). "<br>\n";
 }
 
+function clean_graduated_admins($medoo) {
+  $excludedClassId = get_excluded_classes($medoo);
+  $updated = $medoo->update("users", ["permission" => 3],
+      ["AND" => ["permission[!]" => 3, "classId" => $excludedClassId]]);
+  echo $medoo->last_query(). " removed ". $updated.
+      " admins from deleted/graduated/quit classes.<br>\n";
+}
+
 add_district_cfo($medoo);
 add_teacher_for_schedules($medoo);
 add_shipping_donation_for_orders($medoo);
@@ -320,5 +328,6 @@ change_schedule_records_timestamp($medoo);
 add_classes_district($medoo);
 add_task_dep2($medoo);
 update_disctrict_inspector_perm($medoo);
+clean_graduated_admins($medoo);
 ?>
 </html>
