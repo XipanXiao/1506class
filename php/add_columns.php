@@ -300,6 +300,12 @@ function add_task_dep2($medoo) {
   $medoo->update("tasks", ["dep2" => 1], ["id" => 3]);
 }
 
+function update_disctrict_inspector_perm($medoo) {
+  $updated = $medoo->update("users", ["permission" => 0x47],
+      ["permission" => 0x43]);
+  echo "updated: ". $updated. ":". $medoo->last_query(). "<br>\n";
+}
+
 add_district_cfo($medoo);
 add_teacher_for_schedules($medoo);
 add_shipping_donation_for_orders($medoo);
@@ -313,5 +319,6 @@ add_schedule_records_half_term($medoo);
 change_schedule_records_timestamp($medoo);
 add_classes_district($medoo);
 add_task_dep2($medoo);
+update_disctrict_inspector_perm($medoo);
 ?>
 </html>

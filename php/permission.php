@@ -12,6 +12,11 @@ function isDistrictInspector($user) {
       Roles::DISTRICT_INSPECTOR;
 }
 
+function isDistrictAdmin($user) {
+  return ($user->permission & Roles::DISTRICT_ADMIN) ==
+      Roles::DISTRICT_ADMIN;
+}
+
 function isInspector($user) {
   return ($user->permission & Roles::COUNTRY_INSPECTOR) ==
       Roles::COUNTRY_INSPECTOR;
@@ -92,7 +97,9 @@ function canRead($user, $classInfo) {
   $perm = ($user->permission >> (($level - 1) * 2)) & 1;
   if (!$perm) return false;
 
-  return checkClass($user, $classInfo) || checkYear($user, $classInfo) ||
+  return checkClass($user, $classInfo) ||
+      checkYear($user, $classInfo) ||
+      isDistrictInspector($user) && isPreClass($classInfo) && $user->district == $classInfo["district"] ||
       isInspector($user) || isCountryAdmin($user) || isSysAdmin($user);
 }
 
@@ -105,6 +112,7 @@ function canWrite($user, $classInfo) {
 
   return checkClass($user, $classInfo) ||
       checkYear($user, $classInfo) ||
+      isDistrictAdmin($user) && isPreClass($classInfo) && $user->district == $classInfo["district"] ||
       isCountryAdmin($user) ||
       isSysAdmin($user);
 }
@@ -132,13 +140,18 @@ function canReadDistrict($user, $district_id) {
       isDistrictInspector($user) && $user->district == $district_id;
 }
 
+function isPreClass($classInfo) {
+  return $classInfo["department_id"] < 5;
+}
+
 abstract class Roles {
   const SYS_ADMIN = 0xFFFF;
   const COUNTRY_ADMIN = 0xFFF;
   const COUNTRY_INSPECTOR = 0x457;
   const ORDER_ADMIN = 0x303;
   const ORDER_INSPECTOR = 0x103;
-  const DISTRICT_INSPECTOR = 0x43;
+  const DISTRICT_ADMIN = 0xCF;
+  const DISTRICT_INSPECTOR = 0x47;
   const YEAR_LEADER = 0x3F;
   const CLASS_LEADER = 0xF;
   const CLASS_READER = 0x7;
