@@ -1,6 +1,6 @@
 <?php
 function isSysAdmin($user) {
-  return isCountryAdmin($user);//($user->permission & Roles::SYS_ADMIN) == Roles::SYS_ADMIN;
+  return ($user->permission & Roles::SYS_ADMIN) == Roles::SYS_ADMIN;
 }
 
 function isCountryAdmin($user) {
