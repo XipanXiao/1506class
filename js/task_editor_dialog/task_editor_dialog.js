@@ -16,9 +16,11 @@ define('task_editor_dialog/task_editor_dialog',
                 });
               };
               
-              scope.update = function(task, departmentId) {
+              scope.update = function(task, departmentId, dep2) {
                 if (departmentId) {
                   task.department_id = departmentId;
+                } else if (dep2) {
+                  task.dep2 = dep2;
                 }
                 rpc.update_task(task).then(function() {
                   scope.reload();
@@ -33,7 +35,7 @@ define('task_editor_dialog/task_editor_dialog',
 
               scope.reload();
             },
-            templateUrl : 'js/task_editor_dialog/task_editor_dialog.html'
+            templateUrl : 'js/task_editor_dialog/task_editor_dialog.html?tag=2019'
           };
         });
 });

@@ -6,6 +6,7 @@
     <div class="tasks css-table">
       <div class="css-table-row">
         <div class="css-table-cell">类别</div>
+        <div class="css-table-cell">类别2</div>
         <div class="css-table-cell">任务名称</div>
         <div class="css-table-cell">任务总数</div>
         <div class="css-table-cell">是否计时</div>
@@ -18,6 +19,10 @@
       <div ng-repeat="task in tasks" class="css-table-row">
         <div class="css-table-cell">
           <departments department-id="task.department_id" on-change="update(task, department)">
+          </departments>
+        </div>
+        <div class="css-table-cell">
+          <departments department-id="task.dep2" on-change="update(task, null, department)">
           </departments>
         </div>
         <div class="css-table-cell">

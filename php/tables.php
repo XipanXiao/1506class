@@ -253,10 +253,12 @@ function update_task($task) {
   global $medoo;
   
   $datas = [];
-  $fields = ["department_id", "name", "max", "duration", "sub_tasks",
+  $fields = ["department_id", "dep2", "name", "max", "duration", "sub_tasks",
       "starting_half_term", "report_half_term", "zb_name", "zb_course_id"];
   foreach ($fields as $field) {
-    $datas[$field] = $task[$field];
+    if (isset($task[$field])) {
+      $datas[$field] = $task[$field];
+    }
   }
   
   $id = intval($task["id"]);
