@@ -93,6 +93,7 @@ define('user_stats_app', [
                   district.checked = true;
                   $scope.districts[id] = district;
                 });
+                window.districts = $scope.districts;
                 if (perm.isCountryInspector()) {
                   $scope.districts[0] = {
                     label: '未指定地区',
