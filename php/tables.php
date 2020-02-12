@@ -693,8 +693,8 @@ function get_schedules($classId, $term, $records, $user_id) {
     $group["schedules"] = keyed_by_id($medoo->select("schedules", "*",
         ["group_id" => $group_id]));
     
-    $group["limited_courses"] = get_courses($group["limited_course_group"],
-        ["id", "name"]);
+    $group["limited_courses"] = empty($group["limited_course_group"]) ? 
+        [] : get_courses($group["limited_course_group"], ["id", "name"]);
 
     $courseIds = array_merge(
         flatten(array_map("getCourseIds", $group["schedules"])),
