@@ -195,8 +195,30 @@ define('course_editor_dialog/course_editor_dialog',
                   }
                 }
               };
+
+              window.setDragData = function(event) {
+                event.dataTransfer.setData("text", event.target.id);
+              };
+              window.dropCourse = function(event) {
+                event.preventDefault();
+                var idToDrop = event.dataTransfer.getData("text");
+                var element = event.target.closest('.course-group');
+                if (!element) return;
+                var groupId = parseInt(element.id);
+                var courseId = parseInt(idToDrop);
+                var course = $scope.group.courses[courseId];
+                course.group_id = groupId;
+                $scope.updateCourse(course).then(function(response) {
+                  if (parseInt(response.data.updated)) {
+                    $scope.$apply();                    
+                  }
+                });
+              };
+              window.allowDrop = function(event) {
+                event.preventDefault();
+              };
 					  },
-						templateUrl : 'js/course_editor_dialog/course_editor_dialog.html?tag=20190611'
+						templateUrl : 'js/course_editor_dialog/course_editor_dialog.html?tag=20200211'
 					};
 				});
 });

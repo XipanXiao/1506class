@@ -22,10 +22,13 @@
             </iron-icon>
           </div>
           <div ng-repeat="course_group in course_groups"
-              class="padded-element selectable"
+              class="padded-element selectable course-group"
               ng-click="select(course_group.id)"
               ng-class="{'selected': course_group.id == selected.id}"
-              ng-if="category.expanded && course_group.category == category.id">
+              ng-if="category.expanded && course_group.category == category.id"
+              id={{course_group.id}}
+              ondrop="dropCourse(event)"
+              ondragover="allowDrop(event)">
             {{course_group.name}}
           </div>
           <div class="padded-element selectable"
@@ -70,7 +73,11 @@
           <div class="css-table-cell"></div>
         </div>
       
-        <div ng-repeat="course in group.courses" class="css-table-row deletable">
+        <div ng-repeat="course in group.courses"
+             class="css-table-row deletable clickable"
+             draggable="{{!!course.id}}"
+             id="{{course.id}}"
+             ondragstart="setDragData(event)">
           <div class="css-table-cell">{{course.id ? '' : '*'}}{{$index + 1}}</div>
           <div class="css-table-cell">
             <editable-label value="course.name" on-change="updateCourse(course)">

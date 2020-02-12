@@ -269,11 +269,19 @@ function update_task($task) {
   return $medoo->update("tasks", $datas, ["id" => $id]);
 }
 
-function get_courses($course_group_id) {
+function get_courses($course_group_id, $columns = "*") {
   global $medoo;
 
-  return keyed_by_id($medoo->select("courses", "*", 
+  $courses = keyed_by_id($medoo->select("courses", $columns, 
       $course_group_id ? ["group_id" => $course_group_id] : null));
+  if (!$course_group_id || !empty($courses)) return $courses;
+
+  $ids = $medoo->select("custom_course_groups", "course",
+      ["course_group" => $course_group_id]);
+
+  if (empty($ids)) return [];
+  return keyed_by_id($medoo->select("courses", $columns, 
+      ["id" => $ids]));
 }
 
 function get_course_by_id($course_ids) {
@@ -685,9 +693,8 @@ function get_schedules($classId, $term, $records, $user_id) {
     $group["schedules"] = keyed_by_id($medoo->select("schedules", "*",
         ["group_id" => $group_id]));
     
-    $group["limited_courses"] =
-        keyed_by_id($medoo->select("courses", ["id", "name"],
-            ["group_id" => $group["limited_course_group"]]));
+    $group["limited_courses"] = get_courses($group["limited_course_group"],
+        ["id", "name"]);
 
     $courseIds = array_merge(
         flatten(array_map("getCourseIds", $group["schedules"])),
@@ -927,5 +934,15 @@ function canWriteUser($user, $targetUser) {
   }
   return $user->id == $targetUser->id ||
       canWrite($user, $targetUser->classInfo);
+}
+
+function add_custom_course($course_group, $course) {
+  return $medoo->insert("custom_course_groups",
+    ["course_gropu" => $course_group, "course" => $course]);
+}
+
+function remove_custom_course($course_group, $course) {
+  return $medoo->delete("custom_course_groups",
+    ["course_gropu" => $course_group, "course" => $course]);
 }
 ?>

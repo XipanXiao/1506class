@@ -314,6 +314,23 @@ function clean_graduated_admins($medoo) {
       " admins from deleted/graduated/quit classes.<br>\n";
 }
 
+function add_custom_course_groups($medoo) {
+  if (table_exists($medoo, "custom_course_groups")) {
+    echo "custom_course_groups table exists, doing nothing<br>";
+    return;
+  }
+
+  $sql = "CREATE TABLE custom_course_groups (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    course_group INT NOT NULL,
+        FOREIGN KEY (course_group) REFERENCES course_groups(id),
+    course INT NOT NULL,
+        FOREIGN KEY (course) REFERENCES courses(id),
+    UNIQUE(course_group, course)
+    );";
+  $medoo->query($sql);
+}
+
 add_district_cfo($medoo);
 add_teacher_for_schedules($medoo);
 add_shipping_donation_for_orders($medoo);
