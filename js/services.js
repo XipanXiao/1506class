@@ -171,6 +171,8 @@ define('services', ['utils'], function() {
             return this.get_users(email).then(function(response) {
               if (response.data.error == 'login needed') {
                 utils.login();
+              } else if (response.data.error == 'disabled') {
+                utils.redirect('./construction.html');
               } else {
                 return response.data;
               }

@@ -11,6 +11,10 @@ if (empty($_SESSION["user"])) {
   exit();
 } else {
   $user = unserialize($_SESSION["user"]);
+  if (!isCountryAdmin($user)) {
+    echo '{"error": "disabled"}';
+    exit();
+  }
 }
 
 $student_id = $user->id;
