@@ -11,7 +11,7 @@ if (empty($_SESSION["user"])) {
   exit();
 } else {
   $user = unserialize($_SESSION["user"]);
-  if (!isCountryAdmin($user)) {
+  if (!isYearLeader($user)) {
     echo '{"error": "disabled"}';
     exit();
   }
