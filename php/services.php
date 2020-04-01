@@ -3,6 +3,7 @@ include_once 'config.php';
 include_once 'class_prefs.php';
 include_once 'tables.php';
 include_once 'permission.php';
+include_once 'acl.php';
 
 $response = null;
 
@@ -11,7 +12,7 @@ if (empty($_SESSION["user"])) {
   exit();
 } else {
   $user = unserialize($_SESSION["user"]);
-  if (!isYearLeader($user)) {
+  if (!isYearLeader($user) && !inWhiteList($user->email)) {
     echo '{"error": "disabled"}';
     exit();
   }
