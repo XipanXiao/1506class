@@ -12,7 +12,7 @@ if (empty($_SESSION["user"])) {
   exit();
 } else {
   $user = unserialize($_SESSION["user"]);
-  if (!isYearLeader($user) && !inWhiteList($user->email)) {
+  if (!isYearLeader($user) && !in_white_list($user->email)) {
     echo '{"error": "disabled"}';
     exit();
   }
