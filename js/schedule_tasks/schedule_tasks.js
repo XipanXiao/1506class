@@ -1,8 +1,8 @@
 define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
     'services', 'utils'], function() {
   return angular.module('ScheduleTasksModule', ['NavigateBarModule',
-    'ServicesModule', 'UserAttendStatsModule', 'UtilsModule'])
-    .directive('scheduleTasks', function($rootScope, rpc, utils) {
+    'ServicesModule', 'UserAttendStatsModule', 'UtilsModule', 'PermissionModule'])
+    .directive('scheduleTasks', function($rootScope, rpc, utils, perm) {
           return {
             scope: {
               user: '='
@@ -94,8 +94,11 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                 return tm ?
                     '报数已截止于' + utils.toDateTime(tm).toLocaleString() : '';
               };
+              $scope.isPreClass = function() {
+                return perm.isPreClass();
+              };
             },
-            templateUrl : 'js/schedule_tasks/schedule_tasks.html?tag=201907062203'
+            templateUrl : 'js/schedule_tasks/schedule_tasks.html?tag=202007062203'
           };
         });
 });

@@ -3,6 +3,12 @@
   <div class="center">
     <h2>第{{group.term}}学期</h2>
     总出勤<user-attend-stats></user-attend-stats>
+    <a href="https://docs.google.com/spreadsheets/d/1rnRpbAdZqZw19334CwKxQof45hkhzC4w_7KfizS9q5c/edit#gid=0"
+      ng-if="isPreClass()"
+      target="_blank">学习资料</a>
+    <a href="https://drive.google.com/drive/u/0/folders/1F6S1wPux2Uxl6L6J93wFVqDCpGGp09Vr"
+      ng-if="!isPreClass()"
+      target="_blank">学习资料</a>
   </div>
   <div class="center">{{endTimeLabel(group)}}</div>
   <div class="css-table odd-even schedule-tasks"

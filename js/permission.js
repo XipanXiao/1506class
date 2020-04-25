@@ -127,6 +127,9 @@ define('permission', ['utils'], function() {
       },
       isMasterTeacherOf: function(classInfo) {
         return this.user.id == classInfo.teacher_id;
+      },
+      isPreClass: function() {
+        return this.user.classInfo.department_id < 5;
       }
     };
   });
