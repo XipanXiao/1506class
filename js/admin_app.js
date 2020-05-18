@@ -42,6 +42,13 @@ define('admin_app',
             var tabs = document.querySelectorAll('paper-tabs paper-tab');
 
             function selectPage(index) {
+              var tabControl = document.querySelector('paper-tabs');
+              tabControl.select(index);
+              // var bar = tabControl.querySelector('#selectionBar');
+              // if (bar) {
+              //   bar.style.transform = 'translate3d(50%, 0px, 0px)';
+              //   bar.style. scaleX = 1 / tabs.length;
+              // }
               var pages = document.querySelectorAll('#main-page-container > *');
               for (var i = 0; i < pages.length; i++) {
                 pages[i].style.display = index == i ? '' : 'none';
@@ -64,11 +71,10 @@ define('admin_app',
             
             $scope.$on('editing-user-changed', function(event, editingUser) {
               if (!editingUser) return;
-              selectPage(tabs.selected = 0);
+              selectPage(0);
             });
 
             $scope.$on('select-page', function(event, index) {
-              tabs.select(index);
               selectPage(index);
             });
 
