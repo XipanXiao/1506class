@@ -122,6 +122,9 @@ function copy_schedule_group($classId, $term, $toClassId, $toTerm) {
     $group["id"] = 0;
     $group["classId"] = $toClassId;
     $group["term"] = $toTerm;
+    if (isset($group["end_time"])) {
+      unset($group["end_time"]);
+    }
     $updated += update_schedule_group($group);
   }
   return $updated;
