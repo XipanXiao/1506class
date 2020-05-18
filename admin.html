@@ -34,7 +34,7 @@
       <paper-tab>考试成绩</paper-tab>
     </paper-tabs>
 
-    <iron-pages selected="0">
+    <div id="main-page-container">
       <div class="iron-selected">
         <class-info class-id="classId"></class-info>
       </div>
@@ -55,7 +55,7 @@
       <div>
         <scores ng-if="pageLoaded[5]" class-id="{{classId}}"></scores>
       </div>
-    </iron-pages>
+    </div>
   </div>
 </div>
 
@@ -75,7 +75,7 @@
   </option>
 </datalist>
 
-<script type="text/javascript" src="admin.js?tag=202005215124"></script>
+<script type="text/javascript" src="admin.js?tag=202005185124"></script>
 <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js">
 </script>
 

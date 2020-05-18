@@ -39,13 +39,20 @@ define('admin_app',
               $scope.classId = user.classId;
             });
             
-            var pages = document.querySelector('iron-pages');
             var tabs = document.querySelectorAll('paper-tabs paper-tab');
+
+            function selectPage(index) {
+              var pages = document.querySelectorAll('#main-page-container > *');
+              for (var i = 0; i < pages.length; i++) {
+                pages[i].style.display = index == i ? '' : 'none';
+              }
+              return index;
+            }
 
             function addTabClickHandler(index) {
               var tab = tabs[index];
               tab.addEventListener('click', function() {
-                $scope.pageLoaded[pages.selected = index] = true;
+                $scope.pageLoaded[selectPage(index)] = true;
                 setTimeout(function() {
                   $scope.$apply();
                 }, 0);
@@ -57,13 +64,12 @@ define('admin_app',
             
             $scope.$on('editing-user-changed', function(event, editingUser) {
               if (!editingUser) return;
-
-              tabs.selected = 0;
-              pages.selected = 0;
+              selectPage(tabs.selected = 0);
             });
 
             $scope.$on('select-page', function(event, index) {
               tabs.select(index);
+              selectPage(index);
             });
 
             emailjs.init("user_ZAqyLkjaj5MHdbn3alvEx");
