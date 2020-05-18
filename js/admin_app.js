@@ -40,15 +40,21 @@ define('admin_app',
             });
             
             var pages = document.querySelector('iron-pages');
-            var tabs = document.querySelector('paper-tabs');
-             
-            tabs.addEventListener('iron-select', function() { 
-              $scope.pageLoaded[pages.selected = tabs.selected] = true;
-              setTimeout(function() {
-                $scope.$apply();
-              }, 0);
-            });
+            var tabs = document.querySelectorAll('paper-tabs paper-tab');
 
+            function addTabClickHandler(index) {
+              var tab = tabs[index];
+              tab.addEventListener('click', function() {
+                $scope.pageLoaded[pages.selected = index] = true;
+                setTimeout(function() {
+                  $scope.$apply();
+                }, 0);
+              });
+            }
+            for (var index = 0; index < tabs.length; index++) {
+              addTabClickHandler(index);
+            }
+            
             $scope.$on('editing-user-changed', function(event, editingUser) {
               if (!editingUser) return;
 
