@@ -44,11 +44,13 @@ define('admin_app',
             function selectPage(index) {
               var tabControl = document.querySelector('paper-tabs');
               tabControl.select(index);
-              // var bar = tabControl.querySelector('#selectionBar');
-              // if (bar) {
-              //   bar.style.transform = 'translate3d(50%, 0px, 0px)';
-              //   bar.style. scaleX = 1 / tabs.length;
-              // }
+              var bar = tabControl.querySelector('#selectionBar');
+              if (bar) {
+                var percent = index * 100 / tabs.length;
+                var scaleX = 1 / tabs.length;
+                bar.style.transform = 'translate3d({0}%, 0px, 0px) scaleX({1})'.
+                    format(percent, scaleX);
+              }
               var pages = document.querySelectorAll('#main-page-container > *');
               for (var i = 0; i < pages.length; i++) {
                 pages[i].style.display = index == i ? '' : 'none';
