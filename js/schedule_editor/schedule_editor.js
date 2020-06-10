@@ -33,9 +33,15 @@ define('schedule_editor/schedule_editor',
               $scope.toDateTime = function(tm) {
                 return tm ? utils.toDateTime(tm).toLocaleString() : '';
               };
-              
+
               $scope.isYearLeader = function() {
                 return perm.isYearLeader();
+              };
+
+              $scope.isDistrictAdmin = function() {
+                return perm.isDistrictAdmin() && 
+                    $scope.classInfo &&
+                    perm.canWrite($scope.classInfo);
               };
               
               $scope.$watch('classId', function() {

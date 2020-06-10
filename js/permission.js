@@ -59,7 +59,8 @@ define('permission', ['utils'], function() {
         if (!(perm & 2)) return false;
         
         return this.checkClass(classInfo) ||
-            this.checkYear(this.user, classInfo);
+            this.checkYear(this.user, classInfo) ||
+            this.canWriteDistrict(classInfo.district);
       },
       level: function(permission) {
         var result = 0;
