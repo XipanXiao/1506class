@@ -211,7 +211,7 @@ define('user_editor/user_editor',
         $scope.searchUser = rpc.searchUser;
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=201905301235'
+      templateUrl : 'js/user_editor/user_editor.html?tag=202005301235'
     };
   });
 });

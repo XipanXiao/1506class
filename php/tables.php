@@ -935,6 +935,10 @@ function canWriteUser($user, $targetUser) {
     $targetUser = get_users(null, null, $targetUser)[$targetUser];
     if (!$targetUser) return false;
   }
+  if (isDistrictAdmin($user) &&
+      $user->district == $targetUser->district) {
+    return true;
+  }
   return $user->id == $targetUser->id ||
       canWrite($user, $targetUser->classInfo);
 }
