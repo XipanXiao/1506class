@@ -4,7 +4,6 @@ import 'package:angular_components/model/observable/observable.dart';
 import 'package:angular_components/utils/disposer/disposer.dart';
 import 'package:v2/model/user.dart';
 import 'package:v2/services/user_service.dart';
-import 'package:stream_transform/stream_transform.dart';
 
 @Component(
   selector: 'user-input',
@@ -27,9 +26,7 @@ class UserInputComponent implements OnDestroy {
   @ViewChild(MaterialAutoSuggestInputComponent)
   set input(MaterialAutoSuggestInputComponent input) {
     if (input == null) return;
-    _disposer.addStreamSubscription(input.textChanged
-        .transform(debounce(Duration(milliseconds: 100)))
-        .listen(_inputChanged));
+    _disposer.addStreamSubscription(input.textChanged.listen(_inputChanged));
   }
 
   @Input()

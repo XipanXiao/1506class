@@ -1,7 +1,7 @@
 @JS('bicw')
 library bicw;
 
-import "package:js/js.dart";
+import 'package:js/js.dart';
 
 @JS()
 @anonymous

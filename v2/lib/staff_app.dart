@@ -11,7 +11,7 @@ import 'package:v2/services/user_service.dart';
     AppBarComponent,
     StaffEditorComponent,
   ],
-  template: '''<app-bar [user]="user"></app-bar>
+  template: '''<app-bar></app-bar>
       <staff-editor [user]="user"></staff-editor>''',
 )
 class AppComponent {

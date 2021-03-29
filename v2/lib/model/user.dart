@@ -210,7 +210,8 @@ class _DistrictUtil {
     return countryCode == 'US' ? countryData.getUSStateCode(state) : state;
   }
 
-  static getStateCityLabel(String countryCode, int stateIndex, String city) =>
+  static String getStateCityLabel(
+          String countryCode, int stateIndex, String city) =>
       stateIndex == null
           ? null
           : '${_getStateCode(countryCode, stateIndex)}-$city';
