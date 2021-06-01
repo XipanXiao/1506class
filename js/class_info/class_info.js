@@ -29,10 +29,11 @@ define('class_info/class_info', ['bit_editor/bit_editor',
             function getClassInfo() {
               return rpc.get_classes($scope.classId).then(function (response) {
                 $scope.classInfo = response.data[$scope.classId];
+                $scope.graduated = $scope.classInfo && parseInt($scope.classInfo.graduated);
                 $scope.showGraduateButton = perm.isYearLeader() &&
                   $scope.classInfo &&
                   [2, 3, 4].indexOf($scope.classInfo.department_id) >= 0 &&
-                  !parseInt($scope.classInfo.graduated) &&
+                  !$scope.graduated &&
                   ((new Date()).getFullYear() - $scope.classInfo.start_year >= 4);
                 return $scope.classInfo;
               });
@@ -76,8 +77,19 @@ define('class_info/class_info', ['bit_editor/bit_editor',
               });
               utils.showConfirmGraduateDialog(classInfo);
             };
+
+            $scope.undoGraduate = function() {
+              if (!confirm('Are you sure you want mark this class as not graduated?')) return;
+              
+              rpc.update_class({id: $scope.classInfo.id, graduated: 0}).then(function (response) {
+                if (parseInt(response.data.updated)) {
+                  $scope.showGraduateButton = true;
+                  $scope.graduated = false;
+                }
+              });      
+            };
           },
-          templateUrl: 'js/class_info/class_info.html?tag=201907152245'
+          templateUrl: 'js/class_info/class_info.html?tag=202107152245'
         };
       });
   });

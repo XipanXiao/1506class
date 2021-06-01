@@ -16,6 +16,8 @@
 </iron-icon>
 <input type="button" value="毕业..." ng-click="graduate()"
     ng-if="showGraduateButton">
+<input type="button" value="撤销毕业标记" ng-click="undoGraduate()"
+    ng-if="graduated">
 <users users="users" on-delete="reload(classId)" class-id="classId"
     show-serial-button="true"></users>
 <serial-number-dialog class-id="classId" users="users"><serial-number-dialog>
