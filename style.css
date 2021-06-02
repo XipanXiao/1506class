@@ -146,7 +146,6 @@ schedule-tasks {
   width: 630px;
 }
 
-.register-form,
 .login-form {
   width: 400px;
 }
@@ -156,6 +155,24 @@ schedule-tasks {
   width: 200px;
   margin: 4px 0;
 }
+
+.register-form table {
+  width: 100%;
+}
+
+.register-grid {
+  display: grid;
+  grid-template-columns: auto auto auto;
+}
+
+@media (pointer:none), (pointer:coarse) {
+  .register-grid {
+    font-size: 200%;
+    grid-template-columns: 400px;
+    margin: auto;
+  }
+}
+
 
 .vacation {
   background-color: #860200 !important;
@@ -481,8 +498,8 @@ paper-dialog#create-course-dialog {
   font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimSun, sans-serif;
   font-size: 94%;
   margin-top: -2px;  
-  width: 800px;
 }
+
 
 .register-type-chooser,
 .register-form form {
@@ -564,17 +581,6 @@ paper-dialog#create-course-dialog {
   color: #982838;
   font-size: 150%;
   height: 64px;
-}
-
-.register-banner {
-  background-image: url("images/welcome.jpg");
-  height: 348px;
-  position: relative;
-  width: 800px;
-}
-
-.register-banner.ca {
-  background-image: url("images/welcome.ca.png");
 }
 
 .outer-us {
