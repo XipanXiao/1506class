@@ -98,6 +98,10 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
             $scope.reload();
           });
           
+          $scope.$on("include-deleted", function(event, includeDeleted) {
+            $scope.includeDeleted = includeDeleted;
+          });
+
           $scope.createNewClass = function() {
             $scope.classes[0] = utils.classTemplate();
             $scope.select(0);
@@ -124,7 +128,7 @@ define('classes/classes', ['importers', 'import_dialog/import_dialog',
                 });
           };
         },
-        templateUrl : 'js/classes/classes.html?tag=2019'
+        templateUrl : 'js/classes/classes.html?tag=2021'
       };
     });
 });

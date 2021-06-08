@@ -9,7 +9,13 @@ define('search_bar/search_bar', ['services'], function() {
         function($rootScope, rpc) {
           return {
             link: function(scope) {
-              scope.searchUser = rpc.searchUser;
+              scope.searchUser = function(query) {
+                return rpc.searchUser(query, scope.includeDeleted);
+              };
+
+              scope.toggleIncludeDeleted = function() {
+                $rootScope.$broadcast('include-deleted', scope.includeDeleted);
+              };
 
               scope.search = function(id, label) {
                 var email = extractEmail(label);
@@ -20,7 +26,7 @@ define('search_bar/search_bar', ['services'], function() {
                 }
               };
             },
-            templateUrl : 'js/search_bar/search_bar.html?tag=2019'
+            templateUrl : 'js/search_bar/search_bar.html?tag=2021'
           };
         });
 });

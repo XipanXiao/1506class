@@ -6,7 +6,7 @@
       </select>
     </div>
     <div ng-repeat="classInfo in classes" class="selectable"
-        ng-if="!classInfo.graduated || showGraduatedClasses">
+        ng-if="(!classInfo.graduated || showGraduatedClasses) && (!classInfo.deleted || includeDeleted)">
       <div ng-click="select(classInfo.id)" class="padded-element class-name"
           ng-class="{'selected': currentClass.id == classInfo.id}">
         {{classInfo.name}}

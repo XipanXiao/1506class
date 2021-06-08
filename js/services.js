@@ -45,6 +45,7 @@ define('services', ['utils'], function() {
             return $http.get(url).then(function(response) {
               utils.forEach(response.data || [], function(classInfo) {
                 window.classInfos[classInfo.id] = classInfo;
+                classInfo.deleted = (parseInt(classInfo.deleted) != 0);
               });
               return response;
             });
@@ -285,9 +286,10 @@ define('services', ['utils'], function() {
             return $http.get(serviceUrl + '?rid=search&prefix=' + prefix);
           },
 
-          searchByName: function(name) {
+          searchByName: function(name, includeDeleted) {
             return $http.get(
-                '{0}?rid=search_name&name={1}'.format(serviceUrl, name));
+                '{0}?rid=search_name&name={1}&include_deleted={2}'.format(serviceUrl, name,
+                  includeDeleted || false));
           },
 
           getUserLabel: function(id) {
@@ -295,14 +297,14 @@ define('services', ['utils'], function() {
                 '{0}?rid=user_label&id={1}'.format(serviceUrl, id));
           },
 
-          searchUser: function(query) {
+          searchUser: function(query, includeDeleted) {
             var id = parseInt(query);
             if (id) {
               return rpc.getUserLabel(id).then(function(response) {
                 return response.data.label;
               });
             } else {
-              return rpc.searchByName(query).then(function(response) {
+              return rpc.searchByName(query, includeDeleted).then(function(response) {
                 return (response.data || []).map(function(user) {
                   user.label = user.nickname ? 
                   '{0}({1})'.format(user.name, user.nickname) : user.name;

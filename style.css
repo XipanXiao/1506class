@@ -765,10 +765,16 @@ tr.deletable:hover .delete-button,
 }
 
 search-bar,
+.search-box,
 .app-bar-left,
 .split-cell,
 .invoice-address {
   flex-grow: 1;
+}
+
+search-bar {
+  align-items: center;
+  display: flex;
 }
 
 .invoice-page {

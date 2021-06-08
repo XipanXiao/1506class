@@ -158,7 +158,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "user_label") {
     $response = ["label" => getUserLabel($_GET["id"])];
   } elseif ($resource_id == "search_name") {
-    $response = searchByName($_GET["name"]);
+    $response = searchByName($_GET["name"], $_GET["include_deleted"] == "true");
   } elseif ($resource_id == "task_stats") {
     $classInfo = get_classes(["id" => $classId])[$classId];
     if (canReadClass($classInfo)) {

@@ -196,8 +196,8 @@ function get_classes($filters = []) {
   $int_fields = ["id", "department_id", "teacher_id", "start_year",
       "perm_level", "weekday", "zb_id", "teacher2_id", "graduated",
       "district"];
-  $filters = array_merge($filters, ["deleted" => 0]);
-  $classes = keyed_by_id($medoo->select("classes", "*", ["AND" => $filters]));
+  $classes = keyed_by_id($medoo->select("classes", "*", 
+      empty($filters) ? null : ["AND" => $filters]));
 
   foreach ($classes as $id => $classInfo) {
     $classInfo["self_report"] = isset($classInfo["self_report"])
@@ -858,14 +858,14 @@ function search($prefix) {
 }
 
 /// A search returns only id, name and nick name.
-function searchByName($name) {
+function searchByName($name, $includeDeleted) {
   global $medoo;
   
   $users = $medoo->select("users",
       ["id", "name", "nickname", "country", "email", "classId"],
       ["OR" => ["name[~]" => $name, "nickname[~]" => $name,
           "email[~]" => $name], "LIMIT" => 30]);
-  return filter_deleted_users($medoo, $users);
+  return $includeDeleted ? $users : filter_deleted_users($medoo, $users);
 }
 
 /// Returns "name(nickname)" for a user identified by [$id].

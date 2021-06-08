@@ -1,6 +1,11 @@
 <paper-auto-suggest-input
   label="userInput"
   editable="true"
+  class="search-box"
   search="searchUser"
   on-change="search(key, value)">
 </paper-auto-suggest-input>
+<label>
+  <input type="checkbox" ng-model="includeDeleted"
+    ng-change="toggleIncludeDeleted()">包含已被删除用户
+</label>
