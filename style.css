@@ -471,6 +471,10 @@ paper-dialog#create-course-dialog {
   position: relative;  
 }
 
+.users .css-table {
+  height: 100%;
+}
+
 .comments {
   max-width: 50px;
 }
