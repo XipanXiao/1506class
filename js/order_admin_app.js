@@ -54,7 +54,7 @@ define('order_admin_app', [
               }, 0);
             });
 
-            emailjs.init("user_ZAqyLkjaj5MHdbn3alvEx");
+            window.emailjs && emailjs.init("user_ZAqyLkjaj5MHdbn3alvEx");
           }
         };
       }).config( ['$compileProvider', function( $compileProvider ) {

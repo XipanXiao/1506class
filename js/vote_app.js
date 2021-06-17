@@ -88,7 +88,7 @@ angular.module('AppModule', [
       };
 
       if (scope.editable) {
-        emailjs.init("user_ZAqyLkjaj5MHdbn3alvEx");
+        window.emailjs && emailjs.init("user_ZAqyLkjaj5MHdbn3alvEx");
         window.onbeforeunload = () => scope.dirty ? '' : null;
       }
       if (window.outerWidth < 250 + 700 + 392) {

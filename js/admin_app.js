@@ -80,7 +80,7 @@ define('admin_app',
               selectPage(index);
             });
 
-            emailjs.init("user_ZAqyLkjaj5MHdbn3alvEx");
+            window.emailjs && emailjs.init("user_ZAqyLkjaj5MHdbn3alvEx");
           }
         };
       }).config( ['$compileProvider', function( $compileProvider ) {
