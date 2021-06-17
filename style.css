@@ -171,6 +171,15 @@ schedule-tasks {
     grid-template-columns: 400px;
     margin: auto;
   }
+
+  .register-form .css-table-cell > * {
+    font-size: 200%;
+  }
+
+  .register-form input[type="submit"],
+  .register-form input[type="checkbox"] {
+    transform: scale(3);
+  }
 }
 
 
