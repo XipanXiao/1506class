@@ -35,7 +35,7 @@
         <div class="css-table-cell">权限</div>
         <div class="css-table-cell">{{getPermissionLabel(user.permission)}}</div>
         <div class="css-table-cell">
-          <iron-icon ng-show="isSysAdmin() || isYearLeader()" class="selectable"
+          <iron-icon ng-show="isSysAdmin() || isYearLeader() || isDistrictAdmin()" class="selectable"
               icon="chevron-right" ng-click="editing = 'permission'">
           </iron-icon>
         </div>          

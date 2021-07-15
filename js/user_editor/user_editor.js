@@ -44,6 +44,9 @@ define('user_editor/user_editor',
         $scope.isYearLeader = function() {
           return perm.isYearLeader();
         };
+        $scope.isDistrictAdmin = function() {
+          return perm.isDistrictAdmin();
+        };
 
         $scope.$watch('user', function(user) {
           $scope.editing = null;
@@ -211,7 +214,7 @@ define('user_editor/user_editor',
         $scope.searchUser = rpc.searchUser;
       },
 
-      templateUrl : 'js/user_editor/user_editor.html?tag=202005301235'
+      templateUrl : 'js/user_editor/user_editor.html?tag=202105301235'
     };
   });
 });
