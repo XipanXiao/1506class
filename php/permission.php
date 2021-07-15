@@ -50,10 +50,16 @@ function isOrderManager($user) {
       Roles::ORDER_ADMIN;
 }
 
+function canReadOrder($user, $order) {
+  return isOrderReader($user) ||
+    $user->id == $order["user_id"] ||
+    isDistrictInspector($user) && $user->district == $order["district"];
+}
+
 function canWriteOrder($user, $order) {
   return isOrderManager($user) ||
     $user->id == $order["user_id"] ||
-    isDistrictInspector($user) && $user->district == $order["district"];
+    isDistrictAdmin($user) && $user->district == $order["district"];
 }
 
 function canGrant($user, $perm) {

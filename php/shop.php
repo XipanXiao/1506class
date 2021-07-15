@@ -538,7 +538,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       $order = get_order($_GET["order_id"]);
       if (!$order) {
         $response = "{}";
-      } elseif (isOrderReader($user) || $order["user_id"] == $user->id) {
+      } elseif (canReadOrder($user, $order)) {
         $response = $order;
       } else {
         $response = permission_denied_error();
