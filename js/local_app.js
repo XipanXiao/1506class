@@ -22,7 +22,7 @@ define('local_app', [
           link: function($scope) {
             $scope.roleOptions = [
               {label: '功德会', checked: false, department_id: 8},
-              {label: '学会', checked: true}
+              {label: '参加学修', checked: true}
             ];
             const isRegular = (user) => {
               var depId = parseInt($scope.classes[user.classId].department_id);

@@ -36,7 +36,7 @@ define('setup_tasks/setup_tasks',
           };
           
         },
-        templateUrl: 'js/setup_tasks/setup_tasks.html?tag=201905261302'
+        templateUrl: 'js/setup_tasks/setup_tasks.html?tag=202105261302'
       };
     });
 });

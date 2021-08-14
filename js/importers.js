@@ -347,7 +347,7 @@ define('importers', ['permission', 'services', 'utils'], function() {
             '能否遵守管理规定',
             '是否皈依',
             '皈依年份',
-            '知道学会的渠道',
+            '知道学佛之家的渠道',
             '备注',
             '自学',
             '只闻思',
