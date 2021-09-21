@@ -360,7 +360,7 @@ define('schedule_editor/schedule_editor',
                 var schedule = group.schedules[key + 1] = {};
 
                 var last = null;
-                while(!last || (!last.course_id && !last.course_id2) && key >= 0) {
+                while((!last || (!last.course_id && !last.course_id2)) && key >= 0) {
                   last = group.schedules[key--];
                 }
                 if (!last) return;
