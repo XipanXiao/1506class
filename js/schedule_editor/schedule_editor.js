@@ -359,7 +359,10 @@ define('schedule_editor/schedule_editor',
                 var key = utils.maxKey(group.schedules);
                 var schedule = group.schedules[key + 1] = {};
 
-                var last = group.schedules[key];
+                var last = null;
+                while(!last || (!last.course_id && !last.course_id2) && key >= 0) {
+                  last = group.schedules[key--];
+                }
                 if (!last) return;
 
                 var last1 = parseInt(last.course_id);
