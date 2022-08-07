@@ -148,7 +148,7 @@ define('users/users', ['bit_editor/bit_editor',
             });
           }
         },
-        templateUrl : 'js/users/users.html?tag=201911032307'
+        templateUrl : 'js/users/users.html?tag=202211032307'
       };
     });
 });
