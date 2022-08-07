@@ -39,7 +39,6 @@
         <strong ng-switch-default>入学年份</strong>
       </div>
       <div class="css-table-cell" ng-if="isNewClass()"><strong>入口</strong></div>
-      <div class="css-table-cell" ng-if="isNewClass()"><strong>入微,zoom,试麦</strong></div>
       <div class="css-table-cell" ng-if="isNewClass()"><strong>功德会</strong></div>
       <div class="css-table-cell"><strong>备注</strong></div>
       <div class="css-table-cell"></div>
@@ -61,14 +60,6 @@
         <span ng-switch-default>{{user.start_year}}</span>
       </div>
       <div class="css-table-cell" ng-if="isNewClass()">{{entrances[user.entrance]}}</div>
-      <div class="css-table-cell" ng-if="isNewClass()">
-        <input type="checkbox" ng-model="user.enroll_tasks" title="已加入微信群"
-            ng-click="updateEnroll(user)" bit-index="1">
-        <input type="checkbox" ng-model="user.enroll_tasks" title="zoom已经安装"
-            ng-click="updateEnroll(user)" bit-index="2">
-        <input type="checkbox" ng-model="user.enroll_tasks" title="试麦完成"
-            ng-click="updateEnroll(user)" bit-index="3">
-      </div>
       <div class="css-table-cell" ng-if="isNewClass()">
         <input type="checkbox" ng-model="user.enroll_tasks" title="功德会成员"
             ng-click="updateEnroll(user)" bit-index="8" disabled>
