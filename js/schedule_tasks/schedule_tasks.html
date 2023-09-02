@@ -62,8 +62,8 @@
             ng-click="reportTask(schedule.course_id2, group, $index)" ng-if="schedule.course_id2 && !vacation(schedule)">
       </div>
       <div class="css-table-cell">
-        <input type="checkbox" ng-model="records[schedule.course_id].attended"
-            ng-change="reportTask(schedule.course_id, group, $index)"
+        <input type="checkbox" ng-model="records[schedule.course_id || schedule.course_id2].attended"
+            ng-change="reportTask(schedule.course_id || schedule.course_id2, group, $index)"
             ng-if="!vacation(schedule)" ng-disabled="!user.classInfo.self_report">
       </div>
       <div ng-if="schedule.middle" class="report-alert vacation">
