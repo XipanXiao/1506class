@@ -295,8 +295,6 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
       }
 
     if (!$response) {
-    	// Country is set when registering and can't be changed later.
-      unset($_POST["country"]);
       $result = update_user($_POST);
       if ($result && $result->id == $user->id) {
         $user = $result;
