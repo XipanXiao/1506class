@@ -40,11 +40,11 @@
       <div class="css-table-cell" ng-if="!group.course_group2">{{users[schedule.open].name}}</div>
       <div class="css-table-cell">
         <input type="checkbox" ng-model="records[schedule.course_id].video"
-            ng-click="reportTask(schedule.course_id, group, $index)" ng-if="!vacation(schedule)">
+            ng-click="reportTask(schedule.course_id, group, $index)" ng-if="schedule.course_id && !vacation(schedule)">
       </div>
       <div class="css-table-cell">
         <input type="checkbox" ng-model="records[schedule.course_id].text"
-            ng-click="reportTask(schedule.course_id, group, $index)" ng-if="!vacation(schedule)">
+            ng-click="reportTask(schedule.course_id, group, $index)" ng-if="schedule.course_id && !vacation(schedule)">
       </div>
       <div class="css-table-cell" ng-if="group.course_group2">
         <a href="https://www.youtube.com/results?search_query={{group.courses[schedule.course_id2].name}}"
