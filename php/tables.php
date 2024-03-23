@@ -926,7 +926,7 @@ function attendanceStats($user_id, $classId) {
 
 /// Whether [$user] can report task for [$task_user_id].
 function canWriteUser($user, $targetUser) {
-  if ($user == $targetUser || $user->id == $targetUser) return true;
+  if (($targetUser instanceof User) && $user == $targetUser || $user->id == $targetUser) return true;
 
   if (!($targetUser instanceof User)) {
     $targetUser = get_users(null, null, $targetUser)[$targetUser];
