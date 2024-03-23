@@ -32,7 +32,6 @@ define('class_info/class_info', ['bit_editor/bit_editor',
                 $scope.graduated = $scope.classInfo && parseInt($scope.classInfo.graduated);
                 $scope.showGraduateButton = perm.isYearLeader() &&
                   $scope.classInfo &&
-                  [2, 3, 4].indexOf($scope.classInfo.department_id) >= 0 &&
                   !$scope.graduated &&
                   ((new Date()).getFullYear() - $scope.classInfo.start_year >= 4);
                 return $scope.classInfo;
@@ -67,7 +66,7 @@ define('class_info/class_info', ['bit_editor/bit_editor',
             $scope.graduate = function () {
               var classInfo = $scope.classInfo;
               var departmentNames =
-                ['', 'jc', 'rxl', 'jx', 'jt', 'mf', 'wl', 'nf', 'gdh', 'tc', 'yj', 'xx', 'xj'];
+                ['', 'jc', 'rxl', 'jx', 'jt', 'mf', 'wl', 'nf', 'gdh', 'tc', 'yj', 'xx', 'xj', 'zg'];
               var prefix = '{0}{1}.'.format(classInfo.start_year % 100,
                 departmentNames[classInfo.department_id]);
               classInfo.users = utils.toList($scope.users);
