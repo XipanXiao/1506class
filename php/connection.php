@@ -2,6 +2,9 @@
    include_once 'config.php';
    include_once 'medoo.php';
  
+   use Medoo\Medoo;
+
+
   function get_connection() {
      global $config;
     // Create connection
@@ -20,12 +23,12 @@
   function get_medoo($charset = NULL) {
      global $config;
     
-    return new medoo([
+    return new Medoo([
         // required
         'database_type' => 'mysql',
         'database_name' => $config->dbname,
         'server' => $config->servername,
-        'socket' => $config->socket,
+        // 'socket' => $config->socket,
         'username' => $config->username,
         'password' => $config->password,
         'charset' => $charset == NULL ? 'utf8' : $charset,
