@@ -30,5 +30,12 @@
     "dbname": "buddcourses",
     "zbServiceUrl": "http://www.zhibei.info/zb"
   },
+  "bicwclass.in": {
+    "servername": "${MYSQL_SERVER}",
+    "socket": null,
+    "username": "${MYSQL_USERNAME}",
+    "password": "${MYSQL_PASSWORD}",
+    "dbname": "${MYSQL_DATABASE}"
+  },
   "closing": "*/?>"
 }
