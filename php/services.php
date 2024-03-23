@@ -390,6 +390,7 @@ if (is_array($response) && empty($response)) {
 
 if ($response) {
   if (is_array($response) && isset($response["updated"]) &&
+      is_numeric($response["updated"]) &&
       intval($response["updated"]) == 0) {
     $response["error"] = get_db_error();
   }
