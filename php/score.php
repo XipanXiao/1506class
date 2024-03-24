@@ -33,7 +33,7 @@ function get_score($userId) {
 function update_scores($score) {
   global $medoo;
 
-  return $medoo->update("scores", $score, ["user_id" => $score["user_id"]]) ||
+  return $medoo->update2("scores", $score, ["user_id" => $score["user_id"]]) ||
       $medoo->insert("scores", $score);
 }
 

@@ -33,7 +33,7 @@ function add_district_cfo($medoo) {
     return;
   }
 
-  $medoo->update("districts", ["stock" => 1],
+  $medoo->update2("districts", ["stock" => 1],
       ["AND" => ["name" => "南加州", "stock" => 0]]);
 
   $sql = "ALTER TABLE districts
@@ -206,7 +206,7 @@ function rename_courses($medoo) {
   $renamed = 0;
   foreach($courses as $course) {
     $newName = rename_course($course["name"]);
-    $result = $medoo->update("courses",
+    $result = $medoo->update2("courses",
         ["zb_name" => $newName],
         ["id" => $course["id"]]);
     $updated += $result;
@@ -297,18 +297,18 @@ function add_task_dep2($medoo) {
   echo get_db_error2($medoo);
   echo $medoo->last_query(). "<br>\n";
 
-  $medoo->update("tasks", ["dep2" => 1], ["id" => 3]);
+  $medoo->update2("tasks", ["dep2" => 1], ["id" => 3]);
 }
 
 function update_disctrict_inspector_perm($medoo) {
-  $updated = $medoo->update("users", ["permission" => 0x47],
+  $updated = $medoo->update2("users", ["permission" => 0x47],
       ["permission" => 0x43]);
   echo "updated: ". $updated. ":". $medoo->last_query(). "<br>\n";
 }
 
 function clean_graduated_admins($medoo) {
   $excludedClassId = get_excluded_classes($medoo);
-  $updated = $medoo->update("users", ["permission" => 3],
+  $updated = $medoo->update2("users", ["permission" => 3],
       ["AND" => ["permission[!]" => 3, "classId" => $excludedClassId]]);
   echo $medoo->last_query(). " removed ". $updated.
       " admins from deleted/graduated/quit classes.<br>\n";

@@ -30,7 +30,7 @@ function update_department($department) {
     return $medoo->insert("departments", $datas);
   }
   
-  return $medoo->update("departments", $datas, ["id" => $id]);
+  return $medoo->update2("departments", $datas, ["id" => $id]);
 }
 
 function remove_department($id) {
@@ -78,7 +78,7 @@ function update_course_group($group) {
       $group["id"] = $id;
       return $group;
     }
-  } elseif($medoo->update("course_groups", $datas, ["id" => $id])) {
+  } elseif($medoo->update2("course_groups", $datas, ["id" => $id])) {
     return $group;
   }
 
@@ -144,7 +144,7 @@ function remove_class($id) {
   if ($users) return 0;
   
   // Mark it as 'deleted'.
-  return $medoo->update("classes", ["deleted" => 1], ["id" => $id]);
+  return $medoo->update2("classes", ["deleted" => 1], ["id" => $id]);
 }
 
 function remove_task($id) {
@@ -171,7 +171,7 @@ function update_course($course) {
       $course["id"] = $id;
       return $course;
     }
-  } elseif($medoo->update("courses", $datas, ["id" => $id])) {
+  } elseif($medoo->update2("courses", $datas, ["id" => $id])) {
     return $course;
   }
 
@@ -249,7 +249,7 @@ function update_class($classInfo) {
         array_merge($datas, ["country" => $classInfo["country"]]));
   }
 
-  return $medoo->update("classes", $datas, ["id" => $id]);
+  return $medoo->update2("classes", $datas, ["id" => $id]);
 }
 
 function update_task($task) {
@@ -269,7 +269,7 @@ function update_task($task) {
     return $medoo->insert("tasks", $datas);
   }
 
-  return $medoo->update("tasks", $datas, ["id" => $id]);
+  return $medoo->update2("tasks", $datas, ["id" => $id]);
 }
 
 function get_courses($course_group_id, $columns = "*") {
@@ -387,7 +387,7 @@ function update_user($user) {
   }
 
   if (!empty($user["id"]) && intval($user["id"]) > 0) {
-    if ($medoo->update("users", $datas, ["id" => intval($user["id"])])) {
+    if ($medoo->update2("users", $datas, ["id" => intval($user["id"])])) {
       return current(get_users(null, null, intval($user["id"])));
     }
   } else {
@@ -413,7 +413,7 @@ function clone_user($user_id, $newEmail = null, $newClassId = null) {
   if (!$user) return 0;
 
   $email = $newEmail ? $newEmail : ($user["email"]. ".deleted");
-  if (!$medoo->update("users", ["email" => $email], ["id" => $user_id])) {
+  if (!$medoo->update2("users", ["email" => $email], ["id" => $user_id])) {
     return 0;
   }
   
@@ -441,7 +441,7 @@ function clone_user($user_id, $newEmail = null, $newClassId = null) {
   ];
 
   foreach($references as $field => $table) {
-    $medoo->update($table, [$field => $newId], [$field => $user_id]);
+    $medoo->update2($table, [$field => $newId], [$field => $user_id]);
   }
   return $newId;
 }
@@ -450,6 +450,11 @@ function get_db_error() {
   global $medoo;
   
   return get_db_error2($medoo);
+}
+
+function get_last_sql() {
+  global $medoo;
+  return $medoo->last();
 }
 
 function get_last_task_record($user_id, $task_id, $sub_index) {
@@ -578,7 +583,7 @@ function report_task($user_id, $task_id, $sub_index, $count, $duration, $half_te
   if (!$task || empty($task["duration"]) != empty($duration)) return 0;
   
   if (intval($task["sub_tasks"])) {
-    $updated = $medoo->update("task_records", [
+    $updated = $medoo->update2("task_records", [
         "count[+]" => intval($count),
         "duration[+]" => $duration,
         "half_term" => $half_term
@@ -640,7 +645,7 @@ function report_schedule_task($user_id, $schedule) {
     return $medoo->delete($table, $where);
   }
 
-  $rows = $medoo->update($table, $datas, $where);
+  $rows = $medoo->update2($table, $datas, $where);
   if ($rows) return $rows;
 
   $datas["student_id"] = $user_id;
@@ -761,7 +766,7 @@ function update_schedule($schedule) {
   if (!empty($schedule["notified"])) {
     $datas["#notified"] = "NOW()";
   }
-  return $medoo->update("schedules", $datas,
+  return $medoo->update2("schedules", $datas,
       ["id" => $schedule["id"]]);
 }
 
@@ -799,7 +804,7 @@ function update_schedule_group($group) {
     $id = $medoo->insert("schedule_groups", $datas);
     if (!$id) return false;
   } else {
-    $medoo->update("schedule_groups", $datas, ["id" => $id]);
+    $medoo->update2("schedule_groups", $datas, ["id" => $id]);
   }
 
   if (empty($group["schedules"])) return $id;

@@ -19,11 +19,18 @@
     
     return $conn;
   }
-  
+
+  class MyMedoo extends Medoo {
+    public function update2(string $table, $data, $where = null) {
+        $rows = parent::update($table, $data, $where);
+        return $rows ? $rows->rowCount() : 0;
+    }
+  }
+
   function get_medoo($charset = NULL) {
      global $config;
     
-    return new Medoo([
+    return new MyMedoo([
         // required
         'database_type' => 'mysql',
         'database_name' => $config->dbname,

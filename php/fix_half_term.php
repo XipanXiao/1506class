@@ -167,7 +167,7 @@ function set_half_term_for_range($student_ids, $startTime, $endTime, $half_term,
   // $result = $medoo->query($sql);
   // $updated = $result ? $result->fetchAll() : 0;
 
-  $updated = $medoo->update("task_records", ["half_term" => $half_term],
+  $updated = $medoo->update2("task_records", ["half_term" => $half_term],
       ["AND" => [
         "half_term" => NULL,
         "ts[<>]" => [$startTime, $endTime],
@@ -207,7 +207,7 @@ function set_half_term_for_schedule_tasks($student_ids, $group) {
   global $medoo;
 
   $half_term = intval($group["term"]) * 2;
-  $updated = $medoo->update("schedule_records", 
+  $updated = $medoo->update2("schedule_records", 
       ["half_term" => $half_term],
       ["AND" => [
         "half_term" => NULL,
@@ -219,7 +219,7 @@ function set_half_term_for_schedule_tasks($student_ids, $group) {
           $medoo->last_query(), $updated);
   }
 
-  $updated = $medoo->update("schedule_records", 
+  $updated = $medoo->update2("schedule_records", 
       ["half_term" => ($half_term == 2 ? 2 : ($half_term + 1))],
       ["AND" => [
         "half_term" => NULL,

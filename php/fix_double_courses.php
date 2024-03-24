@@ -55,7 +55,7 @@ function duplicate_reports($medoo, $reports, $second_id) {
         foreach($fields as $field) {
             $datas[$field] = intval($report[$field]);
         }
-        $rows = $medoo->update("schedule_records", $datas, $where);
+        $rows = $medoo->update2("schedule_records", $datas, $where);
         if (!$rows) {
             $datas["student_id"] = intval($report["student_id"]);
             $datas["course_id"] = intval($second_id);
@@ -85,7 +85,7 @@ function duplicate_schedules($medoo, $schedules, $second_id) {
             continue;
         }
 
-        if ($medoo->update("schedules", ["course_id2" => $second_id],
+        if ($medoo->update2("schedules", ["course_id2" => $second_id],
                 ["id" => $schedule["id"]])) {
             $records++;
         } else {
@@ -149,7 +149,7 @@ function split_course($medoo, $course) {
         }
     }
 
-    if ($medoo->update("courses", ["name" => $name], ["id" => $course_id])) {
+    if ($medoo->update2("courses", ["name" => $name], ["id" => $course_id])) {
         echo "renamed to ". $name. "<br>\n";
     } else {
         echo "failed to rename to ". $name;

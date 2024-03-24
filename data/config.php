@@ -3,9 +3,8 @@
     "servername": "127.0.0.1",
     "socket": null,
     "username": "root",
-    "password": "2345678901",
-    "dbname": "buddcourses",
-    "zbServiceUrl": "http://www.zhibei.info/zb"
+    "password": "",
+    "dbname": "buddcourses"
   },
   "192.168.0.10": {
     "servername": "127.0.0.1",

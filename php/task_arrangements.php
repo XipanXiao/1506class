@@ -32,7 +32,7 @@ function update_task_arrange($classId, $taskId,
       "report_half_term" => $report_half_term
   ];
   
-  $updated = $medoo->update("task_arrange", $data, ["AND" => $where]);
+  $updated = $medoo->update2("task_arrange", $data, ["AND" => $where]);
   if ($updated) return $updated;
 
   return $medoo->insert("task_arrange", array_merge($data, $where));

@@ -22,7 +22,7 @@ function add_district($name, $country = "US") {
 function update_district($district) {
 	global $medoo;
 
-	return $medoo->update("districts", $district, ["id" => $district["id"]]);
+	return $medoo->update2("districts", $district, ["id" => $district["id"]]);
 }
 
 function remove_district($id) {

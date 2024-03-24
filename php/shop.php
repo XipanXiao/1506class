@@ -129,7 +129,7 @@ function get_orders($user_id, $filters, $withItems, $withAddress) {
 
 function increase_stock($medoo, $item, $district, $sign = 1) {
   $change = intval($item["count"]) * $sign;
-  $medoo->update("items", ["stock[+]" => $change], ["id" => $item["item_id"]]);
+  $medoo->update2("items", ["stock[+]" => $change], ["id" => $item["item_id"]]);
 
   $data = ["item_id" => $item["item_id"], "district" => $district];
   $inventories = $medoo->select("inventory", "*", ["AND" => $data]);
@@ -138,7 +138,7 @@ function increase_stock($medoo, $item, $district, $sign = 1) {
     $data["stock"] = $change;
     return $medoo->insert("inventory", $data);
   } else {
-    return $medoo->update("inventory", ["stock[+]" => $change], ["AND" => $data]);
+    return $medoo->update2("inventory", ["stock[+]" => $change], ["AND" => $data]);
   }
 }
 
@@ -252,7 +252,7 @@ function update_order($medoo, $order, $is_manager) {
     $data["#paid_date"] = "CURDATE()";
   }
 
-  return $medoo->update("orders", $data, ["id" => $order["id"]]);
+  return $medoo->update2("orders", $data, ["id" => $order["id"]]);
 }
 
 function sanitize_address() {
@@ -355,7 +355,7 @@ function merge_orders($order_ids) {
     $first_order["int_shipping"] += $order["int_shipping"];
     $first_order["shipping_donation"] += $order["shipping_donation"];
     
-    if ($medoo->update("order_details", ["order_id" => $id], 
+    if ($medoo->update2("order_details", ["order_id" => $id], 
         ["order_id" => $order["id"]])) {
       $medoo->delete("orders", ["id" => $order["id"]]);    
     }
@@ -367,7 +367,7 @@ function merge_orders($order_ids) {
       "int_shipping" => $first_order["int_shipping"],
       "shipping_donation" => $first_order["shipping_donation"]
   ];
-  return ["updated" => $medoo->update("orders", $data, ["id" => $id])];
+  return ["updated" => $medoo->update2("orders", $data, ["id" => $id])];
 }
 
 /// Moves selected items from [$fromOrder] to [$toOrder].
@@ -387,7 +387,7 @@ function move_order_items($fromOrder, $toOrder) {
   
   $updated = 0;
   function get_id($item) { return $item["id"]; }
-  $updated = $medoo->update("order_details", ["order_id" => $toOrder["id"]],
+  $updated = $medoo->update2("order_details", ["order_id" => $toOrder["id"]],
       ["id" => array_map("get_id", $items)]);
   if (!$updated) return 0;
   
@@ -495,7 +495,7 @@ function get_class_book_lists($year) {
 function update_class_term($classInfo) {
   global $medoo;
 
-  return $medoo->update("classes", ["term" => intval($classInfo["term"])],
+  return $medoo->update2("classes", ["term" => intval($classInfo["term"])],
       ["id" => intval($classInfo["id"])]);
 }
 

@@ -36,7 +36,7 @@ foreach ($users as $user) {
   if (empty($newIds)) continue;
   $newId = current($newIds);
 
-  if ($medoo->update("staff", ["user" => $newId], ["user" => $id])) {
+  if ($medoo->update2("staff", ["user" => $newId], ["user" => $id])) {
     echo sprintf("Fixed for %s, changed user from %d to %d<br>\n", $email, $id, $newId);
   }
 }

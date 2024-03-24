@@ -10,8 +10,7 @@ function permission_denied_error() {
 }
 
 function get_db_error2($medoo) {
-  $errors = $medoo->error();
-  return empty($errors) ? '' : $errors[2];
+ return $medoo->error;
 }
 
 function keyed_by_id($rows, $id_key = "id") {
@@ -119,7 +118,7 @@ function checkCaptcha($captcha) {
 function insertOrUpdate($medoo, $table, $record) {
   $id = empty($record["id"]) ? 0 : intval($record["id"]);
   if ($id) {
-    if (!$medoo->update($table, $record, ["id" => $id])) return 0;
+    if (!$medoo->update2($table, $record, ["id" => $id])) return 0;
     return $id;
   } else {
     return intval($medoo->insert($table, $record));

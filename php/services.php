@@ -393,6 +393,7 @@ if ($response) {
       is_numeric($response["updated"]) &&
       intval($response["updated"]) == 0) {
     $response["error"] = get_db_error();
+    $response["sql"] = get_last_sql();
   }
 
   echo json_encode($response);
