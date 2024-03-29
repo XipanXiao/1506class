@@ -213,7 +213,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     $task_user_id = 
         empty($_POST["student_id"]) ? $student_id : $_POST["student_id"];
     $duration = empty($_POST["duration"]) ? null : intval($_POST["duration"]);
-    if (canWriteUser($user, $task_user_id)) {
+    $targetUser = $task_user_id == $user->id ? $user : get_users(null, null, $task_user_id)[$task_user_id];
+    if (canWriteUser($user, $targetUser)) {
       report_task($task_user_id, $task_id, $_POST["sub_index"], $_POST["count"],
           $duration, $_POST["half_term"]);
       $response = get_last_task_record($task_user_id, $task_id, null);
@@ -228,7 +229,8 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "schedule_tasks") {
     $task_user_id = 
         empty($_POST["student_id"]) ? $student_id : $_POST["student_id"];
-    $response = canWriteUser($user, $task_user_id)
+    $targetUser = $task_user_id == $user->id ? $user : get_users(null, null, $task_user_id)[$task_user_id];
+    $response = canWriteUser($user, $targetUser)
         ? ["updated" => report_schedule_task($task_user_id, $_POST)]
         : permission_denied_error();
   } elseif ($resource_id == "schedule") {
@@ -277,12 +279,9 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
         echo json_encode($response);
         exit();
       }
-      $targetUser = intval($_POST["id"]);
-      if ($targetUser != $user->id) {
-        $targetUser = get_users(null, null, $targetUser)[$targetUser];
-      } else {
-        $targetUser = $user;
-      }
+      $targetUserId = intval($_POST["id"]);
+      $targetUser = $targetUserId == $user->id ?
+          $user : get_users(null, null, $targetUserId)[$targetUserId];
 
       if (!canWriteUser($user, $targetUser)) {
         $response = permission_denied_error();
@@ -312,8 +311,10 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
     if (empty($_POST["new_email"])) {
       error_log($user->email. " DELETE learning records of ". $_POST["user_id"]);
     }
-    $response = canWriteUser($user, $_POST["user_id"])
-        ? ["updated" => clone_user($_POST["user_id"], $_POST["new_email"],
+    $targetUserId = $_POST["user_id"];
+    $targetUser = $targetUserId == $user->id ? $user : get_users(null, null, $targetUserId)[$targetUserId];
+    $response = canWriteUser($user, $targetUser)
+        ? ["updated" => clone_user($targetUserId, $_POST["new_email"],
             $_POST["new_class_id"])] 
         : permission_denied_error();
   } elseif ($resource_id == "copy_schedule_group") {

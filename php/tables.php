@@ -412,7 +412,7 @@ function clone_user($user_id, $newEmail = null, $newClassId = null) {
   $user = get_single_record($medoo, "users", $user_id);
   if (!$user) return 0;
 
-  $email = $newEmail ? $newEmail : ($user["email"]. ".deleted");
+  $email = $newEmail ?: ($user["email"]. ".deleted");
   if (!$medoo->update2("users", ["email" => $email], ["id" => $user_id])) {
     return 0;
   }
@@ -934,28 +934,15 @@ function attendanceStats($user_id, $classId) {
 }
 
 /// Whether [$user] can report task for [$task_user_id].
-function canWriteUser($user, $targetUser) {
-  if (($targetUser instanceof User) && $user == $targetUser || $user->id == $targetUser) return true;
+function canWriteUser(User $user, User $targetUser): bool
+{
+  if ($user === $targetUser) return true;
 
-  if (!($targetUser instanceof User)) {
-    $targetUser = get_users(null, null, $targetUser)[$targetUser];
-    if (!$targetUser) return false;
-  }
   if (isDistrictAdmin($user) &&
       $user->district == $targetUser->district) {
     return true;
   }
   return $user->id == $targetUser->id ||
       canWrite($user, $targetUser->classInfo);
-}
-
-function add_custom_course($course_group, $course) {
-  return $medoo->insert2("custom_course_groups",
-    ["course_gropu" => $course_group, "course" => $course]);
-}
-
-function remove_custom_course($course_group, $course) {
-  return $medoo->delete("custom_course_groups",
-    ["course_gropu" => $course_group, "course" => $course]);
 }
 ?>
