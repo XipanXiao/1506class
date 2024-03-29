@@ -2,7 +2,8 @@
 include_once 'connection.php';
 
 function is_merit_assoc_only($user) {
-  return intval($user['merit_assc']) == 1;
+  $key = 'merit_assc';
+  return array_key_exists($key, $user) && intval($user[$key]) == 1;
 }
 
 /// 如果注册为功德会成员，设置相应的bit.

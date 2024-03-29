@@ -25,6 +25,11 @@
         $rows = parent::update($table, $data, $where);
         return $rows ? $rows->rowCount() : 0;
     }
+
+    public function insert2(string $table, array $values, string $primaryKey = null) {
+        if (!parent::insert($table, $values, $primaryKey)) return 0;
+        return parent::id();
+    }
   }
 
   function get_medoo($charset = NULL) {

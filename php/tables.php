@@ -27,7 +27,7 @@ function update_department($department) {
 
   $id = intval($department["id"]);
   if ($id == 0) {
-    return $medoo->insert("departments", $datas);
+    return $medoo->insert2("departments", $datas);
   }
   
   return $medoo->update2("departments", $datas, ["id" => $id]);
@@ -73,7 +73,7 @@ function update_course_group($group) {
 
   $id = empty($group["id"]) ? 0 : intval($group["id"]);
   if ($id == 0) {
-    $id = $medoo->insert("course_groups", $datas);
+    $id = $medoo->insert2("course_groups", $datas);
     if ($id) {
       $group["id"] = $id;
       return $group;
@@ -166,7 +166,7 @@ function update_course($course) {
 
   $id = intval($course["id"]);
   if ($id == 0) {
-    $id = $medoo->insert("courses", $datas);
+    $id = $medoo->insert2("courses", $datas);
     if ($id) {
       $course["id"] = $id;
       return $course;
@@ -245,7 +245,7 @@ function update_class($classInfo) {
   
   $id = intval($classInfo["id"]);
   if ($id == 0) {
-    return $medoo->insert("classes", 
+    return $medoo->insert2("classes", 
         array_merge($datas, ["country" => $classInfo["country"]]));
   }
 
@@ -266,7 +266,7 @@ function update_task($task) {
   
   $id = intval($task["id"]);
   if ($id == 0) {
-    return $medoo->insert("tasks", $datas);
+    return $medoo->insert2("tasks", $datas);
   }
 
   return $medoo->update2("tasks", $datas, ["id" => $id]);
@@ -396,7 +396,7 @@ function update_user($user) {
     }
 
     $datas["permission"] = get_student_permission();
-    if ($id = $medoo->insert("users", $datas)) {
+    if ($id = $medoo->insert2("users", $datas)) {
       return current(get_users(null, null, intval($id)));
     }
   }
@@ -423,7 +423,7 @@ function clone_user($user_id, $newEmail = null, $newClassId = null) {
   if ($newClassId) {
     $user["classId"] = $newClassId;
   }
-  $newId = $medoo->insert("users", $user);
+  $newId = $medoo->insert2("users", $user);
   if (!$newId) {
     return 0;
   }
@@ -596,7 +596,7 @@ function report_task($user_id, $task_id, $sub_index, $count, $duration, $half_te
     ]);
     if ($updated) return $updated;
   }
-  return $medoo->insert("task_records", [
+  return $medoo->insert2("task_records", [
     "student_id" => intval($user_id), 
     "task_id" => intval($task_id),
     "sub_index" => intval($sub_index),
@@ -650,7 +650,7 @@ function report_schedule_task($user_id, $schedule) {
 
   $datas["student_id"] = $user_id;
   $datas["course_id"] = $course_id;
-  $medoo->insert($table, $datas);
+  $medoo->insert2($table, $datas);
   // schedule_records does not have AUTO_INC primary key, 
   // insert always returns 0.
   return 1;
@@ -760,7 +760,7 @@ function update_schedule($schedule) {
   }
 
   if (empty($schedule["id"])) {
-    return $medoo->insert("schedules", $datas);
+    return $medoo->insert2("schedules", $datas);
   }
 
   if (!empty($schedule["notified"])) {
@@ -801,7 +801,7 @@ function update_schedule_group($group) {
   $id = $group["id"];
 
   if ($id == 0) {
-    $id = $medoo->insert("schedule_groups", $datas);
+    $id = $medoo->insert2("schedule_groups", $datas);
     if (!$id) return false;
   } else {
     $medoo->update2("schedule_groups", $datas, ["id" => $id]);
@@ -946,7 +946,7 @@ function canWriteUser($user, $targetUser) {
 }
 
 function add_custom_course($course_group, $course) {
-  return $medoo->insert("custom_course_groups",
+  return $medoo->insert2("custom_course_groups",
     ["course_gropu" => $course_group, "course" => $course]);
 }
 

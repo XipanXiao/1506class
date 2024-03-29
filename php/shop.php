@@ -136,7 +136,7 @@ function increase_stock($medoo, $item, $district, $sign = 1) {
 
   if (empty($inventories)) {
     $data["stock"] = $change;
-    return $medoo->insert("inventory", $data);
+    return $medoo->insert2("inventory", $data);
   } else {
     return $medoo->update2("inventory", ["stock[+]" => $change], ["AND" => $data]);
   }
@@ -160,13 +160,13 @@ function place_order($medoo, $order) {
   }
 
   $order = array_merge($order, sanitize_address());
-  $id = $medoo->insert("orders", $order);
+  $id = $medoo->insert2("orders", $order);
   if (!$id || empty($items)) return $id;
 
   foreach ($items as $item) {
     unset($item["id"]);
     $item["order_id"] = $id;
-    $medoo->insert("order_details", $item);
+    $medoo->insert2("order_details", $item);
   }
   $order = get_single_record($medoo, "orders", $id);
   if (!increase_stocks($medoo, ["order_id" => $id], $order["district"], -1)) {
@@ -467,7 +467,7 @@ function update_book_list($bookList) {
 
   foreach ($bookList["bookIds"] as $bookId) {
     $data = array_merge([], $where, ["item_id" => $bookId]);
-    $medoo->insert("book_lists", $data);
+    $medoo->insert2("book_lists", $data);
     $updated++;
   }
   return $updated;

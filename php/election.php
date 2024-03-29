@@ -85,7 +85,7 @@ function get_votes($election, $user_id = NULL) {
 
 function vote($vote) {
   global $medoo;
-  return $medoo->insert("votes",
+  return $medoo->insert2("votes",
       build_update_data(["election", "user", "candidate", "source"], $vote));
 }
 

@@ -16,7 +16,7 @@ function get_districts($country = "US") {
 function add_district($name, $country = "US") {
 	global $medoo;
 
-	return $medoo->insert("districts", ["name" => $name, "country" => $country]);
+	return $medoo->insert2("districts", ["name" => $name, "country" => $country]);
 }
 
 function update_district($district) {

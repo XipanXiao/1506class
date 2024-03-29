@@ -121,7 +121,7 @@ function insertOrUpdate($medoo, $table, $record) {
     if (!$medoo->update2($table, $record, ["id" => $id])) return 0;
     return $id;
   } else {
-    return intval($medoo->insert($table, $record));
+    return intval($medoo->insert2($table, $record));
   }
 }
 

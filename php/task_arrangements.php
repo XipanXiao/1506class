@@ -35,7 +35,7 @@ function update_task_arrange($classId, $taskId,
   $updated = $medoo->update2("task_arrange", $data, ["AND" => $where]);
   if ($updated) return $updated;
 
-  return $medoo->insert("task_arrange", array_merge($data, $where));
+  return $medoo->insert2("task_arrange", array_merge($data, $where));
 }
 
 function delete_task_arrange($classId) {

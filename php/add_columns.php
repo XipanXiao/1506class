@@ -126,9 +126,9 @@ function create_org_tables($medoo) {
       name VARCHAR(32) CHARACTER SET utf8
     );";
   $medoo->query($sql);
-  $medoo->insert("organizations", ["id" => 1, "name" => "教学部"]);
-  $medoo->insert("organizations", ["id" => 2, "name" => "弘法部"]);
-  $medoo->insert("organizations", ["id" => 3, "name" => "综合部"]);
+  $medoo->insert2("organizations", ["id" => 1, "name" => "教学部"]);
+  $medoo->insert2("organizations", ["id" => 2, "name" => "弘法部"]);
+  $medoo->insert2("organizations", ["id" => 3, "name" => "综合部"]);
 
   $sql = "CREATE TABLE staff (
     id INT AUTO_INCREMENT PRIMARY KEY,

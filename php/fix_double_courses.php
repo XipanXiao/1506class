@@ -59,7 +59,7 @@ function duplicate_reports($medoo, $reports, $second_id) {
         if (!$rows) {
             $datas["student_id"] = intval($report["student_id"]);
             $datas["course_id"] = intval($second_id);
-            $medoo->insert("schedule_records", $datas);
+            $medoo->insert2("schedule_records", $datas);
             if (empty($medoo->select("schedule_records", "*", $where))) {
                 echo "failed to duplicated task records.". get_db_error2($medoo). "<br>\n";
                 echo $medoo->last_query(). "<br>\n";
@@ -131,7 +131,7 @@ function split_course($medoo, $course) {
 
         if (empty($second_id)) {
             $course["name"] = $name2;
-            $second_id = $medoo->insert("courses", $course);
+            $second_id = $medoo->insert2("courses", $course);
             echo "created new course. ". $name2. ", id: ". $second_id. "<br>\n";
         } else {
             $second_id = current($second_id);

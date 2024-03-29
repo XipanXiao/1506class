@@ -46,7 +46,7 @@ function update_class_pref($user_id, $prefs) {
 	$rows = $medoo->update2("class_prefs", $data, $where);
 	if ($rows) return $rows;
 	
-	return $medoo->insert("class_prefs", array_merge($data, $where));
+	return $medoo->insert2("class_prefs", array_merge($data, $where));
 }
 
 function get_class_candidates($user) {
