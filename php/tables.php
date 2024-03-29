@@ -706,9 +706,13 @@ function get_schedules($classId, $term, $records, $user_id) {
         array_keys($group["limited_courses"]));
     $allCourseIds = array_merge($allCourseIds, $courseIds);
 
-    $group["courses"] = keyed_by_id(
-      $medoo->select("courses", ["id", "name", "zb_name"], ["id" => $courseIds])
-    );
+    try {
+      $courses = $medoo->select("courses", ["id", "name"], ["id" => array_filter($courseIds)]);
+      $group["courses"] = keyed_by_id($courses);
+    } catch (Exception $e) {
+      // temporary workaround for broken data.
+      $group["courses"] = keyed_by_id([]);
+    }
 
     $group["term"] = intval($group["term"]);
     $group["mid_week"] = intval($group["mid_week"]);
