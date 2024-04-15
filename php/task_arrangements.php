@@ -8,9 +8,10 @@ include_once "tables.php";
 
 $medoo = get_medoo();
 
-function canWriteClass($user, $classId) {
+function canWriteClass($user, $classId): bool
+{
   $classInfo = get_classes(["id" => $classId])[$classId];
-  if (!classInfo) return false;
+  if (!$classInfo) return false;
     
   return canWrite($user, $classInfo);
 }
