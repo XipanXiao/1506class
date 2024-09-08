@@ -5,6 +5,6 @@ angular.module('ChooseClassTermDialogModule', ['ClassesModule']).directive('choo
         deferred: '=',
         selection: '='
       },
-      templateUrl : 'js/choose_class_term/choose_class_term.html'
+      templateUrl : 'js/choose_class_term/choose_class_term.html?version=20240907'
     };
 });
