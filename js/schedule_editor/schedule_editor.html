@@ -55,6 +55,7 @@
       <div class="css-table-cell"><strong>串讲2</strong></div>
       <div class="css-table-cell"><strong>计划带课辅导员</strong></div>
       <div class="css-table-cell"><strong>实际带课辅导员</strong></div>
+      <div class="css-table-cell"><strong>课程3</strong></div>
       <div class="css-table-cell"><strong>备注</strong></div>
       <div class="css-table-cell"></div>
     </div>
@@ -121,6 +122,15 @@
             search="searchUser"
             class="user-label"
             on-change="markDirty(group)">
+        </paper-auto-suggest-input>
+      </div>
+      <div class="css-table-cell">
+        <paper-auto-suggest-input
+                key="schedule.course_id3"
+                label="courseInput"
+                search="searchCourse"
+                editable="canWrite()"
+                on-change="markDirty(group)">
         </paper-auto-suggest-input>
       </div>
       <div class="css-table-cell">

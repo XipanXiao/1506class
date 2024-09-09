@@ -678,7 +678,7 @@ function get_schedules($classId, $term, $records, $user_id) {
           ["AND" => ["classId" => $classId, "term" => $term]]));
 
   function getCourseIds($schedule) {
-    return [intval($schedule["course_id"]), intval($schedule["course_id2"])];
+    return [intval($schedule["course_id"]), intval($schedule["course_id2"]), intval($schedule["course_id3"])];
   }
 
   function flatten($arrays) {
@@ -744,8 +744,8 @@ function get_schedules($classId, $term, $records, $user_id) {
 function update_schedule($schedule) {
   global $medoo;
 
-  $datas = ["course_id" => NULL, "course_id2" => NULL];
-  $int_fields = ["course_id", "course_id2", "group_id", "open", "review",
+  $datas = ["course_id" => NULL, "course_id2" => NULL, "course_id3" => NULL];
+  $int_fields = ["course_id", "course_id2", "course_id3", "group_id", "open", "review",
       "teacher_planned", "teacher"];
   foreach ($int_fields as $field) {
     if (isset($schedule[$field])) {
@@ -761,6 +761,9 @@ function update_schedule($schedule) {
   }
   if (intval($datas["course_id2"]) == 0) {
     $datas["course_id2"] = NULL;
+  }
+  if (intval($datas["course_id3"]) == 0) {
+    $datas["course_id3"] = NULL;
   }
 
   if (empty($schedule["id"])) {

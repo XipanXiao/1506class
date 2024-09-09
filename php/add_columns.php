@@ -20,12 +20,17 @@ if (empty($_SESSION["user"])) {
 $medoo = get_medoo();
 
 function column_exists($medoo, $table, $column) {
-  $results = $medoo->select($table, $column, ["LIMIT" => 1]);
-  if (!empty($results)) {
-    echo $table. ".". $column. " exists, doing nothing<br>";
-    return True;
-  }
-  return False;
+    // Query to check if the column exists
+    return $medoo->query("
+        SELECT COUNT(*)
+        FROM information_schema.columns
+        WHERE table_schema = DATABASE()
+          AND table_name = :tableName
+          AND column_name = :columnName
+    ", [
+        ':tableName' => $table,
+        ':columnName' => $column
+    ])->fetchColumn() > 0;
 }
 
 function add_district_cfo($medoo) {
@@ -331,20 +336,20 @@ function add_custom_course_groups($medoo) {
   $medoo->query($sql);
 }
 
-add_district_cfo($medoo);
-add_teacher_for_schedules($medoo);
-add_shipping_donation_for_orders($medoo);
-create_inventory_tables($medoo);
-create_org_tables($medoo);
-add_staff_columns($medoo);
-add_zb_name_for_courses($medoo);
-add_task_records_half_term($medoo);
-change_task_records_timestamp($medoo);
-add_schedule_records_half_term($medoo);
-change_schedule_records_timestamp($medoo);
-add_classes_district($medoo);
-add_task_dep2($medoo);
-update_disctrict_inspector_perm($medoo);
-clean_graduated_admins($medoo);
+function add_third_course($medoo) {
+  if (column_exists($medoo, "schedules", "course_id3")) {
+    return;
+  }
+  $sql = "ALTER TABLE schedules
+      ADD COLUMN course_id3 INT,
+      ADD CONSTRAINT fk_course_id3
+          FOREIGN KEY (course_id3)
+          REFERENCES courses(id);";
+
+  $medoo->query($sql);
+  echo get_db_error2($medoo);
+}
+
+add_third_course($medoo)
 ?>
 </html>
