@@ -125,14 +125,6 @@
         </paper-auto-suggest-input>
       </div>
       <div class="css-table-cell">
-        <paper-input ng-model="schedule.notes"
-            class="schedule-notes"
-            ng-change="markDirty(group)"
-            ng-disabled="!canWrite()"
-            no-label-float>
-        </paper-input>
-      </div>
-      <div class="css-table-cell">
         <paper-auto-suggest-input
                 key="schedule.course_id3"
                 label="courseInput"
@@ -140,6 +132,14 @@
                 editable="canWrite()"
                 on-change="markDirty(group)">
         </paper-auto-suggest-input>
+      </div>
+      <div class="css-table-cell">
+        <paper-input ng-model="schedule.notes"
+            class="schedule-notes"
+            ng-change="markDirty(group)"
+            ng-disabled="!canWrite()"
+            no-label-float>
+        </paper-input>
       </div>
       <div class="css-table-cell hover-icon-container">
         <div class="hover-icons">

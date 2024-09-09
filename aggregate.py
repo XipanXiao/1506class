@@ -11,6 +11,7 @@ def copy_file(a, b):
 for deps_file in os.listdir('.'):
     if deps_file.endswith('.deps'):
         js_file = os.path.splitext(deps_file)[0] + '.js'
+        os.remove(js_file)
         with open(deps_file, 'r') as infile:
             for line in infile:
                 copy_file(line.strip(), js_file)
