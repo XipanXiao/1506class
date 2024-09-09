@@ -415,7 +415,7 @@ define('schedule_editor/schedule_editor',
                 });
               };
             },
-            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=201912072216'
+            templateUrl : 'js/schedule_editor/schedule_editor.html?tag=202412072216'
           };
         });
 });

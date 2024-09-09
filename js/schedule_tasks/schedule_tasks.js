@@ -29,6 +29,10 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                     utils.any(group.schedules, function(schedule) {
                   return !!schedule.course_id2;
                 });
+                group.course_group3 = group.course_group3 ||
+                    utils.any(group.schedules, function(schedule) {
+                  return !!schedule.course_id3;
+                });
               }
 
               $scope.reload = function(term) {
@@ -98,7 +102,7 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                 return perm.isPreClass();
               };
             },
-            templateUrl : 'js/schedule_tasks/schedule_tasks.html?tag=202309102203'
+            templateUrl : 'js/schedule_tasks/schedule_tasks.html?tag=202409102203'
           };
         });
 });
