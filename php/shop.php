@@ -462,7 +462,7 @@ function update_book_list($bookList) {
 
   $where = build_update_data(["department_id", "term"], $bookList);
 
-  $updated = $medoo->delete("book_lists", ["AND" => $where]);
+  $updated = $medoo->delete("book_lists", ["AND" => $where])->rowCount();
   if (empty($bookList["bookIds"])) return $updated;
 
   foreach ($bookList["bookIds"] as $bookId) {
