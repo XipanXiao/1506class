@@ -479,9 +479,9 @@ define('utils', [], function() {
       },
       validateTaskInput: function(task, data) {
         if (task.duration && task.sub_tasks) {
-          if (data.duration < data.count * 30) {
-            alert('每次观修时间不少于30分钟，{0}次一共至少要{1}分钟'.format(
-                data.count, data.count * 30));
+          if (data.duration < data.count * 1) {
+            alert('每次观修时间不少于1分钟，{0}次一共至少要{1}分钟'.format(
+                data.count, data.count * 1));
             return false;
           } else if (data.duration > data.count * 180) {
             alert('观修{0}次一共{1}分钟，是不是太夸张了？'.format(
