@@ -102,7 +102,7 @@ define('schedule_tasks/schedule_tasks', ['navigate_bar/navigate_bar',
                 return perm.isPreClass();
               };
             },
-            templateUrl : 'js/schedule_tasks/schedule_tasks.html?tag=202409082203'
+            templateUrl : 'js/schedule_tasks/schedule_tasks.html?tag=202501082203'
           };
         });
 });
