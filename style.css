@@ -142,10 +142,6 @@ input[type="submit"]:enabled {
   display: none;
 }
 
-schedule-tasks {
-  width: 630px;
-}
-
 .login-form {
   width: 400px;
 }
