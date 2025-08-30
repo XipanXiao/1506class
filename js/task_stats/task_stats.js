@@ -284,6 +284,89 @@ define('task_stats/task_stats', ['progress_bar/progress_bar', 'services',
             var dialog = document.querySelector('#task-editor-dlg');
             dialog.open();
           };
+          // --- CSV helpers ---
+        function csvEscape(v) {
+          if (v === null || v === undefined) return '';
+          var s = ('' + v).replace(/"/g, '""');
+          // Always quote to be safe with commas/Chinese/etc.
+          return '"' + s + '"';
+        }
+        function triggerDownload(filename, content) {
+          var blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function() {
+            URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+          }, 0);
+        }
+        
+        /**
+         * Export the currently selected task to CSV.
+         * - If sub_tasks > 0: long format, one row per user per 修法 (covers all pages).
+         * - Else: one row per user (single stat task).
+         */
+        scope.downloadCsv = function() {
+          if (!scope.selectedTask || !scope.task_stats || !scope.task_stats.length) return;
+        
+          var task = scope.selectedTask;
+          var lines = [];
+          var fileBase = (task.name || 'task').replace(/[\\/:*?"<>|]/g, '_');
+        
+          if (parseInt(task.sub_tasks)) {
+            // Multi-subtask task: userId, name, zb_id, sub_index, sum, duration_minutes
+            lines.push([
+              'userId','name','zb_id','sub_index','sum','duration_minutes'
+            ].join(','));
+        
+            scope.task_stats.forEach(function(user) {
+              var stats = user.stats || [];
+              // Use declared sub_tasks to ensure we include ALL 修法 (all pages).
+              var totalSubs = parseInt(task.sub_tasks) || stats.length || 0;
+        
+              for (var i = 0; i < totalSubs; i++) {
+                var st = stats[i] || {};
+                var row = [
+                  csvEscape(user.id),
+                  csvEscape(user.name),
+                  csvEscape(user.zb_id),
+                  csvEscape(i + 1),                        // 1-based 修法 index
+                  csvEscape(st.sum || 0),
+                  csvEscape(st.duration || 0)              // minutes
+                ];
+                lines.push(row.join(','));
+              }
+            });
+          } else {
+            // Single-stat task: userId, name, zb_id, sum, duration_minutes
+            lines.push([
+              'userId','name','zb_id','sum','duration_minutes'
+            ].join(','));
+        
+            scope.task_stats.forEach(function(user) {
+              // In refreshStats() we normalize stats[0] for single-stat tasks.
+              var st = (user.stats && (user.stats[0] || user.stats[1])) || {};
+              var row = [
+                csvEscape(user.id),
+                csvEscape(user.name),
+                csvEscape(user.zb_id),
+                csvEscape(st.sum || 0),
+                csvEscape(st.duration || 0)
+              ];
+              lines.push(row.join(','));
+            });
+          }
+        
+          // Prepend BOM so Excel opens UTF-8 correctly with Chinese headers.
+          var content = '\uFEFF' + lines.join('\n');
+          var filename = fileBase + '.csv';
+          triggerDownload(filename, content);
+        };
+  
           scope.currentPage = 0;
         },
         templateUrl: 'js/task_stats/task_stats.html?tag=201909172201'
