@@ -37,10 +37,13 @@
       <div class="css-table-cell">{{getWeeklyTime(group, $index)}}</div>
       <div class="css-table-cell" ng-switch="vacation(schedule)">
         <span ng-switch-when="true">{{schedule.notes}}</span>
-        <a href="https://www.youtube.com/results?search_query={{group.courses[schedule.course_id].name}}"
-            target="_blank" title="Click to search in YouTube" ng-switch-default>
-          {{group.courses[schedule.course_id].name}}
-        </a>
+        <div ng-switch="user.classInfo.department_id" ng-switch-default>
+          <span ng-switch-when="5">{{group.courses[schedule.course_id].name}}</span>
+          <a href="https://www.youtube.com/results?search_query={{group.courses[schedule.course_id].name}}"
+              target="_blank" title="Click to search in YouTube" ng-switch-default>
+            {{group.courses[schedule.course_id].name}}
+          </a>
+        </div>
       </div>
       <div class="css-table-cell" ng-if="!group.course_group3">{{users[schedule.review].name}}</div>
       <div class="css-table-cell" ng-if="!group.course_group2 && !group.course_group3">
@@ -55,10 +58,13 @@
             ng-click="reportTask(schedule.course_id, group, $index)" ng-if="schedule.course_id && !vacation(schedule)">
       </div>
       <div class="css-table-cell" ng-if="group.course_group2">
-        <a href="https://www.youtube.com/results?search_query={{group.courses[schedule.course_id2].name}}"
-           target="_blank" title="Click to search in YouTube">
-          {{group.courses[schedule.course_id2].name}}
-        </a>
+        <div ng-switch="user.classInfo.department_id">
+          <span ng-switch-when="5">{{group.courses[schedule.course_id2].name}}</span>
+          <a href="https://www.youtube.com/results?search_query={{group.courses[schedule.course_id2].name}}"
+             target="_blank" title="Click to search in YouTube" ng-switch-default>
+            {{group.courses[schedule.course_id2].name}}
+          </a>
+        </div>
       </div>
       <div class="css-table-cell" ng-if="group.course_group2 && !group.course_group3">
         {{users[schedule.open].name}}
@@ -72,10 +78,13 @@
             ng-click="reportTask(schedule.course_id2, group, $index)" ng-if="schedule.course_id2 && !vacation(schedule)">
       </div>
       <div class="css-table-cell" ng-if="group.course_group3">
-        <a href="https://www.youtube.com/results?search_query={{group.courses[schedule.course_id3].name}}"
-           target="_blank" title="Click to search in YouTube">
-          {{group.courses[schedule.course_id3].name}}
-        </a>
+        <div ng-switch="user.classInfo.department_id">
+          <span ng-switch-when="5">{{group.courses[schedule.course_id3].name}}</span>
+          <a href="https://www.youtube.com/results?search_query={{group.courses[schedule.course_id3].name}}"
+             target="_blank" title="Click to search in YouTube" ng-switch-default>
+            {{group.courses[schedule.course_id3].name}}
+          </a>
+        </div>
       </div>
       <div class="css-table-cell" ng-if="group.course_group3">
         <input type="checkbox" ng-model="records[schedule.course_id3].video"
