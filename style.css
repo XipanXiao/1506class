@@ -265,6 +265,13 @@ select#state {
   width: 1000px;
 }
 
+.learning-groups .name-field {
+  background: gray;
+  left: 0;
+  position: sticky;
+  z-index: 2;
+}
+
 classes {
   align-self: stretch;
   background: white;
