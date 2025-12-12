@@ -2,7 +2,9 @@
   <div class="app-bar-left" ng-class="{'padded-element': admining}">
     <select ng-model="selectedClassId"
             ng-options="cls.id as cls.name for cls in classes"
-            ng-change="changeClass()">
+            ng-change="changeClass()"
+            ng-disabled="!isIn('/index.html')"
+    >
     </select>
     <a target="_blank" class="app-bar-link"
         href="http://www.zoom.us/j/{{user.classInfo.class_room}}">

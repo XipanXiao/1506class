@@ -273,6 +273,7 @@ define('utils', [], function() {
       },
       /// Output [time] string in EST to local time string.
       formatTime: function(timeString) {
+        if (!timeString) return "";
         // A time in EST.
         var date = new Date('1970-01-01T' + timeString + 'Z');
         // Time in UTC.

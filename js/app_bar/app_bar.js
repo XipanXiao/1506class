@@ -44,10 +44,10 @@ define('app_bar/app_bar', ['permission', 'search_bar/search_bar', 'utils'],
           };
           rpc.get_user_classes().then(function(response) {
             scope.classes = response.data;
-            scope.selectedClassId = scope.user.classInfo.id;
+            scope.selectedClassId = (scope.user || perm.user).classInfo.id;
           });
         },
-        templateUrl : 'js/app_bar/app_bar.html?tag=202512062357'
+        templateUrl : 'js/app_bar/app_bar.html?tag=202512122357'
       };
     });
 });
