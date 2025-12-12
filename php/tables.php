@@ -404,48 +404,6 @@ function update_user($user) {
   return null;
 }
 
-/// Renames email of the user (identified by [$user_id]) to ['$newEmail'],
-/// and registers a new user with the old (current) email.
-function clone_user($user_id, $newEmail = null, $newClassId = null) {
-  global $medoo;
-  
-  $user = get_single_record($medoo, "users", $user_id);
-  if (!$user) return 0;
-
-  $email = $newEmail ?: ($user["email"]. ".deleted");
-  if (!$medoo->update2("users", ["email" => $email], ["id" => $user_id])) {
-    return 0;
-  }
-  
-  unset($user["id"]);
-  unset($user["internal_id"]);
-  unset($user["zb_id"]);
-  if ($newClassId) {
-    $user["classId"] = $newClassId;
-  }
-  $newId = $medoo->insert2("users", $user);
-  if (!$newId) {
-    return 0;
-  }
-
-  if (!$newEmail) {
-    remove_user($user_id);
-  }
-
-  $references = [
-    "teacher_id" => "classes",
-    "teacher2_id" => "classes",
-    "teacher" => "schedules",
-    "teacher_planned" => "schedules",
-    "user" => "staff"
-  ];
-
-  foreach($references as $field => $table) {
-    $medoo->update2($table, [$field => $newId], [$field => $user_id]);
-  }
-  return $newId;
-}
-
 function get_db_error() {
   global $medoo;
   

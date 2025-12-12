@@ -4,6 +4,7 @@ include_once "connection.php";
 include_once "tables.php";
 include_once "util.php";
 include_once 'permission.php';
+include_once 'clone_user.php';
 
 // function create_table_if_not_exists() {
 //     global $medoo;
@@ -57,19 +58,26 @@ include_once 'permission.php';
 //     }
 // }
 
-function get_duplicate_users($base_email) {
+function get_duplicate_users($user) {
     global $medoo;
 
-    return $medoo->select("users", ["id", "email", "classId"], [
-        "email[~]" => strip_graduated_email_prefix($base_email)
-    ]);
+    setup_original_id_and_link_duplicates();
+    $base_id = ($user->original_id > 0) ? $user->original_id : $user->id;
+
+    // 2. Fetch all users who share the same original_id
+    return $medoo->select("users", ["id", "classId"], [
+            "OR" => [
+                "id" => $base_id,
+                "original_id" => $base_id
+            ]
+        ]);
 }
 
-function get_user_classes($user_id, $email) {
+function get_user_classes($user) {
     global $medoo;
 
     // Step 1: Find all user accounts that correspond to the same real person
-    $users = get_duplicate_users($email);
+    $users = get_duplicate_users($user);
 
     if (empty($users)) {
         return [];

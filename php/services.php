@@ -5,6 +5,7 @@ include_once 'tables.php';
 include_once 'permission.php';
 include_once 'acl.php';
 include_once 'user_class.php';
+include_once 'clone_user.php';
 
 $response = null;
 
@@ -100,7 +101,7 @@ if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["rid"] )) {
   } elseif ($resource_id == "class_candidates") {
     $response = get_class_candidates($user);
   } elseif ($resource_id == "user_classes") {
-    $response = get_user_classes($user->id, $user->email);
+    $response = get_user_classes($user);
   } elseif ($resource_id == "course_groups") {
     $response = get_course_groups($_GET["detailed"], $_GET["department_id"]);
   } elseif ($resource_id == "tasks") {
