@@ -3,7 +3,7 @@
     <select ng-model="selectedClassId"
             ng-options="cls.id as cls.name for cls in classes"
             ng-change="changeClass()"
-            ng-disabled="!isIn('/index.html')"
+            ng-disabled="!isIn('/index.html') && !isIn('/')"
     >
     </select>
     <a target="_blank" class="app-bar-link"

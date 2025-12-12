@@ -47,7 +47,7 @@ define('app_bar/app_bar', ['permission', 'search_bar/search_bar', 'utils'],
             scope.selectedClassId = (scope.user || perm.user).classInfo.id;
           });
         },
-        templateUrl : 'js/app_bar/app_bar.html?tag=202512122357'
+        templateUrl : 'js/app_bar/app_bar.html?tag=202512120957'
       };
     });
 });
