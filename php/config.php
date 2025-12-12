@@ -2,7 +2,8 @@
   // This file must be include first if session is needed since it
   // outputs a cookie to the header.
   $config = null;
-  
+  error_reporting(E_ALL & ~E_DEPRECATED & ~E_WARNING);
+
   /// Given "${HOSTNAME}", return getenv("HOSTNAME");
   function replace_variables($subject) {
     return preg_replace_callback("/\\$\\{(\w+)\\}/", function($matches) {

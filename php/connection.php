@@ -34,12 +34,13 @@
 
   function get_medoo($charset = NULL) {
      global $config;
-    
+
     return new MyMedoo([
         // required
         'database_type' => 'mysql',
         'database_name' => $config->dbname,
         'server' => $config->servername,
+        'port' => $config->port,
         // 'socket' => $config->socket,
         'username' => $config->username,
         'password' => $config->password,

@@ -165,4 +165,9 @@ function filter_deleted_users($medoo, $users) {
           return !in_array($user["classId"], $deletedClass);
       }));
 }
+
+function strip_graduated_email_prefix($str) {
+    // Pattern: last 2 digits of a year >= 10 (2010+), followed by rxl/jx/jt, then a dot
+    return preg_replace('/^(1[0-9]|2[0-9])(rxl|jx|jt)\./', '', $str);
+}
 ?>

@@ -1,8 +1,8 @@
 define('app_bar/app_bar', ['permission', 'search_bar/search_bar', 'utils'],
     function() {
   return angular.module('AppBarModule', ['PermissionModule',
-     'SearchBarModule', 'UtilsModule'])
-    .directive('appBar', function(perm, utils) {
+     'SearchBarModule', 'UtilsModule', 'ServicesModule'])
+    .directive('appBar', function(perm, utils, rpc) {
       return {
         scope: {
           admining: '@',
@@ -37,8 +37,17 @@ define('app_bar/app_bar', ['permission', 'search_bar/search_bar', 'utils'],
           scope.isIn = function(page) {
             return location.pathname.endsWith(page);
           };
+          scope.selectedClassId = null;
+          scope.changeClass = function() {
+            if (!scope.selectedClassId) return;
+            utils.redirect('php/su.php?class_id={0}'.format(scope.selectedClassId));
+          };
+          rpc.get_user_classes().then(function(response) {
+            scope.classes = response.data;
+            scope.selectedClassId = scope.user.classInfo.id;
+          });
         },
-        templateUrl : 'js/app_bar/app_bar.html?tag=201907062357'
+        templateUrl : 'js/app_bar/app_bar.html?tag=202512062357'
       };
     });
 });

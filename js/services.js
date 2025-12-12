@@ -61,6 +61,10 @@ define('services', ['utils'], function() {
             return $http.get(url);
           },
 
+          get_user_classes: function() {
+            return $http.get('{0}?rid=user_classes'.format(serviceUrl));
+          },
+
           update_class_prefs: function(prefs) {
             prefs.rid = 'class_prefs';
             return http_form_post($http, $httpParamSerializerJQLike(prefs));

@@ -1,7 +1,10 @@
 <?php
 include_once 'config.php';
+include_once 'datatype.php';
 include_once 'tables.php';
 include_once 'permission.php';
+include_once 'connection.php';
+include_once 'util.php';
 
 $response = null;
 
@@ -12,14 +15,40 @@ if (empty($_SESSION["user"])) {
   $user = unserialize($_SESSION["user"]);
 }
 
-if ($_SERVER ["REQUEST_METHOD"] == "GET" && isset ( $_GET ["user"] )) {
-  $targetUserId = $_GET["user"];
-  if (empty($targetUserId)) return;
 
-  $targetUser = get_users(null, null, $targetUserId)[$targetUserId];
+function is_same_user_graduated($targetUser) {
+    global $user;
+
+    return $user->name === $targetUser["name"] &&
+            strip_graduated_email_prefix($user->email) === strip_graduated_email_prefix($targetUser["email"]) &&
+            $user->birthyear === intval($targetUser["birthyear"]) &&
+            $user->sex === intval($targetUser["sex"]);
+}
+
+function find_same_user_in_class($classId) {
+    global $medoo, $user;
+
+    $usersInClass = $medoo->select("users", "*", ["classId" => $classId]);
+    foreach ($usersInClass as $targetUser) {
+        if (is_same_user_graduated($targetUser)) {
+            return new User($targetUser);
+        }
+    }
+
+    return null;
+}
+
+if ($_SERVER ["REQUEST_METHOD"] == "GET") {
+  $targetUserId = $_GET["user"];
+  $targetClassId = $_GET["class_id"];
+  if (empty($targetUserId) && empty($targetClassId)) return;
+
+  $targetUser = empty($targetClassId) ?
+    get_users(null, null, $targetUserId)[$targetUserId]:
+    find_same_user_in_class($targetClassId);
   if (!$targetUser) return;
 
-  if (!canWriteUser($user, $targetUser)) return;
+  if (!canWriteUser($user, $targetUser) && !is_same_user_graduated($targetUser)) return;
   $targetUser->password = null;
   $targetUser->is_teacher = is_teacher($targetUser->id);
 
