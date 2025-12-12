@@ -92,7 +92,7 @@ function clone_user($user_id, $newEmail = null, $newClassId = null) {
     $user["classId"] = $newClassId;
   }
   setup_original_id_and_link_duplicates();
-  $user["original_id"] = $user_id;
+  $user["original_id"] = $user["original_id"] ?? $user_id;
   $newId = $medoo->insert2("users", $user);
   if (!$newId) {
     return 0;
