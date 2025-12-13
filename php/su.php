@@ -15,27 +15,25 @@ if (empty($_SESSION["user"])) {
   $user = unserialize($_SESSION["user"]);
 }
 
-
 function is_same_user_graduated($targetUser) {
     global $user;
-
-    return $user->name === $targetUser["name"] &&
-            strip_graduated_email_prefix($user->email) === strip_graduated_email_prefix($targetUser["email"]) &&
-            $user->birthyear === intval($targetUser["birthyear"]) &&
-            $user->sex === intval($targetUser["sex"]);
+    return $user->getBaseId() === $targetUser->getBaseId();
 }
 
 function find_same_user_in_class($classId) {
     global $medoo, $user;
 
-    $usersInClass = $medoo->select("users", "*", ["classId" => $classId]);
-    foreach ($usersInClass as $targetUser) {
-        if (is_same_user_graduated($targetUser)) {
-            return new User($targetUser);
-        }
-    }
+    $baseId = $user->getBaseId();
 
-    return null;
+    $target = $medoo->get("users", "*", [
+        "classId" => $classId,
+        "OR" => [
+            "id" => $baseId,
+            "original_id" => $baseId
+        ]
+    ]);
+
+    return $target ? new User($target) : null;
 }
 
 if ($_SERVER ["REQUEST_METHOD"] == "GET") {

@@ -8,5 +8,12 @@ class User {
       $this->$key = in_array($key, User::$int_fields) ? intval($value) : $value;
     }
   }
+
+  public function getBaseId() {
+    if (isset($this->original_id) && $this->original_id > 0) {
+      return $this->original_id;
+    }
+    return $this->id;
+  }
 }
 ?>
