@@ -39,11 +39,6 @@ define('task_arrangements/task_arrangements', ['services', 'utils',
           function getTaskArranges() {
             var classId = scope.classInfo.id;
               var depId = parseInt(scope.classInfo.department_id);
-              if (depId != 3 && depId != 1) {
-                scope.tasks = [];
-                scope.isNotEmpty = false;
-                return utils.futureValue(false);
-              }
               return utils.getTasks(rpc, depId, classId).then(function(tasks) {
                 scope.isNotEmpty = !utils.isEmpty(tasks);
                 return scope.tasks = tasks;
