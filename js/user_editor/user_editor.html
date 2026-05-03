@@ -73,7 +73,12 @@
       </div>
       <div class="css-table-row padded-element">
         <div class="css-table-cell">班级</div>
-        <div class="css-table-cell">{{user.classInfo.name}}</div>
+        <div class="css-table-cell">
+          <a ng-if="isAdmin()" ng-href="admin.html?classId={{user.classId}}">
+            {{user.classInfo.name}}
+          </a>
+          <span ng-if="!isAdmin()">{{user.classInfo.name}}</span>
+        </div>
         <div class="css-table-cell">
           <iron-icon class="selectable" icon="chevron-right"
               ng-click="editing = 'classId'">

@@ -36,7 +36,8 @@ define('admin_app',
             rpc.get_user().then(function(user) {
               perm.user = user;
               $scope.user = user;
-              $scope.classId = user.classId;
+              $scope.classId = parseInt(utils.getUrlParameter('classId')) ||
+                  user.classId;
             });
             
             var tabs = document.querySelectorAll('paper-tabs paper-tab');
