@@ -92,8 +92,14 @@ define('schedule_editor/schedule_editor',
                   return rpc.get_schedules($scope.classId,
                       term || $scope.term || 0).then(function(response) {
                     $scope.schedule_groups = response.data.groups;
+                    var courseCache = window.courseInputCache ||
+                        (window.courseInputCache = {});
                     utils.forEach($scope.schedule_groups || [], function(group) {
                       group.dirty = false;
+                      utils.forEach(group.courses || {}, function(course) {
+                        courseCache[course.id] = course.name;
+                        courseCache[course.name] = course.id;
+                      });
                     });
                     var group = utils.first($scope.schedule_groups);
                     if (group) {

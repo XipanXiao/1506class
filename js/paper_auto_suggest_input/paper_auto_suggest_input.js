@@ -31,8 +31,6 @@ angular.module('PaperAutoSuggestInputModule', [
         scope.search(key, true).then(function(value) {
           if (value) {
             scope.value = cache[key] = value;
-          } else {
-            scope.key = null;
           }
         });
       }
